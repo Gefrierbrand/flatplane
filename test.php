@@ -1,3 +1,3 @@
 <?php
-//hier steht fancy shit drin
+//änderung 1
 ?>
