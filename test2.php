@@ -1,4 +1,4 @@
 <?php
     phpinfo();
-    //kommentar
+    //kommentar               qqqq
 ?>
