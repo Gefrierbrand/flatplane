@@ -55,7 +55,7 @@
     $pdf->ImageSVG('test8.svg', $x=5, $y=250, $w=50, $h=80, $link='', $align='', $palign='', $border=0, $fitonpage=false);
 
     // ---------------------------------------------------------
-    $pdf->Output('output/example_002.pdf', 'F');
+    $pdf->Output('output/example_003.pdf', 'F');
     $dauer = microtime(true) - $beginn;
     echo "Verarbeitung des Skripts: $dauer Sek.";
 ?>
