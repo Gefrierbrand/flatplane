@@ -33,7 +33,7 @@ var display = false, equation = system.args[1];
 if (equation === "--display") {display = true; equation = system.args[2]}
 
 //
-//  Set up equation mased on disiplay mode
+//  Set up equation based on disiplay mode
 //
 equation = (display ? "\\["+equation+"\\]" : "\\("+equation+"\\)");
 
@@ -48,8 +48,8 @@ function evaluate(page, func) {
 
 //
 //  Open a page from the CDN so we can load MathJax into it (can't do that from a blank page)
-//
-page.open("http://cdn.mathjax.org/mathjax/latest/test/examples.html", function (status) {
+//  page.open("http://cdn.mathjax.org/mathjax/latest/test/examples.html", function (status) {
+page.open("file:///c:/php/WWW/flatplane/MathJax/test/examples.html", function (status) {
   if (status !== "success") {
     console.log("Unable to access network");
   } else {
@@ -102,7 +102,8 @@ page.open("http://cdn.mathjax.org/mathjax/latest/test/examples.html", function (
       document.head.appendChild(script);
       var script = document.createElement("script");
       script.type = "text/javascript";
-      script.src = "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG";
+      //script.src = "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG";
+	  script.src = "file:///c:/php/WWW/flatplane/MathJax/MathJax.js?config=TeX-AMS-MML_SVG";
       document.head.appendChild(script);
       setTimeout(function () {alert("MathJax Timeout")},10000);  // timeout after 10 seconds
     });
