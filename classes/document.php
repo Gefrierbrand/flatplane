@@ -22,6 +22,12 @@
  *
  * @author niko
  */
+
+/**
+ * class document
+ * 
+ * @protected author stuff
+ */
 class document {
     protected $author;
     protected $pdfCreator;
@@ -30,9 +36,8 @@ class document {
     protected $subject;
     protected $keywords;
     
-    protected $dateCreated; //?
-    protected $numpages; //?
+    protected $pages;
     
-    protected $units;
+    protected $units; //?
 }
 ?>

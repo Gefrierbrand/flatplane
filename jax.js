@@ -1,5 +1,5 @@
 /***********************************************
- *
+ *  By: Davide Cervone  // https://groups.google.com/forum/#!topic/mathjax-users/nQXVaFi4IKQ
  *  A Phantom.js script that uses MathJax to
  *  render a TeX equation into and SVG image
  *  file.
@@ -19,93 +19,141 @@
  *  access control to work).
  */
 
+/*
+ * Available Fonts:
+ * TeX, STIX-Web, Asana-Math, Neo-Euler, Gyre-Pagella, Gyre-Termes and Latin-Modern
+ */
+var font = 'TeX';
+
 var page = require('webpage').create();
 var system = require('system');
 
 //
 //  Get arguments, and print usage if not enough
 //
+
+//TODO: Fix argument order
 if (system.args.length === 1) {
-  console.log('Usage: '+system.args[0]+' [--display] equation');
-  phantom.exit();
+    console.log('Usage: ' + system.args[0] + ' [--inline] [--font FONT] equation');
+    phantom.exit();
 }
-var display = false, equation = system.args[1];
-if (equation === "--display") {display = true; equation = system.args[2]}
+var inline = false, equation = system.args[1];
+switch (equation)
+{
+    case '--inline':
+        inline = true;
+        if(system.args[2] === '--font')
+        {
+            if (system.args.length !== 5) {
+                console.log('Usage: ' + system.args[0] + ' [--inline] [--font FONT] equation');
+                phantom.exit();
+            }            
+            equation = system.args[4];
+            font = system.args[3];
+            //console.log('font: '+font);
+        } else {
+            equation = system.args[2];
+        }
+    break;
+    
+    case '--font':
+        if (system.args.length !== 4) {
+                console.log('Usage: ' + system.args[0] + ' [--inline] [--font FONT] equation');
+                phantom.exit();
+        }
+        font = system.args[2];
+        equation = system.args[3];
+    break;
+}
+
+
 
 //
 //  Set up equation based on disiplay mode
 //
-equation = (display ? "\\["+equation+"\\]" : "\\("+equation+"\\)");
+equation = (inline ? "\\(" + equation + "\\)" : "\\[" + equation + "\\]");
 
 //
 //  Function to allow passing arguments to page.evaluate()
 //
 function evaluate(page, func) {
-  var args = [].slice.call(arguments, 2);
-  var fn = "function() {return ("+func.toString()+").apply(this,"+JSON.stringify(args)+")}";
-  return page.evaluate(fn);
+    //console.log('func eval');
+    var args = [].slice.call(arguments, 2);
+    //console.log('args: '+args);
+    var fn = "function() {return (" + func.toString() + ").apply(this," + JSON.stringify(args) + ")}";
+    //console.log('fn: '+fn);
+    return page.evaluate(fn);
 }
 
 //
 //  Open a page from the CDN so we can load MathJax into it (can't do that from a blank page)
 //  page.open("http://cdn.mathjax.org/mathjax/latest/test/examples.html", function (status) {
-page.open("file:///c:/php/WWW/flatplane/MathJax/test/examples.html", function (status) {
-  if (status !== "success") {
-    console.log("Unable to access network");
-  } else {
-    //
-    //  This gets called when MathJax is done
-    //
-    page.onAlert = function (msg) {
-      if (msg === "MathJax Done") {
-        console.log(page.evaluate(function () {
-          //
-          //  Look up the SVG output and the font paths
-          //  Hook the paths into the SVG output, and put the
-          //    SVG element into a DIV so we can use innerHTML to serialize
-          //  Add the XML heading, and touch up the SVG output
-          //    (add newlines to make output prittier,
-          //     add missing xmlns attribute,
-          //     add xlink: before hrefs so they can find the paths)
-          //  Then return the full SVG file.
-          //
-          var svg = document.getElementsByTagName("svg");
-          svg[1].insertBefore(svg[0].firstChild,svg[1].firstChild);
-          var div = document.createElement("div");
-          div.appendChild(svg[1]);
-          return [
-            '<?xml version="1.0" standalone="no"?>',
-            '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">',
-            div.innerHTML.replace(/><([^/])/g,">\n<$1")
-                         .replace(/(<\/[a-z]*>)(?=<\/)/g,"$1\n")
-                         .replace(/<svg /,'<svg xmlns="http://www.w3.org/2000/svg" ')
-                         .replace(/<use ([^>]*)href/g,'<use $1xlink:href')
-          ].join("\n");
-        }));
-	phantom.exit();
-      } else if (msg === "MathJax Timeout") {
-        console.log("Timed out waiting for MathJax");
-        phantom.exit();
-      } else {console.log(msg)}
+page.open("file:///c:/php/WWW/flatplane/MathJax/test/examples2.html", function(status) {
+    if (status !== "success") {
+        console.log("Unable to access network or demopage");
+    } else {
+        //
+        //  This gets called when MathJax is done
+        //
+        page.onAlert = function(msg) {
+            if (msg === "MathJax Done") {
+                //page.render('test.pdf');
+                console.log(page.evaluate(function() {
+                    //
+                    //  Look up the SVG output and the font paths
+                    //  Hook the paths into the SVG output, and put the
+                    //    SVG element into a DIV so we can use innerHTML to serialize
+                    //  Add the XML heading, and touch up the SVG output
+                    //    (add newlines to make output prittier,
+                    //     add missing xmlns attribute,
+                    //     add xlink: before hrefs so they can find the paths)
+                    //  Then return the full SVG file.
+                    //
+                    var svg = document.getElementsByTagName("svg");
+                    svg[1].insertBefore(svg[0].firstChild, svg[1].firstChild);
+                    var div = document.createElement("div");
+                    div.appendChild(svg[1]);
+                    return [
+                        '<?xml version="1.0" standalone="no"?>',
+                        '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">',
+                        div.innerHTML.replace(/><([^/])/g, ">\n<$1")
+                                .replace(/(<\/[a-z]*>)(?=<\/)/g, "$1\n")
+                                .replace(/<svg /, '<svg xmlns="http://www.w3.org/2000/svg" ')
+                                .replace(/<use ([^>]*)href/g, '<use $1xlink:href')
+                    ].join("\n");
+                }));
+                phantom.exit();
+            } else if (msg === "MathJax Timeout") {
+                console.log("Timed out waiting for MathJax");
+                phantom.exit();
+            } else {
+                console.log(msg)
+            }
+        }
+        //
+        //  Clear the page and make it only include the math
+        //
+        evaluate(page, function(html) {
+            document.body.innerHTML = html
+        }, equation);
+        //
+        //  Load MathJax and queue the alert that tells PhantomJS to make the final SVG file
+        //
+        page.evaluate(function(font) {
+            console.log('page eval');
+            var script = document.createElement("script");
+            script.type = "text/x-mathjax-config";
+            script.text = 'MathJax.Hub.Config({SVG:{font: "'+font+'"}});'
+            script.text += "MathJax.Hub.Queue([alert,'MathJax Done'])";
+            document.head.appendChild(script);
+            var script = document.createElement("script");
+            script.type = "text/javascript";
+            //script.src = "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG";
+            script.src = "file:///c:/php/WWW/flatplane/MathJax/MathJax.js?config=TeX-AMS-MML_SVG";
+            document.head.appendChild(script);
+            setTimeout(function() {
+                alert("MathJax Timeout");
+            }, 10000);  // timeout after 10 seconds
+        },font);
     }
-    //
-    //  Clear the page and make it only include the math
-    //
-    evaluate(page,function (html) {document.body.innerHTML=html},equation);
-    //
-    //  Load MathJax and queue the alert that tells PhantomJS to make the final SVG file
-    //
-    page.evaluate(function () {
-      var script = document.createElement("script");
-      script.type = "text/x-mathjax-config";
-      script.text = "MathJax.Hub.Queue([alert,'MathJax Done'])";
-      document.head.appendChild(script);
-      var script = document.createElement("script");
-      script.type = "text/javascript";
-      //script.src = "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG";
-	  script.src = "file:///c:/php/WWW/flatplane/MathJax/MathJax.js?config=TeX-AMS-MML_SVG";
-      document.head.appendChild(script);
-      setTimeout(function () {alert("MathJax Timeout")},10000);  // timeout after 10 seconds
-    });
-  }
 });
