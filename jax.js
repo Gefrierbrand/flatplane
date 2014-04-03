@@ -4,7 +4,7 @@
  *  render a TeX equation into and SVG image
  *  file.
  *  
- *  Usage:  phantomjs jax.js [--display] 'tex code' > file.svg
+ *  Usage:  phantomjs jax.js [--display] [--font FONT] 'tex code' > file.svg
  *  
  *  The presence of the --display option causes the TeX commads
  *  to be processed as a display equation; without it, it is
@@ -143,7 +143,7 @@ page.open("file:///c:/php/WWW/flatplane/MathJax/test/examples2.html", function(s
             console.log('page eval');
             var script = document.createElement("script");
             script.type = "text/x-mathjax-config";
-            script.text = 'MathJax.Hub.Config({SVG:{font: "'+font+'"}});'
+            script.text = 'MathJax.Hub.Config({SVG:{undefinedFamily: "STIXGeneral, serif", font: "'+font+'"}});'
             script.text += "MathJax.Hub.Queue([alert,'MathJax Done'])";
             document.head.appendChild(script);
             var script = document.createElement("script");
