@@ -6,9 +6,9 @@
  * This file is part of Flatplane.
  *
  * Flatplane is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or(at your option) any later version.
  *
  * Flatplane is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,7 +16,7 @@
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 function autoload($className)
@@ -38,9 +38,10 @@ function autoload($className)
 }
 spl_autoload_register('autoload');
 
-use de\flatplane\Document;
+
 use de\flatplane\iterators\RecursiveSectionIterator;
 use de\flatplane\iterators\TocElementFilterIterator;
+use de\flatplane\structure\Document;
 
 $document = new Document();
 //$document->getCounter()->setIncrement('2s');
@@ -62,13 +63,13 @@ $subsubKap4->getChildren()[0]->addSubSection('ganzweitunten');
 $subsubKap4->getChildren()[0]->addSubSection('ganzweitunten2');
 
 $kapitel3 = $document->addSection('TITEL 3');
-$subKapitel2 = $kapitel3->addSubSection('ich bin garnicht da',false);
+$subKapitel2 = $kapitel3->addSubSection('ich bin garnicht da', false);
 
 $RecTreeIt = new RecursiveTreeIterator(
     new RecursiveSectionIterator($document->getSections())
 );
 
-echo "kompletter Baum".\PHP_EOL;
+echo "kompletter Baum unabhängig von den Elementeigenschaften".\PHP_EOL;
 foreach ($RecTreeIt as $line) {
     echo $line . \PHP_EOL;
 }
@@ -82,7 +83,7 @@ $RecItIt = new RecursiveIteratorIterator(
 
 $FilterIt = new TocElementFilterIterator($RecItIt); // filtert einträge heraus, deren ShowInToc-Eigenschaft auf false steht.
 
-echo "Nummerierter Baum ohne ausgeblendete Einträge".\PHP_EOL;
+echo "Nummerierter Baum mit ausgeblendeten Einträge".\PHP_EOL;
 foreach ($FilterIt as $element) {
     if ($element->getEnumerate()) {
         echo implode('.', $element->getFullNumber()) . ' ' . $element . \PHP_EOL;
@@ -95,7 +96,7 @@ echo PHP_EOL, PHP_EOL, PHP_EOL;
 
 $RecItIt->setMaxDepth(2); // nur 2 Ebenen nach der Wurzel werden angezeigt; -1 für unbegrenzt
 
-echo "Nummerierter Baum ohne ausgeblendete Einträge bis zur Tiefe 2".\PHP_EOL;
+echo "Nummerierter Baum mit ausgeblendeten Einträgen bis zur Tiefe 2".\PHP_EOL;
 foreach ($FilterIt as $element) {
     if ($element->getEnumerate()) {
         echo implode('.', $element->getFullNumber()) . ' ' . $element . \PHP_EOL;

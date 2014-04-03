@@ -6,9 +6,9 @@
  * This file is part of Flatplane.
  *
  * Flatplane is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or(at your option) any later version.
  *
  * Flatplane is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,7 +16,7 @@
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace de\flatplane\pageelements;
@@ -26,15 +26,12 @@ namespace de\flatplane\pageelements;
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Formula implements \de\flatplane\interfaces\PageConentInterface
+class Formula extends PageElement
 {
 
     protected $code;
     protected $font;
     protected $format;
-    protected $showInIndex;
-    protected $enumerate;
-    protected $parent;
     protected $availableFonts = ['TeX', 'STIX-Web', 'Asana-Math', 'Neo-Euler',
                                 'Gyre-Pagella', 'Gyre-Termes', 'Latin-Modern'];
     protected $availableFormats = ['TeX','MathML','AsciiMath'];
@@ -72,6 +69,26 @@ class Formula implements \de\flatplane\interfaces\PageConentInterface
     }
 
     public function getSize()
+    {
+        //TODO: IMPLEMENT ME
+    }
+
+    public function getFullNumber()
+    {
+        //TODO: IMPLEMENT ME
+    }
+
+    public function getLevel()
+    {
+        //TODO: IMPLEMENT ME
+    }
+
+    public function getNumber()
+    {
+        //TODO: IMPLEMENT ME
+    }
+
+    public function getPage()
     {
         //TODO: IMPLEMENT ME
     }

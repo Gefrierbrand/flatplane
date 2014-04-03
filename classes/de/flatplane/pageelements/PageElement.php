@@ -19,26 +19,42 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\iterators;
+namespace de\flatplane\pageelements;
 
 /**
- * Description of TocElementFilterIterator
+ * Description of PageElement
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class TocElementFilterIterator extends \FilterIterator
+abstract class PageElement implements \de\flatplane\interfaces\PageConentInterface
 {
+    protected $showInIndex;
+    protected $enumerate;
+    protected $parent;
 
-    public function accept()
+    
+    public function getFullNumber()
     {
-        return parent::current()->getShowInToc();
+
     }
 
-    public function current()
+    public function getLevel()
     {
-        for ($i = 0; $i < $this->getDepth(); $i++) {
-            echo "  ";
-        }
-        return parent::current();
+
+    }
+
+    public function getNumber()
+    {
+
+    }
+
+    public function getPage()
+    {
+
+    }
+
+    public function getSize()
+    {
+
     }
 }
