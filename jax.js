@@ -3,13 +3,13 @@
  *  A Phantom.js script that uses MathJax to
  *  render a TeX equation into and SVG image
  *  file.
- *  
+ *
  *  Usage:  phantomjs jax.js [--display] [--font FONT] 'tex code' > file.svg
- *  
+ *
  *  The presence of the --display option causes the TeX commads
  *  to be processed as a display equation; without it, it is
  *  handles as an in-line equation.
- *  
+ *
  *  Currently, this code makes reference to the CDN copy of
  *  MathJax.  If you host your own copy, you can change the
  *  address to use that.  It also uses the MathJax
@@ -24,6 +24,7 @@
  * TeX, STIX-Web, Asana-Math, Neo-Euler, Gyre-Pagella, Gyre-Termes and Latin-Modern
  */
 var font = 'TeX';
+//var localpath = 'file:///c:/php/WWW/flatplane/';
 
 var page = require('webpage').create();
 var system = require('system');
@@ -47,7 +48,7 @@ switch (equation)
             if (system.args.length !== 5) {
                 console.log('Usage: ' + system.args[0] + ' [--inline] [--font FONT] equation');
                 phantom.exit();
-            }            
+            }
             equation = system.args[4];
             font = system.args[3];
             //console.log('font: '+font);
@@ -55,7 +56,7 @@ switch (equation)
             equation = system.args[2];
         }
     break;
-    
+
     case '--font':
         if (system.args.length !== 4) {
                 console.log('Usage: ' + system.args[0] + ' [--inline] [--font FONT] equation');
@@ -88,9 +89,11 @@ function evaluate(page, func) {
 //
 //  Open a page from the CDN so we can load MathJax into it (can't do that from a blank page)
 //  page.open("http://cdn.mathjax.org/mathjax/latest/test/examples.html", function (status) {
-page.open("file:///c:/php/WWW/flatplane/MathJax/test/examples2.html", function(status) {
+page.open('examples2.html', function(status) {
+    //console.log(window.location);
     if (status !== "success") {
         console.log("Unable to access network or demopage");
+        phantom.exit();
     } else {
         //
         //  This gets called when MathJax is done
@@ -140,16 +143,16 @@ page.open("file:///c:/php/WWW/flatplane/MathJax/test/examples2.html", function(s
         //  Load MathJax and queue the alert that tells PhantomJS to make the final SVG file
         //
         page.evaluate(function(font) {
-            console.log('page eval');
             var script = document.createElement("script");
             script.type = "text/x-mathjax-config";
             script.text = 'MathJax.Hub.Config({SVG:{undefinedFamily: "STIXGeneral, serif", font: "'+font+'"}});'
             script.text += "MathJax.Hub.Queue([alert,'MathJax Done'])";
             document.head.appendChild(script);
             var script = document.createElement("script");
+            //alert(window.location.href);
             script.type = "text/javascript";
             //script.src = "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG";
-            script.src = "file:///c:/php/WWW/flatplane/MathJax/MathJax.js?config=TeX-AMS-MML_SVG";
+            script.src = "MathJax/MathJax.js?config=TeX-AMS-MML_SVG";
             document.head.appendChild(script);
             setTimeout(function() {
                 alert("MathJax Timeout");

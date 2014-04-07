@@ -73,18 +73,18 @@ echo "Preparing page: $dauer Sek. \n";
  * TeX, STIX-Web, Asana-Math, Neo-Euler, Gyre-Pagella, Gyre-Termes and Latin-Modern
  */
 
-$cmd = escapeshellcmd($path . DIRECTORY_SEPARATOR . 'phantomjs' . DIRECTORY_SEPARATOR . "phantomjs.exe $path" . DIRECTORY_SEPARATOR . "jax.js --font 'TeX' '$tex'");
-$cmd2 = escapeshellcmd($path . DIRECTORY_SEPARATOR . 'phantomjs' . DIRECTORY_SEPARATOR . "phantomjs.exe $path" . DIRECTORY_SEPARATOR . "jax.js --font 'STIX-Web' '$tex'");
-$cmd3 = escapeshellcmd($path . DIRECTORY_SEPARATOR . 'phantomjs' . DIRECTORY_SEPARATOR . "phantomjs.exe $path" . DIRECTORY_SEPARATOR . "jax.js --font 'Asana-Math' '$tex'");
-$cmd4 = escapeshellcmd($path . DIRECTORY_SEPARATOR . 'phantomjs' . DIRECTORY_SEPARATOR . "phantomjs.exe $path" . DIRECTORY_SEPARATOR . "jax.js --font 'Neo-Euler' '$tex'");
-$cmd5 = escapeshellcmd($path . DIRECTORY_SEPARATOR . 'phantomjs' . DIRECTORY_SEPARATOR . "phantomjs.exe $path" . DIRECTORY_SEPARATOR . "jax.js --font 'Gyre-Pagella' '$tex'");
-$cmd6 = escapeshellcmd($path . DIRECTORY_SEPARATOR . 'phantomjs' . DIRECTORY_SEPARATOR . "phantomjs.exe $path" . DIRECTORY_SEPARATOR . "jax.js --font 'Gyre-Termes' '$tex'");
-$cmd7 = escapeshellcmd($path . DIRECTORY_SEPARATOR . 'phantomjs' . DIRECTORY_SEPARATOR . "phantomjs.exe $path" . DIRECTORY_SEPARATOR . "jax.js --font 'Latin-Modern' '$tex'");
+$cmd  = escapeshellcmd('phantomjs' . DIRECTORY_SEPARATOR . "phantomjs.exe jax.js --font 'TeX' '$tex'");
+$cmd2 = escapeshellcmd('phantomjs' . DIRECTORY_SEPARATOR . "phantomjs.exe jax.js --font 'STIX-Web' '$tex'");
+$cmd3 = escapeshellcmd('phantomjs' . DIRECTORY_SEPARATOR . "phantomjs.exe jax.js --font 'Asana-Math' '$tex'");
+$cmd4 = escapeshellcmd('phantomjs' . DIRECTORY_SEPARATOR . "phantomjs.exe jax.js --font 'Neo-Euler' '$tex'");
+$cmd5 = escapeshellcmd('phantomjs' . DIRECTORY_SEPARATOR . "phantomjs.exe jax.js --font 'Gyre-Pagella' '$tex'");
+$cmd6 = escapeshellcmd('phantomjs' . DIRECTORY_SEPARATOR . "phantomjs.exe jax.js --font 'Gyre-Termes' '$tex'");
+$cmd7 = escapeshellcmd('phantomjs' . DIRECTORY_SEPARATOR . "phantomjs.exe jax.js --font 'Latin-Modern' '$tex'");
 
 //TODO: check for valid result
 
 $svgdata = shell_exec($cmd);
-
+echo $svgdata.\PHP_EOL;
 
 //dimensionen aus SVG extrahieren
 $xml = simplexml_load_string($svgdata);
