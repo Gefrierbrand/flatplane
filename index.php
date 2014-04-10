@@ -60,10 +60,10 @@ $pdf->AddPage();
 $pdf->setRasterizeVectorImages(false);
 $path = dirname(__FILE__);
 
-$tex = '\mathcal{F}(f)(t) = \frac{1}{\left(2\pi\right)^{\frac{n}{2}}} \int_{\mathbb{R}^n} f(x)\,e^{-\mathrm{i} t \cdot x} \,\mathrm{d} x';
-$tex2 = '\int_a^b(f(x)+c)\,\mathrm dx=\int_a^b f(x)\,\mathrm dx+(b-a)\cdot c';
-$tex3 = 'Z = \sum_{i=1}^{n} a_i~;~~~a_i = k_i \cdot b^i~;~~~b=2~;~~~k_i \in \{0,1\}~;~~~i\in \mathbb{N}';
-$tex4 = '\overline{\overline{\left(A\, \wedge\, B\right)}\, \wedge\, C} \neq\overline{ A\, \wedge\, \overline{\left(B\, \wedge\,C \right)}}';
+$tex = '\mathcal{F}(f)(t) = \frac{1}{\left(2\pi\right)^{\frac{n}{2}}}~ \int\limits_{\mathbb{R}^n} f(x)\,e^{-\mathrm{i} t \cdot x} \,\mathrm{d} x';
+//$tex2 = '\int_a^b(f(x)+c)\,\mathrm dx=\int_a^b f(x)\,\mathrm dx+(b-a)\cdot c';
+//$tex3 = 'Z = \sum_{i=1}^{n} a_i~;~~~a_i = k_i \cdot b^i~;~~~b=2~;~~~k_i \in \{0,1\}~;~~~i\in \mathbb{N}';
+//$tex4 = '\overline{\overline{\left(A\, \wedge\, B\right)}\, \wedge\, C} \neq\overline{ A\, \wedge\, \overline{\left(B\, \wedge\,C \right)}}';
 
 $dauer = microtime(true) - $beginn;
 echo "Preparing page: $dauer Sek. \n";
@@ -84,7 +84,7 @@ $cmd7 = escapeshellcmd('phantomjs' . DIRECTORY_SEPARATOR . "phantomjs.exe jax.js
 //TODO: check for valid result
 
 $svgdata = shell_exec($cmd);
-echo $svgdata.\PHP_EOL;
+//echo $svgdata.\PHP_EOL;
 
 //dimensionen aus SVG extrahieren
 $xml = simplexml_load_string($svgdata);
@@ -95,6 +95,7 @@ $width_ex = (float) $matches[0];
 preg_match('/[0-9]*\.?[0-9]+/', $attrib[1], $matches);
 $height_ex = (float) $matches[0];
 
+//Todo: check for text-tags and output warning or convert text to paths in ps, eps or pdf
 
 $svgdata = '@' . $svgdata;
 

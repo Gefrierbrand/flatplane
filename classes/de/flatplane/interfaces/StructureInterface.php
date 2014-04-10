@@ -25,19 +25,9 @@ namespace de\flatplane\interfaces;
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-interface PageConentInterface
+interface StructureInterface
 {
-    public function setNumber();
-
-    public function getSize();
-
-    public function getPage();
-
-    public function getLevel();
-
-    public function getNumber();
-
-    public function getFullNumber();
-
-    public function getType();
+    //TODO: fill me?
+    public function addContent($param);
+    public function addSection($param);
 }

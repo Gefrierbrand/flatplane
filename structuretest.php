@@ -19,6 +19,8 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
+//benötigte Klassen automatisch laden
 function autoload($className)
 {
     $className = ltrim($className, '\\');
@@ -38,7 +40,7 @@ function autoload($className)
 }
 spl_autoload_register('autoload');
 
-
+//lange, volldefinierte klassennamen in Namespaces
 use de\flatplane\iterators\RecursiveSectionIterator;
 use de\flatplane\iterators\TocElementFilterIterator;
 use de\flatplane\structure\Document;
@@ -58,12 +60,20 @@ $subsubKap4 = $subKapitel->addSubSection('SubSub 4');
 $subsubKap4->addSubSection('noch eins tiefer');
 $subsubKap4->addSubSection('wer a sagt muss auch b sagen');
 
-//will man dann dennoch subsections hinzufügen, ist dies wiefolgt möglich: //benötigt (in dieder form) php 5.4 oder neuer.
+//will man dann dennoch subsections hinzufügen, ist dies wiefolgt möglich:
 $subsubKap4->getChildren()[0]->addSubSection('ganzweitunten');
 $subsubKap4->getChildren()[0]->addSubSection('ganzweitunten2');
 
 $kapitel3 = $document->addSection('TITEL 3');
 $subKapitel2 = $kapitel3->addSubSection('ich bin garnicht da', false);
+
+//subsections können auch später angegeben werden, ohne struktur oder zähler zu stören
+$kapitel1->addSubSection('test');
+$kapitel1->addSubSection('test2');
+
+//kapitel etc werden jedoch immer in der reihenfolge der deklarationen angelegt
+//ein Vertauschen ist jedoch prinzipiell möglich (aber mangels use-cases nicht implementiert)
+
 
 $RecTreeIt = new RecursiveTreeIterator(
     new RecursiveSectionIterator($document->getSections())
@@ -81,7 +91,7 @@ $RecItIt = new RecursiveIteratorIterator(
     RecursiveIteratorIterator::SELF_FIRST
 );
 
-$FilterIt = new TocElementFilterIterator($RecItIt); // filtert einträge heraus, deren ShowInToc-Eigenschaft auf false steht.
+$FilterIt = new TocElementFilterIterator($RecItIt); // filtert Einträge heraus, deren ShowInToc-Eigenschaft auf false steht.
 
 echo "Nummerierter Baum mit ausgeblendeten Einträge".\PHP_EOL;
 foreach ($FilterIt as $element) {

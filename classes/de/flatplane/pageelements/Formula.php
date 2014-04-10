@@ -28,7 +28,6 @@ namespace de\flatplane\pageelements;
  */
 class Formula extends PageElement
 {
-
     protected $code;
     protected $font;
     protected $format;
@@ -39,7 +38,7 @@ class Formula extends PageElement
     public function __construct(
         $code,
         $font = 'TeX',
-        $format = 'tex',
+        $format = 'TeX',
         $showInIndex = true,
         $enumerate = true
     ) {
@@ -67,6 +66,8 @@ class Formula extends PageElement
             $this->format = 'TeX';
         }
     }
+
+
 
     public function getSize()
     {

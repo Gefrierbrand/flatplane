@@ -19,15 +19,14 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\utilities;
+namespace de\flatplane\settings;
 
-class NumberFormat //TODO: FIXME
+/**
+ * Description of SectionSettings
+ *
+ * @author Nikolai Neff <admin@flatplane.de>
+ */
+class SectionSettings
 {
-    public function __construct();
-
-
-    public function int()
-    {
-        return $this->value;
-    }
+    //put your code here
 }

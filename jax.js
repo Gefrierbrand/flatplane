@@ -1,14 +1,18 @@
 /***********************************************
- *  By: Davide Cervone  // https://groups.google.com/forum/#!topic/mathjax-users/nQXVaFi4IKQ
+ *  Based upon a script by Davide Cervone
+ *  https://groups.google.com/forum/#!msg/mathjax-users/nQXVaFi4IKQ/AwZ-UrRhiDAJ
+ *
+ *  Modified by Nikolai Neff
+ *
  *  A Phantom.js script that uses MathJax to
  *  render a TeX equation into and SVG image
  *  file.
  *
- *  Usage:  phantomjs jax.js [--display] [--font FONT] 'tex code' > file.svg
+ *  Usage:  phantomjs jax.js [--inline] [--font FONT] 'tex code' > file.svg
  *
- *  The presence of the --display option causes the TeX commads
- *  to be processed as a display equation; without it, it is
- *  handles as an in-line equation.
+ *  The presence of the --inline option causes the TeX commads
+ *  to be processed as an in-line equation; without it, it is
+ *  handles as a display equation.
  *
  *  Currently, this code makes reference to the CDN copy of
  *  MathJax.  If you host your own copy, you can change the
@@ -17,6 +21,7 @@
  *  a remote copy of MathJax into a blank page causes a
  *  security violation (and I can't get the local-to-remote
  *  access control to work).
+ *
  */
 
 /*
@@ -24,7 +29,6 @@
  * TeX, STIX-Web, Asana-Math, Neo-Euler, Gyre-Pagella, Gyre-Termes and Latin-Modern
  */
 var font = 'TeX';
-//var localpath = 'file:///c:/php/WWW/flatplane/';
 
 var page = require('webpage').create();
 var system = require('system');
@@ -33,7 +37,6 @@ var system = require('system');
 //  Get arguments, and print usage if not enough
 //
 
-//TODO: Fix argument order
 if (system.args.length === 1) {
     console.log('Usage: ' + system.args[0] + ' [--inline] [--font FONT] equation');
     phantom.exit();
@@ -78,17 +81,17 @@ equation = (inline ? "\\(" + equation + "\\)" : "\\[" + equation + "\\]");
 //  Function to allow passing arguments to page.evaluate()
 //
 function evaluate(page, func) {
-    //console.log('func eval');
     var args = [].slice.call(arguments, 2);
-    //console.log('args: '+args);
     var fn = "function() {return (" + func.toString() + ").apply(this," + JSON.stringify(args) + ")}";
-    //console.log('fn: '+fn);
     return page.evaluate(fn);
 }
+
 
 //
 //  Open a page from the CDN so we can load MathJax into it (can't do that from a blank page)
 //  page.open("http://cdn.mathjax.org/mathjax/latest/test/examples.html", function (status) {
+
+//use a local page instead to be faster
 page.open('examples2.html', function(status) {
     //console.log(window.location);
     if (status !== "success") {
@@ -98,10 +101,9 @@ page.open('examples2.html', function(status) {
         //
         //  This gets called when MathJax is done
         //
-        page.onAlert = function(msg) {
+            page.onAlert = function(msg) {
             if (msg === "MathJax Done") {
-                //page.render('test.pdf');
-                console.log(page.evaluate(function() {
+                var svgContent = page.evaluate(function() {
                     //
                     //  Look up the SVG output and the font paths
                     //  Hook the paths into the SVG output, and put the
@@ -124,20 +126,28 @@ page.open('examples2.html', function(status) {
                                 .replace(/<svg /, '<svg xmlns="http://www.w3.org/2000/svg" ')
                                 .replace(/<use ([^>]*)href/g, '<use $1xlink:href')
                     ].join("\n");
-                }));
+                });
+
+                //uncomment this to write the output to a file
+                var fs = require('fs');
+                var path = 'output.svg';
+                fs.write(path, svgContent, 'w');
+
+
+                console.log(svgContent);
                 phantom.exit();
             } else if (msg === "MathJax Timeout") {
                 console.log("Timed out waiting for MathJax");
                 phantom.exit();
             } else {
-                console.log(msg)
+                console.log(msg);
             }
         }
         //
         //  Clear the page and make it only include the math
         //
-        evaluate(page, function(html) {
-            document.body.innerHTML = html
+        evaluate(page, function(equation) {
+            document.body.innerHTML = equation;
         }, equation);
         //
         //  Load MathJax and queue the alert that tells PhantomJS to make the final SVG file
@@ -145,14 +155,14 @@ page.open('examples2.html', function(status) {
         page.evaluate(function(font) {
             var script = document.createElement("script");
             script.type = "text/x-mathjax-config";
-            script.text = 'MathJax.Hub.Config({SVG:{undefinedFamily: "STIXGeneral, serif", font: "'+font+'"}});'
+            script.text = 'MathJax.Hub.Config({SVG:{font: "'+font+'"}});';
             script.text += "MathJax.Hub.Queue([alert,'MathJax Done'])";
             document.head.appendChild(script);
             var script = document.createElement("script");
             //alert(window.location.href);
             script.type = "text/javascript";
             //script.src = "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG";
-            script.src = "MathJax/MathJax.js?config=TeX-AMS-MML_SVG";
+            script.src = "MathJax/MathJax.js?config=TeX-AMS-MML_SVG"; // use local Mathjax installation
             document.head.appendChild(script);
             setTimeout(function() {
                 alert("MathJax Timeout");

@@ -25,19 +25,19 @@ namespace de\flatplane\interfaces;
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-interface PageConentInterface
+interface CounterInterface
 {
-    public function setNumber();
+    public function add();
 
-    public function getSize();
+    public function getValue();
 
-    public function getPage();
+    public function setValue($val);
 
-    public function getLevel();
+    public function resetValue();
 
-    public function getNumber();
+    public function getIncrement();
 
-    public function getFullNumber();
-
-    public function getType();
+    public function setIncrement($inc);
+    
+    public function getFormatedValue();
 }

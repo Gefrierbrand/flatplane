@@ -21,17 +21,19 @@
 
 namespace de\flatplane\structure;
 
+use de\flatplane\pageelements\PageElement;
+use de\flatplane\settings\SectionSettings;
 use de\flatplane\utilities\Counter;
 
 /**
  * Description of section
  *
- * @author niko
+ * @author Nikolai Neff <admin@flatplane.de>
  */
 class Section extends Document
 {
     protected $title;
-    protected $shortTitle;
+    protected $altTitle;
     protected $showInToc = true;
     protected $showInDocument = true;
     protected $enumerate = true;
@@ -40,19 +42,19 @@ class Section extends Document
     protected $content = array();
 
     /**
-     * This method is used to initialice an new Section. The Section class
+     * This method is used to initialise a new Section. The Section class
      * extends the Document class to be able to generate a complete tree,
      * however their purpose is different and the parent constructor
      * ist intentionally <b>not</b> called.
      *
-     * FIXME: Maybe implement this better using traits.
+     * @internal FIXME: Maybe implement this better using traits.
      *
      * @param Document $parent
      *  Instance of Document
      * @param string $title
-     *  The Title of the section to be displayed in the Document
-     * @param string $shortTitle
-     *  The Title of the section to be displayed in the TOC
+     *  The title of the section to be displayed in the document
+     * @param string $altTitle
+     *  An alternative (shorter) title to be used in the TableOfContents(TOC)
      * @param bool $showInToc
      *  Determines whether to show the section in the TableOfContents(TOC) or not
      * @param bool $enumerate
@@ -64,6 +66,7 @@ class Section extends Document
     public function __construct(
         Document $parent,
         $title,
+        $altTitle = '',
         $showInToc = true,
         $enumerate = true,
         $showInDocument = true
@@ -73,14 +76,49 @@ class Section extends Document
         $this->showInToc = $showInToc;
         $this->enumerate = $enumerate;
         $this->showInDocument = $showInDocument;
+        if ($altTitle == '') {
+            $this->altTitle = $title;
+        } else {
+            $this->altTitle = $altTitle;
+        }
     }
 
     public function __toString()
     {
         return $this->title;
     }
+
     /**
-     * @see Document::addSection() :Alias:
+     * This method overwrited Document::addSection() and relays the call to addSubsection()
+     * @see addSubSection()
+     * @param string $title
+     * @param string $altTitle
+     * @param bool $showInToc
+     * @param bool $enumerate
+     * @param bool $showInDocument
+     * @return Section
+     */
+    public function addSection(
+        $title,
+        $altTitle = '',
+        $showInToc = true,
+        $enumerate = true,
+        $showInDocument = true
+    ) {
+        trigger_error('addSection() sould not be used for SubSections. Use addSubSection() on the section object instead', 'E_USER_NOTICE');
+        return $this->addSubSection(
+            $title,
+            $altTitle,
+            $showInToc,
+            $enumerate,
+            $showInDocument
+        );
+    }
+
+    /**
+     * This method adds SubSections or SubSubSections (or any other depth) to the
+     * parent section.
+     *
      * @param string $title
      * 	The Title of the section to be displayed
      * @param bool $showInToc
@@ -92,16 +130,39 @@ class Section extends Document
      */
     public function addSubSection(
         $title,
+        $altTitle = '',
         $showInToc = true,
         $enumerate = true,
         $showInDocument = true
     ) {
-        return $this->addSection($title, $showInToc, $enumerate, $showInDocument);
+        if ($enumerate) {
+            if (array_key_exists('section', $this->counter)) {
+                $this->counter['section']->add();
+            } else {
+                $startIndex = $this->toRoot()->getSettings()->getStartIndex();
+                $this->addCounter(new Counter($startIndex), 'section');
+            }
+        }
+        $sec = new Section($this, $title, $altTitle, $showInToc, $enumerate, $showInDocument);
+        $sec->setNumber($this->getCounter('section')->getValue());
+
+        $this->subSections[] = $sec;
+        return $sec;
     }
 
-    public function addContent($content)
+    public function addContent(PageElement $content)
     {
-        $this->content[] = $content;
+        if ($content->getEnumerate()) {
+            if (array_key_exists($content->getType(), $this->counter)) {
+                $this->counter[$content->getType()]->add();
+            } else {
+                $this->addCounter(new Counter(SELF::START_INDEX), $content->getType());
+            }
+        }
+        $content->setNumber($this->getCounter($content->getType())->getValue());
+        $content->setParent($this);
+
+        return $this->content[] = $content;
     }
 
     public function setTitle($title)
@@ -109,9 +170,9 @@ class Section extends Document
         $this->title = $title;
     }
 
-    public function setShortTitle($title)
+    public function setAltTitle($title)
     {
-        $this->shortTitle = $title;
+        $this->altTitle = $title;
     }
 
     public function setContent($content)
@@ -154,9 +215,9 @@ class Section extends Document
         return $this->title;
     }
 
-    public function getShortTitle()
+    public function getAltTitle()
     {
-        return $this->shortTitle;
+        return $this->altTitle;
     }
 
     public function getContent()
@@ -193,5 +254,18 @@ class Section extends Document
     public function getShowInToc()
     {
         return $this->showInToc;
+    }
+
+    /*
+    //TODO: FIXME
+    public function setSettings(SectionSettings $settings)
+    {
+        //parent::setSettings($settings);
+    }
+    */
+
+    public function toRoot()
+    {
+        return $this->parent->toRoot();
     }
 }

@@ -21,39 +21,26 @@
 
 namespace de\flatplane\structure;
 
+use de\flatplane\settings\DocumentSettings;
 use de\flatplane\utilities\Counter;
 
 /**
  * This class represents the base document.
+ * @author Nikolai Neff <admin@flatplane.de>
  */
 class Document
 {
-    const START_INDEX = 1; //Change this to start all numbering from a different index
-
-    private $author;
-    private $title;
-    private $description;
-    private $subject;
-    private $keywords;
+    /**
+     * @var DocumentSettings
+     *  Holds an instance of the DocumentSettings configuration Object
+     */
+    private $settings;
 
     /**
      * @var int
      *  Number of pages; used for internal representation. //FIXME: Currently not used at all
      */
     private $pages;
-
-    /**
-     * @var string
-     *  Unit of Measurement to use troughout the document.
-     *  Posible values:
-     *  <ul>
-     *   <li>pt: point</li>
-     *   <li>mm: millimeter (default)</li>
-     *   <li>cm: centimeter</li>
-     *   <li>in: inch</li>
-     *  </ul>
-     */
-    private $unit = 'mm';
 
     /**
      * @var array
@@ -69,17 +56,24 @@ class Document
 
     /**
      * FIXME: Beschreibung hinzufügen
+     * @param Document $parent
+     *  Instance of Document
      * @param string $title
-     * 	The Title of the section to be displayed
+     *  The title of the section to be displayed in the document
+     * @param string $altTitle
+     *  An alternative (shorter) title to be used in the TableOfContents(TOC)
      * @param bool $showInToc
-     *  determines whether to show the section in the TableOfContents(TOC) or not
+     *  Determines whether to show the section in the TableOfContents(TOC) or not
      * @param bool $enumerate
-     *  determines whether the section will be automatically numbered
+     *  Determines whether the section will be automatically numbered
+     * @param bool $showInDocument
+     *  Determines whether the section will be shown in the document.
+     *  Set this to false if you whish to add an entry to just the TOC.
      * @return Section
-     *  Returns new instance of section class
      */
     public function addSection(
         $title,
+        $altTitle = '',
         $showInToc = true,
         $enumerate = true,
         $showInDocument = true
@@ -88,10 +82,14 @@ class Document
             if (array_key_exists('section', $this->counter)) {
                 $this->counter['section']->add();
             } else {
-                $this->addCounter(new Counter(SELF::START_INDEX), 'section');
+                var_dump($this->settings);
+                $startIndex = $this->settings->getStartIndex();
+                //alternative:
+                //$startIndex = $this->settings->getSetting('startIndex');
+                $this->addCounter(new Counter($startIndex), 'section');
             }
         }
-        $sec = new Section($this, $title, $showInToc, $enumerate, $showInDocument);
+        $sec = new Section($this, $title, $altTitle, $showInToc, $enumerate, $showInDocument);
         $sec->setNumber($this->getCounter('section')->getValue());
 
         $this->subSections[] = $sec;
@@ -99,42 +97,16 @@ class Document
     }
 
     /**
-     *
-     * @param string $title
-     *  Document title. (Is usually displayed in the PDF-Reader titlebar)
-     * @param string $author
-     *  Name of Author. (Usually displayed in the document properties)
-     * @param string $description
-     *  Description/Summary of the document
-     * @param string $subject
-     *  Subject of the document
-     * @param string $keywords
-     *  Comma-seperated list of Keywords
-     * @param string $unit
-     *  Unit of Measurement to use troughout the document.
-     *  Posible values:
-     *  <ul>
-     *   <li>pt: point</li>
-     *   <li>mm: millimeter (default)</li>
-     *   <li>cm: centimeter</li>
-     *   <li>in: inch</li>
-     *  </ul>
+     *  Document Constructor
+     *  @param DocumentSettings $settings
+     *   Instance of the DocumentSettings configuration object or null to use defaults
      */
-    public function __construct(
-        $title = '',
-        $author = '',
-        $description = '',
-        $subject = '',
-        $keywords = '',
-        $unit = 'mm'
-    ) {
-        $this->title = $title;
-        $this->author = $author;
-        $this->description = $description;
-        $this->subject = $subject;
-        $this->keywords = $keywords;
-        $this->unit = $unit;
-        //$this->creator = FP_TITLE.FP_VERSION;
+    public function __construct(DocumentSettings $settings = null)
+    {
+        if ($settings === null) {
+            $settings = new DocumentSettings(); //use default values
+        }
+        $this->settings = $settings;
     }
 
     /**
@@ -155,7 +127,7 @@ class Document
     }
 
     /**
-     * This Method is used to access the children of a Document or class
+     * This method is used to access the children of a document or its subclasses
      * @return array
      *  Returns empty array or array containing instances of Document
      */
@@ -165,7 +137,6 @@ class Document
     }
 
     /**
-     *
      * @see getSections() :Alias:
      * @return array
      *  Returns empty array or array containing instances of Document
@@ -185,11 +156,25 @@ class Document
         return $this->getSections();
     }
 
+    /**
+     * This method is called recursively by sections to get their complete branch
+     * number. As the document is always the root, this method gets overridden by
+     * the subclasses for the actual implemenation
+     *
+     * @see Section::getFullNumber()
+     * @return array
+     *  returns empty array
+     */
     public function getFullNumber()
     {
         return [];
     }
 
+    /**
+     *
+     * @param string $name
+     * @return Counter
+     */
     public function getCounter($name)
     {
         if (array_key_exists($name, $this->counter)) {
@@ -203,5 +188,31 @@ class Document
     public function addCounter(Counter $counter, $name)
     {
         $this->counter[$name] = $counter;
+    }
+
+    /*
+    private function getSettings($key = null)
+    {
+        if ($key === null) {
+            return $this->settings;
+        } else {
+            return $this->settings->getSetting($key);
+        }
+    }
+    */
+
+    public function setSettings(DocumentSettings $settings)
+    {
+        $this->settings = $settings;
+    }
+
+    public function getSettings()
+    {
+        return $this->settings;
+    }
+
+    public function toRoot()
+    {
+        return $this;
     }
 }

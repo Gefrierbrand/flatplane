@@ -21,12 +21,14 @@
 
 namespace de\flatplane\utilities;
 
+use de\flatplane\interfaces\CounterInterface;
+
 /**
  * Description of counter
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Counter
+class Counter implements CounterInterface
 {
 
     protected $value;

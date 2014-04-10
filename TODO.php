@@ -19,25 +19,10 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\interfaces;
-
-/**
+/*
+ * Settings
  *
- * @author Nikolai Neff <admin@flatplane.de>
+ * Counter für formulas etc
+ *
+ * 
  */
-interface PageConentInterface
-{
-    public function setNumber();
-
-    public function getSize();
-
-    public function getPage();
-
-    public function getLevel();
-
-    public function getNumber();
-
-    public function getFullNumber();
-
-    public function getType();
-}
