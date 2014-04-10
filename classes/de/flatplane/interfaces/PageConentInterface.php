@@ -27,7 +27,7 @@ namespace de\flatplane\interfaces;
  */
 interface PageConentInterface
 {
-    public function setNumber();
+    public function setNumber($num);
 
     public function getSize();
 

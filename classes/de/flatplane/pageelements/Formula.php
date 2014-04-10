@@ -28,6 +28,8 @@ namespace de\flatplane\pageelements;
  */
 class Formula extends PageElement
 {
+    protected $type='formula';
+
     protected $code;
     protected $font;
     protected $format;
@@ -67,7 +69,10 @@ class Formula extends PageElement
         }
     }
 
-
+    public function __toString()
+    {
+        return $this->code;
+    }
 
     public function getSize()
     {
@@ -86,7 +91,7 @@ class Formula extends PageElement
 
     public function getNumber()
     {
-        //TODO: IMPLEMENT ME
+        return $this->number;
     }
 
     public function getPage()

@@ -23,20 +23,18 @@
 
 include 'path_To_flatplane';
 
-//hier ggf use-statements
+//hier use-statements
 
-$document = new document('title');
+$document = new document();
+$document->getSettings()->setAuthor('MaxMustermann');
 
-$document->setAutor('Max Mustermann'); //kann alternativ direkt im Konstruktor gesetzt werden
-$document->setDescription('Beschreiubung');
-//weitere Dokumenteigenschaften wie Schlüsselwörter usw sind möglich
 
 $inhaltsverzeichnis = $document->addSection('Inhaltsverzeichnis');
 $inhaltsverzeichnis->addContent(new TOC); // oder generisches verzeichnis: klasse als argument? // woher inhalt?
 
 $kapitel1 = $document->addSection('EINLEITUNG');
 $kapitel1->addContent(new ContentFile('zeugaufderfestplatte.php')); //oder direkt include?
-$formel1 = $kapitel1->addContent(new Formula('\frac{1}{2}', 'asana', 'tex')); //formel(code, schriftart, format)
+$formel1 = $kapitel1->addContent(new Formula('\frac{1}{2}', 'Asana-Math', 'tex')); //formel(code, schriftart, format)
 $formel1->setShowInLof(false); //oder index? TOC?
 $seite = $formel1->getPage();
 $nummerrierung = $formel1->getFullNumber(); // usw

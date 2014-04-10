@@ -190,22 +190,6 @@ class Document
         $this->counter[$name] = $counter;
     }
 
-    /*
-    private function getSettings($key = null)
-    {
-        if ($key === null) {
-            return $this->settings;
-        } else {
-            return $this->settings->getSetting($key);
-        }
-    }
-    */
-
-    public function setSettings(DocumentSettings $settings)
-    {
-        $this->settings = $settings;
-    }
-
     public function getSettings()
     {
         return $this->settings;

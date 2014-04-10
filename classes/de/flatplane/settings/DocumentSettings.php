@@ -60,17 +60,40 @@ class DocumentSettings
      *  </ul>
      */
     private $counterModes = array(
+                                'page'=>['level'=>0,'format'=>'roman'], //FIXME ?
                                 'section'=>['level'=>0,'format'=>'int'],
                                 'formula'=>['level'=>1,'format'=>'int']
                             );
 
+    /**
+     * @var string
+     *  Name of Author
+     */
     private $author = '';
-    private $title = '';
-    private $description;
-    private $subject;
-    private $keywords;
 
-    //private $generator;
+    /**
+     * @var string
+     *  Document title
+     */
+    private $title = '';
+
+    /**
+     * @var string
+     *  Short description / summaray of the document
+     */
+    private $description = '';
+
+    /**
+     * @var string
+     *  subject of the document
+     */
+    private $subject = '';
+
+    /**
+     * @var string
+     *  Comma-separated list of keywords
+     */
+    private $keywords = '';
 
     /**
      * @var string
@@ -84,6 +107,17 @@ class DocumentSettings
      *  </ul>
      */
     private $unit = 'mm';
+
+
+    public function __construct($author = '', $title = '', $description = '', $keywords = '', $subject = '', $unit = 'mm')
+    {
+        $this->author=$author;
+        $this->title=$title;
+        $this->description=$description;
+        $this->keywords=$keywords;
+        $this->subject=$subject;
+        $this->unit=$unit;
+    }
 
     /**
      * Todo: Document me!

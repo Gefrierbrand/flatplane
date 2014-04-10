@@ -135,6 +135,7 @@ class Section extends Document
         $enumerate = true,
         $showInDocument = true
     ) {
+        $counterValue = null;
         if ($enumerate) {
             if (array_key_exists('section', $this->counter)) {
                 $this->counter['section']->add();
@@ -142,26 +143,36 @@ class Section extends Document
                 $startIndex = $this->toRoot()->getSettings()->getStartIndex();
                 $this->addCounter(new Counter($startIndex), 'section');
             }
+            $counterValue = $this->getCounter('section')->getValue();
         }
         $sec = new Section($this, $title, $altTitle, $showInToc, $enumerate, $showInDocument);
-        $sec->setNumber($this->getCounter('section')->getValue());
-
+        $sec->setNumber($counterValue);
         $this->subSections[] = $sec;
         return $sec;
     }
 
     public function addContent(PageElement $content)
     {
+        //TODO: fix code dupilcation
         if ($content->getEnumerate()) {
             if (array_key_exists($content->getType(), $this->counter)) {
                 $this->counter[$content->getType()]->add();
             } else {
-                $this->addCounter(new Counter(SELF::START_INDEX), $content->getType());
+                $startIndex = $this->toRoot()->getSettings()->getStartIndex();
+                $this->addCounter(new Counter($startIndex), $content->getType());
             }
+            $content->setNumber($this->getCounter($content->getType())->getValue());
         }
-        $content->setNumber($this->getCounter($content->getType())->getValue());
-        $content->setParent($this);
 
+        /*
+         * every content gets a number depending on its type and level inside the
+         * document tree. therefore the nummeration starts new in each subsection
+         * and so on. The display of these numbers in another format (e.g. numeration
+         * for the complete document) is handled by the display layer in the
+         * corresponding iterators*/
+
+
+        $content->setParent($this);
         return $this->content[] = $content;
     }
 
@@ -255,14 +266,6 @@ class Section extends Document
     {
         return $this->showInToc;
     }
-
-    /*
-    //TODO: FIXME
-    public function setSettings(SectionSettings $settings)
-    {
-        //parent::setSettings($settings);
-    }
-    */
 
     public function toRoot()
     {
