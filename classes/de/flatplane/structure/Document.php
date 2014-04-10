@@ -57,8 +57,6 @@ class Document
 
     /**
      * FIXME: Beschreibung hinzufügen
-     * @param Document $parent
-     *  Instance of Document
      * @param string $title
      *  The title of the section to be displayed in the document
      * @param string $altTitle

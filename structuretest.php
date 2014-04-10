@@ -180,7 +180,8 @@ foreach ($RecItIt as $element) {
     echo implode('.', $element->getFullNumber()) . ' ' . $element->getAltTitle() . PHP_EOL;
     if (!empty($element->getContent())) {
         foreach ($element->getContent() as $content) {
-            echo "({$content->getNumber()}) ".$content.PHP_EOL;
+            //einzelne Formeln römisch nummerieren
+            echo "({$content->getNumber()->getFormatedValue('Roman')}) ".$content.PHP_EOL;
         }
     }
 }

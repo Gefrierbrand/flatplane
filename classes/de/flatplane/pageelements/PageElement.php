@@ -22,6 +22,7 @@
 namespace de\flatplane\pageelements;
 
 use de\flatplane\interfaces\PageConentInterface;
+use de\flatplane\utilities\Number;
 
 /**
  * Description of PageElement
@@ -96,7 +97,7 @@ abstract class PageElement implements PageConentInterface
         $this->parent = $parent;
     }
 
-    public function setNumber($number)
+    public function setNumber(Number $number)
     {
         $this->number = $number;
     }

@@ -21,13 +21,15 @@
 
 namespace de\flatplane\interfaces;
 
+use de\flatplane\utilities\Number;
+
 /**
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
 interface PageConentInterface
 {
-    public function setNumber($num);
+    public function setNumber(Number $num);
 
     public function getSize();
 
