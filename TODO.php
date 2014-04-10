@@ -27,5 +27,9 @@
  * klassen/wrapper um iteratoren
  *
  * PDFs und so
- * GIT CONFLICT RESOLUTION
+ * content changed
+ */
+
+/*
+ * content added
  */
