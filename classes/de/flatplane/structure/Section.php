@@ -22,8 +22,8 @@
 namespace de\flatplane\structure;
 
 use de\flatplane\pageelements\PageElement;
-use de\flatplane\settings\SectionSettings;
 use de\flatplane\utilities\Counter;
+use de\flatplane\utilities\Number;
 
 /**
  * Description of section
@@ -146,7 +146,7 @@ class Section extends Document
             $counterValue = $this->getCounter('section')->getValue();
         }
         $sec = new Section($this, $title, $altTitle, $showInToc, $enumerate, $showInDocument);
-        $sec->setNumber($counterValue);
+        $sec->setNumber(new Number($counterValue));
         $this->subSections[] = $sec;
         return $sec;
     }
@@ -161,7 +161,7 @@ class Section extends Document
                 $startIndex = $this->toRoot()->getSettings()->getStartIndex();
                 $this->addCounter(new Counter($startIndex), $content->getType());
             }
-            $content->setNumber($this->getCounter($content->getType())->getValue());
+            $content->setNumber(new Number($this->getCounter($content->getType())->getValue()));
         }
 
         /*
@@ -191,7 +191,7 @@ class Section extends Document
         $this->content = $content;
     }
 
-    public function setNumber($number)
+    public function setNumber(Number $number)
     {
         $this->number = $number;
     }

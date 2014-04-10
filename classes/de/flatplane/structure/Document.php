@@ -23,6 +23,7 @@ namespace de\flatplane\structure;
 
 use de\flatplane\settings\DocumentSettings;
 use de\flatplane\utilities\Counter;
+use de\flatplane\utilities\Number;
 
 /**
  * This class represents the base document.
@@ -90,7 +91,7 @@ class Document
             }
         }
         $sec = new Section($this, $title, $altTitle, $showInToc, $enumerate, $showInDocument);
-        $sec->setNumber($this->getCounter('section')->getValue());
+        $sec->setNumber(new Number($this->getCounter('section')->getValue()));
 
         $this->subSections[] = $sec;
         return $sec;

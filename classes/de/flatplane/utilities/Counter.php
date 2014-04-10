@@ -61,33 +61,6 @@ class Counter implements CounterInterface
         return $this->value;
     }
 
-    public function getFormatedValue($format)
-    {
-        switch ($format) {
-            case 'alpha':
-                return $this->alpha('lower');
-                break;
-
-            case 'Alpha':
-            case 'ALPHA':
-                return $this->alpha('upper');
-                break;
-
-            case 'roman':
-                return $this->roman('lower');
-                break;
-
-            case 'Roman':
-            case 'ROMAN':
-                return $this->roman('upper');
-                break;
-
-            default:
-                return $this->value;
-                break;
-        }
-    }
-
     public function setValue($val)
     {
         $this->value = $val;
@@ -126,75 +99,5 @@ class Counter implements CounterInterface
                 E_USER_NOTICE
             );
         }
-    }
-
-    public function roman($case = 'upper')
-    {
-        if ($this->value == 0) {
-            return 0;
-        }
-
-        $result = '';
-        $tempNum = $this->value;
-        if ($tempNum < 0) {
-            $tempNum = abs($tempNum);
-            $result .='-';
-        }
-
-        $chars = array('M' => 1000,
-            'CM' => 900,
-            'D' => 500,
-            'CD' => 400,
-            'C' => 100,
-            'XC' => 90,
-            'L' => 50,
-            'XL' => 40,
-            'X' => 10,
-            'IX' => 9,
-            'V' => 5,
-            'IV' => 4,
-            'I' => 1);
-
-        foreach ($chars as $roman => $value) {
-            $numMatches = floor($tempNum / $value);
-
-            $result .= str_repeat($roman, $numMatches);
-
-            $tempNum %= $value;
-        }
-
-        if ($case == 'lower') {
-            $result = strtolower($result);
-        }
-        return $result;
-    }
-
-    public function alpha($mode = 'upper')
-    {
-        if ($this->value == 0) {
-            return 0;
-        }
-
-        $result = '';
-        $tempNum = $this->value - 1;
-        if ($tempNum < 0) {
-            $tempNum = abs($tempNum) - 2; //2 twice off-by-one due to abs()
-            $sign = '-';
-        } else {
-            $sign = '';
-        }
-
-        for ($i = 1; $tempNum >= 0; $i++) {
-            $index = ($tempNum % pow(26, $i)) / pow(26, $i - 1);
-            $result = chr(0x41 + $index) . $result;
-            $tempNum -= pow(26, $i);
-        }
-
-        $result = $sign . $result;
-        if ($mode == 'lower') {
-            $result = strtolower($result);
-        }
-
-        return $result;
     }
 }

@@ -38,6 +38,4 @@ interface CounterInterface
     public function getIncrement();
 
     public function setIncrement($inc);
-    
-    public function getFormatedValue($format);
 }

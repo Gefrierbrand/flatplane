@@ -20,9 +20,9 @@
  */
 
 /*
- * Settings
+ * finisch Settings
  *
- * Counter für formulas etc
+ * verbessern: Counter für formulas etc
  *
- * 
+ * klassen/wrapper um iteratoren
  */
