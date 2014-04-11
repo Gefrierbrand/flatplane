@@ -53,20 +53,14 @@ use de\flatplane\utilities\Counter;
  * BEGIN DOKUMENTDEFINITION
  */
 
+//Vom Standard abweichende dokumentweite Einstellungen setzen
 $settings = array(
     'author' => 'Max Mustermann',
-    'title' => 'Ganz wichtiges Document',
-    'unit' => 'mm',
-    'counterModes' => array(
-            'page'=>['level'=>0,'format'=>'roman','startIndex'=>1], //FIXME !! format?: (kapitel.subkapitel.wert)?
-            'section'=>['level'=>0,'format'=>'int','startIndex'=>1],
-            'formula'=>['level'=>1,'format'=>'int','startIndex'=>1]
-    )
+    'title' => 'Ganz wichtiges Dokument',
+    'keywords' => 'super, toll, top, gigantisch, superlative!'
 );
 
 $document = new Document($settings);
-
-
 
 //in zweierschritten zählen. because we can.
 $document->getCounter('section')->setIncrement(2);

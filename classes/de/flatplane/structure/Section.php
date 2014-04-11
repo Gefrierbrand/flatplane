@@ -140,7 +140,7 @@ class Section extends Document
             if (array_key_exists('section', $this->counter)) {
                 $this->counter['section']->add();
             } else {
-                $startIndex = $this->toRoot()->getSettings()->getStartIndex();
+                $startIndex = $this->toRoot()->getSettings()['startIndex'];
                 $this->addCounter(new Counter($startIndex), 'section');
             }
             $counterValue = $this->getCounter('section')->getValue();
@@ -158,7 +158,7 @@ class Section extends Document
             if (array_key_exists($content->getType(), $this->counter)) {
                 $this->counter[$content->getType()]->add();
             } else {
-                $startIndex = $this->toRoot()->getSettings()->getStartIndex();
+                $startIndex = $this->toRoot()->getSettings()['startIndex'];
                 $this->addCounter(new Counter($startIndex), $content->getType());
             }
             $content->setNumber(new Number($this->getCounter($content->getType())->getValue()));

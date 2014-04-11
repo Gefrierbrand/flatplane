@@ -56,6 +56,24 @@ class Document
     protected $counter = array();
 
     /**
+     *  Document Constructor
+     *  @param array $settings
+     *   Array containing key=>value pairs of document-wide settings
+     */
+    public function __construct(array $settings = null)
+    {
+        //load default settings from ini file
+        $this->settings = parse_ini_file('config/defaultDocumentSettings.ini'); //Todo: fix path?
+
+        //replace defaults with given settings
+        foreach ($settings as $key => $value) {
+            if (array_key_exists($key, $this->settings)) {
+                $this->settings[$key] = $value;
+            }
+        }
+    }
+
+    /**
      * FIXME: Beschreibung hinzufügen
      * @param string $title
      *  The title of the section to be displayed in the document
@@ -81,7 +99,7 @@ class Document
             if (array_key_exists('section', $this->counter)) {
                 $this->counter['section']->add();
             } else {
-                $startIndex = $this->settings->getStartIndex();
+                $startIndex = $this->settings['startIndex'];
                 $this->addCounter(new Counter($startIndex), 'section');
             }
         }
@@ -90,19 +108,6 @@ class Document
 
         $this->subSections[] = $sec;
         return $sec;
-    }
-
-    /**
-     *  Document Constructor
-     *  @param DocumentSettings $settings
-     *   Instance of the DocumentSettings configuration object or null to use defaults
-     */
-    public function __construct(array $settings = null)
-    {
-        if ($settings === null) {
-            $settings = new DocumentSettings(); //use default values
-        }
-        $this->settings = $settings;
     }
 
     /**

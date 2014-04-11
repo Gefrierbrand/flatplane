@@ -59,10 +59,10 @@ class DocumentSettings
      *      </ul>
      *  </ul>
      */
-    private $counterModes = array(
-            'page'=>['level'=>0,'format'=>'roman','startIndex'=>1], //FIXME !! format?: (kapitel.subkapitel.wert)?
-            'section'=>['level'=>0,'format'=>'int','startIndex'=>1],
-            'formula'=>['level'=>1,'format'=>'int','startIndex'=>1]
+    private $counterLevel = array(
+            'page'=>0, //FIXME !! format?: (kapitel.subkapitel.wert)?
+            'section'=>0,
+            'formula'=>1
     );
 
     /**
@@ -108,15 +108,22 @@ class DocumentSettings
      */
     private $unit = 'mm';
 
+    private $pagesize = 'A4';
+    
+    private $orientation = 'P';
 
-    public function __construct($author = '', $title = '', $description = '', $keywords = '', $subject = '', $unit = 'mm')
+    public function __construct($settings)
     {
-        $this->author=$author;
-        $this->title=$title;
-        $this->description=$description;
-        $this->keywords=$keywords;
-        $this->subject=$subject;
-        $this->unit=$unit;
+        if (!empty($settings)){
+            //set settings
+        } else {
+            $this->getSettingsFromIni();
+        }
+    }
+
+    private function getSettingsFromIni()
+    {
+        $erg = parse_ini_file('config/defaultDocumentSettings.ini', true);
     }
 
     /**
