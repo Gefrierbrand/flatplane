@@ -53,9 +53,19 @@ use de\flatplane\utilities\Counter;
  * BEGIN DOKUMENTDEFINITION
  */
 
-$document = new Document();
-$document->getSettings()->setAuthor('Max Mustermann');
-$document->getSettings()->setTitle('Ganz wichtiges Dokument');
+$settings = array(
+    'author' => 'Max Mustermann',
+    'title' => 'Ganz wichtiges Document',
+    'unit' => 'mm',
+    'counterModes' => array(
+            'page'=>['level'=>0,'format'=>'roman','startIndex'=>1], //FIXME !! format?: (kapitel.subkapitel.wert)?
+            'section'=>['level'=>0,'format'=>'int','startIndex'=>1],
+            'formula'=>['level'=>1,'format'=>'int','startIndex'=>1]
+    )
+);
+
+$document = new Document($settings);
+
 
 
 //in zweierschritten zählen. because we can.

@@ -60,10 +60,10 @@ class DocumentSettings
      *  </ul>
      */
     private $counterModes = array(
-                                'page'=>['level'=>0,'format'=>'roman'], //FIXME ?
-                                'section'=>['level'=>0,'format'=>'int'],
-                                'formula'=>['level'=>1,'format'=>'int']
-                            );
+            'page'=>['level'=>0,'format'=>'roman','startIndex'=>1], //FIXME !! format?: (kapitel.subkapitel.wert)?
+            'section'=>['level'=>0,'format'=>'int','startIndex'=>1],
+            'formula'=>['level'=>1,'format'=>'int','startIndex'=>1]
+    );
 
     /**
      * @var string

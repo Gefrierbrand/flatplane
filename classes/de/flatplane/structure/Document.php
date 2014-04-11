@@ -81,10 +81,7 @@ class Document
             if (array_key_exists('section', $this->counter)) {
                 $this->counter['section']->add();
             } else {
-                var_dump($this->settings);
                 $startIndex = $this->settings->getStartIndex();
-                //alternative:
-                //$startIndex = $this->settings->getSetting('startIndex');
                 $this->addCounter(new Counter($startIndex), 'section');
             }
         }
@@ -100,7 +97,7 @@ class Document
      *  @param DocumentSettings $settings
      *   Instance of the DocumentSettings configuration object or null to use defaults
      */
-    public function __construct(DocumentSettings $settings = null)
+    public function __construct(array $settings = null)
     {
         if ($settings === null) {
             $settings = new DocumentSettings(); //use default values
