@@ -21,7 +21,6 @@
 
 namespace de\flatplane\structure;
 
-use de\flatplane\settings\DocumentSettings;
 use de\flatplane\utilities\Counter;
 use de\flatplane\utilities\Number;
 

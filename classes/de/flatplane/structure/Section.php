@@ -85,11 +85,11 @@ class Section extends Document
 
     public function __toString()
     {
-        return $this->title;
+        return (string) $this->title;
     }
 
     /**
-     * This method overwrited Document::addSection() and relays the call to addSubsection()
+     * This method overwrites Document::addSection() and relays the call to addSubsection()
      * @see addSubSection()
      * @param string $title
      * @param string $altTitle

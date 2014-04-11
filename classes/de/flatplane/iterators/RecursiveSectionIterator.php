@@ -72,4 +72,3 @@ class RecursiveSectionIterator implements \RecursiveIterator
         return $this->position;
     }
 }
-?>

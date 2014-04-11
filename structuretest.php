@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+putenv('LANG=en_US.UTF-8');
 
 //benötigte Klassen automatisch laden
 function autoload($className)
@@ -74,7 +74,7 @@ $subsubKap1 = $subKapitel->addSubSection('SubSub 1');
 $subsubKap2 = $subKapitel->addSubSection('SubSub 2', '', false, true); //ShowInTOC = false, enumerate = true;
 $subsubKap3 = $subKapitel->addSubSection('SubSub 3', '', true, false); //ShowInTOC = true, enumerate = false;
 //das handle kann überschrieben werden, ohne dass der Inhalt des alten Elements beeinflusst wird.
-//das sollte man aber eigentlich nicht tun. Die Meisten IDEs warnen auch entsprechend.
+//das sollte man aber eigentlich nicht tun. Die meisten IDEs warnen auch entsprechend.
 $subsubKap4 = $subKapitel->addSubSection('SubSub 4');
 $subsubKap4 = $subKapitel->addSubSection('SubSub 5');
 
@@ -113,7 +113,7 @@ $formel1 = $kapitel1->addContent(new Formula('\frac{1}{2}', 'Asana-Math', 'TeX')
 $formel2 = $kapitel1->addContent(new Formula('\frac{1}{3}', 'Asana-Math', 'TeX'));
 $formel3 = $kapitel1->addContent(new Formula('\frac{1}{4}', 'Asana-Math', 'TeX'));
 
-//kapitel etc werden jedoch immer in der reihenfolge der deklarationen angelegt
+//kapitel etc werden jedoch immer in der Reihenfolge der Deklarationen angelegt
 //ein Vertauschen währe jedoch prinzipiell möglich
 
 
