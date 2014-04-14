@@ -19,15 +19,17 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\interfaces;
+namespace de\flatplane\pageelements;
 
 /**
+ * Description of Text
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-interface StructureInterface
+class Text extends PageElement
 {
-    //TODO: fill me?
-    public function addContent($param);
-    public function addSection($param);
+    public function getSize()
+    {
+        //do_nothing_loop()
+    }
 }

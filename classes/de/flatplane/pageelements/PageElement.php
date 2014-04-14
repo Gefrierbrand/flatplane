@@ -21,32 +21,37 @@
 
 namespace de\flatplane\pageelements;
 
-use de\flatplane\interfaces\PageConentInterface;
+use de\flatplane\interfaces\PageElementInterface;
+use de\flatplane\structure\Document;
 use de\flatplane\utilities\Number;
+use InvalidArgumentException;
 
 /**
- * Description of PageElement
- *
+ * Abstract class for all page elements like sections, text, images, formulas, ...
+ * Provides basic common functionality.
  * @author Nikolai Neff <admin@flatplane.de>
  */
-abstract class PageElement implements PageConentInterface
+abstract class PageElement implements PageElementInterface
 {
+    //import functionality horizontally from the trait Content
+    use \de\flatplane\structure\Content;
+
+    protected $parent;
+    protected $type = 'PageElement';
+    protected $number;
+    protected $numberingStyle = '-1.#'; //FIXME? ->getter/setter, usage, ...
+
+    protected $title;
+    protected $altTitle;
+    protected $caption;
+
     protected $showInIndex;
     protected $enumerate;
-    protected $parent;
-    protected $type;
-    protected $number;
 
-    public function getShowInIndex()
-    {
-        return $this->showInIndex;
-    }
 
-    public function getEnumerate()
-    {
-        return $this->enumerate;
-    }
-
+    // GETTER:
+    // STRUCTURE
+    //
     public function getParent()
     {
         return $this->parent;
@@ -57,9 +62,24 @@ abstract class PageElement implements PageConentInterface
         return $this->type;
     }
 
+    public function getNumber()
+    {
+        return $this->number;
+    }
+
     public function getFullNumber()
     {
-         //TODO: Implement me
+        if ($this->getParent()) {
+            $arr = $this->getParent()->getFullNumber();
+            $arr[] = $this->number;
+            return $arr;
+        } else {
+            if (!$this->getNumber()) {
+                return [];
+            } else {
+                return $this->number;
+            }
+        }
     }
 
     public function getLevel()
@@ -67,9 +87,12 @@ abstract class PageElement implements PageConentInterface
         //TODO: Implement me
     }
 
-    public function getNumber()
+    // GETTER:
+    // FORMAT
+    //
+    public function getSize()
     {
-        return $this->number;
+        //todo: IMPLEMENT : probably best in subclasses / content! //maybe as abstract?
     }
 
     public function getPage()
@@ -77,9 +100,70 @@ abstract class PageElement implements PageConentInterface
          //TODO: Implement me
     }
 
+    // GETTER:
+    // CONTENT
+    //
+    public function getEnumerate()
+    {
+        return $this->enumerate;
+    }
+
+    public function getShowInIndex()
+    {
+        return $this->showInIndex;
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function getAltTitle()
+    {
+        return $this->altTitle;
+    }
+
+    public function getCaption()
+    {
+        return $this->caption;
+    }
+
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+
+    // SETTER:
+    // STRUCTURE
+    //
+    public function setParent($parent)
+    {
+        if ($parent instanceof Document || $parent instanceof PageElement) {
+            $this->parent = $parent;
+        } else {
+            throw new InvalidArgumentException(
+                'The parent of a PageElement must be another PageElement or the '.
+                'Document. '.gettype($parent).' was given.'
+            );
+        }
+    }
     public function setType($type)
     {
         $this->type = $type;
+    }
+
+    public function setNumber(Number $number)
+    {
+        $this->number = $number;
+    }
+
+    // SETTER:
+    // CONTENT
+    //
+    public function setEnumerate($enumerate)
+    {
+        $this->enumerate = $enumerate;
     }
 
     public function setShowInIndex($showInIndex)
@@ -87,18 +171,18 @@ abstract class PageElement implements PageConentInterface
         $this->showInIndex = $showInIndex;
     }
 
-    public function setEnumerate($enumerate)
+    public function setTitle($title)
     {
-        $this->enumerate = $enumerate;
+        $this->title=$title;
     }
 
-    public function setParent($parent)
+    public function setAltTitle($altTitle)
     {
-        $this->parent = $parent;
+        $this->altTitle=$altTitle;
     }
 
-    public function setNumber(Number $number)
+    public function setCaption($caption)
     {
-        $this->number = $number;
+        $this->caption = $caption;
     }
 }

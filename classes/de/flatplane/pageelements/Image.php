@@ -19,27 +19,15 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\interfaces;
-
-use de\flatplane\utilities\Number;
+namespace de\flatplane\pageelements;
 
 /**
+ * Description of Image
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-interface PageConentInterface
+class Image extends PageElement
 {
-    public function setNumber(Number $num);
-
-    public function getSize();
-
-    public function getPage();
-
-    public function getLevel();
-
-    public function getNumber();
-
-    public function getFullNumber();
-
-    public function getType();
+    protected $path;
+    protected $imageType;
 }

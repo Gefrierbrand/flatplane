@@ -22,10 +22,41 @@
 namespace de\flatplane\pageelements;
 
 /**
- * @see Formula :Alias:
+ * Description of section
+ *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Equation extends Formula
+class Section extends PageElement
 {
-    
+    protected $showInDocument = true;
+    protected $type = 'section';
+
+    //FIXME? add parent to constructor?
+    public function __construct(
+        $title,
+        $altTitle = '',
+        $showInIndex = true,
+        $enumerate = true,
+        $showInDocument = true
+    ) {
+        $this->title = $title;
+        $this->showInIndex = $showInIndex;
+        $this->enumerate = $enumerate;
+        $this->showInDocument = $showInDocument;
+        if ($altTitle == '') {
+            $this->altTitle = $title;
+        } else {
+            $this->altTitle = $altTitle;
+        }
+    }
+
+    public function __toString()
+    {
+        return (string) $this->title;
+    }
+
+    public function toRoot()
+    {
+        return $this->parent->toRoot();
+    }
 }

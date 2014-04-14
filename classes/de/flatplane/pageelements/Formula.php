@@ -73,29 +73,4 @@ class Formula extends PageElement
     {
         return $this->code;
     }
-
-    public function getSize()
-    {
-        //TODO: IMPLEMENT ME
-    }
-
-    public function getFullNumber()
-    {
-        //TODO: IMPLEMENT ME
-    }
-
-    public function getLevel()
-    {
-        //TODO: IMPLEMENT ME
-    }
-
-    public function getNumber()
-    {
-        return $this->number;
-    }
-
-    public function getPage()
-    {
-        //TODO: IMPLEMENT ME
-    }
 }

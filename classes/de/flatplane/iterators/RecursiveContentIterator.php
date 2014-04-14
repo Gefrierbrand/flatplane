@@ -22,23 +22,53 @@
 namespace de\flatplane\iterators;
 
 /**
- * Description of TocElementFilterIterator
+ * Description of recursiveSectionIterator
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class TocElementFilterIterator extends \FilterIterator
+class RecursiveContentIterator implements \RecursiveIterator
 {
 
-    public function accept()
+    private $position;
+    private $content;
+
+    public function __construct($sections = array())
     {
-        return parent::current()->getShowInToc();
+        $this->content = $sections;
+    }
+
+    public function valid()
+    {
+        return isset($this->content[$this->position]);
+    }
+
+    public function hasChildren()
+    {
+        return $this->content[$this->position]->hasContent();
+    }
+
+    public function next()
+    {
+        $this->position++;
     }
 
     public function current()
     {
-        for ($i = 0; $i < $this->getDepth(); $i++) {
-            echo "  ";
-        }
-        return parent::current();
+        return $this->content[$this->position];
+    }
+
+    public function getChildren()
+    {
+        return new recursiveContentIterator($this->content[$this->position]->getContent());
+    }
+
+    public function rewind()
+    {
+        $this->position = 0;
+    }
+
+    public function key()
+    {
+        return $this->position;
     }
 }
