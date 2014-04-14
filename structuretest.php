@@ -56,15 +56,20 @@ use de\flatplane\structure\Document;
 $settings = array(
     'author' => 'Max Mustermann',
     'title' => 'Ganz wichtiges Dokument',
-    'keywords' => 'super, toll, top, gigantisch, superlative!'
+    'keywords' => 'super, toll, top, gigantisch, superlative!',
+    'startIndex' => 0
 );
 
 $document = new Document($settings);
 
-$vorwort = $document->addContent(new Section('Vorwort'));
+$vorwort = new Section('Vorwort');
 $vorwort->setEnumerate(false);
+$document->addContent($vorwort);
 
-$inhalt = $document->addContent(new ListOfContents('Inhaltsverzeichnis', 'section'));
+$inhalt = new ListOfContents('Inhaltsverzeichnis', 'section');
+$inhalt->setEnumerate(false);
+$document->addContent($inhalt);
+
 
 $kapitel1 = $document->addContent(new Section('kapitel 1'));
 $kapitel1->addContent(new Section('Subkapitel1'));

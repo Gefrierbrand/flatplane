@@ -33,11 +33,14 @@ use RecursiveIteratorIterator;
 class ListOfContents extends PageElement
 {
     protected $maxDepth;
+    //protected $type='list'; //fixme: include self?
+    protected $type='section';
+    protected $displayType;
 
     public function __construct($title, $type, $maxDepth = -1)
     {
         $this->title = $title;
-        $this->type = $type;
+        $this->displayType = $type;
         $this->maxDepth = $maxDepth;
     }
 
@@ -54,7 +57,7 @@ class ListOfContents extends PageElement
 
         // filtert Einträge heraus, deren ShowInToc-Eigenschaft auf false steht.
         // rückt entsprechend der tiefe mit leerzeichen ein
-        $FilterIt = new PageElementFilterIterator($RecItIt, $this->type);
+        $FilterIt = new PageElementFilterIterator($RecItIt, $this->displayType);
 
         foreach ($FilterIt as $element) {
             if ($element->getEnumerate()) {

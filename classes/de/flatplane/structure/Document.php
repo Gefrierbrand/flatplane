@@ -21,7 +21,7 @@
 
 namespace de\flatplane\structure;
 
-use de\flatplane\utilities\Counter;
+use de\flatplane\pageelements\Section;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -58,14 +58,14 @@ class Document
             throw new RuntimeException($configFile. ' is not readable');
         }
 
-        $settings = parse_ini_file($configFile);
-        if ($settings === false) {
+        $this->settings = parse_ini_file($configFile);
+        if ($this->settings === false) {
             throw new RuntimeException($configFile. ' could not be parsed');
         }
 
         //replace defaults with given settings
         foreach ($settings as $key => $value) {
-            if (array_key_exists($key, $settings)) {
+            if (array_key_exists($key, $this->settings)) {
                 $this->settings[$key] = $value;
             }
         }

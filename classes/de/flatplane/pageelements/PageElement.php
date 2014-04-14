@@ -39,14 +39,14 @@ abstract class PageElement implements PageElementInterface
     protected $parent;
     protected $type = 'PageElement';
     protected $number;
-    protected $numberingStyle = '-1.#'; //FIXME? ->getter/setter, usage, ...
+    //protected $numberingStyle = '-1.#'; //FIXME? ->getter/setter, usage, ...
 
     protected $title;
     protected $altTitle;
     protected $caption;
 
-    protected $showInIndex;
-    protected $enumerate;
+    protected $showInIndex = true;
+    protected $enumerate = true;
 
 
     // GETTER:
@@ -67,6 +67,11 @@ abstract class PageElement implements PageElementInterface
         return $this->number;
     }
 
+    /**
+     * gets the numbers from each node in the document tree from the root to this
+     * element and returns referenced to them in an array
+     * @return array
+     */
     public function getFullNumber()
     {
         if ($this->getParent()) {
@@ -77,7 +82,7 @@ abstract class PageElement implements PageElementInterface
             if (!$this->getNumber()) {
                 return [];
             } else {
-                return $this->number;
+                return [$this->number];
             }
         }
     }
@@ -137,6 +142,12 @@ abstract class PageElement implements PageElementInterface
     // SETTER:
     // STRUCTURE
     //
+
+    /**
+     * Sets the elements parent to another PageElement or the Document
+     * @param Document|PageElement $parent
+     * @throws InvalidArgumentException
+     */
     public function setParent($parent)
     {
         if ($parent instanceof Document || $parent instanceof PageElement) {

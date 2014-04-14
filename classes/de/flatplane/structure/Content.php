@@ -40,6 +40,11 @@ trait Content
     protected $content;
     protected $counter = array();
 
+    /**
+     *
+     * @param \de\flatplane\pageelements\PageElement $content
+     * @return \de\flatplane\pageelements\PageElement
+     */
     public function addContent(PageElement $content)
     {
         /* every content gets a number depending on its type and level inside the
@@ -95,7 +100,7 @@ trait Content
     {
         return !empty($this->content);
     }
-    
+
     /**
     *
     * @param string $name
