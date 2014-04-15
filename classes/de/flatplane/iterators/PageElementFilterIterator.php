@@ -42,8 +42,9 @@ class PageElementFilterIterator extends \FilterIterator
     public function accept()
     {
         $content = parent::current();
-        if (in_array($content->getType(), $this->type)) {
-            return true;
+        if (in_array($content->getType(), $this->type)
+            && $content->getShowInIndex()) {
+                return true;
         } else {
             return false;
         }

@@ -63,10 +63,9 @@ $settings = array(
 );
 
 $document = new Document($settings);
-//$document->getCounter('section')->setIncrement(2);
-
 $vorwort = new Section('Vorwort');
 $vorwort->setEnumerate(false);
+
 $document->addContent($vorwort);
 
 $inhalt = new ListOfContents('Inhaltsverzeichnis', 'section');
@@ -75,13 +74,19 @@ $document->addContent($inhalt);
 
 
 $kapitel1 = $document->addContent(new Section('kapitel 1'));
+//$document->getCounter('section')->setIncrement(2); //erhöhen des increments für NÄCHSTE section  - useCases?
 $kapitel1->addContent(new Section('Subkapitel1'));
 $kapitel1->addContent(new Section('Subkapitel2', 'alternativtext'));
-$test = $kapitel1->addContent(new Section('Subkapitel3'));
+$subkap3 = $kapitel1->addContent(new Section('Subkapitel3'));
 
-$test->addContent(new Formula('\frac{1}{2}'));
+$subkap3->addContent(new Formula('\frac{1}{2}'));
+$subkap3->addContent(new Formula('\frac{1}{2}'));
+$subkap3->addContent(new Formula('\frac{1}{2}'));
 
-$formelverz = $document->addContent(new ListOfContents('Formelverzeichnis', 'formula'));
+$formelverz = $document->addContent(new ListOfContents('Formelverzeichnis', 'formula', -1, false));
+//$document->getCounter('section')->setIncrement(1); //rücksetzen des inkrements
+$kap2 = $document->addContent(new Section('titel', '', false));
+$kap2->addContent(new Formula('asd'));
 
 
 
@@ -101,95 +106,3 @@ $inhalt->generateStructure();
 echo PHP_EOL.PHP_EOL.PHP_EOL;
 echo 'Alle nicht ausgeblendeten Formeln:'.PHP_EOL.PHP_EOL;
 $formelverz->generateStructure();
-
-
-
-////in zweierschritten zählen. because we can.
-////$document->getCounter('section')->setIncrement(2);
-//$vorwort = $document->addSection('Vorwort');
-//$vorwort->setEnumerate(false);
-//$vorwort->addContent(new Text('GANZ VIEL TEXT'));
-//$inhaltsverzeichnis = $document->addSection('Inhaltsverzeichnis');
-//$inhaltsverzeichnis->setEnumerate(false);
-//$inhaltsverzeichnis->setContent(new TableOfContents);
-//
-//$kapitel1 = $document->addSection('TITEL 1');
-////alternative Titel fürs TOC
-//$kapitel2 = $document->addSection('TITEL 2', 'Hier steht was ganz anderes');
-//$subKapitel = $kapitel2->addSubSection('Sub 1');
-//$subKapitel->getCounter('section')->setIncrement(-1); //negative Zählrichtung ist möglich
-//$subsubKap1 = $subKapitel->addSubSection('SubSub 1');
-//$subsubKap2 = $subKapitel->addSubSection('SubSub 2', '', false, true); //ShowInTOC = false, enumerate = true;
-//$subsubKap3 = $subKapitel->addSubSection('SubSub 3', '', true, false); //ShowInTOC = true, enumerate = false;
-////das handle kann überschrieben werden, ohne dass der Inhalt des alten Elements beeinflusst wird.
-////das sollte man aber eigentlich nicht tun. Die meisten IDEs warnen auch entsprechend.
-//$subsubKap4 = $subKapitel->addSubSection('SubSub 4');
-//$subsubKap4 = $subKapitel->addSubSection('SubSub 5');
-//
-//$inhaltsverzeichnis2 = $subsubKap4->addSubSection('Inhaltsverzeichnis2');
-//$inhaltsverzeichnis2->setEnumerate(false);
-//$inhaltsverzeichnis2->setContent(new TableOfContents);
-//
-////inhalte zu kapitel hinzufügen
-//$formela = $subsubKap4->addContent(new Formula('\frac{1}{a}'));
-//$formelb = $subsubKap4->addContent(new Formula('\frac{1}{b}'));
-//$formelc = $subsubKap4->addContent(new Formula('\frac{1}{c}'));
-//
-//
-//$subsubKap6 = $subKapitel->addSubSection('SubSub 6');
-////alternative methode um optionen zu setzen, ohne alle anderen parameter
-////direkt beim aufruf angeben zu müssen
-//$subsubKap6->setEnumerate(false);
-//
-//// die Zuweisung der Unterkapitel in eine neue Variable ist nur nötig, wenn später
-//// noch (einfach) auf das Element zugegriffen werden soll.
-//$subsubKap4->addSubSection('noch eins tiefer');
-//$subsubKap4->addSubSection('wer a sagt muss auch b sagen');
-//
-////will man dann dennoch subsections hinzufügen, ist dies wiefolgt möglich:
-//$subsubKap4->getChildren()[1]->addSubSection('ganzweitunten');
-//$subsubKap4->getChildren()[1]->addSubSection('ganzweitunten2');
-//
-//$kapitel3 = $document->addSection('TITEL 3');
-//$kapitel3->getCounter('section')->setValue(-2); //subsectionzähler auf -2 setzen
-//$subKapitel2 = $kapitel3->addSubSection('ich bin garnicht da', '', false); //zählstand -1, wird aber nicht angezeigt
-//$subKapitel3 = $kapitel3->addSubSection('zählertest'); //zähler 'beginnt' bei null
-//
-////subsections können auch später angegeben werden, ohne struktur oder zähler zu stören
-//$kapitel1->addSubSection('test');
-//$kapitel1->addSubSection('test2');
-//
-////inhalt hinzufügen
-//$kapitel1->getCounter('formula')->setValue(-2);
-//$formel1 = $kapitel1->addContent(new Formula('\frac{1}{2}', 'Asana-Math', 'TeX')); //formel(code, schriftart, format)
-//$formel2 = $kapitel1->addContent(new Formula('\frac{1}{3}', 'Asana-Math', 'TeX'));
-//$formel3 = $kapitel1->addContent(new Formula('\frac{1}{4}', 'Asana-Math', 'TeX'));
-//
-////kapitel etc werden jedoch immer in der Reihenfolge der Deklarationen angelegt
-////ein Vertauschen währe jedoch prinzipiell möglich
-//
-//$LOE = $document->addSection('Formelverzeichnis');
-//$LOE->setEnumerate(false);
-//$LOE->setContent(new ListOfContents('formula'));
-//
-//
-///*
-// * ENDE DOKUMENTDEFINITION
-// */
-//
-//
-//
-////funktionen zum anzeigen
-//
-////Es können beliebig viele Inhaltsverzeichnisse an beliebigen Stellen des Dokuments
-////verwendet werden. TODO: inhalt für einzelne kapitel
-//$inhaltsverzeichnis->getContent()[0]->generateStructure();
-//
-//echo PHP_EOL.PHP_EOL.PHP_EOL;
-//
-//$inhaltsverzeichnis2->getContent()[0]->setMaxDepdth(2);
-//$inhaltsverzeichnis2->getContent()[0]->generateStructure();
-//
-//echo PHP_EOL.PHP_EOL.PHP_EOL;
-//
-//$LOE->getContent()[0]->generateStructure();

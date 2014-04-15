@@ -35,26 +35,26 @@ class ListOfContents extends PageElement
     protected $maxDepth;
     protected $type='section';
     protected $displayTypes;
-    protected $includeListsInSections;
 
-    public function __construct($title, $displayTypes, $maxDepth = -1)
-    {
+    public function __construct(
+        $title,
+        $displayTypes,
+        $maxDepth = -1,
+        $enumerate = true,
+        $showInIndex = true
+    ) {
         $this->title = $title;
         if (!is_array($displayTypes)) {
             $displayTypes = [$displayTypes];
         }
         $this->displayTypes = $displayTypes;
         $this->maxDepth = $maxDepth;
+        $this->showInIndex = $showInIndex;
     }
 
     public function generateStructure()
     {
         $content = $this->parent->toRoot()->getContent();
-
-        if (!isset($this->includeListsInSections)) {
-            $this->includeListsInSections =
-                $this->parent->toRoot()->getSettings('includeListsInSections');
-        }
 
         $RecItIt = new RecursiveIteratorIterator(
             new RecursiveContentIterator($content),
@@ -62,11 +62,6 @@ class ListOfContents extends PageElement
         );
 
         $RecItIt->setMaxDepth($this->maxDepth);
-
-        if (in_array('section', $this->displayTypes) &&
-            $this->includeListsInSections) {
-                $this->displayTypes[] = 'list';
-        }
 
         $FilterIt = new PageElementFilterIterator($RecItIt, $this->displayTypes);
 
@@ -90,21 +85,11 @@ class ListOfContents extends PageElement
         return $this->displayTypes;
     }
 
-    public function getIncludeListsInSections()
-    {
-        return $this->includeListsInSections;
-    }
-
     public function setDisplayTypes($displayTypes)
     {
         if (!is_array($displayTypes)) {
             $displayTypes = [$displayTypes];
         }
         $this->displayType = $displayTypes;
-    }
-
-    public function setIncludeListsInSections($includeListsInSections)
-    {
-        $this->includeListsInSections = $includeListsInSections;
     }
 }
