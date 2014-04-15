@@ -68,6 +68,7 @@ class ListOfContents extends PageElement
 
         foreach ($FilterIt as $element) {
             if ($element->getEnumerate()) {
+                //todo: don't use implode?
                 echo implode('.', $element->getFullNumber()) .
                     ' ' . $element->getAltTitle() . PHP_EOL;
             } else {
