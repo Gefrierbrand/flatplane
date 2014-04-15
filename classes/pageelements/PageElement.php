@@ -1,5 +1,5 @@
 <?php
-//ÖÄÜ
+
 /*
  * Copyright (C) 2014 Nikolai Neff <admin@flatplane.de>.
  *

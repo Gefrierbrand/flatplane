@@ -49,6 +49,7 @@ class ListOfContents extends PageElement
         }
         $this->displayTypes = $displayTypes;
         $this->maxDepth = $maxDepth;
+        $this->enumerate = $enumerate;
         $this->showInIndex = $showInIndex;
     }
 

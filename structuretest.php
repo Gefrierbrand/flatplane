@@ -39,7 +39,7 @@ $settings = array(
     'author' => 'Max Mustermann',
     'title' => 'Ganz wichtiges Dokument',
     'keywords' => 'super, toll, top, gigantisch, superlative!',
-    'startIndex' => 1
+    'startIndex' => ['section' => 0]
 );
 
 $document = new Document($settings);
@@ -54,7 +54,7 @@ $document->addContent($inhalt);
 
 
 $kapitel1 = $document->addContent(new Section('kapitel 1'));
-//$document->getCounter('section')->setIncrement(2); //erhöhen des increments für NÄCHSTE section  - useCases?
+
 $kapitel1->addContent(new Section('Subkapitel1'));
 $kapitel1->addContent(new Section('Subkapitel2', 'alternativtext'));
 $subkap3 = $kapitel1->addContent(new Section('Subkapitel3'));
@@ -64,7 +64,7 @@ $subkap3->addContent(new Formula('\frac{1}{2}'));
 $subkap3->addContent(new Formula('\frac{1}{2}'));
 
 $formelverz = $document->addContent(new ListOfContents('Formelverzeichnis', 'formula', -1, false));
-//$document->getCounter('section')->setIncrement(1); //rücksetzen des inkrements
+
 $kap2 = $document->addContent(new Section('titel', '', false));
 $kap2->addContent(new Formula('asd'));
 

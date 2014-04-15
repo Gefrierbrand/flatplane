@@ -20,11 +20,16 @@
  */
 
 /*
- * finisch Settings
+ * TODO:
  *
- * verbessern: Counter für formulas etc
+ * nummerierung je sektion für formeln etc
+ * format/style der nummerieriung
  *
- * klassen/wrapper um iteratoren
+ * get size
  *
- * PDFs und so
- * /
+ * referenzen testen/ einbauen
+ *
+ * observer pattern?
+ *
+ * pdf erzeugung usw
+ */
