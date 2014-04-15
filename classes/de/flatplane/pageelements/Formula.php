@@ -30,6 +30,8 @@ class Formula extends PageElement
 {
     protected $type='formula';
 
+    protected $title='Formula';
+
     protected $code;
     protected $font;
     protected $format;

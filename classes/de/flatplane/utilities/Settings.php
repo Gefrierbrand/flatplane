@@ -19,33 +19,39 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\iterators;
+namespace de\flatplane\utilities;
 
 /**
- * Description of TocElementFilterIterator
- * TODO: document!
+ * Description of Settings
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-
-
-class PageElementFilterIterator extends \FilterIterator
+class Settings
 {
-    protected $type;
+    protected $settings;
 
-    public function __construct(\Iterator $iterator, array $type)
+    public function __construct(array $settings = null, $configFile = 'config/defaultDocumentSettings.ini')
     {
-        $this->type = $type;
-        parent::__construct($iterator);
+        //load default settings from ini file
+        if (!is_readable($configFile)) {
+            throw new RuntimeException($configFile. ' is not readable');
+        }
+
+        $this->settings = parse_ini_file($configFile);
+        if ($this->settings === false) {
+            throw new RuntimeException($configFile. ' could not be parsed');
+        }
+
+        //replace defaults with given settings
+        foreach ($settings as $key => $value) {
+            if (array_key_exists($key, $this->settings)) {
+                $this->settings[$key] = $value;
+            }
+        }
     }
 
-    public function accept()
+    public function getSettings()
     {
-        $content = parent::current();
-        if (in_array($content->getType(), $this->type)) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->settings;
     }
 }

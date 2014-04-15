@@ -22,6 +22,7 @@
 namespace de\flatplane\structure;
 
 use de\flatplane\pageelements\Section;
+use de\flatplane\utilities\Settings;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -53,22 +54,8 @@ class Document
      */
     public function __construct(array $settings = null, $configFile = 'config/defaultDocumentSettings.ini')
     {
-        //load default settings from ini file
-        if (!is_readable($configFile)) {
-            throw new RuntimeException($configFile. ' is not readable');
-        }
-
-        $this->settings = parse_ini_file($configFile);
-        if ($this->settings === false) {
-            throw new RuntimeException($configFile. ' could not be parsed');
-        }
-
-        //replace defaults with given settings
-        foreach ($settings as $key => $value) {
-            if (array_key_exists($key, $this->settings)) {
-                $this->settings[$key] = $value;
-            }
-        }
+        $settings = new Settings($settings, $configFile);
+        $this->settings = $settings->getSettings();
     }
 
     /**

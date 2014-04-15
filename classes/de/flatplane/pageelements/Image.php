@@ -28,6 +28,7 @@ namespace de\flatplane\pageelements;
  */
 class Image extends PageElement
 {
+    protected $type = 'image';
     protected $path;
     protected $imageType;
 }

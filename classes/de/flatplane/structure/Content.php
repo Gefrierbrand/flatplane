@@ -51,24 +51,29 @@ trait Content
          * document tree. therefore the nummeration starts new in each subsection
          * and so on. The display of these numbers in another format (e.g. numeration
          * for the complete document) is handled by the display layer in the
-         * corresponding iterators*/
+         * corresponding iterators and in the getFullNumber() Method*/
 
         //the number property is only set if the enumerate property is true
         if ($content->getEnumerate()) {
+            $document = $this->toRoot();
+
             //check if a counter for the given type already exists and increment
             //its value, or create a new one for that type
-            if (array_key_exists($content->getType(), $this->counter)) {
+            $type = $content->getType();
+            if (array_key_exists($type, $this->counter)) {
                 $this->counter[$content->getType()]->add();
             } else {
-                $startIndex = $this->toRoot()->getSettings()['startIndex'];
-                $this->addCounter(new Counter($startIndex), $content->getType());
+                if (isset($document->getSettings('startIndex')[$type])) {
+                    $startIndex = $document->getSettings('startIndex')[$type];
+                } else {
+                    $startIndex = $document->getSettings('defaultStartIndex');
+                }
+                $this->addCounter(new Counter($startIndex), $type);
             }
 
             //set the Number as an instance of the Number object to have access
             //to advanced formating options like letters or roman numerals.
-            $content->setNumber(
-                new Number($this->getCounter($content->getType())->getValue())
-            );
+            $content->setNumber(new Number($this->getCounter($type)->getValue()));
         }
 
         //each content needs to know its parent to be able to reversely traverse
@@ -111,13 +116,14 @@ trait Content
         if (array_key_exists($name, $this->counter)) {
             return $this->counter[$name];
         } else {
-            //TODO: Maybe notice the user an new counter was created?
-            return $this->counter[$name] = new Counter();
+            trigger_error('New Counter '.$name.' created', E_USER_WARNING);
+            $startIndex = $this->toRoot()->getSettings()['startIndex'];
+            return $this->addCounter(new Counter($startIndex), $name);
         }
     }
 
-    public function addCounter(Counter $counter, $name)
+    protected function addCounter(Counter $counter, $name)
     {
-        $this->counter[$name] = $counter;
+        return $this->counter[$name] = $counter;
     }
 }

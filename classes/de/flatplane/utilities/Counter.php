@@ -46,6 +46,10 @@ class Counter implements CounterInterface
         return (string) $this->value;
     }
 
+    /**     *
+     * @param int|float $increment
+     * @return int|float
+     */
     public function add($increment = 1)
     {
         $this->validate();
@@ -54,8 +58,12 @@ class Counter implements CounterInterface
         } else {
             $this->value += $increment;
         }
+        return $this->value;
     }
 
+    /**
+     * @return int|float
+     */
     public function getValue()
     {
         return $this->value;

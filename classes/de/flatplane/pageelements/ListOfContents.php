@@ -33,20 +33,28 @@ use RecursiveIteratorIterator;
 class ListOfContents extends PageElement
 {
     protected $maxDepth;
-    //protected $type='list'; //fixme: include self?
     protected $type='section';
-    protected $displayType;
+    protected $displayTypes;
+    protected $includeListsInSections;
 
-    public function __construct($title, $type, $maxDepth = -1)
+    public function __construct($title, $displayTypes, $maxDepth = -1)
     {
         $this->title = $title;
-        $this->displayType = $type;
+        if (!is_array($displayTypes)) {
+            $displayTypes = [$displayTypes];
+        }
+        $this->displayTypes = $displayTypes;
         $this->maxDepth = $maxDepth;
     }
 
     public function generateStructure()
     {
         $content = $this->parent->toRoot()->getContent();
+
+        if (!isset($this->includeListsInSections)) {
+            $this->includeListsInSections =
+                $this->parent->toRoot()->getSettings('includeListsInSections');
+        }
 
         $RecItIt = new RecursiveIteratorIterator(
             new RecursiveContentIterator($content),
@@ -55,13 +63,17 @@ class ListOfContents extends PageElement
 
         $RecItIt->setMaxDepth($this->maxDepth);
 
-        // filtert Einträge heraus, deren ShowInToc-Eigenschaft auf false steht.
-        // rückt entsprechend der tiefe mit leerzeichen ein
-        $FilterIt = new PageElementFilterIterator($RecItIt, $this->displayType);
+        if (in_array('section', $this->displayTypes) &&
+            $this->includeListsInSections) {
+                $this->displayTypes[] = 'list';
+        }
+
+        $FilterIt = new PageElementFilterIterator($RecItIt, $this->displayTypes);
 
         foreach ($FilterIt as $element) {
             if ($element->getEnumerate()) {
-                echo implode('.', $element->getFullNumber()) . ' ' . $element . PHP_EOL;
+                echo implode('.', $element->getFullNumber()) .
+                    ' ' . $element->getAltTitle() . PHP_EOL;
             } else {
                 echo $element . PHP_EOL;
             }
@@ -71,5 +83,28 @@ class ListOfContents extends PageElement
     public function __toString()
     {
         return (string) $this->title;
+    }
+
+    public function getDisplayTypes()
+    {
+        return $this->displayTypes;
+    }
+
+    public function getIncludeListsInSections()
+    {
+        return $this->includeListsInSections;
+    }
+
+    public function setDisplayTypes($displayTypes)
+    {
+        if (!is_array($displayTypes)) {
+            $displayTypes = [$displayTypes];
+        }
+        $this->displayType = $displayTypes;
+    }
+
+    public function setIncludeListsInSections($includeListsInSections)
+    {
+        $this->includeListsInSections = $includeListsInSections;
     }
 }

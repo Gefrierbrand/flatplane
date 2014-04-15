@@ -28,6 +28,10 @@ namespace de\flatplane\pageelements;
  */
 class Text extends PageElement
 {
+    protected $text;
+    protected $parse = true; //parse special content like eqn, etc
+    protected $containsReferences; //??
+
     public function getSize()
     {
         //do_nothing_loop()

@@ -44,6 +44,8 @@ spl_autoload_register('autoload');
 //lange, volldefinierte Klassennamen aus Namespaces laden
 
 
+use de\flatplane\iterators\RecursiveContentIterator;
+use de\flatplane\pageelements\Formula;
 use de\flatplane\pageelements\ListOfContents;
 use de\flatplane\pageelements\Section;
 use de\flatplane\structure\Document;
@@ -57,10 +59,11 @@ $settings = array(
     'author' => 'Max Mustermann',
     'title' => 'Ganz wichtiges Dokument',
     'keywords' => 'super, toll, top, gigantisch, superlative!',
-    'startIndex' => 0
+    'startIndex' => 1
 );
 
 $document = new Document($settings);
+//$document->getCounter('section')->setIncrement(2);
 
 $vorwort = new Section('Vorwort');
 $vorwort->setEnumerate(false);
@@ -73,11 +76,31 @@ $document->addContent($inhalt);
 
 $kapitel1 = $document->addContent(new Section('kapitel 1'));
 $kapitel1->addContent(new Section('Subkapitel1'));
-$kapitel1->addContent(new Section('Subkapitel2'));
-$kapitel1->addContent(new Section('Subkapitel3'));
+$kapitel1->addContent(new Section('Subkapitel2', 'alternativtext'));
+$test = $kapitel1->addContent(new Section('Subkapitel3'));
 
+$test->addContent(new Formula('\frac{1}{2}'));
+
+$formelverz = $document->addContent(new ListOfContents('Formelverzeichnis', 'formula'));
+
+
+
+echo 'GESAMTES DOKUMENT'.PHP_EOL;
+$RecItIt = new RecursiveTreeIterator(
+    new RecursiveContentIterator($document->getContent()),
+    RecursiveIteratorIterator::SELF_FIRST
+);
+foreach ($RecItIt as $value) {
+    echo $value.PHP_EOL;
+}
+
+echo PHP_EOL.PHP_EOL.PHP_EOL;
+echo 'Alle nicht ausgeblendeten Kapitel:'.PHP_EOL.PHP_EOL;
 $inhalt->generateStructure();
 
+echo PHP_EOL.PHP_EOL.PHP_EOL;
+echo 'Alle nicht ausgeblendeten Formeln:'.PHP_EOL.PHP_EOL;
+$formelverz->generateStructure();
 
 
 

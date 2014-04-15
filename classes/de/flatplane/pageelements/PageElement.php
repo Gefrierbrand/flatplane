@@ -36,7 +36,7 @@ abstract class PageElement implements PageElementInterface
     //import functionality horizontally from the trait Content
     use \de\flatplane\structure\Content;
 
-    protected $parent;
+    protected $parent = null;
     protected $type = 'PageElement';
     protected $number;
     //protected $numberingStyle = '-1.#'; //FIXME? ->getter/setter, usage, ...
@@ -125,7 +125,11 @@ abstract class PageElement implements PageElementInterface
 
     public function getAltTitle()
     {
-        return $this->altTitle;
+        if (isset($this->altTitle)) {
+            return $this->altTitle;
+        } else {
+            return $this->title;
+        }
     }
 
     public function getCaption()
@@ -161,6 +165,9 @@ abstract class PageElement implements PageElementInterface
     }
     public function setType($type)
     {
+        if (!is_array($type)) {
+            $type = [$type];
+        }
         $this->type = $type;
     }
 
@@ -174,11 +181,25 @@ abstract class PageElement implements PageElementInterface
     //
     public function setEnumerate($enumerate)
     {
+        if ($this->parent !== null) {
+            trigger_error(
+                'setEnumerate() should not be called after adding the element'
+                . ' as content',
+                E_USER_WARNING
+            );
+        }
         $this->enumerate = $enumerate;
     }
 
     public function setShowInIndex($showInIndex)
     {
+        if ($this->parent !== null) {
+            trigger_error(
+                'setShowInIndex() should not be called after adding the element'
+                . ' as content',
+                E_USER_WARNING
+            );
+        }
         $this->showInIndex = $showInIndex;
     }
 
