@@ -19,30 +19,10 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//putenv('LANG=en_US.UTF-8');
-
-//benötigte Klassen automatisch laden
-function autoload($className)
-{
-    $className = ltrim($className, '\\');
-    $fileName = '';
-    $namespace = '';
-    if ($lastNsPos = strrpos($className, '\\')) {
-        $namespace = substr($className, 0, $lastNsPos);
-        $className = substr($className, $lastNsPos + 1);
-        $fileName = 'classes' . DIRECTORY_SEPARATOR .
-            str_replace('\\', DIRECTORY_SEPARATOR, $namespace) .
-            DIRECTORY_SEPARATOR;
-    }
-    $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
-    //echo "Autoloading! $fileName \n";
-
-    require $fileName;
-}
-spl_autoload_register('autoload');
+//use composer autoloading for dependencies
+require 'vendor/autoload.php';
 
 //lange, volldefinierte Klassennamen aus Namespaces laden
-
 
 use de\flatplane\iterators\RecursiveContentIterator;
 use de\flatplane\pageelements\Formula;

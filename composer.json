@@ -1,0 +1,20 @@
+{
+    "name": "flatplane/flatplane",
+    "description": "Flatplane is a frontent to TCPDF to create scientific reports",
+    "keywords": ["PDF","typesetting","report","LaTeX","TeX"],
+    "require": {
+        "php": ">=5.5.0",
+        "tecnick.com/tcpdf": ">=6.0.065"
+    },
+    "license": "LGPLv3",
+    "authors": [
+        {
+            "name": "Nikolai Neff",
+            "email": "admin@flatplane.de",
+            "homepage": "https://flatplane.de"
+        }
+    ],
+    "autoload": {
+        "psr-4": {"de\\flatplane\\": "classes/"}
+    }
+}
