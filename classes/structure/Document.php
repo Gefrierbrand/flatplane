@@ -21,9 +21,9 @@
 
 namespace de\flatplane\structure;
 
-use de\flatplane\documentContents\Section;
-use de\flatplane\utilities\Settings;
 use de\flatplane\documentContents\ContentFunctions;
+use de\flatplane\utilities\Settings;
+use InvalidArgumentException;
 
 /**
  * This class represents the base document.
