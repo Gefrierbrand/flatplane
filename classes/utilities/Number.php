@@ -29,6 +29,7 @@ namespace de\flatplane\utilities;
 class Number
 {
     protected $value;
+    protected $format = 'int';
 
     public function __construct($value = 0)
     {
@@ -45,38 +46,46 @@ class Number
         return $this->value;
     }
 
-    public function getFormatedValue($format, $numDecimals = 2, $dec_point = '.', $thousands_sep = '')
+    public function getFormatedValue($format = null, $numDecimals = 2, $dec_point = '.', $thousands_sep = '')
     {
+        if ($format === null) {
+            $format = $this->format;
+        }
+
         switch ($format) {
             case 'alpha':
-                return $this->alpha('lower');
+                $retVal = $this->alpha('lower');
                 break;
 
             case 'Alpha':
             case 'ALPHA':
-                return $this->alpha('upper');
+                $retVal = $this->alpha('upper');
                 break;
 
             case 'roman':
-                return $this->roman('lower');
+                $retVal = $this->roman('lower');
                 break;
 
             case 'Roman':
             case 'ROMAN':
-                return $this->roman('upper');
+                $retVal = $this->roman('upper');
                 break;
 
             case 'int':
             case 'Int':
             case 'INT':
-                return number_format($this->value, $numDecimals, $dec_point, $thousands_sep);
+            case 'float':
+                $retVal = number_format($this->value, $numDecimals, $dec_point, $thousands_sep);
 
             default:
-                return $this->value;
+                $retVal = $this->value;
                 break;
         }
+
+        return $retVal;
     }
 
+    //todo: arbitrary number via param?
     public function roman($case = 'upper')
     {
         if ($this->value == 0) {
@@ -145,5 +154,15 @@ class Number
         }
 
         return $result;
+    }
+
+    public function getFormat()
+    {
+        return $this->format;
+    }
+
+    public function setFormat($format)
+    {
+        $this->format = $format;
     }
 }

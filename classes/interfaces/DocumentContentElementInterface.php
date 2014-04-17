@@ -21,22 +21,19 @@
 
 namespace de\flatplane\interfaces;
 
-use de\flatplane\pageelements\PageElement;
-use de\flatplane\utilities\Number;
-
 /**
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-interface PageElementInterface
+interface DocumentContentElementInterface
 {
     public function hasContent();
-    public function addContent(PageElement $content);
+    public function addContent(DocumentContentElementInterface $content);
+    public function toRoot();
 
     public function getParent();
     public function getType();
     public function getNumber();
-    public function getFullNumber();
     public function getLevel();
 
     public function getSize();
@@ -53,7 +50,7 @@ interface PageElementInterface
 
     public function setParent($parent);
     public function setType($type);
-    public function setNumber(Number $number);
+    public function setNumber(array $number);
 
     public function setEnumerate($enumerate);
     public function setShowInIndex($showInIndex);

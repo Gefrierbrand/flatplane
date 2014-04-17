@@ -19,9 +19,9 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\pageelements;
+namespace de\flatplane\documentContents;
 
-use de\flatplane\iterators\PageElementFilterIterator;
+use de\flatplane\iterators\DocumentContentElementFilterIterator;
 use de\flatplane\iterators\RecursiveContentIterator;
 use RecursiveIteratorIterator;
 
@@ -30,11 +30,12 @@ use RecursiveIteratorIterator;
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class ListOfContents extends PageElement
+class ListOfContents extends DocumentContentElement
 {
     protected $maxDepth;
-    protected $type='section';
+    protected $type='section'; //use section here to be able to include self
     protected $displayTypes;
+    protected $allowSubContent = false;
 
     public function __construct(
         $title,
@@ -53,9 +54,11 @@ class ListOfContents extends PageElement
         $this->showInIndex = $showInIndex;
     }
 
-    public function generateStructure()
+    public function generateStructure(array $content = [])
     {
-        $content = $this->parent->toRoot()->getContent();
+        if (empty($content)) {
+            $content = $this->parent->toRoot()->getContent();
+        }
 
         $RecItIt = new RecursiveIteratorIterator(
             new RecursiveContentIterator($content),
@@ -64,12 +67,12 @@ class ListOfContents extends PageElement
 
         $RecItIt->setMaxDepth($this->maxDepth);
 
-        $FilterIt = new PageElementFilterIterator($RecItIt, $this->displayTypes);
+        $FilterIt = new DocumentContentElementFilterIterator($RecItIt, $this->displayTypes);
 
         foreach ($FilterIt as $element) {
             if ($element->getEnumerate()) {
                 //todo: don't use implode?
-                echo implode('.', $element->getFullNumber()) .
+                echo implode('.', $element->getNumber()) .
                     ' ' . $element->getAltTitle() . PHP_EOL;
             } else {
                 echo $element . PHP_EOL;

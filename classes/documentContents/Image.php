@@ -19,34 +19,20 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\iterators;
+namespace de\flatplane\documentContents;
 
 /**
- * Description of TocElementFilterIterator
- * TODO: document!
+ * Description of Image
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-
-
-class PageElementFilterIterator extends \FilterIterator
+class Image extends DocumentContentElement
 {
-    protected $type;
+    protected $type = 'image';
+    protected $allowSubContent = ['image'];
 
-    public function __construct(\Iterator $iterator, array $type)
-    {
-        $this->type = $type;
-        parent::__construct($iterator);
-    }
+    protected $path;
+    protected $imageType;
 
-    public function accept()
-    {
-        $content = parent::current();
-        if (in_array($content->getType(), $this->type)
-            && $content->getShowInIndex()) {
-                return true;
-        } else {
-            return false;
-        }
-    }
+
 }

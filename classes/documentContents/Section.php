@@ -19,14 +19,14 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\pageelements;
+namespace de\flatplane\documentContents;
 
 /**
  * Description of section
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Section extends PageElement
+class Section extends DocumentContentElement
 {
     protected $showInDocument = true;
     protected $type = 'section';
@@ -53,10 +53,5 @@ class Section extends PageElement
     public function __toString()
     {
         return (string) $this->title;
-    }
-
-    public function toRoot()
-    {
-        return $this->parent->toRoot();
     }
 }

@@ -19,7 +19,7 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\pageelements;
+namespace de\flatplane\documentContents;
 
 /**
  * @see Formula :Alias:
@@ -27,5 +27,5 @@ namespace de\flatplane\pageelements;
  */
 class Equation extends Formula
 {
-    
+
 }

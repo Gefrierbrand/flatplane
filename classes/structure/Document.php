@@ -21,10 +21,9 @@
 
 namespace de\flatplane\structure;
 
-use de\flatplane\pageelements\Section;
+use de\flatplane\documentContents\Section;
 use de\flatplane\utilities\Settings;
-use InvalidArgumentException;
-use RuntimeException;
+use de\flatplane\documentContents\ContentFunctions;
 
 /**
  * This class represents the base document.
@@ -32,7 +31,7 @@ use RuntimeException;
  */
 class Document
 {
-    use Content;
+    use ContentFunctions;
     /**
      * @var DocumentSettings
      *  Holds an instance of the DocumentSettings configuration Object
@@ -49,8 +48,7 @@ class Document
     /**
      *  Document Constructor
      *  @param array $settings
-     *   Array containing key=>value pairs of document-wide settings
-     *  @throws RuntimeException
+     *   Array containing key=>value pairs of document-wide settings     *
      */
     public function __construct(array $settings = null, $configFile = 'config/defaultDocumentSettings.ini')
     {
@@ -58,20 +56,16 @@ class Document
         $this->settings = $settings->getSettings();
     }
 
-    /**
-     * This method is called recursively by sections to get their complete branch
-     * number. As the document is always the root, this method gets overridden by
-     * the subclasses for the actual implemenation
-     *
-     * @see Section::getFullNumber()
-     * @return array
-     *  returns empty array
-     */
-    public function getFullNumber()
+    public function getNumber()
     {
         return [];
     }
 
+    /**
+     * @param string $key (optional)
+     * @return Settings
+     * @throws InvalidArgumentException
+     */
     public function getSettings($key = null)
     {
         if ($key === null) {
@@ -80,6 +74,7 @@ class Document
             if (array_key_exists($key, $this->settings)) {
                 return $this->settings[$key];
             } else {
+                //TODO: maybe just warn?
                 throw new InvalidArgumentException('Settings key '.$key.' not found');
             }
         }
@@ -87,6 +82,13 @@ class Document
 
     public function toRoot()
     {
+        //echo __METHOD__.' got called'.PHP_EOL;
+        return $this;
+    }
+
+    public function getParent()
+    {
+        //echo __METHOD__.' got called'.PHP_EOL;
         return $this;
     }
 }

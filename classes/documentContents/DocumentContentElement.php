@@ -19,11 +19,10 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\pageelements;
+namespace de\flatplane\documentContents;
 
-use de\flatplane\interfaces\PageElementInterface;
+use de\flatplane\interfaces\DocumentContentElementInterface;
 use de\flatplane\structure\Document;
-use de\flatplane\utilities\Number;
 use InvalidArgumentException;
 
 /**
@@ -31,27 +30,33 @@ use InvalidArgumentException;
  * Provides basic common functionality.
  * @author Nikolai Neff <admin@flatplane.de>
  */
-abstract class PageElement implements PageElementInterface
+abstract class DocumentContentElement implements DocumentContentElementInterface
 {
-    //import functionality horizontally from the trait Content
-    use \de\flatplane\structure\Content;
+
+    //import functionality horizontally from the trait ContentFunctions
+    //(reduces codelength & reuse in Document)
+    use ContentFunctions;
 
     protected $parent = null;
     protected $type = 'PageElement';
-    protected $number;
-    //protected $numberingStyle = '-1.#'; //FIXME? ->getter/setter, usage, ...
 
     protected $title;
     protected $altTitle;
     protected $caption;
-
     protected $showInIndex = true;
     protected $enumerate = true;
 
 
-    // GETTER:
-    // STRUCTURE
-    //
+    public function getChildren() // Alias of getSections()
+    {
+        return $this->getContent();
+    }
+
+    public function hasContent()
+    {
+        return !empty($this->content);
+    }
+
     public function getParent()
     {
         return $this->parent;
@@ -62,39 +67,11 @@ abstract class PageElement implements PageElementInterface
         return $this->type;
     }
 
-    public function getNumber()
-    {
-        return $this->number;
-    }
-
-    /**
-     * gets the numbers from each node in the document tree from the root to this
-     * element and returns referenced to them in an array
-     * @return array
-     */
-    public function getFullNumber()
-    {
-        if ($this->getParent()) {
-            $arr = $this->getParent()->getFullNumber();
-            $arr[] = $this->number;
-            return $arr;
-        } else {
-            if (!$this->getNumber()) {
-                return [];
-            } else {
-                return [$this->number];
-            }
-        }
-    }
-
     public function getLevel()
     {
         //TODO: Implement me
     }
 
-    // GETTER:
-    // FORMAT
-    //
     public function getSize()
     {
         //todo: IMPLEMENT : probably best in subclasses / content! //maybe as abstract?
@@ -102,12 +79,9 @@ abstract class PageElement implements PageElementInterface
 
     public function getPage()
     {
-         //TODO: Implement me
+        //TODO: Implement me
     }
 
-    // GETTER:
-    // CONTENT
-    //
     public function getEnumerate()
     {
         return $this->enumerate;
@@ -137,32 +111,23 @@ abstract class PageElement implements PageElementInterface
         return $this->caption;
     }
 
-    public function getContent()
-    {
-        return $this->content;
-    }
-
-
-    // SETTER:
-    // STRUCTURE
-    //
-
     /**
      * Sets the elements parent to another PageElement or the Document
-     * @param Document|PageElement $parent
+     * @param Document|DocumentContentElement $parent
      * @throws InvalidArgumentException
      */
     public function setParent($parent)
     {
-        if ($parent instanceof Document || $parent instanceof PageElement) {
+        if ($parent instanceof Document || $parent instanceof DocumentContentElementInterface) {
             $this->parent = $parent;
         } else {
             throw new InvalidArgumentException(
-                'The parent of a PageElement must be another PageElement or the '.
-                'Document. '.gettype($parent).' was given.'
+                'The parent of a PageElement must be another PageElement or the ' .
+                'Document. ' . gettype($parent) . ' was given.'
             );
         }
     }
+
     public function setType($type)
     {
         if (!is_array($type)) {
@@ -171,21 +136,12 @@ abstract class PageElement implements PageElementInterface
         $this->type = $type;
     }
 
-    public function setNumber(Number $number)
-    {
-        $this->number = $number;
-    }
-
-    // SETTER:
-    // CONTENT
-    //
     public function setEnumerate($enumerate)
     {
         if ($this->parent !== null) {
             trigger_error(
                 'setEnumerate() should not be called after adding the element'
-                . ' as content',
-                E_USER_WARNING
+                . ' as content', E_USER_WARNING
             );
         }
         $this->enumerate = $enumerate;
@@ -196,8 +152,7 @@ abstract class PageElement implements PageElementInterface
         if ($this->parent !== null) {
             trigger_error(
                 'setShowInIndex() should not be called after adding the element'
-                . ' as content',
-                E_USER_WARNING
+                . ' as content', E_USER_WARNING
             );
         }
         $this->showInIndex = $showInIndex;
@@ -205,12 +160,12 @@ abstract class PageElement implements PageElementInterface
 
     public function setTitle($title)
     {
-        $this->title=$title;
+        $this->title = $title;
     }
 
     public function setAltTitle($altTitle)
     {
-        $this->altTitle=$altTitle;
+        $this->altTitle = $altTitle;
     }
 
     public function setCaption($caption)

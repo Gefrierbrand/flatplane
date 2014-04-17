@@ -19,21 +19,34 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\pageelements;
+namespace de\flatplane\iterators;
 
 /**
- * Description of Text
+ * Description of TocElementFilterIterator
+ * TODO: document!
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Text extends PageElement
-{
-    protected $text;
-    protected $parse = true; //parse special content like eqn, etc
-    protected $containsReferences; //??
 
-    public function getSize()
+
+class DocumentContentElementFilterIterator extends \FilterIterator
+{
+    protected $type;
+
+    public function __construct(\Iterator $iterator, array $type)
     {
-        //do_nothing_loop()
+        $this->type = $type;
+        parent::__construct($iterator);
+    }
+
+    public function accept()
+    {
+        $content = parent::current();
+        if (in_array($content->getType(), $this->type)
+            && $content->getShowInIndex()) {
+                return true;
+        } else {
+            return false;
+        }
     }
 }

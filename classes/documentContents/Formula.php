@@ -19,16 +19,17 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\pageelements;
+namespace de\flatplane\documentContents;
 
 /**
  * Description of formula
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Formula extends PageElement
+class Formula extends DocumentContentElement
 {
     protected $type='formula';
+    protected $allowSubContent = ['formula'];
 
     protected $title='Formula';
 
@@ -73,6 +74,6 @@ class Formula extends PageElement
 
     public function __toString()
     {
-        return $this->code;
+        return $this->title;
     }
 }

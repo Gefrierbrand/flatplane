@@ -19,16 +19,21 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\pageelements;
+namespace de\flatplane\documentContents;
 
 /**
- * Description of Image
+ * Description of Text
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Image extends PageElement
+class Text extends DocumentContentElement
 {
-    protected $type = 'image';
-    protected $path;
-    protected $imageType;
+    protected $text;
+    protected $parse = true; //parse special content like eqn, etc
+    protected $containsReferences; //??
+
+    public function getSize()
+    {
+        //do_nothing_loop()
+    }
 }

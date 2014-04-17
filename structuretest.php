@@ -20,14 +20,15 @@
  */
 
 //use composer autoloading for dependencies
-require 'vendor/autoload.php';
+require 'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
 
 //lange, volldefinierte Klassennamen aus Namespaces laden
 
+
 use de\flatplane\iterators\RecursiveContentIterator;
-use de\flatplane\pageelements\Formula;
-use de\flatplane\pageelements\ListOfContents;
-use de\flatplane\pageelements\Section;
+use de\flatplane\documentContents\Formula;
+use de\flatplane\documentContents\ListOfContents;
+use de\flatplane\documentContents\Section;
 use de\flatplane\structure\Document;
 
 /*
@@ -39,10 +40,11 @@ $settings = array(
     'author' => 'Max Mustermann',
     'title' => 'Ganz wichtiges Dokument',
     'keywords' => 'super, toll, top, gigantisch, superlative!',
-    'startIndex' => ['section' => 0]
+    'startIndex' => ['section' => 1]
 );
 
 $document = new Document($settings);
+
 $vorwort = new Section('Vorwort');
 $vorwort->setEnumerate(false);
 
@@ -63,10 +65,17 @@ $subkap3->addContent(new Formula('\frac{1}{2}'));
 $subkap3->addContent(new Formula('\frac{1}{2}'));
 $subkap3->addContent(new Formula('\frac{1}{2}'));
 
-$formelverz = $document->addContent(new ListOfContents('Formelverzeichnis', 'formula', -1, false));
+
+$formelverz = $document->addContent(
+    new ListOfContents('Formelverzeichnis', 'formula', -1, false)
+);
 
 $kap2 = $document->addContent(new Section('titel', '', false));
 $kap2->addContent(new Formula('asd'));
+
+/*
+ * ENDE DOKUMENTDEFINITION
+ */
 
 
 
