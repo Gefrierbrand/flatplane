@@ -28,8 +28,7 @@ namespace de\flatplane\documentContents;
  */
 class Formula extends DocumentContentElement
 {
-    protected $numberingLevel = 1;
-
+    protected $numberingLevel = 0;
 
     protected $type='formula';
     protected $allowSubContent = ['formula'];
