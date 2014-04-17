@@ -46,9 +46,6 @@ abstract class DocumentContentElement implements DocumentContentElementInterface
     protected $showInIndex = true;
     protected $enumerate = true;
 
-    protected $level = 0;
-
-
     public function getChildren() // Alias of getSections()
     {
         return $this->getContent();
@@ -69,10 +66,7 @@ abstract class DocumentContentElement implements DocumentContentElementInterface
         return $this->type;
     }
 
-    public function getLevel()
-    {
-        return $this->level;
-    }
+
 
     public function getSize()
     {
@@ -175,9 +169,5 @@ abstract class DocumentContentElement implements DocumentContentElementInterface
     public function setCaption($caption)
     {
         $this->caption = $caption;
-    }
-
-    public function setLevel($level){
-        $this->level = $level;
     }
 }

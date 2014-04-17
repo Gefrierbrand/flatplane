@@ -54,6 +54,8 @@ trait ContentFunctions
      */
     protected $allowSubContent = true; // use specific types in an array or forbid completely by using false
 
+    protected $level = 0;
+
     /**
      * TODO: update inline doc
      * @param DocumentContentElementInterface $content
@@ -75,7 +77,7 @@ trait ContentFunctions
 
         //the number property is only set if the enumerate property is true
         if ($content->getEnumerate()) {
-            $this->setCounterAndNumber($content);
+            $this->calculateNumber($content);
         }
 
         //each content needs to know its parent to be able to reversely traverse
@@ -98,29 +100,20 @@ trait ContentFunctions
      * TODO: DOCUMENT INLINE
      * @param \de\flatplane\interfaces\DocumentContentElementInterface $content
      */
-    protected function setCounterAndNumber(DocumentContentElementInterface $content)
+    protected function calculateNumber(DocumentContentElementInterface $content)
     {
-        $type = $content->getType();
-
-        //check if a counter for the given type already exists and increment
-        //its value, or create a new one for that type
-        if (array_key_exists($type, $this->counter)) {
-            $this->counter[$content->getType()]->add();
+        if ($content->getNumberingLevel() == -1) {
+            $counterValue = $this->checkLocalCounter($content)->getValue();
         } else {
-            $document = $this->toRoot();
-            if (isset($document->getSettings('startIndex')[$type])) {
-                $startIndex = $document->getSettings('startIndex')[$type];
-            } else {
-                $startIndex = $document->getSettings('defaultStartIndex');
-            }
-            $this->addCounter(new Counter($startIndex), $type);
+            $counterValue = $this->checkRemoteCounter($content)->getValue();
         }
 
         //set the Number as an instance of the Number object to have access
         //to advanced formating options like letters or roman numerals.
-        $num = new Number($this->getCounter($type)->getValue());
+        $num = new Number($counterValue);
         $num->setFormat($this->numberingStyle);
 
+        //todo: doc, FIX?
         if ($content->getNumberingLevel() != -1) {
             $parentnum = array_slice(
                 $this->getNumber(),
@@ -134,6 +127,40 @@ trait ContentFunctions
         array_push($parentnum, $num);
 
         $content->setNumber($parentnum);
+    }
+
+    /**
+     * checks if a counter for the content-type already exists and increments
+     * its value, or creates a new one for that type
+     * @param DocumentContentElementInterface $content
+     * @return Counter Counter for the given content-type
+     */
+    public function checkLocalCounter(DocumentContentElementInterface $content)
+    {
+        $type = $content->getType();
+        if (array_key_exists($type, $this->counter)) {
+            $this->counter[$content->getType()]->add();
+        } else {
+            $document = $this->toRoot();
+            if (isset($document->getSettings('startIndex')[$type])) {
+                $startIndex = $document->getSettings('startIndex')[$type];
+            } else {
+                $startIndex = $document->getSettings('defaultStartIndex');
+            }
+            $this->addCounter(new Counter($startIndex), $type);
+        }
+        return $this->counter[$content->getType()];
+    }
+
+    protected function checkRemoteCounter(DocumentContentElementInterface $content)
+    {
+        $level = $content->getNumberingLevel();
+        if ($level < $this->level) {
+            $parentAtLevel = $this->toParentAtLevel($level);
+            return $parentAtLevel->checkLocalCounter($content);
+        } else {
+            return $this->checkLocalCounter($content);
+        }
     }
 
      /**
@@ -200,8 +227,26 @@ trait ContentFunctions
         }
     }
 
+    public function toParentAtLevel($level)
+    {
+        if ($level <0) {
+            trigger_error('Level can\'t be smaller than 0.',E_USER_NOTICE);
+            $level = 0;
+        }
+
+        if ($this->level == $level) {
+            return $this;
+        } else {
+            return $this->getParent()->toParentAtLevel($level);
+        }
+    }
+
     public function getNumberingLevel()
     {
+        if ($this->numberingLevel < -1) {
+            trigger_error('Numering Level can\'t be smaller than -1', E_USER_NOTICE);
+            $this->numberingLevel = -1;
+        }
         return $this->numberingLevel;
     }
 
@@ -228,5 +273,15 @@ trait ContentFunctions
     public function setAllowSubContent($allowSubContent)
     {
         $this->allowSubContent = $allowSubContent;
+    }
+
+    public function getLevel()
+    {
+        return $this->level;
+    }
+
+    public function setLevel($level)
+    {
+        $this->level = $level;
     }
 }
