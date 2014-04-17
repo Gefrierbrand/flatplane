@@ -22,39 +22,22 @@
 namespace de\flatplane\interfaces;
 
 /**
+ * Description of DocumentContentStructureInterface
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-interface DocumentContentElementInterface extends DocumentContentStructureInterface
+interface DocumentContentStructureInterface
 {
     public function hasContent();
     public function addContent(DocumentContentElementInterface $content);
     public function toRoot();
 
     public function getParent();
-    public function getType();
     public function getNumbers();
     public function getLevel();
 
-    public function getSize();
-    public function getPage();
-
-    public function getEnumerate();
-    public function getShowInIndex();
-    public function getTitle();
-    public function getAltTitle();
-    public function getCaption();
-
     public function getContent();
 
-
-    public function setParent($parent);
-    public function setType($type);
+    //public function setParent($parent);
     public function setNumbers(array $number);
-
-    public function setEnumerate($enumerate);
-    public function setShowInIndex($showInIndex);
-    public function setTitle($title);
-    public function setAltTitle($altTitle);
-    public function setCaption($caption);
 }

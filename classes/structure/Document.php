@@ -21,15 +21,16 @@
 
 namespace de\flatplane\structure;
 
-use de\flatplane\documentContents\Section;
-use de\flatplane\utilities\Settings;
 use de\flatplane\documentContents\ContentFunctions;
+use de\flatplane\interfaces\DocumentContentStructureInterface;
+use de\flatplane\utilities\Settings;
+use InvalidArgumentException;
 
 /**
  * This class represents the base document.
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Document
+class Document implements DocumentContentStructureInterface
 {
     use ContentFunctions;
     /**
@@ -77,13 +78,11 @@ class Document
 
     public function toRoot()
     {
-        //echo __METHOD__.' got called'.PHP_EOL;
         return $this;
     }
 
     public function getParent()
     {
-        //echo __METHOD__.' got called'.PHP_EOL;
         return $this;
     }
 }
