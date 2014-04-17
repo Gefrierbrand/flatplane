@@ -35,7 +35,6 @@ interface DocumentContentStructureInterface
     public function getParent();
     public function getNumbers();
     public function getLevel();
-
     public function getContent();
 
     public function setParent(DocumentContentStructureInterface $parent);

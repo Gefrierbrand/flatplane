@@ -27,29 +27,16 @@ namespace de\flatplane\interfaces;
  */
 interface DocumentContentElementInterface extends DocumentContentStructureInterface
 {
-    public function hasContent();
-    public function addContent(DocumentContentElementInterface $content);
-    public function toRoot();
-
-    public function getParent();
     public function getType();
-    public function getNumbers();
-    public function getLevel();
-
     public function getSize();
     public function getPage();
-
     public function getEnumerate();
     public function getShowInIndex();
     public function getTitle();
     public function getAltTitle();
     public function getCaption();
 
-    public function getContent();
-
     public function setType($type);
-    public function setNumbers(array $number);
-
     public function setEnumerate($enumerate);
     public function setShowInIndex($showInIndex);
     public function setTitle($title);
