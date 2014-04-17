@@ -72,17 +72,12 @@ class ListOfContents extends DocumentContentElement
         foreach ($FilterIt as $element) {
             if ($element->getEnumerate()) {
                 //todo: don't use implode?
-                echo implode('.', $element->getNumber()) .
+                echo implode('.', $element->getNumbers()) .
                     ' ' . $element->getAltTitle() . PHP_EOL;
             } else {
                 echo $element . PHP_EOL;
             }
         }
-    }
-
-    public function __toString()
-    {
-        return (string) $this->title;
     }
 
     public function getDisplayTypes()

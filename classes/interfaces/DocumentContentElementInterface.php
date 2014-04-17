@@ -33,7 +33,7 @@ interface DocumentContentElementInterface
 
     public function getParent();
     public function getType();
-    public function getNumber();
+    public function getNumbers();
     public function getLevel();
 
     public function getSize();
@@ -50,7 +50,7 @@ interface DocumentContentElementInterface
 
     public function setParent($parent);
     public function setType($type);
-    public function setNumber(array $number);
+    public function setNumbers(array $number);
 
     public function setEnumerate($enumerate);
     public function setShowInIndex($showInIndex);

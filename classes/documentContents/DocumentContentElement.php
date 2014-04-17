@@ -46,6 +46,15 @@ abstract class DocumentContentElement implements DocumentContentElementInterface
     protected $showInIndex = true;
     protected $enumerate = true;
 
+    public function __toString()
+    {
+        //TODO: remove numbering?
+        $num = $this->getNumbers();
+        $numStr = implode('.', $num);
+
+        return (string) $numStr. ' '. $this->title;
+    }
+
     public function getChildren() // Alias of getSections()
     {
         return $this->getContent();
@@ -65,8 +74,6 @@ abstract class DocumentContentElement implements DocumentContentElementInterface
     {
         return $this->type;
     }
-
-
 
     public function getSize()
     {

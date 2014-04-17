@@ -58,7 +58,12 @@ $document->addContent($inhalt);
 $kapitel1 = $document->addContent(new Section('kapitel 1'));
 
 $kapitel1->addContent(new Section('Subkapitel1'));
-$kapitel1->addContent(new Section('Subkapitel2', 'alternativtext'));
+$subkap2 = $kapitel1->addContent(new Section('Subkapitel2', 'alternativtext'));
+
+$subkap2->addContent(new Formula('\frac{1}{2}'));
+$subkap2->addContent(new Formula('\frac{1}{2}'));
+$subkap2->addContent(new Formula('\frac{1}{2}'));
+
 $subkap3 = $kapitel1->addContent(new Section('Subkapitel3'));
 
 $subkap3->addContent(new Formula('\frac{1}{2}'));
@@ -84,14 +89,15 @@ $RecItIt = new RecursiveTreeIterator(
     new RecursiveContentIterator($document->getContent()),
     RecursiveIteratorIterator::SELF_FIRST
 );
+
 foreach ($RecItIt as $value) {
     echo $value.PHP_EOL;
 }
 
 echo PHP_EOL.PHP_EOL.PHP_EOL;
-echo 'Alle nicht ausgeblendeten Kapitel:'.PHP_EOL.PHP_EOL;
+echo 'Alle nicht ausgeblendeten Kapitel (incl. Nummerierung):'.PHP_EOL.PHP_EOL;
 $inhalt->generateStructure();
 
 echo PHP_EOL.PHP_EOL.PHP_EOL;
-echo 'Alle nicht ausgeblendeten Formeln:'.PHP_EOL.PHP_EOL;
+echo 'Alle nicht ausgeblendeten Formeln (incl. Nummerierung):'.PHP_EOL.PHP_EOL;
 $formelverz->generateStructure();

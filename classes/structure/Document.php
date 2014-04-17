@@ -56,11 +56,6 @@ class Document
         $this->settings = $settings->getSettings();
     }
 
-    public function getNumber()
-    {
-        return [];
-    }
-
     /**
      * @param string $key (optional)
      * @return Settings

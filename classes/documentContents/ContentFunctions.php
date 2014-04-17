@@ -35,7 +35,7 @@ use de\flatplane\utilities\Number;
  */
 trait ContentFunctions
 {
-    protected $number; // = array();
+    protected $numbers = array();
     protected $numberingLevel = -1;
     protected $numberingStyle = 'int';
 
@@ -116,17 +116,17 @@ trait ContentFunctions
         //todo: doc, FIX?
         if ($content->getNumberingLevel() != -1) {
             $parentnum = array_slice(
-                $this->getNumber(),
+                $this->getNumbers(),
                 0,
                 $content->getNumberingLevel()
             );
         } else {
-            $parentnum = $this->getNumber();
+            $parentnum = $this->getNumbers();
         }
 
         array_push($parentnum, $num);
 
-        $content->setNumber($parentnum);
+        $content->setNumbers($parentnum);
     }
 
     /**
@@ -208,16 +208,24 @@ trait ContentFunctions
         return $this->counter[$name] = $counter;
     }
 
-    public function getNumber()
+    /**
+     *
+     * @return array
+     */
+    public function getNumbers()
     {
-        return $this->number;
+        return $this->numbers;
     }
 
-    public function setNumber(array $number)
+    public function setNumbers(array $number)
     {
-        $this->number = $number;
+        $this->numbers = $number;
     }
 
+    /**
+     *
+     * @return Document|DocumentContentElement
+     */
     public function toRoot()
     {
         if ($this->getParent() !==null) {
@@ -227,10 +235,15 @@ trait ContentFunctions
         }
     }
 
+    /**
+     *
+     * @param int $level
+     * @return Document|DocumentContentElement
+     */
     public function toParentAtLevel($level)
     {
         if ($level <0) {
-            trigger_error('Level can\'t be smaller than 0.',E_USER_NOTICE);
+            trigger_error('Level can\'t be smaller than 0.', E_USER_NOTICE);
             $level = 0;
         }
 
@@ -240,7 +253,10 @@ trait ContentFunctions
             return $this->getParent()->toParentAtLevel($level);
         }
     }
-
+    /**
+     *
+     * @return int
+     */
     public function getNumberingLevel()
     {
         if ($this->numberingLevel < -1) {
@@ -250,11 +266,20 @@ trait ContentFunctions
         return $this->numberingLevel;
     }
 
+    /**
+     *
+     * @return string
+     */
+
     public function getNumberingStyle()
     {
         return $this->numberingStyle;
     }
 
+    /**
+     *
+     * @return mixed
+     */
     public function getAllowSubContent()
     {
         return $this->allowSubContent;
@@ -275,6 +300,10 @@ trait ContentFunctions
         $this->allowSubContent = $allowSubContent;
     }
 
+    /**
+     *
+     * @return int
+     */
     public function getLevel()
     {
         return $this->level;

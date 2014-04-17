@@ -49,9 +49,4 @@ class Section extends DocumentContentElement
             $this->altTitle = $altTitle;
         }
     }
-
-    public function __toString()
-    {
-        return (string) $this->title;
-    }
 }

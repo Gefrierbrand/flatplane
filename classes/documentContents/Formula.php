@@ -28,7 +28,7 @@ namespace de\flatplane\documentContents;
  */
 class Formula extends DocumentContentElement
 {
-    protected $numberingLevel = 0;
+    protected $numberingLevel = -1;
 
     protected $type='formula';
     protected $allowSubContent = ['formula'];
@@ -72,10 +72,5 @@ class Formula extends DocumentContentElement
             );
             $this->format = 'TeX';
         }
-    }
-
-    public function __toString()
-    {
-        return $this->title;
     }
 }
