@@ -46,6 +46,8 @@ abstract class DocumentContentElement implements DocumentContentElementInterface
     protected $showInIndex = true;
     protected $enumerate = true;
 
+    protected $level = 0;
+
 
     public function getChildren() // Alias of getSections()
     {
@@ -69,7 +71,7 @@ abstract class DocumentContentElement implements DocumentContentElementInterface
 
     public function getLevel()
     {
-        //TODO: Implement me
+        return $this->level;
     }
 
     public function getSize()
@@ -140,8 +142,9 @@ abstract class DocumentContentElement implements DocumentContentElementInterface
     {
         if ($this->parent !== null) {
             trigger_error(
-                'setEnumerate() should not be called after adding the element'
-                . ' as content', E_USER_WARNING
+                'setEnumerate() should not be called after adding the element'.
+                ' as content',
+                E_USER_WARNING
             );
         }
         $this->enumerate = $enumerate;
@@ -151,8 +154,9 @@ abstract class DocumentContentElement implements DocumentContentElementInterface
     {
         if ($this->parent !== null) {
             trigger_error(
-                'setShowInIndex() should not be called after adding the element'
-                . ' as content', E_USER_WARNING
+                'setShowInIndex() should not be called after adding the element'.
+                ' as content',
+                E_USER_WARNING
             );
         }
         $this->showInIndex = $showInIndex;
@@ -171,5 +175,9 @@ abstract class DocumentContentElement implements DocumentContentElementInterface
     public function setCaption($caption)
     {
         $this->caption = $caption;
+    }
+
+    public function setLevel($level){
+        $this->level = $level;
     }
 }

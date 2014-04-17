@@ -71,10 +71,11 @@ trait ContentFunctions
         }
 
         $content->setParent($this);
+        $content->setLevel($this->getLevel()+1);
 
         //the number property is only set if the enumerate property is true
         if ($content->getEnumerate()) {
-            $this->setCounters($content);
+            $this->setCounterAndNumber($content);
         }
 
         //each content needs to know its parent to be able to reversely traverse
@@ -93,16 +94,20 @@ trait ContentFunctions
             return false;
         }
     }
-
-    protected function setCounters(DocumentContentElementInterface $content)
+    /**
+     * TODO: DOCUMENT INLINE
+     * @param \de\flatplane\interfaces\DocumentContentElementInterface $content
+     */
+    protected function setCounterAndNumber(DocumentContentElementInterface $content)
     {
-        $document = $this->toRoot();
         $type = $content->getType();
+
         //check if a counter for the given type already exists and increment
         //its value, or create a new one for that type
         if (array_key_exists($type, $this->counter)) {
             $this->counter[$content->getType()]->add();
         } else {
+            $document = $this->toRoot();
             if (isset($document->getSettings('startIndex')[$type])) {
                 $startIndex = $document->getSettings('startIndex')[$type];
             } else {
@@ -116,7 +121,16 @@ trait ContentFunctions
         $num = new Number($this->getCounter($type)->getValue());
         $num->setFormat($this->numberingStyle);
 
-        $parentnum = $this->getNumber();
+        if ($content->getNumberingLevel() != -1) {
+            $parentnum = array_slice(
+                $this->getNumber(),
+                0,
+                $content->getNumberingLevel()
+            );
+        } else {
+            $parentnum = $this->getNumber();
+        }
+
         array_push($parentnum, $num);
 
         $content->setNumber($parentnum);
