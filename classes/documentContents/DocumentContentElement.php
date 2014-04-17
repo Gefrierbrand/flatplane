@@ -22,6 +22,7 @@
 namespace de\flatplane\documentContents;
 
 use de\flatplane\interfaces\DocumentContentElementInterface;
+use de\flatplane\interfaces\DocumentContentStructureInterface;
 use de\flatplane\structure\Document;
 use InvalidArgumentException;
 
@@ -119,19 +120,11 @@ abstract class DocumentContentElement implements DocumentContentElementInterface
 
     /**
      * Sets the elements parent to another PageElement or the Document
-     * @param Document|DocumentContentElement $parent
-     * @throws InvalidArgumentException
+     * @param DocumentContentStructureInterface $parent
      */
-    public function setParent($parent)
+    public function setParent(DocumentContentStructureInterface $parent)
     {
-        if ($parent instanceof Document || $parent instanceof DocumentContentElementInterface) {
-            $this->parent = $parent;
-        } else {
-            throw new InvalidArgumentException(
-                'The parent of a PageElement must be another PageElement or the ' .
-                'Document. ' . gettype($parent) . ' was given.'
-            );
-        }
+        $this->parent = $parent;
     }
 
     public function setType($type)
