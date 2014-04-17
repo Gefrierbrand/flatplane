@@ -51,8 +51,11 @@ abstract class DocumentContentElement implements DocumentContentElementInterface
         //TODO: remove numbering?
         $num = $this->getNumbers();
         $numStr = implode('.', $num);
+        if ($numStr != '') {
+            $numStr .= ' ';
+        }
 
-        return (string) $numStr. ' '. $this->title;
+        return (string) $numStr. $this->title;
     }
 
     public function getChildren() // Alias of getSections()

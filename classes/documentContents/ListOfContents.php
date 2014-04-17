@@ -75,7 +75,7 @@ class ListOfContents extends DocumentContentElement
                 echo implode('.', $element->getNumbers()) .
                     ' ' . $element->getAltTitle() . PHP_EOL;
             } else {
-                echo $element . PHP_EOL;
+                echo $element->getAltTitle() . PHP_EOL;
             }
         }
     }
