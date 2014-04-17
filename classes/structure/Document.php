@@ -85,4 +85,9 @@ class Document implements DocumentContentStructureInterface
     {
         return $this;
     }
+
+    public function setParent(DocumentContentStructureInterface $parent)
+    {
+        //currently: do nothing
+    }
 }

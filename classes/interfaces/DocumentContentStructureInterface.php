@@ -38,6 +38,6 @@ interface DocumentContentStructureInterface
 
     public function getContent();
 
-    //public function setParent($parent);
+    public function setParent(DocumentContentStructureInterface $parent);
     public function setNumbers(array $number);
 }

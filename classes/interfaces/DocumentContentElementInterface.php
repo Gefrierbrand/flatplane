@@ -47,8 +47,6 @@ interface DocumentContentElementInterface extends DocumentContentStructureInterf
 
     public function getContent();
 
-
-    public function setParent($parent);
     public function setType($type);
     public function setNumbers(array $number);
 
