@@ -36,7 +36,7 @@ class Settings
         if ($configFile == '') {
             $configFile = $this->defaultConfigFile;
         }
-        
+
         //load default settings from ini file
         if (!is_readable($configFile)) {
             throw new \RuntimeException($configFile. ' is not readable');
@@ -55,8 +55,22 @@ class Settings
         }
     }
 
-    public function getSettings()
+    /**
+     * @param string $key (optional)
+     * @return \de\flatplane\utilities\Settings
+     * @throws InvalidArgumentException
+     */
+    public function getSettings($key = null)
     {
-        return $this->settings;
+        if ($key === null) {
+            return $this->settings;
+        } else {
+            if (array_key_exists($key, $this->settings)) {
+                return $this->settings[$key];
+            } else {
+                //TODO: maybe just warn?
+                throw new InvalidArgumentException('Settings key '.$key.' not found');
+            }
+        }
     }
 }

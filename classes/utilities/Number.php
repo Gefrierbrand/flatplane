@@ -38,7 +38,7 @@ class Number
 
     public function __toString()
     {
-        return (string) $this->value;
+        return (string) $this->getFormatedValue();
     }
 
     public function getValue()
@@ -46,8 +46,12 @@ class Number
         return $this->value;
     }
 
-    public function getFormatedValue($format = null, $numDecimals = 2, $dec_point = '.', $thousands_sep = '')
-    {
+    public function getFormatedValue(
+        $format = null,
+        $numDecimals = 2,
+        $dec_point = '.',
+        $thousands_sep = ''
+    ) {
         if ($format === null) {
             $format = $this->format;
         }
@@ -71,12 +75,18 @@ class Number
                 $retVal = $this->roman('upper');
                 break;
 
-            case 'int':
-            case 'Int':
-            case 'INT':
             case 'float':
-                $retVal = number_format($this->value, $numDecimals, $dec_point, $thousands_sep);
+                $retVal = number_format(
+                    $this->value,
+                    $numDecimals,
+                    $dec_point,
+                    $thousands_sep
+                );
+                break;
 
+            //case 'int':
+            //case 'Int':
+            //case 'INT':
             default:
                 $retVal = $this->value;
                 break;

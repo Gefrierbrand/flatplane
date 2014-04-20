@@ -53,27 +53,13 @@ class Document implements DocumentContentStructureInterface
      */
     public function __construct(array $settings = null, $configFile = '')
     {
-        $settings = new Settings($settings, $configFile);
-        $this->settings = $settings->getSettings();
+        //Fixme: use DI?
+        $this->settings = new Settings($settings, $configFile);
     }
 
-    /**
-     * @param string $key (optional)
-     * @return \de\flatplane\utilities\Settings
-     * @throws InvalidArgumentException
-     */
     public function getSettings($key = null)
     {
-        if ($key === null) {
-            return $this->settings;
-        } else {
-            if (array_key_exists($key, $this->settings)) {
-                return $this->settings[$key];
-            } else {
-                //TODO: maybe just warn?
-                throw new InvalidArgumentException('Settings key '.$key.' not found');
-            }
-        }
+        return $this->settings->getSettings($key);
     }
 
     /**

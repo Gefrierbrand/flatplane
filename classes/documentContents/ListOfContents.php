@@ -76,9 +76,10 @@ class ListOfContents extends DocumentContentElement
 
         foreach ($FilterIt as $element) {
             if ($element->getEnumerate()) {
-                //todo: use element style information
-                echo implode('.', $element->getNumbers()) .
-                    ' ' . $this->getPropAsString($element) . PHP_EOL;
+                    echo $element->getFormattedNumbers().
+                    ' ' .
+                    $this->getPropAsString($element).
+                    PHP_EOL;
             } else {
                 echo $this->getPropAsString($element) . PHP_EOL;
             }

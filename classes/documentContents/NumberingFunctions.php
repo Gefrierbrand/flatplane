@@ -56,7 +56,7 @@ trait NumberingFunctions
             return $this->counter[$name];
         } else {
             trigger_error('New Counter '.$name.' created', E_USER_WARNING);
-            $startIndex = $this->toRoot()->getSettings()['startIndex'];
+            $startIndex = $this->toRoot()->getSettings('startIndex');
             return $this->addCounter(new Counter($startIndex), $name);
         }
     }
@@ -110,8 +110,8 @@ trait NumberingFunctions
         $num = new Number($counterValue);
         $num->setFormat($this->numberingFormat);
 
-        //append the new content number to the calculated parents
-        array_push($parentnum, $num);
+        //append the new content number to the calculated parents (array is passed by reference)
+        array_push($parentnum, $num); //array_push returns number of elements in array
         $content->setNumbers($parentnum);
     }
 
@@ -164,9 +164,22 @@ trait NumberingFunctions
         return $this->numbers;
     }
 
-    public function setNumbers(array $number)
+    public function setNumbers(array $numbers)
     {
-        $this->numbers = $number;
+        $this->numbers = $numbers;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getFormattedNumbers()
+    {
+        $out = $this->numberingStyle[0]; // prefix
+        $nums = $this->getNumbers(); //numbers
+        $out .= implode($this->numberingStyle[1], $nums); //separators
+        $out .= $this->numberingStyle[2]; //postfix
+        return $out;
     }
 
     /**
