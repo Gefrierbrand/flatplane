@@ -33,10 +33,10 @@ use OutOfBoundsException;
  */
 trait NumberingFunctions
 {
-     /**
-     * @var array
-     *  Array containing instances of the number object representing a counted value
-     */
+    /**
+    * @var array
+    *  Array containing instances of the number object representing a counted value
+    */
     protected $numbers = array();
     protected $numberingLevel = -1;
     protected $numberingFormat = 'int';
