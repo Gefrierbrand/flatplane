@@ -51,7 +51,7 @@ class Document implements DocumentContentStructureInterface
      *  @param array $settings
      *   Array containing key=>value pairs of document-wide settings     *
      */
-    public function __construct(array $settings = null, $configFile = 'config/defaultDocumentSettings.ini')
+    public function __construct(array $settings = null, $configFile = '')
     {
         $settings = new Settings($settings, $configFile);
         $this->settings = $settings->getSettings();
@@ -59,7 +59,7 @@ class Document implements DocumentContentStructureInterface
 
     /**
      * @param string $key (optional)
-     * @return Settings
+     * @return \de\flatplane\utilities\Settings
      * @throws InvalidArgumentException
      */
     public function getSettings($key = null)
@@ -76,11 +76,17 @@ class Document implements DocumentContentStructureInterface
         }
     }
 
+    /**
+     * @return \de\flatplane\structure\Document
+     */
     public function toRoot()
     {
         return $this;
     }
 
+    /**
+     * @return \de\flatplane\structure\Document
+     */
     public function getParent()
     {
         return $this;

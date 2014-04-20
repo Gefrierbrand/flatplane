@@ -28,7 +28,7 @@ namespace de\flatplane\documentContents;
  */
 class Formula extends DocumentContentElement
 {
-    protected $numberingLevel = -1;
+    protected $numberingLevel = 0;
 
     protected $type='formula';
     protected $allowSubContent = ['formula'];
@@ -37,10 +37,10 @@ class Formula extends DocumentContentElement
 
     protected $code;
     protected $font;
-    protected $format;
+    protected $codeFormat;
     protected $availableFonts = ['TeX', 'STIX-Web', 'Asana-Math', 'Neo-Euler',
                                 'Gyre-Pagella', 'Gyre-Termes', 'Latin-Modern'];
-    protected $availableFormats = ['TeX','MathML','AsciiMath'];
+    protected $availableCodeFormats = ['TeX','MathML','AsciiMath'];
 
     public function __construct(
         $code,
@@ -63,14 +63,64 @@ class Formula extends DocumentContentElement
             $this->font = 'TeX';
         }
 
-        if (in_array($format, $this->availableFormats, true)) {
-            $this->format = $format;
+        if (in_array($format, $this->availableCodeFormats, true)) {
+            $this->codeFormat = $format;
         } else {
             trigger_error(
                 "Format $format not available, defaulting to TeX",
                 E_USER_NOTICE
             );
-            $this->format = 'TeX';
+            $this->codeFormat = 'TeX';
         }
+    }
+
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    public function getFont()
+    {
+        return $this->font;
+    }
+
+    public function getFormat()
+    {
+        return $this->codeFormat;
+    }
+
+    public function getAvailableFonts()
+    {
+        return $this->availableFonts;
+    }
+
+    public function getAvailableCodeFormats()
+    {
+        return $this->availableCodeFormats;
+    }
+
+    public function setCode($code)
+    {
+        $this->code = $code;
+    }
+
+    public function setFont($font)
+    {
+        $this->font = $font;
+    }
+
+    public function setCodeFormat($codeFormat)
+    {
+        $this->codeFormat = $codeFormat;
+    }
+
+    public function setAvailableFonts(array $availableFonts)
+    {
+        $this->availableFonts = $availableFonts;
+    }
+
+    public function setAvailableCodeFormats(array $availableCodeFormats)
+    {
+        $this->availableCodeFormats = $availableCodeFormats;
     }
 }

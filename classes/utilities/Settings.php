@@ -29,17 +29,22 @@ namespace de\flatplane\utilities;
 class Settings
 {
     protected $settings;
+    protected $defaultConfigFile = 'config/documentSettings.ini';
 
-    public function __construct(array $settings = null, $configFile = 'config/defaultDocumentSettings.ini')
+    public function __construct(array $settings = null, $configFile = '')
     {
+        if ($configFile == '') {
+            $configFile = $this->defaultConfigFile;
+        }
+        
         //load default settings from ini file
         if (!is_readable($configFile)) {
-            throw new RuntimeException($configFile. ' is not readable');
+            throw new \RuntimeException($configFile. ' is not readable');
         }
 
         $this->settings = parse_ini_file($configFile);
         if ($this->settings === false) {
-            throw new RuntimeException($configFile. ' could not be parsed');
+            throw new \RuntimeException($configFile. ' could not be parsed');
         }
 
         //replace defaults with given settings

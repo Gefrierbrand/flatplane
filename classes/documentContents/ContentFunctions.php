@@ -23,9 +23,9 @@ namespace de\flatplane\documentContents;
 
 use de\flatplane\documentContent\DocumentContent;
 use de\flatplane\interfaces\DocumentContentElementInterface;
-use de\flatplane\structure\Document;
 use de\flatplane\utilities\Counter;
 use de\flatplane\utilities\Number;
+use OutOfBoundsException;
 
 /**
  * This trait provides functionality to the Document and DocumentContentElement
@@ -44,7 +44,8 @@ trait ContentFunctions
      */
     protected $numbers = array();
     protected $numberingLevel = -1;
-    protected $numberingStyle = 'int';
+    protected $numberingFormat = 'int';
+    protected $numberingStyle = ['','.','']; //prefix, separator, postfix
 
     /**
      * @var array
@@ -150,7 +151,7 @@ trait ContentFunctions
                 $content->getNumberingLevel()
             );
         } else {
-            throw new \OutOfBoundsException(
+            throw new OutOfBoundsException(
                 'The numberingLevel can\'t be smaller than -1'
             );
         }
@@ -158,7 +159,7 @@ trait ContentFunctions
         //set the Number as an instance of the Number object to have access
         //to advanced formating options like letters or roman numerals.
         $num = new Number($counterValue);
-        $num->setFormat($this->numberingStyle);
+        $num->setFormat($this->numberingFormat);
 
         //append the new content number to the calculated parents
         array_push($parentnum, $num);
@@ -327,9 +328,9 @@ trait ContentFunctions
      *
      * @return string
      */
-    public function getNumberingStyle()
+    public function getNumberingFormat()
     {
-        return $this->numberingStyle;
+        return $this->numberingFormat;
     }
 
     /**
@@ -346,14 +347,28 @@ trait ContentFunctions
         $this->numberingLevel = $numberingLevel;
     }
 
-    public function setNumberingStyle($numberingStyle)
+    public function setNumberingFormat($numberingFormat)
     {
-        $this->numberingStyle = $numberingStyle;
+        $this->numberingFormat = $numberingFormat;
     }
 
     public function setAllowSubContent($allowSubContent)
     {
         $this->allowSubContent = $allowSubContent;
+    }
+
+    public function getNumberingStyle()
+    {
+        return $this->numberingStyle;
+    }
+
+    /**
+     * @param array $numberingStyle
+     *  Array containing strings for Prefix, Separator, Postifix (in that order)
+     */
+    public function setNumberingStyle(array $numberingStyle)
+    {
+        $this->numberingStyle = $numberingStyle;
     }
 
     /**

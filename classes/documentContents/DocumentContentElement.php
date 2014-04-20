@@ -23,8 +23,6 @@ namespace de\flatplane\documentContents;
 
 use de\flatplane\interfaces\DocumentContentElementInterface;
 use de\flatplane\interfaces\DocumentContentStructureInterface;
-use de\flatplane\structure\Document;
-use InvalidArgumentException;
 
 /**
  * Abstract class for all page elements like sections, text, images, formulas, ...

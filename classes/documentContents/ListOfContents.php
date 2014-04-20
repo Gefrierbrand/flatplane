@@ -21,6 +21,7 @@
 
 namespace de\flatplane\documentContents;
 
+use de\flatplane\interfaces\DocumentContentElementInterface;
 use de\flatplane\iterators\DocumentContentElementFilterIterator;
 use de\flatplane\iterators\RecursiveContentIterator;
 use RecursiveIteratorIterator;
@@ -36,6 +37,7 @@ class ListOfContents extends DocumentContentElement
     protected $type='section'; //use section here to be able to include self
     protected $displayTypes;
     protected $allowSubContent = false;
+    protected $propertiesToDisplay = ['altTitle'];
 
     public function __construct(
         $title,
@@ -67,17 +69,31 @@ class ListOfContents extends DocumentContentElement
 
         $RecItIt->setMaxDepth($this->maxDepth);
 
-        $FilterIt = new DocumentContentElementFilterIterator($RecItIt, $this->displayTypes);
+        $FilterIt = new DocumentContentElementFilterIterator(
+            $RecItIt,
+            $this->displayTypes
+        );
 
         foreach ($FilterIt as $element) {
             if ($element->getEnumerate()) {
-                //todo: don't use implode?
+                //todo: use element style information
                 echo implode('.', $element->getNumbers()) .
-                    ' ' . $element->getAltTitle() . PHP_EOL;
+                    ' ' . $this->getPropAsString($element) . PHP_EOL;
             } else {
-                echo $element->getAltTitle() . PHP_EOL;
+                echo $this->getPropAsString($element) . PHP_EOL;
             }
         }
+    }
+
+    protected function getPropAsString(DocumentContentElementInterface $element)
+    {
+        foreach ($this->propertiesToDisplay as $prop) {
+            $methodName = 'get'.ucfirst($prop);
+            if (method_exists($element, $methodName)) {
+                $erg[] = $element->{$methodName}();
+            }
+        }
+        return implode(' ', $erg);
     }
 
     public function getDisplayTypes()
@@ -91,5 +107,25 @@ class ListOfContents extends DocumentContentElement
             $displayTypes = [$displayTypes];
         }
         $this->displayType = $displayTypes;
+    }
+
+    public function getMaxDepth()
+    {
+        return $this->maxDepth;
+    }
+
+    public function getPropertiesToDisplay()
+    {
+        return $this->propertiesToDisplay;
+    }
+
+    public function setMaxDepth($maxDepth)
+    {
+        $this->maxDepth = $maxDepth;
+    }
+
+    public function setPropertiesToDisplay(array $propertiesToDisplay)
+    {
+        $this->propertiesToDisplay = $propertiesToDisplay;
     }
 }

@@ -70,6 +70,10 @@ $subkap3->addContent(new Formula('\frac{1}{2}'));
 $subkap3->addContent(new Formula('\frac{1}{2}'));
 $subkap3->addContent(new Formula('\frac{1}{2}'));
 
+$subsubkap = new Section('SubSub');
+$subkap3->addContent($subsubkap);
+
+$subsubkap->addContent(new Formula('test'));
 
 $formelverz = $document->addContent(
     new ListOfContents('Formelverzeichnis', 'formula', -1, false)
@@ -77,6 +81,8 @@ $formelverz = $document->addContent(
 
 $kap2 = $document->addContent(new Section('titel', '', false));
 $kap2->addContent(new Formula('asd'));
+
+$anhang = $document->addContent(new Section('Anhang', '', true, false));
 
 /*
  * ENDE DOKUMENTDEFINITION
@@ -100,4 +106,5 @@ $inhalt->generateStructure();
 
 echo PHP_EOL.PHP_EOL.PHP_EOL;
 echo 'Alle nicht ausgeblendeten Formeln (incl. Nummerierung):'.PHP_EOL.PHP_EOL;
+$formelverz->setPropertiesToDisplay(['altTitle', 'code']);
 $formelverz->generateStructure();
