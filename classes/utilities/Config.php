@@ -78,27 +78,28 @@ class Config
     }
 
     /**
+     * FIXME: Make this nice!
      * @param string $key (optional)
-     * @return array
+     * @param string $subKey (optional)
+     * @return mixed
      * @throws InvalidArgumentException
      */
-    public static function getSettings($key = null)
+    public static function getSettings($key = null, $subKey = null)
     {
         if (self::$settings === null) {
             self::loadFile();
         }
 
-        //FIXME: fallback / errors?
         if ($key === null) {
-            return self::$settings;
+            $value = self::$settings;
         } else {
             if (array_key_exists($key, self::$settings)) {
-                return self::$settings[$key];
+                $value = self::$settings[$key];
             } else {
                 //fall back to default setting if specific setting does not exist
                 $defaultKey = 'default'.ucfirst($key);
                 if (array_key_exists($defaultKey, self::$settings)) {
-                    return self::$settings[$defaultKey];
+                    $value = self::$settings[$defaultKey];
                 } else {
                     throw new \InvalidArgumentException(
                         'The key '.$key.' does not exist in the configuration.'
@@ -106,5 +107,12 @@ class Config
                 }
             }
         }
+
+        if (is_array($value) && $subKey !== null) {
+            if (array_key_exists($subKey, $value)) {
+                $value = $value[$subKey];
+            }
+        }
+        return $value;
     }
 }

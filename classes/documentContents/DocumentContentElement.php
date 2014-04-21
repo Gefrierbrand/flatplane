@@ -44,7 +44,7 @@ abstract class DocumentContentElement implements DocumentContentElementInterface
     protected $caption;
     protected $showInIndex = true;
     protected $enumerate = true;
-
+    
     public function __toString()
     {
         //TODO: remove numbering?

@@ -43,7 +43,7 @@ $settings = array(
     'author' => 'Max Mustermann',
     'title' => 'Ganz wichtiges Dokument',
     'keywords' => 'super, toll, top, gigantisch, superlative!',
-    'startIndex' => ['section' => 5]
+    'startIndex' => ['section' => 0]
 );
 
 //Config::setSettings($settings);

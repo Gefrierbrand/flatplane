@@ -38,7 +38,7 @@ class Number
 
     public function __toString()
     {
-        return (string) $this->getFormatedValue();
+        return (string) $this->getFormattedValue();
     }
 
     public function getValue()
@@ -46,7 +46,7 @@ class Number
         return $this->value;
     }
 
-    public function getFormatedValue(
+    public function getFormattedValue(
         $format = null,
         $numDecimals = 2,
         $dec_point = '.',

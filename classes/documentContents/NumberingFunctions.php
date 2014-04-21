@@ -39,9 +39,6 @@ trait NumberingFunctions
     *  Array containing instances of the number object representing a counted value
     */
     protected $numbers = array();
-    protected $numberingLevel = -1;
-    protected $numberingFormat = 'int';
-    protected $numberingStyle = ['','.','']; //prefix, separator, postfix
 
     /**
      * Returns an existing Counter for the given type or creates a new one if
@@ -56,9 +53,9 @@ trait NumberingFunctions
         if (array_key_exists($name, $this->counter)) {
             return $this->counter[$name];
         } else {
+            //todo: proper errors?
             trigger_error('New Counter '.$name.' created', E_USER_WARNING);
-            $startIndex = Config::getSettings('startIndex');
-            return $this->addCounter(new Counter($startIndex), $name);
+            return $this->addCounter(new Counter(), $name);
         }
     }
 
@@ -82,24 +79,24 @@ trait NumberingFunctions
      */
     protected function calculateNumber(DocumentContentElementInterface $content)
     {
+        $numberingLevel = Config::getSettings(
+            'numberingLevel',
+            $content->getType()
+        );
         //check the contents numberingLevel settings (-1 for arbitrary depth)
-        if ($content->getNumberingLevel() == -1) {
+        if ($numberingLevel == -1) {
             //increment the appropriate counters in the current depth and
             //get their value
             $counterValue = $this->checkLocalCounter($content)->getValue();
             //the parent part of the childs number is the current number
             $parentnum = $this->getNumbers();
-        } else if ($content->getNumberingLevel() >= 0) {
+        } else if ($numberingLevel >= 0) {
             //increment the appropriate counters in the parent at the correct
             //depth and get their value
             $counterValue = $this->checkRemoteCounter($content)->getValue();
 
             //remove unneccesary parts from the current numbering scheme
-            $parentnum = array_slice(
-                $this->getNumbers(),
-                0,
-                $content->getNumberingLevel()
-            );
+            $parentnum = array_slice($this->getNumbers(), 0, $numberingLevel);
         } else {
             throw new OutOfBoundsException(
                 'The numberingLevel can\'t be smaller than -1'
@@ -109,10 +106,14 @@ trait NumberingFunctions
         //set the Number as an instance of the Number object to have access
         //to advanced formating options like letters or roman numerals.
         $num = new Number($counterValue);
-        $num->setFormat($this->numberingFormat);
+        $num->setFormat(
+            Config::getSettings('numberingFormat', $content->getType())
+        );
 
-        //append the new content number to the calculated parents (array is passed by reference)
-        array_push($parentnum, $num); //array_push returns number of elements in array
+        //append the new content number to the calculated parents
+        $parentnum[] = $num;
+
+        //set the contents numbering
         $content->setNumbers($parentnum);
     }
 
@@ -128,7 +129,7 @@ trait NumberingFunctions
         if (array_key_exists($type, $this->counter)) {
             $this->counter[$content->getType()]->add();
         } else {
-            $startIndex = Config::getSettings('startIndex')[$type];
+            $startIndex = Config::getSettings('startIndex', $type);
             $this->addCounter(new Counter($startIndex), $type);
         }
         return $this->counter[$content->getType()];
@@ -142,7 +143,7 @@ trait NumberingFunctions
      */
     protected function checkRemoteCounter(DocumentContentElementInterface $content)
     {
-        $level = $content->getNumberingLevel();
+        $level = Config::getSettings('numberingLevel', $content->getType());
         if ($level < $this->level) {
             $parentAtLevel = $this->toParentAtLevel($level);
             return $parentAtLevel->checkLocalCounter($content);
@@ -171,57 +172,20 @@ trait NumberingFunctions
      */
     public function getFormattedNumbers()
     {
-        $out = $this->numberingStyle[0]; // prefix
-        $nums = $this->getNumbers(); //numbers
-        $out .= implode($this->numberingStyle[1], $nums); //separators
-        $out .= $this->numberingStyle[2]; //postfix
+        $prefix = Config::getSettings('numberingPrefix', $this->getType());
+        $separator = Config::getSettings('numberingSeparator', $this->getType());
+        $postfix = Config::getSettings('numberingPostfix', $this->getType());
+
+        $out = $prefix;
+
+        foreach ($this->numbers as $number) {
+            $out .= $number->getFormattedValue();
+            $out .= $separator;
+        }
+
+        $out = rtrim($out,$separator); //remove last separator
+        $out .= $postfix;
+
         return $out;
     }
-
-    /**
-     *
-     * @return int
-     */
-    public function getNumberingLevel()
-    {
-        if ($this->numberingLevel < -1) {
-            trigger_error('Numering Level can\'t be smaller than -1', E_USER_NOTICE);
-            $this->numberingLevel = -1;
-        }
-        return $this->numberingLevel;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function getNumberingFormat()
-    {
-        return $this->numberingFormat;
-    }
-
-    public function setNumberingLevel($numberingLevel)
-    {
-        $this->numberingLevel = $numberingLevel;
-    }
-
-    public function setNumberingFormat($numberingFormat)
-    {
-        $this->numberingFormat = $numberingFormat;
-    }
-
-    public function getNumberingStyle()
-    {
-        return $this->numberingStyle;
-    }
-
-    /**
-     * @param array $numberingStyle
-     *  Array containing strings for Prefix, Separator, Postifix (in that order)
-     */
-    public function setNumberingStyle(array $numberingStyle)
-    {
-        $this->numberingStyle = $numberingStyle;
-    }
-
 }
