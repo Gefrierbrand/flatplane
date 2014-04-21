@@ -128,12 +128,7 @@ trait NumberingFunctions
         if (array_key_exists($type, $this->counter)) {
             $this->counter[$content->getType()]->add();
         } else {
-            //TODO: better fallback? @see config
-            if (Config::getSettings('startIndex')[$type] !== null) {
-                $startIndex = Config::getSettings('startIndex')[$type];
-            } else {
-                $startIndex = Config::getSettings('defaultStartIndex');
-            }
+            $startIndex = Config::getSettings('startIndex')[$type];
             $this->addCounter(new Counter($startIndex), $type);
         }
         return $this->counter[$content->getType()];

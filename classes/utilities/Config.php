@@ -95,7 +95,15 @@ class Config
             if (array_key_exists($key, self::$settings)) {
                 return self::$settings[$key];
             } else {
-                return null;
+                //fall back to default setting if specific setting does not exist
+                $defaultKey = 'default'.ucfirst($key);
+                if(array_key_exists($defaultKey, self::$settings)) {
+                    return self::$settings[$defaultKey];
+                } else {
+                    throw new \InvalidArgumentException(
+                        'The key '.$key.' does not exist in the configuration.'
+                    );
+                }
             }
         }
     }
