@@ -97,7 +97,7 @@ class Config
             } else {
                 //fall back to default setting if specific setting does not exist
                 $defaultKey = 'default'.ucfirst($key);
-                if(array_key_exists($defaultKey, self::$settings)) {
+                if (array_key_exists($defaultKey, self::$settings)) {
                     return self::$settings[$defaultKey];
                 } else {
                     throw new \InvalidArgumentException(
