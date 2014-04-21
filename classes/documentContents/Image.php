@@ -33,6 +33,4 @@ class Image extends DocumentContentElement
 
     protected $path;
     protected $imageType;
-
-
 }

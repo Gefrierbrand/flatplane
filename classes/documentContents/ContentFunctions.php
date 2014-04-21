@@ -35,7 +35,9 @@ use de\flatplane\interfaces\DocumentContentElementInterface;
  */
 trait ContentFunctions
 {
+    //trait split into to for simpler management
     use NumberingFunctions;
+
     /**
     * @var array
     *  Array holding references to the content of the document like sections,
