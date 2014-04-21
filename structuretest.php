@@ -25,11 +25,14 @@ require 'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
 //lange, volldefinierte Klassennamen aus Namespaces laden
 
 
-use de\flatplane\iterators\RecursiveContentIterator;
 use de\flatplane\documentContents\Formula;
 use de\flatplane\documentContents\ListOfContents;
 use de\flatplane\documentContents\Section;
+use de\flatplane\iterators\RecursiveContentIterator;
 use de\flatplane\structure\Document;
+use de\flatplane\utilities\Timer;
+
+$t = new Timer;
 
 /*
  * BEGIN DOKUMENTDEFINITION
@@ -40,8 +43,10 @@ $settings = array(
     'author' => 'Max Mustermann',
     'title' => 'Ganz wichtiges Dokument',
     'keywords' => 'super, toll, top, gigantisch, superlative!',
-    'startIndex' => ['section' => 1]
+    'startIndex' => ['section' => 5]
 );
+
+//Config::setSettings($settings);
 
 $document = new Document($settings);
 
@@ -59,6 +64,7 @@ $kapitel1 = $document->addContent(new Section('kapitel 1'));
 
 $kapitel1->addContent(new Section('Subkapitel1'));
 $subkap2 = $kapitel1->addContent(new Section('Subkapitel2', 'alternativtext'));
+
 
 $subkap2->addContent(new Formula('\frac{1}{2}'));
 $subkap2->addContent(new Formula('\frac{1}{2}'));
@@ -88,7 +94,7 @@ $anhang = $document->addContent(new Section('Anhang', '', true, false));
  * ENDE DOKUMENTDEFINITION
  */
 
-
+$t->now('after Def');
 
 echo 'GESAMTES DOKUMENT'.PHP_EOL;
 $RecItIt = new RecursiveTreeIterator(

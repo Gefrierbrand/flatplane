@@ -18,6 +18,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
+echo "is_script_cached: ".var_export(opcache_is_script_cached(__FILE__), true).PHP_EOL;
 
 $beginn = microtime(true);
 

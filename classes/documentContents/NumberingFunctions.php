@@ -24,6 +24,7 @@ namespace de\flatplane\documentContents;
 use de\flatplane\interfaces\DocumentContentElementInterface;
 use de\flatplane\utilities\Counter;
 use de\flatplane\utilities\Number;
+use de\flatplane\utilities\Config;
 use OutOfBoundsException;
 
 /**
@@ -56,7 +57,7 @@ trait NumberingFunctions
             return $this->counter[$name];
         } else {
             trigger_error('New Counter '.$name.' created', E_USER_WARNING);
-            $startIndex = $this->toRoot()->getSettings('startIndex');
+            $startIndex = Config::getSettings('startIndex');
             return $this->addCounter(new Counter($startIndex), $name);
         }
     }
@@ -127,11 +128,11 @@ trait NumberingFunctions
         if (array_key_exists($type, $this->counter)) {
             $this->counter[$content->getType()]->add();
         } else {
-            $document = $this->toRoot();
-            if (isset($document->getSettings('startIndex')[$type])) {
-                $startIndex = $document->getSettings('startIndex')[$type];
+            //TODO: better fallback? @see config
+            if (Config::getSettings('startIndex')[$type] !== null) {
+                $startIndex = Config::getSettings('startIndex')[$type];
             } else {
-                $startIndex = $document->getSettings('defaultStartIndex');
+                $startIndex = Config::getSettings('defaultStartIndex');
             }
             $this->addCounter(new Counter($startIndex), $type);
         }

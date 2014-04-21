@@ -3,15 +3,56 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "c7e3a8367c18aa35ffe8dadee186adaf",
+    "hash": "08be1c796735a44bcde26f0995ac7191",
     "packages": [
+        {
+            "name": "peehaa/opcachegui",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PeeHaa/OpCacheGUI.git",
+                "reference": "b06eab985dd6ab5924a0b39db097a400cd6b14ac"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PeeHaa/OpCacheGUI/zipball/b06eab985dd6ab5924a0b39db097a400cd6b14ac",
+                "reference": "b06eab985dd6ab5924a0b39db097a400cd6b14ac",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Pieter Hordijk",
+                    "email": "info@pieterhordijk.com",
+                    "homepage": "https://pieterhordijk.com",
+                    "role": "developer"
+                }
+            ],
+            "description": "GUI for PHP's OpCache",
+            "homepage": "https://github.com/PeeHaa/OpCacheGUI",
+            "keywords": [
+                "Opcache",
+                "cache",
+                "graphs",
+                "gui",
+                "opcodes"
+            ],
+            "time": "2014-02-23 20:37:42"
+        },
         {
             "name": "tecnick.com/tcpdf",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "git://git.code.sf.net/p/tcpdf/code",
-                "reference": "ce07b409874a7ac0567b3401c765febef9efb413"
+                "reference": "0eb0152409e05e1481cfbebd5976061df1f638c4"
             },
             "require": {
                 "php": ">=5.3.0"
@@ -60,7 +101,7 @@
                 "pdf417",
                 "qrcode"
             ],
-            "time": "2014-04-10 16:47:45"
+            "time": "2014-04-20 14:24:26"
         }
     ],
     "packages-dev": [
@@ -74,7 +115,8 @@
         "tecnick.com/tcpdf": 20
     },
     "platform": {
-        "php": ">=5.5.0"
+        "php": ">=5.5.11",
+        "ext-gd": "*"
     },
     "platform-dev": [
 

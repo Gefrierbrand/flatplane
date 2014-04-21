@@ -23,8 +23,7 @@ namespace de\flatplane\structure;
 
 use de\flatplane\documentContents\ContentFunctions;
 use de\flatplane\interfaces\DocumentContentStructureInterface;
-use de\flatplane\utilities\Settings;
-use InvalidArgumentException;
+use de\flatplane\utilities\Config;
 
 /**
  * This class represents the base document.
@@ -33,11 +32,6 @@ use InvalidArgumentException;
 class Document implements DocumentContentStructureInterface
 {
     use ContentFunctions;
-    /**
-     * @var DocumentSettings
-     *  Holds an instance of the DocumentSettings configuration Object
-     */
-    private $settings;
 
     /**
      * @var int
@@ -47,19 +41,15 @@ class Document implements DocumentContentStructureInterface
     private $pages;
 
     /**
-     *  Document Constructor
-     *  @param array $settings
-     *   Array containing key=>value pairs of document-wide settings     *
+     * Document Constructor
+     * @param array $settings (optional)
+     *  key => value pairs of options overriding the defaults
      */
-    public function __construct(array $settings = null, $configFile = '')
+    public function __construct($settings = null)
     {
-        //Fixme: use DI?
-        $this->settings = new Settings($settings, $configFile);
-    }
-
-    public function getSettings($key = null)
-    {
-        return $this->settings->getSettings($key);
+        if ($settings !== null) {
+            Config::setSettings($settings);
+        }
     }
 
     /**

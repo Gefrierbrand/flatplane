@@ -68,17 +68,15 @@ trait ContentFunctions
      * It checks if the given, to-be added content-type is allowed for the current
      * object and returns false on failure or a reference to the added content.
      * @param DocumentContentElementInterface $content
-     * @return DocumentContent|bool
+     * @return DocumentContent
      */
     public function addContent(DocumentContentElementInterface $content)
     {
         if (!$this->checkAllowedContent($content)) {
-            trigger_error(
-                "You can't add content of type {$content->getType()} to content" .
-                " of type {$this->getType()}.",
-                E_USER_WARNING
+            throw new \Exception(
+                "You can't add content of type {$content->getType()} to content".
+                " of type {$this->getType()}."
             );
-            return false;
         }
 
         //set the contents parent to the current instance to be able to reversely
