@@ -44,15 +44,12 @@ abstract class DocumentContentElement implements DocumentContentElementInterface
     protected $caption;
     protected $showInIndex = true;
     protected $enumerate = true;
-    
+
     public function __toString()
     {
+        //TEMPORARY
         //TODO: remove numbering?
-        $num = $this->getNumbers();
-        $numStr = implode('.', $num);
-        if ($numStr != '') {
-            $numStr .= ' ';
-        }
+        $numStr = $this->getFormattedNumbers().' ';
 
         return (string) $numStr. $this->title;
     }

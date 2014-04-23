@@ -43,7 +43,10 @@ $settings = array(
     'author' => 'Max Mustermann',
     'title' => 'Ganz wichtiges Dokument',
     'keywords' => 'super, toll, top, gigantisch, superlative!',
-    'startIndex' => ['section' => 0]
+    'startIndex' => ['section' => 0],
+    'numberingPrefix' => ['formula' => '['],
+    'numberingPostfix' => ['formula' => ']'],
+    'numberingSeparator' => ['formula' => '#']
 );
 
 //Config::setSettings($settings);

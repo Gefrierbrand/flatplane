@@ -4,7 +4,7 @@
     "description": "Flatplane is a frontent to TCPDF to create scientific reports",
     "keywords": ["PDF","typesetting","typography","report","LaTeX","TeX"],
     "require": {
-        "php": ">=5.5.11",
+        "php": ">=5.4",
         "ext-gd": "*",
         "tecnick.com/tcpdf": "@dev"
     },
@@ -20,6 +20,7 @@
         "psr-4": {"de\\flatplane\\": "classes/"}
     },
     "suggest": {
+		"php": ">=5.5.11",
         "ext-opcache": "*",
         "rlerdorf/opcache-status": "dev-master"
     }

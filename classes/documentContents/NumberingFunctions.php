@@ -90,7 +90,7 @@ trait NumberingFunctions
             $counterValue = $this->checkLocalCounter($content)->getValue();
             //the parent part of the childs number is the current number
             $parentnum = $this->getNumbers();
-        } else if ($numberingLevel >= 0) {
+        } elseif ($numberingLevel >= 0) {
             //increment the appropriate counters in the parent at the correct
             //depth and get their value
             $counterValue = $this->checkRemoteCounter($content)->getValue();
@@ -183,7 +183,7 @@ trait NumberingFunctions
             $out .= $separator;
         }
 
-        $out = rtrim($out,$separator); //remove last separator
+        $out = rtrim($out, $separator); //remove last separator
         $out .= $postfix;
 
         return $out;
