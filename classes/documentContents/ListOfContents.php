@@ -22,8 +22,10 @@
 namespace de\flatplane\documentContents;
 
 use de\flatplane\interfaces\DocumentContentElementInterface;
+use de\flatplane\interfaces\DocumentContentStructureInterface;
 use de\flatplane\iterators\DocumentContentElementFilterIterator;
 use de\flatplane\iterators\RecursiveContentIterator;
+use InvalidArgumentException;
 use RecursiveIteratorIterator;
 
 /**
@@ -39,6 +41,26 @@ class ListOfContents extends DocumentContentElement
     protected $allowSubContent = false;
     protected $propertiesToDisplay = ['altTitle'];
 
+    /**
+     * Generates a new list of arbitrary content elements. Used to create a
+     * Table of Contents (TOC) or List of Figures (LOF) and so on.
+     * @param string $title
+     *  The title of the list.
+     * @param array $displayTypes
+     *  Array containing the content-types to be included in the list.
+     *  For example ['image','table'] to list all images and tables in one index.
+     * @param int $maxDepth
+     *  Determines to wich level inside the documenttree the contents are
+     *  displayed inside the list. Contents given on the top level are at
+     *  depth 0. This value might differ from the contents 'level' property,
+     *  as subtrees might also be processed by this function.
+     *  Use -1 for unlimited depth.
+     * @param bool $enumerate
+     *  Determines wether the list will be numbered
+     * @param bool $showInIndex
+     *  Determines if this list is shown inside other lists (including itself if
+     *  the displaytype includes section)
+     */
     public function __construct(
         $title,
         $displayTypes,
@@ -56,6 +78,12 @@ class ListOfContents extends DocumentContentElement
         $this->showInIndex = $showInIndex;
     }
 
+    /**
+     * This method traverses the documenttree and filters the desired content-
+     * types to be displayed
+     * @param array $content (optional)
+     *  Array containing objects implementing DocumentContentStructureInterface
+     */
     public function generateStructure(array $content = [])
     {
         if (empty($content)) {
@@ -74,19 +102,23 @@ class ListOfContents extends DocumentContentElement
             $this->displayTypes
         );
 
+
+        //TODO: return array with level; resolve hard references
         foreach ($FilterIt as $element) {
+            echo "tiefe: ".$RecItIt->getDepth()." "; // current iteration depth
+            echo " tiefe: ".$element->getLevel()." "; // element depth regarding document
             if ($element->getEnumerate()) {
                     echo $element->getFormattedNumbers().
                     ' ' .
-                    $this->getPropAsString($element).
+                    $this->getPropertiesAsString($element).
                     PHP_EOL;
             } else {
-                echo $this->getPropAsString($element) . PHP_EOL;
+                echo $this->getPropertiesAsString($element) . PHP_EOL;
             }
         }
     }
 
-    protected function getPropAsString(DocumentContentElementInterface $element)
+    protected function getPropertiesAsString(DocumentContentElementInterface $element)
     {
         foreach ($this->propertiesToDisplay as $prop) {
             $methodName = 'get'.ucfirst($prop);
