@@ -21,7 +21,7 @@
 
 namespace de\flatplane\structure;
 
-use de\flatplane\documentContents\ContentFunctions;
+use de\flatplane\documentContents\NumberingFunctions;
 use de\flatplane\interfaces\DocumentContentStructureInterface;
 use de\flatplane\utilities\Config;
 
@@ -31,7 +31,7 @@ use de\flatplane\utilities\Config;
  */
 class Document implements DocumentContentStructureInterface
 {
-    use ContentFunctions;
+    use NumberingFunctions;
 
     /**
      * @var int

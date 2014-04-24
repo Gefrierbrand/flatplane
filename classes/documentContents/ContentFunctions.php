@@ -21,7 +21,6 @@
 
 namespace de\flatplane\documentContents;
 
-use de\flatplane\documentContent\DocumentContent;
 use de\flatplane\interfaces\DocumentContentElementInterface;
 
 /**
@@ -35,9 +34,6 @@ use de\flatplane\interfaces\DocumentContentElementInterface;
  */
 trait ContentFunctions
 {
-    //trait split into to for simpler management
-    use NumberingFunctions;
-
     /**
     * @var array
     *  Array holding references to the content of the document like sections,
@@ -67,20 +63,27 @@ trait ContentFunctions
 
     /**
      * This method is used to add content to the Document or other content.
-     * It checks if the given, to-be added content-type is allowed for the current
-     * object and returns false on failure or a reference to the added content.
+     * It checks if the given, to-be-added, content-type is allowed for the
+     * current object and returns false on failure or a reference to the
+     * added content.
      * @param DocumentContentElementInterface $content
+     *  TODO: doc
+     * @param string $position (optional)
+     *  String indicating the position where the new content will be appended to
+     *  existing content. use 'first' for the beginning. defaults to 'last'
      * @return DocumentContent
+     *  returns a reference to the just added content instance
      */
-    public function addContent(DocumentContentElementInterface $content)
-    {
+    public function addContent(
+        DocumentContentElementInterface $content,
+        $position = 'last'
+    ) {
         if (!$this->checkAllowedContent($content)) {
             throw new \Exception(
                 "You can't add content of type {$content->getType()} to content".
                 " of type {$this->getType()}."
             );
         }
-
         //set the contents parent to the current instance to be able to reversely
         //traverse the document tree
         $content->setParent($this);
@@ -93,7 +96,12 @@ trait ContentFunctions
             $this->calculateNumber($content);
         }
 
-        return $this->content[] = $content;
+        if ($position == 'first') {
+            array_unshift($this->content, $content);
+            return $this->content[0];
+        } else {
+            return $this->content[] = $content;
+        }
     }
 
     /**

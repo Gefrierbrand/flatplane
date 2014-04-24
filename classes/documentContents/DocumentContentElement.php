@@ -34,7 +34,7 @@ abstract class DocumentContentElement implements DocumentContentElementInterface
 
     //import functionality horizontally from the trait ContentFunctions
     //(reduces codelength & reuse in Document)
-    use ContentFunctions;
+    use NumberingFunctions; //includes ContentFunctions
 
     protected $parent = null;
     protected $type = 'PageElement';

@@ -21,12 +21,17 @@
 
 namespace de\flatplane\interfaces;
 
+use de\flatplane\utilities\Counter;
+
 /**
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
 interface DocumentContentElementInterface extends DocumentContentStructureInterface
 {
+    public function addCounter(Counter $counter, $name);
+    public function checkLocalCounter(DocumentContentElementInterface $content);
+
     public function getType();
     public function getSize();
     public function getPage();
@@ -35,6 +40,9 @@ interface DocumentContentElementInterface extends DocumentContentStructureInterf
     public function getTitle();
     public function getAltTitle();
     public function getCaption();
+    public function getNumbers();
+    public function getFormattedNumbers();
+    public function getCounter($name);
 
     public function setType($type);
     public function setEnumerate($enumerate);
@@ -42,4 +50,5 @@ interface DocumentContentElementInterface extends DocumentContentStructureInterf
     public function setTitle($title);
     public function setAltTitle($altTitle);
     public function setCaption($caption);
+    public function setNumbers(array $numbers);
 }

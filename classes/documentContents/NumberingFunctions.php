@@ -34,6 +34,7 @@ use OutOfBoundsException;
  */
 trait NumberingFunctions
 {
+    use ContentFunctions;
     /**
     * @var array
     *  Array containing instances of the number object representing a counted value

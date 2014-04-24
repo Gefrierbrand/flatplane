@@ -19,22 +19,29 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\interfaces;
+namespace de\flatplane\structure;
+
+use de\flatplane\interfaces\DocumentContentStructureInterface;
 
 /**
- * Description of DocumentContentStructureInterface
+ * Description of Page
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-interface DocumentContentStructureInterface
+class Page implements DocumentContentStructureInterface
 {
-    public function hasContent();
-    public function addContent(DocumentContentElementInterface $content);
-    public function toRoot();
+    use \de\flatplane\documentContents\ContentFunctions;
 
-    public function getParent();
-    public function getLevel();
-    public function getContent();
+    protected $orientation;
+    protected $size;
 
-    public function setParent(DocumentContentStructureInterface $parent);
+    public function getParent()
+    {
+        return $this;
+    }
+
+    public function setParent(DocumentContentStructureInterface $parent)
+    {
+        //currently do nothing;
+    }
 }
