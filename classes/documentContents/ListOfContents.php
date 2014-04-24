@@ -105,13 +105,19 @@ class ListOfContents extends DocumentContentElement
 
         //TODO: return array with level; resolve hard references
         foreach ($FilterIt as $element) {
-            echo "tiefe: ".$RecItIt->getDepth()." "; // current iteration depth
-            echo " tiefe: ".$element->getLevel()." "; // element depth regarding document
+            //echo "tiefe: ".$RecItIt->getDepth()." "; // current iteration depth
+            //echo " tiefe: ".$element->getLevel()." "; // element depth regarding document
             if ($element->getEnumerate()) {
-                    echo $element->getFormattedNumbers().
-                    ' ' .
-                    $this->getPropertiesAsString($element).
-                    PHP_EOL;
+                //tiefe durch einrücken darstellen FIXME !!!! (nur sinnvoll, wenn erstes element auf level 0 liegt -> filterproblem?) tiefe aus nummerrierung ermitteln?
+                //$depth = $RecItIt->getDepth();
+                $depth = count($element->getNumbers())-1; //extra parameter um level abzuziehen? oder ohne einrückung?
+
+                echo str_repeat(' ', 2*$depth);
+
+                echo $element->getFormattedNumbers().
+                ' ' .
+                $this->getPropertiesAsString($element).
+                PHP_EOL;
             } else {
                 echo $this->getPropertiesAsString($element) . PHP_EOL;
             }

@@ -46,7 +46,8 @@ $settings = array(
     'startIndex' => ['section' => 0],
     'numberingPrefix' => ['formula' => '['],
     'numberingPostfix' => ['formula' => ']'],
-    'numberingSeparator' => ['formula' => '#']
+    'numberingSeparator' => ['formula' => '#'],
+    'numberingLevel' => ['formula' => -1]
 );
 
 //Config::setSettings($settings);
