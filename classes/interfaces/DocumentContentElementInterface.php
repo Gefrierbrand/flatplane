@@ -51,4 +51,5 @@ interface DocumentContentElementInterface extends DocumentContentStructureInterf
     public function setAltTitle($altTitle);
     public function setCaption($caption);
     public function setNumbers(array $numbers);
+    public function setIsSplitable($isSplitable);
 }

@@ -19,23 +19,23 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\interfaces;
+include ('vendor'.DIRECTORY_SEPARATOR.'autoload.php');
 
-/**
- * Description of DocumentContentStructureInterface
- *
- * @author Nikolai Neff <admin@flatplane.de>
- */
-interface DocumentContentStructureInterface
-{
-    public function hasContent();
-    public function addContent(DocumentContentElementInterface $content);
-    public function toRoot();
+use de\flatplane\documentContents\Section;
 
-    public function getParent();
-    public function getLevel();
-    public function getContent();
-    public function getIsSplitable();
+$content = [new Section('test')];
 
-    public function setParent(DocumentContentStructureInterface $parent);
+$currentHeight = 0;
+$maxHeight = 123;
+foreach ($content as $element) {
+    if ($element->getType() == 'section' && !$element->getShowInDocument()) {
+        continue;
+    }
+    $contentHeight = $element->getSize()['height']; //maybe as param?
+
+    if ($contentHeight > $maxHeight && !$element->getIsSplitable()) {
+        throw new RuntimeException('ELEMENT IS TO BIG AND CAN\'T BE SPLIT');
+    }
+
+    //TODO: special considerations: newpage for section titles without content and so on
 }

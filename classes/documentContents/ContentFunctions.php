@@ -62,6 +62,13 @@ trait ContentFunctions
     protected $level = 0;
 
     /**
+     * @var bool
+     *  indicates whether the content my be split for layout purposes. (e.g.
+     *  text can be split into paragraphs, but an image usually can't be devided)
+     */
+    protected $isSplitable = false;
+
+    /**
      * This method is used to add content to the Document or other content.
      * It checks if the given, to-be-added, content-type is allowed for the
      * current object and returns false on failure or a reference to the
@@ -208,4 +215,15 @@ trait ContentFunctions
     {
         $this->level = $level;
     }
+
+    public function getIsSplitable()
+    {
+        return $this->isSplitable;
+    }
+
+    public function setIsSplitable($isSplitable)
+    {
+        $this->isSplitable = $isSplitable;
+    }
+
 }
