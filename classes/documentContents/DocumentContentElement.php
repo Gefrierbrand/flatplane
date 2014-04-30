@@ -24,6 +24,10 @@ namespace de\flatplane\documentContents;
 use de\flatplane\interfaces\DocumentContentElementInterface;
 use de\flatplane\interfaces\DocumentContentStructureInterface;
 
+//TODO:
+//get chapter(level)?
+//todo: formattierungsobjekte: newline, newpage, (h/v-space), clearpage?
+
 /**
  * Abstract class for all page elements like sections, text, images, formulas, ...
  * Provides basic common functionality.
@@ -54,7 +58,7 @@ abstract class DocumentContentElement implements DocumentContentElementInterface
         return (string) $numStr. $this->title;
     }
 
-    public function getChildren() // Alias of getSections()
+    public function getChildren()
     {
         return $this->getContent();
     }

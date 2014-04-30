@@ -32,24 +32,45 @@ class Timer
     protected $time = null;
     protected $last = null;
 
-    public function __construct()
+    public function __construct($showCacheStats = false)
     {
-        $now = microtime();
+        if ($showCacheStats) {
+            $this->showCacheStats();
+        }
+
+        $now = microtime(true);
         $this->time = $now;
         $this->last = $now;
     }
 
+    protected function showCacheStats()
+    {
+        if (extension_loaded('Zend OPcache') && opcache_get_status(true) !== false) {
+            echo 'Opcache is on, starting timer<br>'.PHP_EOL;
+            echo 'Cached Scripts:<br>'.PHP_EOL;
+            $scripts = opcache_get_status(true);
+            foreach ($scripts['scripts'] as $key => $script) {
+                echo $key.'<br>'.PHP_EOL;
+            }
+        } else {
+            echo 'Opcache is disabled or no scripts are cached<br>'.PHP_EOL;
+        }
+    }
+
     public function now($desc)
     {
-        $now = microtime();
-        $diff_total = $now - $this->time;
-        $diff_last  = $now - $this->last;
-        echo PHP_EOL . "$desc: To Last: $diff_last Total: $diff_total". PHP_EOL;
+        $now = microtime(true);
+        $diff_total = number_format($now - $this->time, 3, '.', '');
+        $diff_last  = number_format($now - $this->last, 3, '.', '');
+        echo PHP_EOL."To Last: $diff_last Total: $diff_total \t $desc". PHP_EOL;
         $this->last = $now;
     }
 
     public function __destruct()
     {
         $this->now('Gesamte Skriptlaufzeit');
+        echo "Peak Memory Usage: ",
+              memory_get_peak_usage(true)/ 1024 / 1024,
+              " MiB".PHP_EOL;
     }
 }

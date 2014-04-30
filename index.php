@@ -18,12 +18,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
-echo "is_script_cached: ".var_export(opcache_is_script_cached(__FILE__), true).PHP_EOL;
-
-$beginn = microtime(true);
 
 require 'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
 date_default_timezone_set('Europe/Berlin');
+
+$t = new de\flatplane\utilities\Timer;
 
 // create new PDF document
 //$orientation='P', $unit='mm', $format='A4', $unicode=true, $encoding='UTF-8', $diskcache=false, $pdfa=false
@@ -67,8 +66,7 @@ $tex = '\mathcal{F}(f)(t) = \frac{1}{\left(2\pi\right)^{\frac{n}{2}}}~ \int\limi
 //$tex4 = '\overline{\overline{\left(A\, \wedge\, B\right)}\, \wedge\, C} \neq\overline{ A\, \wedge\, \overline{\left(B\, \wedge\,C \right)}}';
 //$tex = '\LaTeX ~ 2 \cdot 2 \\ 2\mathbin{\cdot}2 \\ 2 \times 2 \\ 2\mathbin{\times}2​';
 
-$dauer = microtime(true) - $beginn;
-echo "Preparing page: $dauer Sek. \n";
+$t->now('preparing page');
 
 /*
  * Available Fonts:
@@ -109,8 +107,7 @@ $svgdata6 = '@' . shell_exec($cmd6);
 $svgdata7 = '@' . shell_exec($cmd7);
 
 
-$dauer = microtime(true) - $beginn;
-echo "After Jax: $dauer Sek. \n";
+$t->now("After Jax");
 
 $pdf->setFontSubsetting(false);
 $pdf->SetFont('Times', '', 14);
@@ -137,9 +134,7 @@ $pdf->Image('logos/phantomjs-logo.png', $x = 70, $y = 250);
 
 $pdf->Text(0, 0, date('d.m.Y H:i:s'));
 
-$dauer = microtime(true) - $beginn;
-echo "After Image/Text: $dauer Sek. \n";
+$t->now('After Image / Text');
 
 $pdf->Output('output/test.pdf', 'F');
-$dauer = microtime(true) - $beginn;
-echo "Verarbeitung des Skripts: $dauer Sek. \n";
+
