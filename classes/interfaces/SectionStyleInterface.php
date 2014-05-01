@@ -25,14 +25,11 @@ namespace de\flatplane\interfaces;
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-interface StyleInterface
+interface SectionStyleInterface extends StyleInterface
 {
-    //font style? B, U, I, S?
-    //extra attributes: cell?
-
-    public function getFont();
-    public function getDrawColor();
-
-    public function setFont($type, $size, $style = '', $color = [0,0,0]);
-    public function setDrawColor(array $color);
+    public function getStartsNewLine();
+    public function getMinFreePage();
+    
+    public function setStartsNewLine($startsNewLine);
+    public function setMinFreePage($minFreePage);
 }

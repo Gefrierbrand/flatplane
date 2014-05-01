@@ -11,7 +11,7 @@
             "source": {
                 "type": "git",
                 "url": "git://git.code.sf.net/p/tcpdf/code",
-                "reference": "6c3cfd5b16d9666049d275ae1d0a3b3e1f591bcc"
+                "reference": "214e1ea511d9c251f33412884b5360f8de1a4df9"
             },
             "require": {
                 "php": ">=5.3.0"
@@ -60,7 +60,7 @@
                 "pdf417",
                 "qrcode"
             ],
-            "time": "2014-04-27 11:30:23"
+            "time": "2014-04-29 20:58:11"
         }
     ],
     "packages-dev": [

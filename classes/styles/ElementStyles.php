@@ -26,12 +26,11 @@ namespace de\flatplane\styles;
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class ElementStyles
+class ElementStyles extends GeneralStyles
 {
-    //put your code here
     protected $captionposition;
     protected $titleposition;
-    protected $magrins; //?
+    protected $margins;
     protected $paddings; //?
     protected $softmargins = true; //margins can be ignored at page end, ggf. min value
 }

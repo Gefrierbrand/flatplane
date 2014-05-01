@@ -21,15 +21,48 @@
 
 namespace de\flatplane\styles;
 
+use de\flatplane\interfaces\SectionStyleInterface;
+use de\flatplane\utilities\Config;
+
 /**
  * Description of SectionStyle
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class SectionStyle extends GeneralStyles
+class SectionStyle extends GeneralStyles implements SectionStyleInterface
 {
     //TODO: use config file for defaults
-    protected $titleStyle;
-    protected $contentStyle; //?
-    protected $contentDistance; //?
+    protected $startsNewLine = true;
+    protected $minFreePage = 25; //percent
+
+    public function __construct($level = 0, $configFile = '')
+    {
+        $this->loadDefaults($level, $configFile);
+    }
+
+    public function loadDefaults($level, $configFile)
+    {
+        $config = parent::loadDefaults();
+        $config[] = Config::loadFile($configFile);
+    }
+
+    public function getStartsNewLine()
+    {
+        return $this->startsNewLine;
+    }
+
+    public function getMinFreePage()
+    {
+        return $this->minFreePage;
+    }
+
+    public function setStartsNewLine($startsNewLine)
+    {
+        $this->startsNewLine = $startsNewLine;
+    }
+
+    public function setMinFreePage($minFreePage)
+    {
+        $this->minFreePage = $minFreePage;
+    }
 }

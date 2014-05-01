@@ -25,48 +25,42 @@ use de\flatplane\interfaces\StyleInterface;
 
 abstract class GeneralStyles implements StyleInterface
 {
-    protected $fontColor = [0,0,0];
+    //TODO: use config file for defaults
+    protected $font =  ['type'  => 'times',
+                        'size'  => 12,
+                        'style' => '',
+                        'color' => [0,0,0]];
     protected $drawColor = [0,0,0];
-    protected $fontType = 'times';
-    protected $fontSize = 12;
+    protected $defaultConfigFile = 'config/generalStyles';
+
+    //todo: fixme;
+    public function loadDefaults($configFile)
+    {
+        $config = Config::loadFile($configFile);
+    }
 
     public function getDrawColor()
     {
         return $this->drawColor;
     }
 
-    public function getFontColor()
+    public function getFont()
     {
-        return $this->fontColor;
+        return $this->font;
     }
 
-    public function getFontSize()
+    public function setDrawColor(array $color)
     {
-        return $this->fontSize;
-    }
-
-    public function getFontType()
-    {
-        return $this->fontType;
-    }
-
-    public function setDrawColor($color)
-    {
+        //todo: validate;
         $this->drawColor = $color;
     }
 
-    public function setFontColor($color)
+    public function setFont($type, $size, $style = '', $color = array())
     {
-        $this->fontColor = $color;
-    }
-
-    public function setFontSize($size)
-    {
-        $this->fontSize = $size;
-    }
-
-    public function setFontType($type)
-    {
-        $this->fontType = $type;
+        //todo: validate
+        $this->font['type'] = $type;
+        $this->font['size'] = $size;
+        $this->font['style'] = $style;
+        $this->font['color'] = $color;
     }
 }
