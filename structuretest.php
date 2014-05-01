@@ -30,6 +30,7 @@ use de\flatplane\documentContents\ListOfContents;
 use de\flatplane\documentContents\Section;
 use de\flatplane\iterators\RecursiveContentIterator;
 use de\flatplane\structure\Document;
+use de\flatplane\utilities\Config;
 use de\flatplane\utilities\Timer;
 
 $t = new Timer;
@@ -50,9 +51,10 @@ $settings = array(
     'numberingLevel' => ['formula' => -1]
 );
 
-//Config::setSettings($settings);
+$config = new Config();
+$config->setSettings($settings);
 
-$document = new Document($settings);
+$document = new Document($config);
 
 $vorwort = new Section('Vorwort');
 $vorwort->setEnumerate(false);

@@ -39,16 +39,18 @@ class Document implements DocumentContentStructureInterface
      *  FIXME: Currently not used at all
      */
     private $pages;
-
+   
     /**
      * Document Constructor
      * @param array $settings (optional)
      *  key => value pairs of options overriding the defaults
      */
-    public function __construct($settings = null)
+    public function __construct(Config $config = null)
     {
-        if ($settings !== null) {
-            Config::setSettings($settings);
+        if (empty($settings)) {
+            $this->config = new Config();
+        } else {
+            $this->config = $config;
         }
     }
 

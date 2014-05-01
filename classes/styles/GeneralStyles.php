@@ -33,10 +33,10 @@ abstract class GeneralStyles implements StyleInterface
     protected $drawColor = [0,0,0];
     protected $defaultConfigFile = 'config/generalStyles';
 
-    //todo: fixme;
+
     public function loadDefaults($configFile)
     {
-        $config = Config::loadFile($configFile);
+        //todo: do stuff
     }
 
     public function getDrawColor()

@@ -43,7 +43,8 @@ class SectionStyle extends GeneralStyles implements SectionStyleInterface
     public function loadDefaults($level, $configFile)
     {
         $config = parent::loadDefaults();
-        $config[] = Config::loadFile($configFile);
+        //$config[] = Config::loadFile($configFile);
+        //todo: fixme
     }
 
     public function getStartsNewLine()

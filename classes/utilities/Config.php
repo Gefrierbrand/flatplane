@@ -26,6 +26,8 @@ namespace de\flatplane\utilities;
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
+
+//TODO: ggf ArrayObject erweitern?
 class Config
 {
     protected $settings = null;
@@ -70,7 +72,9 @@ class Config
         foreach ($settings as $key => $value) {
             if (array_key_exists($key, $this->settings)) {
                 if (is_array($value)) {
-                    //TODO: DOC!
+                    //Merges the given settings with (possibly) already existing
+                    //settings instead of overwriting them with an (possibly)
+                    //incomplete array
                     $this->settings[$key] = array_merge(
                         $this->settings[$key],
                         $value
@@ -83,10 +87,15 @@ class Config
     }
 
     /**
-     * FIXME: Make this nice!
+     * This method returns the value of a specific setting for a given
+     * $key or $key/$subkey-pair. If the $key does not exist, it tries to return
+     * the value of a default key. If this also fails, an InvalidArgumentExeption
+     * is thrown.
      * @param string $key (optional)
      * @param string $subKey (optional)
      * @return mixed
+     *  Returns the value of the requested setting for the $key or $subkey or
+     *  the whole settings-array if no key is specified.
      * @throws InvalidArgumentException
      */
     public function getSettings($key = null, $subKey = null)
@@ -113,6 +122,8 @@ class Config
             }
         }
 
+        //returns an entry specified by $subkey if the value of $key is an array
+        //if the $subkey does not exist, the whole array is returned
         if (is_array($value) && $subKey !== null) {
             if (array_key_exists($subKey, $value)) {
                 $value = $value[$subKey];

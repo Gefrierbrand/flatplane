@@ -62,7 +62,7 @@ class Timer
         $now = microtime(true);
         $diff_total = number_format($now - $this->time, 3, '.', '');
         $diff_last  = number_format($now - $this->last, 3, '.', '');
-        echo PHP_EOL."To Last: $diff_last Total: $diff_total \t $desc". PHP_EOL;
+        echo PHP_EOL."To Last: $diff_last s \t Total: $diff_total s \t $desc". PHP_EOL;
         $this->last = $now;
     }
 

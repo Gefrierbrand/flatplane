@@ -1,8 +1,8 @@
 {
     "name": "flatplane/flatplane",
     "type": "library",
-    "description": "Flatplane is a frontent to TCPDF to create scientific reports",
-    "keywords": ["PDF","typesetting","typography","report","LaTeX","TeX"],
+    "description": "Flatplane is a frontent to TCPDF to create scientific reports with automatic formatting",
+    "keywords": ["Flatplane","PDF","typesetting","typography","report","article","LaTeX","TeX"],
     "require": {
         "php": ">=5.4",
         "ext-gd": "*",
@@ -20,7 +20,7 @@
         "psr-4": {"de\\flatplane\\": "classes/"}
     },
     "suggest": {
-		"php": ">=5.5.11",
+		"php": ">=5.5.12",
         "ext-opcache": "*",
         "rlerdorf/opcache-status": "dev-master"
     }

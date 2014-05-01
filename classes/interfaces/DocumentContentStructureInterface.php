@@ -21,6 +21,8 @@
 
 namespace de\flatplane\interfaces;
 
+use de\flatplane\utilities\Config;
+
 /**
  * Description of DocumentContentStructureInterface
  *
@@ -36,6 +38,8 @@ interface DocumentContentStructureInterface
     public function getLevel();
     public function getContent();
     public function getIsSplitable();
+    public function getConfig();
 
     public function setParent(DocumentContentStructureInterface $parent);
+    public function setConfig(Config $config);
 }

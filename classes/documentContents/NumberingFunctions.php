@@ -80,7 +80,9 @@ trait NumberingFunctions
      */
     protected function calculateNumber(DocumentContentElementInterface $content)
     {
-        $numberingLevel = Config::getSettings(
+        //the numbering level is a document wide setting, so retrieve it from
+        //the documents config object
+        $numberingLevel = $this->toRoot()->getConfig()->getSettings(
             'numberingLevel',
             $content->getType()
         );
@@ -108,7 +110,10 @@ trait NumberingFunctions
         //to advanced formating options like letters or roman numerals.
         $num = new Number($counterValue);
         $num->setFormat(
-            Config::getSettings('numberingFormat', $content->getType())
+            $this->toRoot()->getConfig()->getSettings(
+                'numberingFormat',
+                $content->getType()
+            )
         );
 
         //append the new content number to the calculated parents
@@ -130,7 +135,10 @@ trait NumberingFunctions
         if (array_key_exists($type, $this->counter)) {
             $this->counter[$content->getType()]->add();
         } else {
-            $startIndex = Config::getSettings('startIndex', $type);
+            $startIndex = $this->toRoot()->getConfig()->getSettings(
+                'startIndex',
+                $type
+            );
             $this->addCounter(new Counter($startIndex), $type);
         }
         return $this->counter[$content->getType()];
@@ -144,7 +152,10 @@ trait NumberingFunctions
      */
     protected function checkRemoteCounter(DocumentContentElementInterface $content)
     {
-        $level = Config::getSettings('numberingLevel', $content->getType());
+        $level = $this->toRoot()->getConfig()->getSettings(
+            'numberingLevel',
+            $content->getType()
+        );
         if ($level < $this->level) {
             $parentAtLevel = $this->toParentAtLevel($level);
             return $parentAtLevel->checkLocalCounter($content);
@@ -173,9 +184,12 @@ trait NumberingFunctions
      */
     public function getFormattedNumbers()
     {
-        $prefix = Config::getSettings('numberingPrefix', $this->getType());
-        $separator = Config::getSettings('numberingSeparator', $this->getType());
-        $postfix = Config::getSettings('numberingPostfix', $this->getType());
+        $docConf = $this->toRoot()->getConfig();
+        $type = $this->getType();
+
+        $prefix = $docConf->getSettings('numberingPrefix', $type);
+        $separator = $docConf->getSettings('numberingSeparator', $type);
+        $postfix = $docConf->getSettings('numberingPostfix', $type);
 
         $out = $prefix;
 

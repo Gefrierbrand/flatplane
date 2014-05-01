@@ -22,6 +22,8 @@
 namespace de\flatplane\documentContents;
 
 use de\flatplane\interfaces\DocumentContentElementInterface;
+use de\flatplane\utilities\Config;
+use Exception;
 
 /**
  * This trait provides functionality to the Document and DocumentContentElement
@@ -69,6 +71,12 @@ trait ContentFunctions
     protected $isSplitable = false;
 
     /**
+     * @var Config
+     *  Contains a reference to the configuration Object     *
+     */
+    protected $config;
+
+    /**
      * This method is used to add content to the Document or other content.
      * It checks if the given, to-be-added, content-type is allowed for the
      * current object and returns false on failure or a reference to the
@@ -86,7 +94,7 @@ trait ContentFunctions
         $position = 'last'
     ) {
         if (!$this->checkAllowedContent($content)) {
-            throw new \Exception(
+            throw new Exception(
                 "You can't add content of type {$content->getType()} to content".
                 " of type {$this->getType()}."
             );
@@ -226,4 +234,13 @@ trait ContentFunctions
         $this->isSplitable = $isSplitable;
     }
 
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    public function setConfig(Config $config)
+    {
+        $this->config = $config;
+    }
 }
