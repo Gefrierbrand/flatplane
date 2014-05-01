@@ -28,25 +28,30 @@ namespace de\flatplane\utilities;
  */
 class Config
 {
-    protected static $settings = null;
-    protected static $defaultConfigFile = 'config/documentSettings.ini';
+    protected $settings = null;
+    protected $defaultConfigFile = 'config/documentSettings.ini';
+
+    public function __construct($configFile = '')
+    {
+        if (empty($configFile)) {
+            $configFile = $this->defaultConfigFile;
+        }
+        $this->loadFile($configFile);
+    }
 
     /**
-     * loads the default settings from a configuration file into an array
+     * loads the settings from a configuration file into an array
+     * @param string $file Path to configuration file (absolut or relative)
      * @throws \RuntimeException
      */
-    public static function loadFile($file = '')
+    public function loadFile($file)
     {
-        if ($file == '') {
-            $file = self::$defaultConfigFile;
-        }
-
         if (!is_readable($file)) {
             throw new \RuntimeException($file. ' is not readable');
         }
 
-        self::$settings = parse_ini_file($file);
-        if (self::$settings === false) {
+        $this->settings = parse_ini_file($file);
+        if ($this->settings === false) {
             throw new \RuntimeException($file. ' could not be parsed');
         }
     }
@@ -55,23 +60,23 @@ class Config
      * Overrides or extends the default options with the given settings array
      * @param array $settings
      */
-    public static function setSettings(array $settings)
+    public function setSettings(array $settings)
     {
-        if (self::$settings === null) {
-            self::loadFile();
+        if ($this->settings === null) {
+            $this->loadFile($this->defaultConfigFile);
         }
 
         //replace defaults with given settings
         foreach ($settings as $key => $value) {
-            if (array_key_exists($key, self::$settings)) {
+            if (array_key_exists($key, $this->settings)) {
                 if (is_array($value)) {
                     //TODO: DOC!
-                    self::$settings[$key] = array_merge(
-                        self::$settings[$key],
+                    $this->settings[$key] = array_merge(
+                        $this->settings[$key],
                         $value
                     );
                 } else {
-                    self::$settings[$key] = $value;
+                    $this->settings[$key] = $value;
                 }
             }
         }
@@ -84,22 +89,22 @@ class Config
      * @return mixed
      * @throws InvalidArgumentException
      */
-    public static function getSettings($key = null, $subKey = null)
+    public function getSettings($key = null, $subKey = null)
     {
-        if (self::$settings === null) {
-            self::loadFile();
+        if ($this->settings === null) {
+            $this->loadFile();
         }
 
         if ($key === null) {
-            $value = self::$settings;
+            $value = $this->settings;
         } else {
-            if (array_key_exists($key, self::$settings)) {
-                $value = self::$settings[$key];
+            if (array_key_exists($key, $this->settings)) {
+                $value = $this->settings[$key];
             } else {
                 //fall back to default setting if specific setting does not exist
                 $defaultKey = 'default'.ucfirst($key);
-                if (array_key_exists($defaultKey, self::$settings)) {
-                    $value = self::$settings[$defaultKey];
+                if (array_key_exists($defaultKey, $this->settings)) {
+                    $value = $this->settings[$defaultKey];
                 } else {
                     throw new \InvalidArgumentException(
                         'The key '.$key.' does not exist in the configuration.'
