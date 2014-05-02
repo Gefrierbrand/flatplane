@@ -41,7 +41,6 @@ abstract class DocumentContentElement implements DocumentContentElementInterface
 
     protected $parent = null;
     protected $type = 'PageElement';
-    protected $defaultConfigFile = 'config/elementSettings.ini';
 
     protected $title;
     protected $altTitle;

@@ -25,20 +25,41 @@ use InvalidArgumentException;
 use RuntimeException;
 
 /**
- * Description of Settings
+ * This class holds configuration settings and is used by various other classes
+ * The settings can either be loaded from a configurationfile or be provided
+ * as key=>value pairs at initialisation
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-
-//TODO: ggf ArrayObject erweitern?
 class Config
 {
+    /**
+     * @var mixed
+     *  Holds Settings as array or null if unitialized
+     */
     protected $settings = null;
-    protected $defaultConfigFile = 'config/documentSettings.ini';
-    protected $loadedConfigFile;
-    protected $overwrittenSettings = false;
 
-    public function __construct($configFile = '', $settings = [])
+    /**
+     * @var string
+     *  Path to default configuration file
+     */
+    protected $defaultConfigFile = 'config/documentSettings.ini';
+
+    /**
+     * @var string
+     *  Path to currently loaded configuration file
+     */
+    protected $loadedConfigFile;
+
+    /**
+     * Class Constructor
+     * @param string $configFile (optional)
+     *  Path to configuration file
+     * @param array $settings (optional)
+     *  Key=>Value pairs of settings wich extend or overwrite the settings loaded
+     *  from the configuration file
+     */
+    public function __construct($configFile = '', array $settings = [])
     {
         if (empty($configFile)) {
             $configFile = $this->defaultConfigFile;
@@ -51,7 +72,7 @@ class Config
 
     /**
      * loads the settings from a configuration file into an array
-     * @param string $file Path to configuration file (absolut or relative)
+     * @param string $file path to configuration file (absolut or relative)
      * @throws RuntimeException
      */
     public function loadFile($file)
@@ -73,27 +94,26 @@ class Config
      */
     public function setSettings(array $settings)
     {
-        if ($this->settings === null) {
-            $this->loadFile($this->defaultConfigFile);
-        }
-
-        //replace defaults with given settings
-        foreach ($settings as $key => $value) {
-            if (array_key_exists($key, $this->settings)) {
-                if (is_array($value)) {
-                    //Merges the given settings with (possibly) already existing
-                    //settings instead of overwriting them with an (possibly)
-                    //incomplete array
-                    $this->settings[$key] = array_merge(
-                        $this->settings[$key],
-                        $value
-                    );
-                } else {
-                    $this->settings[$key] = $value;
+        if (is_array($this->settings)) {
+            //replace defaults with given settings
+            foreach ($settings as $key => $value) {
+                if (array_key_exists($key, $this->settings)) {
+                    if (is_array($value)) {
+                        //Merges the given settings with (possibly) already existing
+                        //settings instead of overwriting them with an (possibly)
+                        //incomplete array
+                        $this->settings[$key] = array_merge(
+                            $this->settings[$key],
+                            $value
+                        );
+                    } else {
+                        $this->settings[$key] = $value;
+                    }
                 }
             }
+        } else {
+            $this->settings = $settings;
         }
-        $this->overwrittenSettings = true;
     }
 
     /**
@@ -122,7 +142,7 @@ class Config
                     is_array($this->settings[$key]) &&
                     array_key_exists($subKey, $this->settings[$key])
                 ) {
-                    $value = $value[$subKey];
+                    $value = $this->settings[$key][$subKey];
                 } else {
                     $value = $this->searchDefaults($key);
                 }
@@ -148,9 +168,7 @@ class Config
         } else {
             throw new InvalidArgumentException(
                 'The key "'.$key.'" does not exist in the configuration.'.
-                ' Loaded configfile: "'.$this->loadedConfigFile.'"'.
-                ' Overwritten settings: '.
-                var_export($this->overwrittenSettings, true)
+                ' Loaded configfile: "'.$this->loadedConfigFile.'"'
             );
         }
         return $value;
@@ -165,7 +183,7 @@ class Config
         return $erg;
     }
 
-    protected function checkSettingsValues(&$value, $key)
+    protected function checkSettingsValues(&$value)
     {
         //match strings of the with an array-structure: '[a, b, c, ... , n]'
         $pattern = '/^\[([^\[\],]*,+[^,\[\]]{1})+\]$/';
