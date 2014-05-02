@@ -21,6 +21,9 @@
 
 namespace de\flatplane\utilities;
 
+use InvalidArgumentException;
+use RuntimeException;
+
 /**
  * Description of Settings
  *
@@ -32,30 +35,36 @@ class Config
 {
     protected $settings = null;
     protected $defaultConfigFile = 'config/documentSettings.ini';
+    protected $loadedConfigFile;
+    protected $overwrittenSettings = false;
 
-    public function __construct($configFile = '')
+    public function __construct($configFile = '', $settings = [])
     {
         if (empty($configFile)) {
             $configFile = $this->defaultConfigFile;
         }
         $this->loadFile($configFile);
+        if (!empty($settings)) {
+            $this->setSettings($settings);
+        }
     }
 
     /**
      * loads the settings from a configuration file into an array
      * @param string $file Path to configuration file (absolut or relative)
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function loadFile($file)
     {
         if (!is_readable($file)) {
-            throw new \RuntimeException($file. ' is not readable');
+            throw new RuntimeException($file. ' is not readable');
         }
 
-        $this->settings = parse_ini_file($file);
+        $this->settings = $this->parse($file);
         if ($this->settings === false) {
-            throw new \RuntimeException($file. ' could not be parsed');
+            throw new RuntimeException($file. ' could not be parsed');
         }
+        $this->loadedConfigFile = $file;
     }
 
     /**
@@ -84,6 +93,7 @@ class Config
                 }
             }
         }
+        $this->overwrittenSettings = true;
     }
 
     /**
@@ -101,34 +111,66 @@ class Config
     public function getSettings($key = null, $subKey = null)
     {
         if ($this->settings === null) {
-            $this->loadFile();
+            $this->loadFile($this->defaultConfigFile);
         }
 
         if ($key === null) {
             $value = $this->settings;
         } else {
             if (array_key_exists($key, $this->settings)) {
-                $value = $this->settings[$key];
-            } else {
-                //fall back to default setting if specific setting does not exist
-                $defaultKey = 'default'.ucfirst($key);
-                if (array_key_exists($defaultKey, $this->settings)) {
-                    $value = $this->settings[$defaultKey];
+                if ($subKey !== null &&
+                    is_array($this->settings[$key]) &&
+                    array_key_exists($subKey, $this->settings[$key])
+                ) {
+                    $value = $value[$subKey];
                 } else {
-                    throw new \InvalidArgumentException(
-                        'The key '.$key.' does not exist in the configuration.'
-                    );
+                    $value = $this->searchDefaults($key);
                 }
-            }
-        }
-
-        //returns an entry specified by $subkey if the value of $key is an array
-        //if the $subkey does not exist, the whole array is returned
-        if (is_array($value) && $subKey !== null) {
-            if (array_key_exists($subKey, $value)) {
-                $value = $value[$subKey];
+            } else {
+                $value = $this->searchDefaults($key);
             }
         }
         return $value;
+    }
+
+    /**
+     *
+     * @param string $key
+     * @throws InvalidArgumentException
+     * @returns mixed
+     */
+    protected function searchDefaults($key)
+    {
+        //fall back to default setting if specific setting does not exist
+        $defaultKey = 'default'.ucfirst($key);
+        if (array_key_exists($defaultKey, $this->settings)) {
+            $value = $this->settings[$defaultKey];
+        } else {
+            throw new InvalidArgumentException(
+                'The key "'.$key.'" does not exist in the configuration.'.
+                ' Loaded configfile: "'.$this->loadedConfigFile.'"'.
+                ' Overwritten settings: '.
+                var_export($this->overwrittenSettings, true)
+            );
+        }
+        return $value;
+    }
+
+    protected function parse($file)
+    {
+        if (!$erg = parse_ini_file($file)) {
+            return false;
+        }
+        array_walk_recursive($erg, [$this, 'checkSettingsValues']);
+        return $erg;
+    }
+
+    protected function checkSettingsValues(&$value, $key)
+    {
+        //match strings of the with an array-structure: '[a, b, c, ... , n]'
+        $pattern = '/^\[([^\[\],]*,+[^,\[\]]{1})+\]$/';
+        if (is_string($value) && preg_match($pattern, $value)) {
+            $value = explode(',', trim($value, '[]'));
+        }
     }
 }

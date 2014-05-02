@@ -22,45 +22,69 @@
 namespace de\flatplane\styles;
 
 use de\flatplane\interfaces\StyleInterface;
+use de\flatplane\utilities\Config;
+
+//TODO: DOC!!!!
 
 abstract class GeneralStyles implements StyleInterface
 {
-    //TODO: use config file for defaults
-    protected $font =  ['type'  => 'times',
-                        'size'  => 12,
-                        'style' => '',
-                        'color' => [0,0,0]];
-    protected $drawColor = [0,0,0];
-    protected $defaultConfigFile = 'config/generalStyles';
+    protected $defaultConfigFile = 'config/generalStyles.ini';
+    protected $config;
 
-
-    public function loadDefaults($configFile)
+    public function __construct(Config $config = null)
     {
-        //todo: do stuff
+        if (empty($config)) {
+            $config = new Config($this->defaultConfigFile);
+        }
+        $this->config = $config;
     }
 
+    /**
+     *
+     * @return array
+     */
     public function getDrawColor()
     {
-        return $this->drawColor;
+        return $this->config->getSettings('defaultDrawColor');
     }
 
+    /**
+     *
+     * @return array
+     *  Returns array with the keys 'type', 'size', 'style' and 'color'
+     */
     public function getFont()
     {
-        return $this->font;
+        return $this->config->getSettings('defaultFont');
     }
 
     public function setDrawColor(array $color)
     {
-        //todo: validate;
-        $this->drawColor = $color;
+        $this->config->setSettings(['drawColor' => $color]);
     }
 
-    public function setFont($type, $size, $style = '', $color = array())
+    public function setFont($type, $size = 12, $style = '', array $color = [0,0,0])
     {
-        //todo: validate
-        $this->font['type'] = $type;
-        $this->font['size'] = $size;
-        $this->font['style'] = $style;
-        $this->font['color'] = $color;
+        //todo: validate, ggf addfonts to pdf
+        $this->config->setSettings(
+            ['defaultFont' =>
+                [
+                    'type' => $type,
+                    'size' => $size,
+                    'style' => $style,
+                    'color' => $color
+                ]
+            ]
+        );
+    }
+
+    /**
+     *
+     * @return Config
+     *  returns the Configuration object
+     */
+    public function getConfig()
+    {
+        return $this->config;
     }
 }

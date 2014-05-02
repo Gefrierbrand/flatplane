@@ -19,18 +19,7 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\interfaces;
+include('vendor'.DIRECTORY_SEPARATOR.'autoload.php');
 
-/**
- *
- * @author Nikolai Neff <admin@flatplane.de>
- */
-interface StyleInterface
-{
-    public function getFont();
-    public function getDrawColor();
-    public function getConfig();
-
-    public function setFont($type, $size, $style = '', array $color = [0,0,0]);
-    public function setDrawColor(array $color);
-}
+$test = new de\flatplane\styles\SectionStyle(4);
+var_dump($test->getFont());

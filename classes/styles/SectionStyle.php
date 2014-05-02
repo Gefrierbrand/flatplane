@@ -31,39 +31,69 @@ use de\flatplane\utilities\Config;
  */
 class SectionStyle extends GeneralStyles implements SectionStyleInterface
 {
-    //TODO: use config file for defaults
-    protected $startsNewLine = true;
-    protected $minFreePage = 25; //percent
+    protected $defaultConfigFile = 'config/sectionStyles.ini';
+    protected $level;
 
-    public function __construct($level = 0, $configFile = '')
+    public function __construct($level = 0, Config $config = null)
     {
-        $this->loadDefaults($level, $configFile);
+        parent::__construct($config);
+        $this->level = $level;
     }
 
-    public function loadDefaults($level, $configFile)
+    public function getDrawColor()
     {
-        $config = parent::loadDefaults();
-        //$config[] = Config::loadFile($configFile);
-        //todo: fixme
+        return $this->config->getSettings('drawColor', $this->level);
+    }
+
+    public function getFont()
+    {
+        $font['type'] = $this->config->getSettings('fontType', $this->level);
+        $font['size'] = $this->config->getSettings('fontSize', $this->level);
+        $font['style'] = $this->config->getSettings('fontStyle', $this->level);
+        $font['color'] = $this->config->getSettings('fontColor', $this->level);
+
+        return $font;
+    }
+
+    public function setDrawColor(array $color)
+    {
+        $this->config->setSettings(['drawColor' => [$this->level => $color]]);
+    }
+
+    public function setFont($type, $size = 12, $style = '', array $color = [0,0,0])
+    {
+        //todo: validate, ggf addfonts to pdf
+        $this->config->setSettings(
+            [
+                'fontType' => [$this->level => $type],
+                'fontSize' => [$this->level => $size],
+                'fontStyle' => [$this->level => $style],
+                'fontColor' => [$this->level => $color]
+            ]
+        );
     }
 
     public function getStartsNewLine()
     {
-        return $this->startsNewLine;
+        return $this->config->getSettings('startsNewLine', $this->level);
     }
 
     public function getMinFreePage()
     {
-        return $this->minFreePage;
+        return $this->config->getSettings('minFreePage', $this->level);
     }
 
     public function setStartsNewLine($startsNewLine)
     {
-        $this->startsNewLine = $startsNewLine;
+        $this->config->setSettings(
+            ['startsNewLine' => [$this->level => $startsNewLine]]
+        );
     }
 
     public function setMinFreePage($minFreePage)
     {
-        $this->minFreePage = $minFreePage;
+        $this->config->setSettings(
+            ['minFreePage' => [$this->level => $minFreePage]]
+        );
     }
 }

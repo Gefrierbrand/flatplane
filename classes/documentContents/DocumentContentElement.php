@@ -35,13 +35,13 @@ use de\flatplane\interfaces\DocumentContentStructureInterface;
  */
 abstract class DocumentContentElement implements DocumentContentElementInterface
 {
-
-    //import functionality horizontally from the trait ContentFunctions
+    //import functionality horizontally from the trait NumberingFunctions
     //(reduces codelength & reuse in Document)
     use NumberingFunctions; //includes ContentFunctions
 
     protected $parent = null;
     protected $type = 'PageElement';
+    protected $defaultConfigFile = 'config/elementSettings.ini';
 
     protected $title;
     protected $altTitle;
@@ -51,70 +51,12 @@ abstract class DocumentContentElement implements DocumentContentElementInterface
 
     public function __toString()
     {
-        //TEMPORARY
-        //TODO: remove numbering?
-        $numStr = $this->getFormattedNumbers().' ';
-
-        return (string) $numStr. $this->title;
-    }
-
-    public function getChildren()
-    {
-        return $this->getContent();
-    }
-
-    public function hasContent()
-    {
-        return !empty($this->content);
-    }
-
-    public function getParent()
-    {
-        return $this->parent;
-    }
-
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    public function getSize()
-    {
-        //todo: IMPLEMENT : probably best in subclasses / content! //maybe as abstract?
-    }
-
-    public function getPage()
-    {
-        //TODO: Implement me
-    }
-
-    public function getEnumerate()
-    {
-        return $this->enumerate;
-    }
-
-    public function getShowInIndex()
-    {
-        return $this->showInIndex;
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    public function getAltTitle()
-    {
-        if (isset($this->altTitle)) {
-            return $this->altTitle;
+        if ($this->enumerate) {
+            $numStr = $this->getFormattedNumbers().' ';
         } else {
-            return $this->title;
+            $numStr = '';
         }
-    }
-
-    public function getCaption()
-    {
-        return $this->caption;
+        return (string) $numStr. $this->title;
     }
 
     /**
@@ -156,6 +98,65 @@ abstract class DocumentContentElement implements DocumentContentElementInterface
             );
         }
         $this->showInIndex = $showInIndex;
+    }
+
+    public function hasContent()
+    {
+        return !empty($this->content);
+    }
+
+    public function getAltTitle()
+    {
+        if (isset($this->altTitle)) {
+            return $this->altTitle;
+        } else {
+            return $this->title;
+        }
+    }
+
+    public function getChildren()
+    {
+        return $this->getContent();
+    }
+
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    public function getSize()
+    {
+        //todo: IMPLEMENT : probably best in subclasses / content! //maybe as abstract?
+    }
+
+    public function getPage()
+    {
+        //TODO: Implement me
+    }
+
+    public function getEnumerate()
+    {
+        return $this->enumerate;
+    }
+
+    public function getShowInIndex()
+    {
+        return $this->showInIndex;
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function getCaption()
+    {
+        return $this->caption;
     }
 
     public function setTitle($title)

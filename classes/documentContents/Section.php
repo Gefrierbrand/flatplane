@@ -30,15 +30,18 @@ class Section extends DocumentContentElement
 {
     protected $showInDocument = true;
     protected $type = 'section';
+    protected $defaultConfigFile = 'config/sectionSettings.ini';
 
-    //FIXME? add parent to constructor?
     public function __construct(
         $title,
         $altTitle = '',
         $showInIndex = true,
         $enumerate = true,
         $showInDocument = true
+        //$configFile = ''
     ) {
+        //$this->loadDefaults($configFile);??
+
         $this->title = $title;
         $this->showInIndex = $showInIndex;
         $this->enumerate = $enumerate;
@@ -48,5 +51,20 @@ class Section extends DocumentContentElement
         } else {
             $this->altTitle = $altTitle;
         }
+    }
+
+    public function loadDefaults($configFile)
+    {
+        if (empty($configFile)) {
+            $configFile = $this->defaultConfigFile;
+        }
+
+        $config = new Config($configFile);
+        $this->setFont(
+            $config->getSettings('fontType', $this->level),
+            $config->getSettings('fontSize', $this->level),
+            $config->getSettings('fontStyle', $this->level),
+            $config->getSettings('fontColor', $this->level)
+        );
     }
 }

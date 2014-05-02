@@ -72,9 +72,15 @@ trait ContentFunctions
 
     /**
      * @var Config
-     *  Contains a reference to the configuration Object     *
+     *  Contains a reference to the configuration Object
      */
     protected $config;
+
+    /**
+     * @var string
+     *  absolute or relative path to a default config file
+     */
+    protected $defaultConfigFile = 'config/elementSettings.ini';
 
     /**
      * This method is used to add content to the Document or other content.
@@ -242,5 +248,13 @@ trait ContentFunctions
     public function setConfig(Config $config)
     {
         $this->config = $config;
+    }
+
+    public function loadDefaults($configFile)
+    {
+        if (empty($configFile)) {
+            $configFile = $this->defaultConfigFile;
+        }
+        $this->config = new Config($configFile);
     }
 }
