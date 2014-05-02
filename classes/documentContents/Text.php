@@ -36,4 +36,12 @@ class Text extends DocumentContentElement
     {
         //do_nothing_loop()
     }
+
+    public function getStyle()
+    {
+        if (empty($this->style)) {
+            $this->setStyle(new TextStyle);
+        }
+        return $this->style;
+    }
 }

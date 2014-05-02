@@ -25,11 +25,13 @@ namespace de\flatplane\interfaces;
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
+
+//TODO: orphan?
 interface SectionStyleInterface extends StyleInterface
 {
     public function getStartsNewLine();
     public function getMinFreePage();
-    
+
     public function setStartsNewLine($startsNewLine);
     public function setMinFreePage($minFreePage);
 }

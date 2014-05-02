@@ -21,7 +21,6 @@
 
 namespace de\flatplane\structure;
 
-use de\flatplane\documentContents\NumberingFunctions;
 use de\flatplane\interfaces\DocumentContentStructureInterface;
 use de\flatplane\utilities\Config;
 
@@ -31,7 +30,7 @@ use de\flatplane\utilities\Config;
  */
 class Document implements DocumentContentStructureInterface
 {
-    use NumberingFunctions;
+    use \de\flatplane\documentContents\traits\NumberingFunctions;
 
     /**
      * @var int
@@ -39,15 +38,15 @@ class Document implements DocumentContentStructureInterface
      *  FIXME: Currently not used at all
      */
     private $pages;
-   
+
     /**
      * Document Constructor
-     * @param array $settings (optional)
+     * @param array $config (optional)
      *  key => value pairs of options overriding the defaults
      */
     public function __construct(Config $config = null)
     {
-        if (empty($settings)) {
+        if (empty($config)) {
             $this->config = new Config();
         } else {
             $this->config = $config;
@@ -55,7 +54,7 @@ class Document implements DocumentContentStructureInterface
     }
 
     /**
-     * @return \de\flatplane\structure\Document
+     * @return Document
      */
     public function toRoot()
     {
@@ -63,7 +62,7 @@ class Document implements DocumentContentStructureInterface
     }
 
     /**
-     * @return \de\flatplane\structure\Document
+     * @return Document
      */
     public function getParent()
     {

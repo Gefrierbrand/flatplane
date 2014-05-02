@@ -43,7 +43,9 @@ interface DocumentContentElementInterface extends DocumentContentStructureInterf
     public function getNumbers();
     public function getFormattedNumbers();
     public function getCounter($name);
+    public function getStyle();
 
+    public function setStyle(StyleInterface $style);
     public function setType($type);
     public function setEnumerate($enumerate);
     public function setShowInIndex($showInIndex);

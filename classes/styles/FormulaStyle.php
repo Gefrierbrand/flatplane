@@ -19,29 +19,14 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\documentContents;
+namespace de\flatplane\styles;
 
 /**
- * Description of Image
+ * Description of SectionStyle
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Image extends DocumentContentElement
+class FormulaStyle extends GeneralStyles implements StyleInterface
 {
-    protected $type = 'image';
-    protected $allowSubContent = ['image'];
 
-    protected $path;
-    protected $imageType;
-
-    protected $angle; //?
-    protected $scale; //?
-
-    public function getStyle()
-    {
-        if (empty($this->style)) {
-            $this->setStyle(new ImageStyle);
-        }
-        return $this->style;
-    }
 }

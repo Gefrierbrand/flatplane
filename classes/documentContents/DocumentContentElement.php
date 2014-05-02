@@ -23,6 +23,7 @@ namespace de\flatplane\documentContents;
 
 use de\flatplane\interfaces\DocumentContentElementInterface;
 use de\flatplane\interfaces\DocumentContentStructureInterface;
+use de\flatplane\interfaces\StyleInterface;
 
 //TODO:
 //get chapter(level)?
@@ -37,10 +38,11 @@ abstract class DocumentContentElement implements DocumentContentElementInterface
 {
     //import functionality horizontally from the trait NumberingFunctions
     //(reduces codelength & reuse in Document)
-    use NumberingFunctions; //includes ContentFunctions
+    use traits\NumberingFunctions; //includes ContentFunctions
 
     protected $parent = null;
     protected $type = 'PageElement';
+    protected $style = null;
 
     protected $title;
     protected $altTitle;
@@ -156,6 +158,11 @@ abstract class DocumentContentElement implements DocumentContentElementInterface
     public function getCaption()
     {
         return $this->caption;
+    }
+
+    public function setStyle(StyleInterface $style)
+    {
+        $this->style = $style;
     }
 
     public function setTitle($title)

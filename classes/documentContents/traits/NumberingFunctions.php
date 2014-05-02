@@ -19,12 +19,11 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\documentContents;
+namespace de\flatplane\documentContents\traits;
 
 use de\flatplane\interfaces\DocumentContentElementInterface;
 use de\flatplane\utilities\Counter;
 use de\flatplane\utilities\Number;
-use de\flatplane\utilities\Config;
 use OutOfBoundsException;
 
 /**

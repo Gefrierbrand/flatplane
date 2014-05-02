@@ -29,4 +29,12 @@ namespace de\flatplane\documentContents;
 class Table extends DocumentContentElement
 {
     protected $type = 'table';
+
+    public function getStyle()
+    {
+        if (empty($this->style)) {
+            $this->setStyle(new TableStyle);
+        }
+        return $this->style;
+    }
 }

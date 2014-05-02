@@ -19,11 +19,11 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\documentContents;
+namespace de\flatplane\documentContents\traits;
 
 use de\flatplane\interfaces\DocumentContentElementInterface;
 use de\flatplane\utilities\Config;
-use Exception;
+use RuntimeException;
 
 /**
  * This trait provides functionality to the Document and DocumentContentElement
@@ -100,7 +100,7 @@ trait ContentFunctions
         $position = 'last'
     ) {
         if (!$this->checkAllowedContent($content)) {
-            throw new Exception(
+            throw new RuntimeException(
                 "You can't add content of type {$content->getType()} to content".
                 " of type {$this->getType()}."
             );
@@ -248,13 +248,5 @@ trait ContentFunctions
     public function setConfig(Config $config)
     {
         $this->config = $config;
-    }
-
-    public function loadDefaults($configFile)
-    {
-        if (empty($configFile)) {
-            $configFile = $this->defaultConfigFile;
-        }
-        $this->config = new Config($configFile);
     }
 }

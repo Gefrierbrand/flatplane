@@ -30,7 +30,6 @@ class Section extends DocumentContentElement
 {
     protected $showInDocument = true;
     protected $type = 'section';
-    protected $defaultConfigFile = 'config/sectionSettings.ini';
 
     public function __construct(
         $title,
@@ -38,10 +37,7 @@ class Section extends DocumentContentElement
         $showInIndex = true,
         $enumerate = true,
         $showInDocument = true
-        //$configFile = ''
     ) {
-        //$this->loadDefaults($configFile);??
-
         $this->title = $title;
         $this->showInIndex = $showInIndex;
         $this->enumerate = $enumerate;
@@ -53,18 +49,11 @@ class Section extends DocumentContentElement
         }
     }
 
-    public function loadDefaults($configFile)
+    public function getStyle()
     {
-        if (empty($configFile)) {
-            $configFile = $this->defaultConfigFile;
+        if (empty($this->style)) {
+            $this->setStyle(new SectionStyle);
         }
-
-        $config = new Config($configFile);
-        $this->setFont(
-            $config->getSettings('fontType', $this->level),
-            $config->getSettings('fontSize', $this->level),
-            $config->getSettings('fontStyle', $this->level),
-            $config->getSettings('fontColor', $this->level)
-        );
+        return $this->style;
     }
 }

@@ -72,6 +72,14 @@ class Formula extends DocumentContentElement
         }
     }
 
+    public function getStyle()
+    {
+        if (empty($this->style)) {
+            $this->setStyle(new FormulaStyle);
+        }
+        return $this->style;
+    }
+
     public function getCode()
     {
         return $this->code;

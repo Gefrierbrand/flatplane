@@ -22,10 +22,8 @@
 namespace de\flatplane\documentContents;
 
 use de\flatplane\interfaces\DocumentContentElementInterface;
-use de\flatplane\interfaces\DocumentContentStructureInterface;
 use de\flatplane\iterators\DocumentContentElementFilterIterator;
 use de\flatplane\iterators\RecursiveContentIterator;
-use InvalidArgumentException;
 use RecursiveIteratorIterator;
 
 /**
@@ -166,5 +164,13 @@ class ListOfContents extends DocumentContentElement
     public function setPropertiesToDisplay(array $propertiesToDisplay)
     {
         $this->propertiesToDisplay = $propertiesToDisplay;
+    }
+
+    public function getStyle()
+    {
+        if (empty($this->style)) {
+            $this->setStyle(new ListStyle);
+        }
+        return $this->style;
     }
 }
