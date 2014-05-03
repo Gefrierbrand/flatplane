@@ -26,7 +26,7 @@ namespace de\flatplane\documentContents;
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Text extends DocumentContentElement
+class Text extends AbstractDocumentContentElement
 {
     protected $text;
     protected $parse = true; //parse special content like eqn, etc

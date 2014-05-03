@@ -186,7 +186,7 @@ trait ContentFunctions
      * given depth from $level is reached an returns a reference to the reached
      * object
      * @param int $level
-     * @return DocumentContentStructure
+     * @return DocumentContentStructureInterface
      */
     public function toParentAtLevel($level)
     {
@@ -203,21 +203,26 @@ trait ContentFunctions
     }
 
     /**
-     *
      * @return mixed
+     *  returns bool or allowed subcontent
      */
     public function getAllowSubContent()
     {
         return $this->allowSubContent;
     }
 
+    /**
+     * Allow or disallow subcontent of the current element
+     * @param mixed $allowSubContent
+     *  set to a bool to enable/disable subcontent completeley or use an array
+     *  containting the names of allowed subcontent-types
+     */
     public function setAllowSubContent($allowSubContent)
     {
         $this->allowSubContent = $allowSubContent;
     }
 
     /**
-     *
      * @return int
      */
     public function getLevel()
@@ -225,21 +230,35 @@ trait ContentFunctions
         return $this->level;
     }
 
+    /**
+     * @param int $level
+     *  Set the depth inside the document tree
+     */
     public function setLevel($level)
     {
         $this->level = $level;
     }
 
+    /**
+     * @return bool
+     */
     public function getIsSplitable()
     {
         return $this->isSplitable;
     }
 
+    /**
+     * @param bool $isSplitable
+     *  Indicates whether this element can be split across multiple pages.
+     */
     public function setIsSplitable($isSplitable)
     {
         $this->isSplitable = $isSplitable;
     }
 
+    /**
+     * @return Config
+     */
     public function getConfig()
     {
         return $this->config;

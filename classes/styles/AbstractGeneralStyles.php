@@ -26,10 +26,16 @@ use de\flatplane\utilities\Config;
 
 //TODO: DOC!!!!
 
-abstract class GeneralStyles implements StyleInterface
+abstract class AbstractGeneralStyles implements StyleInterface
 {
     protected $defaultConfigFile = 'config/generalStyles.ini';
     protected $config;
+
+    protected $captionposition;
+    protected $titleposition;
+    protected $margins;
+    protected $paddings; //?
+    protected $softmargins = true; //margins can be ignored at page end, ggf. min value
 
     public function __construct(Config $config = null)
     {

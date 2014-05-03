@@ -26,7 +26,7 @@ namespace de\flatplane\styles;
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class ImageStyle extends GeneralStyles implements StyleInterface
+class ImageStyle extends AbstractGeneralStyles implements StyleInterface
 {
 
 }

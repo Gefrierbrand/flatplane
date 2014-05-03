@@ -26,7 +26,7 @@ namespace de\flatplane\documentContents;
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Footnote extends DocumentContentElement
+class Footnote extends AbstractDocumentContentElement
 {
     protected $type='footnote';
     protected $text;

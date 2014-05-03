@@ -26,7 +26,7 @@ namespace de\flatplane\styles;
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class FootnoteStyle extends GeneralStyles implements StyleInterface
+class FootnoteStyle extends AbstractGeneralStyles implements StyleInterface
 {
 
 }

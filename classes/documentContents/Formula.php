@@ -26,7 +26,7 @@ namespace de\flatplane\documentContents;
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Formula extends DocumentContentElement
+class Formula extends AbstractDocumentContentElement
 {
     protected $type='formula';
     protected $allowSubContent = ['formula'];

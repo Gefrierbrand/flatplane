@@ -34,7 +34,7 @@ use de\flatplane\interfaces\StyleInterface;
  * Provides basic common functionality.
  * @author Nikolai Neff <admin@flatplane.de>
  */
-abstract class DocumentContentElement implements DocumentContentElementInterface
+abstract class AbstractDocumentContentElement implements DocumentContentElementInterface
 {
     //import functionality horizontally from the trait NumberingFunctions
     //(reduces codelength & reuse in Document)

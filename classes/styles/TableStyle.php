@@ -29,7 +29,7 @@ use de\flatplane\utilities\Config;
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class TableStyle extends GeneralStyles implements SectionStyleInterface
+class TableStyle extends AbstractGeneralStyles implements SectionStyleInterface
 {
     protected $defaultConfigFile = 'config/sectionStyles.ini';
     protected $level;

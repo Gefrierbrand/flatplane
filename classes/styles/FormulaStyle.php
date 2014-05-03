@@ -26,7 +26,7 @@ namespace de\flatplane\styles;
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class FormulaStyle extends GeneralStyles implements StyleInterface
+class FormulaStyle extends AbstractGeneralStyles implements StyleInterface
 {
 
 }

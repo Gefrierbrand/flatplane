@@ -31,7 +31,7 @@ use RecursiveIteratorIterator;
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class ListOfContents extends DocumentContentElement
+class ListOfContents extends AbstractDocumentContentElement
 {
     protected $maxDepth;
     protected $type='section'; //use section here to be able to include self

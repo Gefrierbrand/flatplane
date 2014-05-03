@@ -51,10 +51,11 @@ $settings = array(
     'numberingLevel' => ['formula' => -1]
 );
 
-$config = new Config();
-$config->setSettings($settings);
+//$config = new Config();
+//$config->setSettings($settings);
 
 $document = new Document($config);
+$document->getConfig()->setSettings($settings);
 
 $vorwort = new Section('Vorwort');
 $vorwort->setEnumerate(false);

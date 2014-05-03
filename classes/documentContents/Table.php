@@ -26,7 +26,7 @@ namespace de\flatplane\documentContents;
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Table extends DocumentContentElement
+class Table extends AbstractDocumentContentElement
 {
     protected $type = 'table';
 

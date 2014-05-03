@@ -26,7 +26,7 @@ namespace de\flatplane\documentContents;
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Image extends DocumentContentElement
+class Image extends AbstractDocumentContentElement
 {
     protected $type = 'image';
     protected $allowSubContent = ['image'];
