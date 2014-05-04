@@ -21,6 +21,7 @@
 
 namespace de\flatplane\utilities;
 
+use de\flatplane\interfaces\ConfigInterface;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -31,25 +32,13 @@ use RuntimeException;
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Config
+class Config implements ConfigInterface
 {
     /**
      * @var mixed
      *  Holds Settings as array or null if unitialized
      */
     protected $settings = null;
-
-    /**
-     * @var string
-     *  Path to default configuration file
-     */
-    protected $defaultConfigFile = 'config/documentSettings.ini';
-
-    /**
-     * @var string
-     *  Path to currently loaded configuration file
-     */
-    protected $loadedConfigFile;
 
     /**
      * Class Constructor
@@ -61,31 +50,13 @@ class Config
      */
     public function __construct($configFile = '', array $settings = [])
     {
-        if (empty($configFile)) {
-            $configFile = $this->defaultConfigFile;
+        if (!empty($configFile)) {
+            $this->loadFile($configFile);
         }
-        $this->loadFile($configFile);
+
         if (!empty($settings)) {
             $this->setSettings($settings);
         }
-    }
-
-    /**
-     * loads the settings from a configuration file into an array
-     * @param string $file path to configuration file (absolut or relative)
-     * @throws RuntimeException
-     */
-    public function loadFile($file)
-    {
-        if (!is_readable($file)) {
-            throw new RuntimeException($file. ' is not readable');
-        }
-
-        $this->settings = $this->parse($file);
-        if ($this->settings === false) {
-            throw new RuntimeException($file. ' could not be parsed');
-        }
-        $this->loadedConfigFile = $file;
     }
 
     /**
@@ -120,31 +91,34 @@ class Config
      * This method returns the value of a specific setting for a given
      * $key or $key/$subkey-pair. If the $key does not exist, it tries to return
      * the value of a default key. If this also fails, an InvalidArgumentExeption
-     * is thrown.
+     * is thrown. If no settings are present, a RuntimeException is thrown
      * @param string $key (optional)
      * @param string $subKey (optional)
      * @return mixed
      *  Returns the value of the requested setting for the $key or $subkey or
      *  the whole settings-array if no key is specified.
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException, RuntimeException
      */
     public function getSettings($key = null, $subKey = null)
     {
         if ($this->settings === null) {
-            $this->loadFile($this->defaultConfigFile);
+            throw new RuntimeException(
+                'There are no settings in the current elements Config'
+            );
         }
 
         if ($key === null) {
             $value = $this->settings;
         } else {
             if (array_key_exists($key, $this->settings)) {
-                if ($subKey !== null &&
-                    is_array($this->settings[$key]) &&
-                    array_key_exists($subKey, $this->settings[$key])
-                ) {
-                    $value = $this->settings[$key][$subKey];
+                if ($subKey == null) {
+                    $value = $this->settings[$key];
                 } else {
-                    $value = $this->searchDefaults($key);
+                    if (!isset($this->settings[$key][$subkey])) {
+                        throw new \RuntimeException('Subkey does not exist');
+                    } else {
+                        $value = $this->settings[$key][$subKey];
+                    }
                 }
             } else {
                 $value = $this->searchDefaults($key);
@@ -167,28 +141,60 @@ class Config
             $value = $this->settings[$defaultKey];
         } else {
             throw new InvalidArgumentException(
-                'The key "'.$key.'" does not exist in the configuration.'.
-                ' Loaded configfile: "'.$this->loadedConfigFile.'"'
+                'The key "'.$key.'" does not exist in the configuration.'
             );
         }
         return $value;
     }
 
+    /**
+     * This method parses a given INI-File and returns the read settings as
+     *  array or false on failure
+     * @param string $file
+     *  path to the configuration file
+     * @return mixed
+     */
     protected function parse($file)
     {
         if (!$erg = parse_ini_file($file)) {
             return false;
         }
+        //replace specific strings by an array, as INI-file-values are always
+        //returned as strings
         array_walk_recursive($erg, [$this, 'checkSettingsValues']);
         return $erg;
     }
 
+    /**
+     * This method replaces a string with an array if the strings content match
+     * a pattern. Otherwise the string is left unchanged. This method
+     * operateds on a reference and therefore the original string is altered!
+     * @param string $value
+     *  Reference to an entry in the settings-array
+     */
     protected function checkSettingsValues(&$value)
     {
         //match strings of the with an array-structure: '[a, b, c, ... , n]'
         $pattern = '/^\[([^\[\],]*,+[^,\[\]]{1})+\]$/';
         if (is_string($value) && preg_match($pattern, $value)) {
             $value = explode(',', trim($value, '[]'));
+        }
+    }
+
+    /**
+     * loads the settings from a configuration file into an array
+     * @param string $file path to configuration file (absolut or relative)
+     * @throws RuntimeException
+     */
+    protected function loadFile($file)
+    {
+        if (!is_readable($file)) {
+            throw new RuntimeException($file. ' is not readable');
+        }
+
+        $this->settings = $this->parse($file);
+        if ($this->settings === false) {
+            throw new RuntimeException($file. ' could not be parsed');
         }
     }
 }

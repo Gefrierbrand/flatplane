@@ -23,7 +23,7 @@ namespace de\flatplane\utilities;
 
 /**
  * Description of Number
- *
+ * TODO: NumberInterface
  * @author Nikolai Neff <admin@flatplane.de>
  */
 class Number

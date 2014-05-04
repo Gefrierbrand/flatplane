@@ -21,7 +21,7 @@
 
 namespace de\flatplane\documentContents;
 
-use de\flatplane\interfaces\DocumentContentElementInterface;
+use de\flatplane\interfaces\DocumentElementInterface;
 use de\flatplane\iterators\DocumentContentElementFilterIterator;
 use de\flatplane\iterators\RecursiveContentIterator;
 use RecursiveIteratorIterator;
@@ -122,7 +122,7 @@ class ListOfContents extends AbstractDocumentContentElement
         }
     }
 
-    protected function getPropertiesAsString(DocumentContentElementInterface $element)
+    protected function getPropertiesAsString(DocumentElementInterface $element)
     {
         foreach ($this->propertiesToDisplay as $prop) {
             $methodName = 'get'.ucfirst($prop);

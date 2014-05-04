@@ -21,8 +21,7 @@
 
 namespace de\flatplane\documentContents\traits;
 
-use de\flatplane\interfaces\DocumentContentElementInterface;
-use de\flatplane\utilities\Config;
+use de\flatplane\interfaces\DocumentElementInterface;
 use RuntimeException;
 
 /**
@@ -71,23 +70,11 @@ trait ContentFunctions
     protected $isSplitable = false;
 
     /**
-     * @var Config
-     *  Contains a reference to the configuration Object
-     */
-    protected $config;
-
-    /**
-     * @var string
-     *  absolute or relative path to a default config file
-     */
-    protected $defaultConfigFile = 'config/elementSettings.ini';
-
-    /**
      * This method is used to add content to the Document or other content.
      * It checks if the given, to-be-added, content-type is allowed for the
      * current object and returns false on failure or a reference to the
      * added content.
-     * @param DocumentContentElementInterface $content
+     * @param DocumentElementInterface $content
      *  TODO: doc
      * @param string $position (optional)
      *  String indicating the position where the new content will be appended to
@@ -96,7 +83,7 @@ trait ContentFunctions
      *  returns a reference to the just added content instance
      */
     public function addContent(
-        DocumentContentElementInterface $content,
+        DocumentElementInterface $content,
         $position = 'last'
     ) {
         if (!$this->checkAllowedContent($content)) {
@@ -127,10 +114,10 @@ trait ContentFunctions
 
     /**
      * Determines if the given content may be added to the current object
-     * @param DocumentContentElementInterface $content
+     * @param DocumentElementInterface $content
      * @return bool
      */
-    protected function checkAllowedContent(DocumentContentElementInterface $content)
+    protected function checkAllowedContent(DocumentElementInterface $content)
     {
         if ($this->allowSubContent === true) {
             return true;
@@ -149,15 +136,6 @@ trait ContentFunctions
     public function getContent()
     {
         return $this->content;
-    }
-
-    /**
-     * @see getContent() :Alias:
-     * @return array
-     */
-    public function getChildren() // Alias of getSections()
-    {
-        return $this->getContent();
     }
 
     /**
@@ -254,18 +232,5 @@ trait ContentFunctions
     public function setIsSplitable($isSplitable)
     {
         $this->isSplitable = $isSplitable;
-    }
-
-    /**
-     * @return Config
-     */
-    public function getConfig()
-    {
-        return $this->config;
-    }
-
-    public function setConfig(Config $config)
-    {
-        $this->config = $config;
     }
 }

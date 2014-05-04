@@ -28,32 +28,15 @@ namespace de\flatplane\documentContents;
  */
 class Section extends AbstractDocumentContentElement
 {
-    protected $showInDocument = true;
     protected $type = 'section';
 
-    public function __construct(
-        $title,
-        $altTitle = '',
-        $showInIndex = true,
-        $enumerate = true,
-        $showInDocument = true
-    ) {
-        $this->title = $title;
-        $this->showInIndex = $showInIndex;
-        $this->enumerate = $enumerate;
-        $this->showInDocument = $showInDocument;
-        if ($altTitle == '') {
-            $this->altTitle = $title;
-        } else {
-            $this->altTitle = $altTitle;
-        }
-    }
-
-    public function getStyle()
+    public function __toString()
     {
-        if (empty($this->style)) {
-            $this->setStyle(new SectionStyle);
+        if ($this->getEnumerate()) {
+            $numStr = $this->getFormattedNumbers().' ';
+        } else {
+            $numStr = '';
         }
-        return $this->style;
+        return (string) $numStr. $this->getConfig()->getSettings('title');
     }
 }

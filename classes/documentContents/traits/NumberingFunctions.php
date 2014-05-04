@@ -21,7 +21,8 @@
 
 namespace de\flatplane\documentContents\traits;
 
-use de\flatplane\interfaces\DocumentContentElementInterface;
+use de\flatplane\interfaces\CounterInterface;
+use de\flatplane\interfaces\DocumentElementInterface;
 use de\flatplane\utilities\Counter;
 use de\flatplane\utilities\Number;
 use OutOfBoundsException;
@@ -33,7 +34,6 @@ use OutOfBoundsException;
  */
 trait NumberingFunctions
 {
-    use ContentFunctions;
     /**
     * @var array
     *  Array containing instances of the number object representing a counted value
@@ -61,11 +61,11 @@ trait NumberingFunctions
 
     /**
      * Adds a new Counter for the given type to the current object
-     * @param Counter $counter
+     * @param CounterInterface $counter
      * @param string $name
      * @return Counter
      */
-    protected function addCounter(Counter $counter, $name)
+    protected function addCounter(CounterInterface $counter, $name)
     {
         return $this->counter[$name] = $counter;
     }
@@ -74,10 +74,10 @@ trait NumberingFunctions
      * This method delegates the calculation of the content-number to either its
      * own instance if the numberingLevel permits it, or to another object higher
      * up in the document tree. It then sets the number in the subcontent.
-     * @param DocumentContentElementInterface $content
+     * @param DocumentElementInterface $content
      * @throws OutOfBoundsException
      */
-    protected function calculateNumber(DocumentContentElementInterface $content)
+    protected function calculateNumber(DocumentElementInterface $content)
     {
         //the numbering level is a document wide setting, so retrieve it from
         //the documents config object
@@ -125,10 +125,11 @@ trait NumberingFunctions
     /**
      * Checks if a counter for the content-type already exists and increments
      * its value, or creates a new one for that type
-     * @param DocumentContentElementInterface $content
-     * @return Counter Counter for the given content-type
+     * @param DocumentElementInterface $content
+     * @return Counter
+     *  Counter for the given content-type
      */
-    public function checkLocalCounter(DocumentContentElementInterface $content)
+    public function checkLocalCounter(DocumentElementInterface $content)
     {
         $type = $content->getType();
         if (array_key_exists($type, $this->counter)) {
@@ -146,10 +147,10 @@ trait NumberingFunctions
     /**
      * Calls the checkLocalCounter() method at the appropriate level in the
      * document tree
-     * @param DocumentContentElementInterface $content
+     * @param DocumentElementInterface $content
      * @return Counter
      */
-    protected function checkRemoteCounter(DocumentContentElementInterface $content)
+    protected function checkRemoteCounter(DocumentElementInterface $content)
     {
         $level = $this->toRoot()->getConfig()->getSettings(
             'numberingLevel',

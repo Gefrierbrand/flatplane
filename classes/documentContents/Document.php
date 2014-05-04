@@ -19,19 +19,17 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\structure;
+namespace de\flatplane\documentContents;
 
-use de\flatplane\interfaces\DocumentContentStructureInterface;
-use de\flatplane\utilities\Config;
+use de\flatplane\interfaces\DocumentElementInterface;
 
 /**
  * This class represents the base document.
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Document implements DocumentContentStructureInterface
+class Document extends AbstractDocumentContentElement
 {
-    use \de\flatplane\documentContents\traits\NumberingFunctions;
-
+    protected $type='document';
     /**
      * @var int
      *  Number of pages; used for internal representation.
@@ -39,18 +37,14 @@ class Document implements DocumentContentStructureInterface
      */
     private $pages;
 
-    /**
-     * Document Constructor
-     * @param array $config (optional)
-     *  key => value pairs of options overriding the defaults
-     */
-    public function __construct(Config $config = null)
+    public function __toString()
     {
-        if (empty($config)) {
-            $this->config = new Config();
-        } else {
-            $this->config = $config;
-        }
+        return (string) $this->getConfig()->getSettings('title');
+    }
+
+    public function __clone()
+    {
+        //currently: do nothing
     }
 
     /**
@@ -69,7 +63,7 @@ class Document implements DocumentContentStructureInterface
         return $this;
     }
 
-    public function setParent(DocumentContentStructureInterface $parent)
+    public function setParent(DocumentElementInterface $parent)
     {
         //currently: do nothing
     }

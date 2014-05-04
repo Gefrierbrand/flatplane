@@ -19,13 +19,15 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\documentContents;
+namespace de\flatplane\interfaces;
 
 /**
- * @see Formula :Alias:
+ *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Equation extends Formula
+interface ConfigInterface
 {
-
+    public function __construct($configFile = '', array $settings = []);
+    public function setSettings(array $settings);
+    public function getSettings($key = null, $subKey = null);
 }

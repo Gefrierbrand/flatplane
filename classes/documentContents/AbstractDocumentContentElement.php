@@ -21,12 +21,10 @@
 
 namespace de\flatplane\documentContents;
 
-use de\flatplane\interfaces\DocumentContentElementInterface;
-use de\flatplane\interfaces\DocumentContentStructureInterface;
+use de\flatplane\interfaces\ConfigInterface;
+use de\flatplane\interfaces\DocumentElementInterface;
 use de\flatplane\interfaces\StyleInterface;
 
-//TODO:
-//get chapter(level)?
 //todo: formattierungsobjekte: newline, newpage, (h/v-space), clearpage?
 
 /**
@@ -34,39 +32,72 @@ use de\flatplane\interfaces\StyleInterface;
  * Provides basic common functionality.
  * @author Nikolai Neff <admin@flatplane.de>
  */
-abstract class AbstractDocumentContentElement implements DocumentContentElementInterface
+abstract class AbstractDocumentContentElement implements DocumentElementInterface
 {
-    //import functionality horizontally from the trait NumberingFunctions
-    //(reduces codelength & reuse in Document)
-    use traits\NumberingFunctions; //includes ContentFunctions
+    //import functionality horizontally from traits (reduces code length)
+    use traits\ContentFunctions;
+    use traits\NumberingFunctions;
+    use traits\ElementSettings;
 
+    /**
+     * @var DocumentElementInterface
+     *  Contains a reference to the parent DocumentElement instance
+     */
     protected $parent = null;
     protected $type = 'PageElement';
+
+    /**
+     * @var StyleInterface
+     *  Contains a reference to the style object
+     */
     protected $style = null;
 
-    protected $title;
-    protected $altTitle;
-    protected $caption;
-    protected $showInIndex = true;
-    protected $enumerate = true;
+    /**
+     * @var ConfigInterface
+     *  Contains a reference to the configuration object
+     */
+    protected $config = null;
 
-    public function __toString()
+
+    public function __construct(ConfigInterface $config)
     {
-        if ($this->enumerate) {
-            $numStr = $this->getFormattedNumbers().' ';
-        } else {
-            $numStr = '';
-        }
-        return (string) $numStr. $this->title;
+        $this->config = $config;
+    }
+
+    public function __clone()
+    {
+        $this->setConfig(clone $this->getConfig());
+        //$this->setStyle(clone $this->getStyle());
+        //$this->setParent(clone $this->getParent());
+    }
+    /**
+     * @return ConfigInterface
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    public function setConfig(ConfigInterface $config)
+    {
+        $this->config = $config;
     }
 
     /**
      * Sets the elements parent to another PageElement or the Document
-     * @param DocumentContentStructureInterface $parent
+     * @param DocumentElementInterface $parent
      */
-    public function setParent(DocumentContentStructureInterface $parent)
+    public function setParent(DocumentElementInterface $parent)
     {
         $this->parent = $parent;
+    }
+
+    /**     *
+     * @return DocumentElementInterface
+     */
+    public function getParent()
+    {
+        return $this->parent;
     }
 
     public function setType($type)
@@ -75,54 +106,6 @@ abstract class AbstractDocumentContentElement implements DocumentContentElementI
             $type = [$type];
         }
         $this->type = $type;
-    }
-
-    public function setEnumerate($enumerate)
-    {
-        if ($this->parent !== null) {
-            trigger_error(
-                'setEnumerate() should not be called after adding the element'.
-                ' as content',
-                E_USER_WARNING
-            );
-        }
-        $this->enumerate = $enumerate;
-    }
-
-    public function setShowInIndex($showInIndex)
-    {
-        if ($this->parent !== null) {
-            trigger_error(
-                'setShowInIndex() should not be called after adding the element'.
-                ' as content',
-                E_USER_WARNING
-            );
-        }
-        $this->showInIndex = $showInIndex;
-    }
-
-    public function hasContent()
-    {
-        return !empty($this->content);
-    }
-
-    public function getAltTitle()
-    {
-        if (isset($this->altTitle)) {
-            return $this->altTitle;
-        } else {
-            return $this->title;
-        }
-    }
-
-    public function getChildren()
-    {
-        return $this->getContent();
-    }
-
-    public function getParent()
-    {
-        return $this->parent;
     }
 
     public function getType()
@@ -140,43 +123,20 @@ abstract class AbstractDocumentContentElement implements DocumentContentElementI
         //TODO: Implement me
     }
 
-    public function getEnumerate()
-    {
-        return $this->enumerate;
-    }
-
-    public function getShowInIndex()
-    {
-        return $this->showInIndex;
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    public function getCaption()
-    {
-        return $this->caption;
-    }
-
+    /**
+     * @param StyleInterface $style
+     */
     public function setStyle(StyleInterface $style)
     {
         $this->style = $style;
     }
 
-    public function setTitle($title)
+    /**
+     *
+     * @return StyleInterface
+     */
+    public function getStyle()
     {
-        $this->title = $title;
-    }
-
-    public function setAltTitle($altTitle)
-    {
-        $this->altTitle = $altTitle;
-    }
-
-    public function setCaption($caption)
-    {
-        $this->caption = $caption;
+        return $this->style;
     }
 }
