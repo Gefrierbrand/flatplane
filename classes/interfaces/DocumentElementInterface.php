@@ -41,7 +41,6 @@ interface DocumentElementInterface
     public function getLevel();
     public function getContent();
     public function getIsSplitable();
-    public function getConfig();
     public function getStyle();
     public function getType();
     public function getSize();
@@ -49,11 +48,13 @@ interface DocumentElementInterface
     public function getNumbers();
     public function getFormattedNumbers();
     public function getCounter($name);
+    public function getLabelName();
+    public function getSettings($key = null, $subKey = null);
 
     public function setParent(DocumentElementInterface $parent);
-    public function setConfig(ConfigInterface $config);
     public function setStyle(StyleInterface $style);
     public function setType($type);
     public function setNumbers(array $numbers);
     public function setIsSplitable($isSplitable);
+    public function setSettings(array $settings);
 }

@@ -81,7 +81,7 @@ trait NumberingFunctions
     {
         //the numbering level is a document wide setting, so retrieve it from
         //the documents config object
-        $numberingLevel = $this->toRoot()->getConfig()->getSettings(
+        $numberingLevel = $this->toRoot()->getSettings(
             'numberingLevel',
             $content->getType()
         );
@@ -109,7 +109,7 @@ trait NumberingFunctions
         //to advanced formating options like letters or roman numerals.
         $num = new Number($counterValue);
         $num->setFormat(
-            $this->toRoot()->getConfig()->getSettings(
+            $this->toRoot()->getSettings(
                 'numberingFormat',
                 $content->getType()
             )
@@ -135,7 +135,7 @@ trait NumberingFunctions
         if (array_key_exists($type, $this->counter)) {
             $this->counter[$content->getType()]->add();
         } else {
-            $startIndex = $this->toRoot()->getConfig()->getSettings(
+            $startIndex = $this->toRoot()->getSettings(
                 'startIndex',
                 $type
             );
@@ -152,7 +152,7 @@ trait NumberingFunctions
      */
     protected function checkRemoteCounter(DocumentElementInterface $content)
     {
-        $level = $this->toRoot()->getConfig()->getSettings(
+        $level = $this->toRoot()->getSettings(
             'numberingLevel',
             $content->getType()
         );
@@ -184,16 +184,17 @@ trait NumberingFunctions
      */
     public function getFormattedNumbers()
     {
-        $docConf = $this->toRoot()->getConfig();
+        $docConf = $this->toRoot()->getSettings();
         $type = $this->getType();
 
+        //all default to null if setting is not found
         $prefix = $docConf->getSettings('numberingPrefix', $type);
         $separator = $docConf->getSettings('numberingSeparator', $type);
         $postfix = $docConf->getSettings('numberingPostfix', $type);
 
         $out = $prefix;
 
-        foreach ($this->numbers as $number) {
+        foreach ($this->getNumbers() as $number) {
             $out .= $number->getFormattedValue();
             $out .= $separator;
         }

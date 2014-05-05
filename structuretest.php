@@ -50,15 +50,19 @@ $settings = array(
 
 $config = new Config('config/documentSettings.ini', $settings);
 
+//todo: mabe merge factory with document to ensure documents existance and add elements while creating them?
 $document = new Document($config);
 
 
-$vorwort = $factory->createElement('section', ['title' => 'vorwort']);
+$vorwort = $factory->createElement('section', ['title' => 'Vorwort']);
+$einleitung = $factory->createElement('section', ['title' => 'Einleitung', 'label' => 'sec:einleitung']);
 
-$vorwort->setEnumerate(false);
+//$vorwort->setEnumerate(false);
 
 $document->addContent($vorwort);
+$document->addContent($einleitung);
 
+var_dump($document);
 //$inhalt = new ListOfContents('Inhaltsverzeichnis', 'section');
 //$inhalt->setEnumerate(false);
 //$document->addContent($inhalt);

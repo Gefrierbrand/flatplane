@@ -30,6 +30,34 @@ use de\flatplane\interfaces\DocumentElementInterface;
 class Document extends AbstractDocumentContentElement
 {
     protected $type='document';
+    protected $labels = [];
+
+    //todo: fixsettings: arrays, defaults ?
+    protected $settings = ['author' => '',
+                            'title' => '',
+                            'description' => '',
+                            'subject' => '',
+                            'keywords' => '',
+                            'unit' => 'mm',
+                            'pageSize' => 'A4',
+                            'orientation' => 'P',
+                            'defaultMargin' => 20,
+                            'margin' => ['top' => 20,
+                                         'left' =>20,
+                                         'right' => 20,
+                                         'bottom' => 20,],
+                            'defaultFontType' => 'times',
+                            'defaultFontSize' => 12,
+                            'defaultFontStyle' => '',
+                            'defaultFontColor' => [0, 0, 0],
+                            'defaultDrawColor' => [0, 0, 0],
+                            'defaultStartIndex' => 1,
+                            'defaultNumberingLevel' => -1,
+                            'defaultNumberingFormat' => 'int',
+                            'defaultNumberingSeparator' => '.',
+                            'defaultNumberingPrefix' =>'',
+                            'defaultNumberingPostfix' => ']'];
+
     /**
      * @var int
      *  Number of pages; used for internal representation.
@@ -39,7 +67,7 @@ class Document extends AbstractDocumentContentElement
 
     public function __toString()
     {
-        return (string) $this->getConfig()->getSettings('title');
+        return (string) $this->getSettings('title');
     }
 
     public function __clone()
@@ -66,5 +94,15 @@ class Document extends AbstractDocumentContentElement
     public function setParent(DocumentElementInterface $parent)
     {
         //currently: do nothing
+    }
+
+    public function getLabelName()
+    {
+        return false;
+    }
+
+    public function addLabel(DocumentElementInterface $instance)
+    {
+        $this->labels[$instance->getLabelName()] = $instance;
     }
 }

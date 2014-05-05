@@ -104,11 +104,27 @@ trait ContentFunctions
             $this->calculateNumber($content);
         }
 
+        if ($content->getLabelName()) {
+            $this->toRoot()->addLabel($content);
+        }
+
         if ($position == 'first') {
+            //add content as first array entry
             array_unshift($this->content, $content);
             return $this->content[0];
         } else {
+            //append content as last array entry
             return $this->content[] = $content;
+        }
+    }
+
+    public function getLabelName()
+    {
+        $name = $this->getSettings('label');
+        if (isset($name)) {
+            return $name;
+        } else {
+            return false;
         }
     }
 
@@ -119,9 +135,9 @@ trait ContentFunctions
      */
     protected function checkAllowedContent(DocumentElementInterface $content)
     {
-        if ($this->allowSubContent === true) {
+        if ($this->getAllowSubContent() === true) {
             return true;
-        } elseif (in_array($content->getType(), $this->allowSubContent)) {
+        } elseif (in_array($content->getType(), $this->getAllowSubContent())) {
             return true;
         } else {
             return false;

@@ -24,7 +24,6 @@ namespace de\flatplane\documentContents;
 use de\flatplane\interfaces\DocumentElementInterface;
 use de\flatplane\utilities\Config;
 use InvalidArgumentException;
-use RuntimeException;
 
 /**
  * Description of ElementFactory
@@ -33,29 +32,7 @@ use RuntimeException;
  */
 class ElementFactory
 {
-    //Todo: required keys, default styles, default config, aliases?
-
-    /**
-     * @var array
-     *  Defines required keys for all element types
-     */
-    protected $requiredKeys = [
-        'section' =>
-            ['title',
-             'enumerate',
-             'showInIndex',
-             'showInDocument',
-             'fontType',
-             'fontSize',
-             'fontStyle',
-             'fontColor',
-             'startsNewLine',
-             'minFreePage'],
-        'formula' =>
-            ['type', 'font', 'code'],
-        'image' =>
-            ['path'],
-        ];
+    //todo: maybe aliases?
 
     /**
      * @var array
@@ -65,11 +42,12 @@ class ElementFactory
         'section' => 'config/sectionSettings.ini',
         'formula' => 'config/formulaSettings.ini',
         'image' => 'config/imageSettings.ini',
+        'list' => 'config/listSettings.ini',
     ];
 
     /**
      * @var array
-     *  Array containing references to prototype page-elements
+     *  Array containing references to named prototype-page-elements
      */
     protected $prototypes;
 
@@ -84,31 +62,34 @@ class ElementFactory
      *  Key => Value pairs of settings for the new element
      * @return DocumentElementInterface
      */
-    public function createElement($type, array $settings = null)
+    public function createElement($type, array $settings = [])
     {
         $type = strtolower($type);
         if (!isset($this->prototypes[$type])) {
-            $prototype = $this->createPrototype($type);
+            $prototype = $this->createPrototype($type, $settings);
             $this->addPrototype($type, $prototype);
         }
         $erg = clone $this->prototypes[$type];
         if (is_array($settings)) {
-            $erg->getConfig()->setSettings($settings);
+            $erg->setSettings($settings);
         }
         return $erg;
     }
 
     /**
      * @param string $type
+     * @param array $settings
      * @return DocumentElementInterface
      * @throws InvalidArgumentException
      */
-    protected function createPrototype($type)
+    protected function createPrototype($type, array $settings)
     {
         switch (strtolower($type))
         {
             case 'section':
-                return $this->createSection();
+                return $this->createSection($settings);
+            case 'list':
+                return $this->createList($settings);
             default:
                 throw new InvalidArgumentException(
                     "The requested type $type is not a valid element type"
@@ -126,35 +107,25 @@ class ElementFactory
         $this->prototypes[$type] = $prototype;
     }
 
-    /**     *
-     * @return Section
+    /**
+     * @param array $settings
+     * @return \de\flatplane\documentContents\Section
      */
-    protected function createSection()
+    protected function createSection(array $settings)
     {
-        $config = new Config($this->configFiles['section']);
+        $config = new Config($this->configFiles['section'], $settings);
         $section = new Section($config);
-        $this->checkRequiredKeys($section, $this->requiredKeys['section']);
         return $section;
     }
 
     /**
-     * Checks if all required keys are set and not empty
-     * @param DocumentElementInterface $element
-     * @param array $requiredKeys
-     * @throws RuntimeException
+     * @param array $settings
+     * @return \de\flatplane\documentContents\ListOfContents
      */
-    protected function checkRequiredKeys(
-        DocumentElementInterface $element,
-        array $requiredKeys
-    ) {
-        $definedKeys = $element->getConfig()->getSettings();
-        foreach ($requiredKeys as $required) {
-            if (empty($definedKeys[$required])) {
-                throw new RuntimeException(
-                    "The required key $required is not set in the configuration"
-                    . "for $element"
-                );
-            }
-        }
+    protected function createList(array $settings)
+    {
+        $config = new Config($this->configFiles['list'], $settings);
+        $list = new ListOfContents($config);
+        return $list;
     }
 }

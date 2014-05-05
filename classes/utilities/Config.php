@@ -22,7 +22,6 @@
 namespace de\flatplane\utilities;
 
 use de\flatplane\interfaces\ConfigInterface;
-use InvalidArgumentException;
 use RuntimeException;
 
 /**
@@ -34,11 +33,12 @@ use RuntimeException;
  */
 class Config implements ConfigInterface
 {
+    use \de\flatplane\documentContents\traits\SetSettings;
     /**
      * @var mixed
      *  Holds Settings as array or null if unitialized
      */
-    protected $settings = null;
+    protected $settings = [];
 
     /**
      * Class Constructor
@@ -60,91 +60,11 @@ class Config implements ConfigInterface
     }
 
     /**
-     * Overrides or extends the default options with the given settings array
-     * @param array $settings
+     * @return array
      */
-    public function setSettings(array $settings)
+    public function getSettings()
     {
-        if (is_array($this->settings)) {
-            //replace defaults with given settings
-            foreach ($settings as $key => $value) {
-                if (array_key_exists($key, $this->settings)) {
-                    if (is_array($value)) {
-                        //Merges the given settings with (possibly) already existing
-                        //settings instead of overwriting them with an (possibly)
-                        //incomplete array
-                        $this->settings[$key] = array_merge(
-                            $this->settings[$key],
-                            $value
-                        );
-                    } else {
-                        $this->settings[$key] = $value;
-                    }
-                }
-            }
-        } else {
-            $this->settings = $settings;
-        }
-    }
-
-    /**
-     * This method returns the value of a specific setting for a given
-     * $key or $key/$subkey-pair. If the $key does not exist, it tries to return
-     * the value of a default key. If this also fails, an InvalidArgumentExeption
-     * is thrown. If no settings are present, a RuntimeException is thrown
-     * @param string $key (optional)
-     * @param string $subKey (optional)
-     * @return mixed
-     *  Returns the value of the requested setting for the $key or $subkey or
-     *  the whole settings-array if no key is specified.
-     * @throws InvalidArgumentException, RuntimeException
-     */
-    public function getSettings($key = null, $subKey = null)
-    {
-        if ($this->settings === null) {
-            throw new RuntimeException(
-                'There are no settings in the current elements Config'
-            );
-        }
-
-        if ($key === null) {
-            $value = $this->settings;
-        } else {
-            if (array_key_exists($key, $this->settings)) {
-                if ($subKey == null) {
-                    $value = $this->settings[$key];
-                } else {
-                    if (!isset($this->settings[$key][$subkey])) {
-                        throw new \RuntimeException('Subkey does not exist');
-                    } else {
-                        $value = $this->settings[$key][$subKey];
-                    }
-                }
-            } else {
-                $value = $this->searchDefaults($key);
-            }
-        }
-        return $value;
-    }
-
-    /**
-     *
-     * @param string $key
-     * @throws InvalidArgumentException
-     * @returns mixed
-     */
-    protected function searchDefaults($key)
-    {
-        //fall back to default setting if specific setting does not exist
-        $defaultKey = 'default'.ucfirst($key);
-        if (array_key_exists($defaultKey, $this->settings)) {
-            $value = $this->settings[$defaultKey];
-        } else {
-            throw new InvalidArgumentException(
-                'The key "'.$key.'" does not exist in the configuration.'
-            );
-        }
-        return $value;
+        return $this->settings;
     }
 
     /**

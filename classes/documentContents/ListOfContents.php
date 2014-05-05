@@ -34,9 +34,10 @@ use RecursiveIteratorIterator;
 class ListOfContents extends AbstractDocumentContentElement
 {
     protected $maxDepth;
-    protected $type='section'; //use section here to be able to include self
+    protected $type='list';
     protected $displayTypes;
     protected $allowSubContent = false;
+    protected $isSplitable = true;
     protected $propertiesToDisplay = ['altTitle'];
 
     /**

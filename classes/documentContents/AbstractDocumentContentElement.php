@@ -26,6 +26,7 @@ use de\flatplane\interfaces\DocumentElementInterface;
 use de\flatplane\interfaces\StyleInterface;
 
 //todo: formattierungsobjekte: newline, newpage, (h/v-space), clearpage?
+//todo: complete documentation!
 
 /**
  * Abstract class for all page elements like sections, text, images, formulas, ...
@@ -37,7 +38,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     //import functionality horizontally from traits (reduces code length)
     use traits\ContentFunctions;
     use traits\NumberingFunctions;
-    use traits\ElementSettings;
+    use traits\SetSettings;
 
     /**
      * @var DocumentElementInterface
@@ -46,41 +47,29 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     protected $parent = null;
     protected $type = 'PageElement';
 
+    protected $settings = ['enumerate' => true,
+                           'showInIndex' => true];
     /**
      * @var StyleInterface
      *  Contains a reference to the style object
      */
     protected $style = null;
 
-    /**
-     * @var ConfigInterface
-     *  Contains a reference to the configuration object
-     */
-    protected $config = null;
-
-
     public function __construct(ConfigInterface $config)
     {
-        $this->config = $config;
+        $configSettings = $config->getSettings();
+        foreach ($this->settings as $key => $setting) {
+            if (isset($configSettings[$key])) {
+                $this->settings[$key] = $configSettings[$key];
+            }
+        }
     }
 
     public function __clone()
     {
-        $this->setConfig(clone $this->getConfig());
-        //$this->setStyle(clone $this->getStyle());
-        //$this->setParent(clone $this->getParent());
-    }
-    /**
-     * @return ConfigInterface
-     */
-    public function getConfig()
-    {
-        return $this->config;
-    }
-
-    public function setConfig(ConfigInterface $config)
-    {
-        $this->config = $config;
+        //todo: make this work
+        $this->setStyle(clone $this->getStyle());
+        $this->setParent(clone $this->getParent());
     }
 
     /**
@@ -92,7 +81,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         $this->parent = $parent;
     }
 
-    /**     *
+    /**
      * @return DocumentElementInterface
      */
     public function getParent()
@@ -138,5 +127,95 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     public function getStyle()
     {
         return $this->style;
+    }
+
+    public function getSettings($key = null, $subKey = null)
+    {
+        if ($key === null) {
+            $value = $this->settings;
+        } else {
+            if (isset($this->settings[$key])) {
+                $value = $this->settings[$key];
+            } else {
+                $value = null;
+            }
+        }
+
+        if ($subKey !== null && is_array($value)) {
+            if (isset($value[$subKey])) {
+                $value = $value[$subKey];
+            } else {
+                $value = $this->searchDefaults($key);
+            }
+        }
+
+        return $value;
+    }
+
+
+
+    /**
+     * @param bool $enumerate
+     */
+    public function setEnumerate($enumerate)
+    {
+        if ($this->parent !== null) {
+            trigger_error(
+                'setEnumerate() should not be called after adding the element'.
+                ' as content',
+                E_USER_WARNING
+            );
+        }
+        $this->setSettings(['enumerate' => $enumerate]);
+    }
+
+    /**
+     * @param bool $showInIndex
+     */
+    public function setShowInIndex($showInIndex)
+    {
+        if ($this->parent !== null) {
+            trigger_error(
+                'setShowInIndex() should not be called after adding the element'.
+                ' as content',
+                E_USER_WARNING
+            );
+        }
+        $this->setSettings(['showInIndex' => $showInIndex]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function getEnumerate()
+    {
+        return $this->getSettings('enumerate');
+    }
+
+    /**
+     * @return bool
+     */
+    public function getShowInIndex()
+    {
+        return $this->getSettings('showInIndex');
+    }
+
+    /**
+     * @param string $key
+     * @return mixed
+     */
+    protected function searchDefaults($key)
+    {
+        //fall back to default setting if specific setting does not exist
+        //eg: if the required specific setting fontType is not defined, the
+        //method searches for defaultFontType. This is mainly usefull for
+        //subkeys like "numberingLevel[section]" wich might not be defined.
+        $defaultKey = 'default'.ucfirst($key);
+        if (array_key_exists($defaultKey, $this->settings)) {
+            $value = $this->settings[$defaultKey];
+        } else {
+            $value = null;
+        }
+        return $value;
     }
 }

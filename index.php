@@ -18,11 +18,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
+namespace de\flatplane;
+
+use de\flatplane\utilities\Timer;
+use TCPDF;
 
 require 'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
 date_default_timezone_set('Europe/Berlin');
 
-$t = new de\flatplane\utilities\Timer;
+$t = new Timer;
 
 // create new PDF document
 //$orientation='P', $unit='mm', $format='A4', $unicode=true, $encoding='UTF-8', $diskcache=false, $pdfa=false
@@ -137,4 +141,3 @@ $pdf->Text(0, 0, date('d.m.Y H:i:s'));
 $t->now('After Image / Text');
 
 $pdf->Output('output/test.pdf', 'F');
-

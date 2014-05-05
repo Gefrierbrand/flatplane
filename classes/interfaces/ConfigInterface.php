@@ -29,5 +29,5 @@ interface ConfigInterface
 {
     public function __construct($configFile = '', array $settings = []);
     public function setSettings(array $settings);
-    public function getSettings($key = null, $subKey = null);
+    public function getSettings();
 }
