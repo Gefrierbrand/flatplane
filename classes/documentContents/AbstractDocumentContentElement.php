@@ -21,12 +21,12 @@
 
 namespace de\flatplane\documentContents;
 
-use de\flatplane\interfaces\ConfigInterface;
 use de\flatplane\interfaces\DocumentElementInterface;
 use de\flatplane\interfaces\StyleInterface;
 
 //todo: formattierungsobjekte: newline, newpage, (h/v-space), clearpage?
 //todo: complete documentation!
+//todo: methoden sortieren
 
 /**
  * Abstract class for all page elements like sections, text, images, formulas, ...
@@ -47,20 +47,30 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     protected $parent = null;
     protected $type = 'PageElement';
 
-    protected $settings = ['enumerate' => true,
-                           'showInList' => true,
-                           'allowSubContent' => true,
-                           'isSplitable' => false];
+    protected $enumerate = true;
+    protected $showInList = true;
+    protected $allowSubContent = true;
+    protected $isSplitable = false;
+    protected $label = '';
 
-    public function __construct(array $config)
+    protected $style;
+
+    public function __construct(array $config, StyleInterface $style)
     {
-        $this->settings = array_merge($this->settings, $config);
+        foreach ($config as $key => $setting) {
+            $name = 'set'.ucfirst($setting);
+            if (method_exists($this, $name)) {
+                $this->{$name}($setting);
+            }
+        }
+        $this->style = $style;
     }
 
     public function __clone()
     {
         //todo: make this work ?
         //$this->setParent(clone $this->getParent());
+        //$this->setStyle(clone $this->getStyle());
     }
 
     /**
@@ -82,9 +92,6 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
 
     public function setType($type)
     {
-        if (!is_array($type)) {
-            $type = [$type];
-        }
         $this->type = $type;
     }
 
@@ -112,38 +119,12 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     }
 
     /**
-     *
      * @return StyleInterface
      */
     public function getStyle()
     {
         return $this->style;
     }
-
-    public function getSettings($key = null, $subKey = null)
-    {
-        if ($key === null) {
-            $value = $this->settings;
-        } else {
-            if (isset($this->settings[$key])) {
-                $value = $this->settings[$key];
-            } else {
-                $value = null;
-            }
-        }
-
-        if ($subKey !== null && is_array($value)) {
-            if (isset($value[$subKey])) {
-                $value = $value[$subKey];
-            } else {
-                $value = $this->searchDefaults($key);
-            }
-        }
-
-        return $value;
-    }
-
-
 
     /**
      * @param bool $enumerate
@@ -157,7 +138,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
                 E_USER_WARNING
             );
         }
-        $this->setSettings(['enumerate' => $enumerate]);
+        $this->enumerate = $enumerate;
     }
 
     /**
@@ -172,7 +153,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
                 E_USER_WARNING
             );
         }
-        $this->setSettings(['showInList' => $showInList]);
+        $this->showInList = $showInList;
     }
 
     /**
@@ -180,33 +161,39 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      */
     public function getEnumerate()
     {
-        return $this->getSettings('enumerate');
+        return $this->enumerate;
     }
 
     /**
      * @return bool
      */
-    public function getShowInIndex()
+    public function getShowInList()
     {
-        return $this->getSettings('showInIndex');
+        return $this->showInList;
     }
 
-    /**
-     * @param string $key
-     * @return mixed
-     */
-    protected function searchDefaults($key)
+    public function getAllowSubContent()
     {
-        //fall back to default setting if specific setting does not exist
-        //eg: if the required specific setting fontType is not defined, the
-        //method searches for defaultFontType. This is mainly usefull for
-        //subkeys like "numberingLevel[section]" wich might not be defined.
-        $defaultKey = 'default'.ucfirst($key);
-        if (array_key_exists($defaultKey, $this->settings)) {
-            $value = $this->settings[$defaultKey];
-        } else {
-            $value = null;
-        }
-        return $value;
+        return $this->allowSubContent;
+    }
+
+    public function getIsSplitable()
+    {
+        return $this->isSplitable;
+    }
+
+    public function setAllowSubContent($allowSubContent)
+    {
+        $this->allowSubContent = $allowSubContent;
+    }
+
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+    public function setLabel($label)
+    {
+        $this->label = $label;
     }
 }

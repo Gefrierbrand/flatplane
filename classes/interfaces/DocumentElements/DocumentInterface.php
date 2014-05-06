@@ -30,4 +30,36 @@ use de\flatplane\interfaces\DocumentElementInterface;
 interface DocumentInterface extends DocumentElementInterface
 {
     public function addLabel(DocumentElementInterface $label);
+    public function getNumberingLevel($type = '');
+    public function getNumberingFormat($type = '');
+    public function getStartIndex($type = '');
+    public function getNumberingPrefix($type = '');
+    public function getNumberingPostfix($type = '');
+    public function getNumberingSeparator($type = '');
+
+    public function getLabels();
+    public function getAuthor();
+    public function getTitle();
+    public function getDescription();
+    public function getSubject();
+    public function getKeywords();
+    public function getUnit();
+    public function getPageSize();
+    public function getOrientation();
+
+    public function getPages();
+
+    public function setAuthor($author);
+    public function setTitle($title);
+    public function setDescription($description);
+    public function setSubject($subject);
+    public function setKeywords($keywords);
+    public function setUnit($unit);
+
+    public function setNumberingLevel(array $level);
+    public function setNumberingFormat(array $format);
+    public function setStartIndex(array $index);
+    public function setNumberingPrefix(array $prefix);
+    public function setNumberingPostfix(array $postfix);
+    public function setNumberingSeparator(array $separator);
 }

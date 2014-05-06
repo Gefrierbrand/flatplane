@@ -33,48 +33,54 @@ use RecursiveIteratorIterator;
  */
 class ListOfContents extends AbstractDocumentContentElement
 {
-    protected $maxDepth;
     protected $type='list';
-    protected $displayTypes;
-    protected $allowSubContent = false;
-    protected $isSplitable = true;
-    protected $propertiesToDisplay = ['altTitle'];
+    /**
+     * @var array $settings
+     * Array containing key=>value pairs of configuration and style options.
+     * Required keys for lists are:
+     * <ul>
+     *  <li>enumerate (bool): determines if the list itself is enumerated</li>
+     *  <li>showInLists (bool): determines if the list can be shown in other
+     *   lists</li>
+     *  <li>allowSubContent (mixed): determines if the list can contain other
+     *   content</li>
+     *  <li>isSplitable (bool): indicates whether the list can be printed across
+     *   multiple pages</li>
+     *  <li>maxDepth (int): Determines to wich level inside the documenttree the
+     *   contents are displayed inside the list. Contents given on the top level
+     *   are at depth 0. This value might differ from the contents level-property,
+     *   as subtrees might also be processed by this function.
+     *   Use -1 for unlimited depth.</li>
+     *  <li>displayTypes (array): Array containing the content-types to be
+     *   included in the list. For example use ['image', 'table'] to list all
+     *   images and all tables wich have their 'showInList' setting set to true
+     *   in one index.</li>
+     *  <li>propDisplay (array): Array containing the 'properties' / 'settings' of
+     *   the listed objects wich will be displayes as their name</li>
+     *  <li>indent (array): key maxLevel: (int) defines to which depth the
+     *   list entries should be indented: use 0 for off and -1 for unlimited
+     *   key amount (int): defines how far a level should be indented, in
+     *   character-widths</li>
+     * </ul>
+     */
+    protected $settings = ['enumerate' => true,
+                           'showInList' => true,
+                           'allowSubContent' => false,
+                           'isSplitable' => true,
+                           'maxDepth' => -1,
+                           'displayTypes' => ['section'],
+                           'propDisplay' => ['altTitle'],
+                           'indent' => ['maxLevel' => -1, 'amount' => 4]];
 
     /**
      * Generates a new list of arbitrary content elements. Used to create a
      * Table of Contents (TOC) or List of Figures (LOF) and so on.
-     * @param string $title
-     *  The title of the list.
-     * @param array $displayTypes
-     *  Array containing the content-types to be included in the list.
-     *  For example ['image','table'] to list all images and tables in one index.
-     * @param int $maxDepth
-     *  Determines to wich level inside the documenttree the contents are
-     *  displayed inside the list. Contents given on the top level are at
-     *  depth 0. This value might differ from the contents 'level' property,
-     *  as subtrees might also be processed by this function.
-     *  Use -1 for unlimited depth.
-     * @param bool $enumerate
-     *  Determines wether the list will be numbered
-     * @param bool $showInIndex
-     *  Determines if this list is shown inside other lists (including itself if
-     *  the displaytype includes section)
+     * @param array $config
+     *  Array containing key=>value pairs of configuration and style options
      */
-    public function __construct(
-        $title,
-        $displayTypes,
-        $maxDepth = -1,
-        $enumerate = true,
-        $showInIndex = true
-    ) {
-        $this->title = $title;
-        if (!is_array($displayTypes)) {
-            $displayTypes = [$displayTypes];
-        }
-        $this->displayTypes = $displayTypes;
-        $this->maxDepth = $maxDepth;
-        $this->enumerate = $enumerate;
-        $this->showInIndex = $showInIndex;
+    public function __construct(array $config)
+    {
+        parent::__construct($config);
     }
 
     /**
@@ -86,7 +92,7 @@ class ListOfContents extends AbstractDocumentContentElement
     public function generateStructure(array $content = [])
     {
         if (empty($content)) {
-            $content = $this->parent->toRoot()->getContent();
+            $content = $this->getParent()->toRoot()->getContent();
         }
 
         $RecItIt = new RecursiveIteratorIterator(
@@ -94,11 +100,11 @@ class ListOfContents extends AbstractDocumentContentElement
             RecursiveIteratorIterator::SELF_FIRST
         );
 
-        $RecItIt->setMaxDepth($this->maxDepth);
+        $RecItIt->setMaxDepth($this->getSettings('maxDepth'));
 
         $FilterIt = new DocumentContentElementFilterIterator(
             $RecItIt,
-            $this->displayTypes
+            $this->getSettings('displayTypes')
         );
 
 
@@ -125,7 +131,7 @@ class ListOfContents extends AbstractDocumentContentElement
 
     protected function getPropertiesAsString(DocumentElementInterface $element)
     {
-        foreach ($this->propertiesToDisplay as $prop) {
+        foreach ($this->getSettings('display') as $prop) {
             $methodName = 'get'.ucfirst($prop);
             if (method_exists($element, $methodName)) {
                 $erg[] = $element->{$methodName}();
@@ -136,7 +142,7 @@ class ListOfContents extends AbstractDocumentContentElement
 
     public function getDisplayTypes()
     {
-        return $this->displayTypes;
+        return $this->getSettings('display');
     }
 
     public function setDisplayTypes($displayTypes)
@@ -144,17 +150,17 @@ class ListOfContents extends AbstractDocumentContentElement
         if (!is_array($displayTypes)) {
             $displayTypes = [$displayTypes];
         }
-        $this->displayType = $displayTypes;
+        $this->setSettings(['display' => $displayTypes]);
     }
 
     public function getMaxDepth()
     {
-        return $this->maxDepth;
+        return $this->getSettings('maxDepth');
     }
 
     public function getPropertiesToDisplay()
     {
-        return $this->propertiesToDisplay;
+        return $this->getSettings('propDisplay');
     }
 
     public function setMaxDepth($maxDepth)

@@ -47,19 +47,20 @@ interface DocumentElementInterface
     public function getNumbers();
     public function getFormattedNumbers();
     public function getCounter($name);
-    public function getLabelName();
-    public function getSettings($key = null, $subKey = null);
+    public function getLabel();
+    public function getStyle();
     public function getAllowSubContent();
     public function getEnumerate();
-    public function getShowInIndex();
+    public function getShowInList();
     public function getIsSplitable();
 
     public function setParent(DocumentElementInterface $parent);
     public function setType($type);
     public function setNumbers(array $numbers);
-    public function setSettings(array $settings);
+    public function setStyle(StyleInterface $style);
     public function setAllowSubContent($allowSubContent);
     public function setEnumerate($enumerate);
     public function setShowInList($showInIndex);
+    public function setLabel($label);
     //public function setSize(array $zize); ?
 }

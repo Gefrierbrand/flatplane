@@ -19,14 +19,15 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\interfaces;
+namespace de\flatplane\interfaces\styles;
+
+use de\flatplane\interfaces\StyleInterface;
 
 /**
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
 
-//TODO: orphan?
 interface SectionStyleInterface extends StyleInterface
 {
     public function getStartsNewLine();

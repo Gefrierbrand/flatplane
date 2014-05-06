@@ -21,6 +21,7 @@
 
 namespace de\flatplane\documentContents\traits;
 
+use de\flatplane\documentContents\Document;
 use de\flatplane\interfaces\DocumentElementInterface;
 use RuntimeException;
 
@@ -104,16 +105,6 @@ trait ContentFunctions
         }
     }
 
-    public function getLabelName()
-    {
-        $name = $this->getSettings('label');
-        if (isset($name)) {
-            return $name;
-        } else {
-            return false;
-        }
-    }
-
     /**
      * Determines if the given content may be added to the current object
      * @param DocumentElementInterface $content
@@ -152,14 +143,19 @@ trait ContentFunctions
 
     /**
      * This method calls itself recursively until the root Document is reached
-     * @return DocumentContentStructure
+     * @return Document
      */
     public function toRoot()
     {
         if ($this->getParent() !==null) {
-            return $this->getParent()->toRoot();
+            $root = $this->getParent()->toRoot();
         } else {
-            return $this;
+            $root = $this;
+        }
+        if (!($root instanceof Document)) {
+            throw new \RuntimeException(
+                'toRoot() did not return an instance of Document'
+            );
         }
     }
 
@@ -190,10 +186,10 @@ trait ContentFunctions
      */
     public function getAllowSubContent()
     {
-        if (is_array($this->getSettings('allowSubContent'))) {
-            return $this->getSettings('allowSubContent');
+        if (is_array($this->getAllowSubContent())) {
+            return $this->getAllowSubContent();
         } else {
-            return (bool) $this->getSettings('allowSubContent');
+            return (bool) $this->getAllowSubContent();
         }
     }
 
@@ -205,13 +201,13 @@ trait ContentFunctions
      */
     public function setAllowSubContent($allowSubContent)
     {
-        $this->setSettings(['allowSubContent' => $allowSubContent]);
         if (!empty($this->getContent())) {
             trigger_error(
                 'setAllowSubContent should not be called after adding content',
                 E_USER_NOTICE
             );
         }
+        $this->setAllowSubContent($allowSubContent);
     }
 
     /**
@@ -236,6 +232,6 @@ trait ContentFunctions
      */
     public function getIsSplitable()
     {
-        return $this->getSettings('isSplitable');
+        return $this->getIsSplitable();
     }
 }

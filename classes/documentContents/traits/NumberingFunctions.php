@@ -79,12 +79,10 @@ trait NumberingFunctions
      */
     protected function calculateNumber(DocumentElementInterface $content)
     {
+        $root = $this->toRoot();
         //the numbering level is a document wide setting, so retrieve it from
         //the documents config object
-        $numberingLevel = $this->toRoot()->getSettings(
-            'numberingLevel',
-            $content->getType()
-        );
+        $numberingLevel = $root->getNumberingLevel($content->getType());
         //check the contents numberingLevel settings (-1 for arbitrary depth)
         if ($numberingLevel == -1) {
             //increment the appropriate counters in the current depth and
@@ -108,12 +106,7 @@ trait NumberingFunctions
         //set the Number as an instance of the Number object to have access
         //to advanced formating options like letters or roman numerals.
         $num = new Number($counterValue);
-        $num->setFormat(
-            $this->toRoot()->getSettings(
-                'numberingFormat',
-                $content->getType()
-            )
-        );
+        $num->setFormat($root->getNumberingFormat($content->getType()));
 
         //append the new content number to the calculated parents
         $parentnum[] = $num;
@@ -135,10 +128,7 @@ trait NumberingFunctions
         if (array_key_exists($type, $this->counter)) {
             $this->counter[$content->getType()]->add();
         } else {
-            $startIndex = $this->toRoot()->getSettings(
-                'startIndex',
-                $type
-            );
+            $startIndex = $this->toRoot()->getStartIndex($type);
             $this->addCounter(new Counter($startIndex), $type);
         }
         return $this->counter[$content->getType()];
@@ -152,10 +142,7 @@ trait NumberingFunctions
      */
     protected function checkRemoteCounter(DocumentElementInterface $content)
     {
-        $level = $this->toRoot()->getSettings(
-            'numberingLevel',
-            $content->getType()
-        );
+        $level = $this->toRoot()->getNumberingLevel($content->getType());
         if ($level < $this->level) {
             $parentAtLevel = $this->toParentAtLevel($level);
             return $parentAtLevel->checkLocalCounter($content);
@@ -184,13 +171,13 @@ trait NumberingFunctions
      */
     public function getFormattedNumbers()
     {
-        $docConf = $this->toRoot()->getSettings();
+        $root = $this->toRoot();
         $type = $this->getType();
 
         //all default to null if setting is not found
-        $prefix = $docConf->getSettings('numberingPrefix', $type);
-        $separator = $docConf->getSettings('numberingSeparator', $type);
-        $postfix = $docConf->getSettings('numberingPostfix', $type);
+        $prefix = $root->getNumberingPrefix($type);
+        $separator = $root->getNumberingSeparator($type);
+        $postfix = $root->getNumberingPostfix($type);
 
         $out = $prefix;
 
