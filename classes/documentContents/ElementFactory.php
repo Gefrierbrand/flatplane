@@ -114,7 +114,7 @@ class ElementFactory
     protected function createSection(array $settings)
     {
         $config = new Config($this->configFiles['section'], $settings);
-        $section = new Section($config);
+        $section = new Section($config->getSettings());
         return $section;
     }
 
@@ -125,7 +125,7 @@ class ElementFactory
     protected function createList(array $settings)
     {
         $config = new Config($this->configFiles['list'], $settings);
-        $list = new ListOfContents($config);
+        $list = new ListOfContents($config->getSettings());
         return $list;
     }
 }

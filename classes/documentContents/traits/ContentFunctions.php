@@ -49,25 +49,11 @@ trait ContentFunctions
     protected $counter = array();
 
     /**
-     * @var mixed
-     *  Set to true or false to completely allow or dissallow subcontent
-     *  Set to an array containing the type names to allow specific content types
-     */
-    protected $allowSubContent = true;
-
-    /**
      * @var int
      *  integer representing the depth of the current object inside the Document
      *  tree, starting at 0 for the root (Document).
      */
     protected $level = 0;
-
-    /**
-     * @var bool
-     *  indicates whether the content my be split for layout purposes. (e.g.
-     *  text can be split into paragraphs, but an image usually can't be devided)
-     */
-    protected $isSplitable = false;
 
     /**
      * This method is used to add content to the Document or other content.
@@ -137,10 +123,12 @@ trait ContentFunctions
     {
         if ($this->getAllowSubContent() === true) {
             return true;
-        } elseif (in_array($content->getType(), $this->getAllowSubContent())) {
-            return true;
         } else {
-            return false;
+            $erg = in_array(
+                $content->getType(),
+                (array) $this->getAllowSubContent()
+            );
+            return $erg;
         }
     }
 
@@ -202,7 +190,11 @@ trait ContentFunctions
      */
     public function getAllowSubContent()
     {
-        return $this->allowSubContent;
+        if (is_array($this->getSettings('allowSubContent'))) {
+            return $this->getSettings('allowSubContent');
+        } else {
+            return (bool) $this->getSettings('allowSubContent');
+        }
     }
 
     /**
@@ -213,7 +205,13 @@ trait ContentFunctions
      */
     public function setAllowSubContent($allowSubContent)
     {
-        $this->allowSubContent = $allowSubContent;
+        $this->setSettings(['allowSubContent' => $allowSubContent]);
+        if (!empty($this->getContent())) {
+            trigger_error(
+                'setAllowSubContent should not be called after adding content',
+                E_USER_NOTICE
+            );
+        }
     }
 
     /**
@@ -238,15 +236,6 @@ trait ContentFunctions
      */
     public function getIsSplitable()
     {
-        return $this->isSplitable;
-    }
-
-    /**
-     * @param bool $isSplitable
-     *  Indicates whether this element can be split across multiple pages.
-     */
-    public function setIsSplitable($isSplitable)
-    {
-        $this->isSplitable = $isSplitable;
+        return $this->getSettings('isSplitable');
     }
 }

@@ -48,28 +48,19 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     protected $type = 'PageElement';
 
     protected $settings = ['enumerate' => true,
-                           'showInIndex' => true];
-    /**
-     * @var StyleInterface
-     *  Contains a reference to the style object
-     */
-    protected $style = null;
+                           'showInList' => true,
+                           'allowSubContent' => true,
+                           'isSplitable' => false];
 
-    public function __construct(ConfigInterface $config)
+    public function __construct(array $config)
     {
-        $configSettings = $config->getSettings();
-        foreach ($this->settings as $key => $setting) {
-            if (isset($configSettings[$key])) {
-                $this->settings[$key] = $configSettings[$key];
-            }
-        }
+        $this->settings = array_merge($this->settings, $config);
     }
 
     public function __clone()
     {
-        //todo: make this work
-        $this->setStyle(clone $this->getStyle());
-        $this->setParent(clone $this->getParent());
+        //todo: make this work ?
+        //$this->setParent(clone $this->getParent());
     }
 
     /**
@@ -170,9 +161,9 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     }
 
     /**
-     * @param bool $showInIndex
+     * @param bool $showInList
      */
-    public function setShowInIndex($showInIndex)
+    public function setShowInList($showInList)
     {
         if ($this->parent !== null) {
             trigger_error(
@@ -181,7 +172,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
                 E_USER_WARNING
             );
         }
-        $this->setSettings(['showInIndex' => $showInIndex]);
+        $this->setSettings(['showInList' => $showInList]);
     }
 
     /**

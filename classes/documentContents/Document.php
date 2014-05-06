@@ -22,41 +22,43 @@
 namespace de\flatplane\documentContents;
 
 use de\flatplane\interfaces\DocumentElementInterface;
+use de\flatplane\interfaces\documentelements\DocumentInterface;
 
 /**
  * This class represents the base document.
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Document extends AbstractDocumentContentElement
+class Document extends AbstractDocumentContentElement implements DocumentInterface
 {
     protected $type='document';
     protected $labels = [];
 
     //todo: fixsettings: arrays, defaults ?
     protected $settings = ['author' => '',
-                            'title' => '',
-                            'description' => '',
-                            'subject' => '',
-                            'keywords' => '',
-                            'unit' => 'mm',
-                            'pageSize' => 'A4',
-                            'orientation' => 'P',
-                            'defaultMargin' => 20,
-                            'margin' => ['top' => 20,
-                                         'left' =>20,
-                                         'right' => 20,
-                                         'bottom' => 20,],
-                            'defaultFontType' => 'times',
-                            'defaultFontSize' => 12,
-                            'defaultFontStyle' => '',
-                            'defaultFontColor' => [0, 0, 0],
-                            'defaultDrawColor' => [0, 0, 0],
-                            'defaultStartIndex' => 1,
-                            'defaultNumberingLevel' => -1,
-                            'defaultNumberingFormat' => 'int',
-                            'defaultNumberingSeparator' => '.',
-                            'defaultNumberingPrefix' =>'',
-                            'defaultNumberingPostfix' => ']'];
+                           'title' => '',
+                           'description' => '',
+                           'subject' => '',
+                           'keywords' => '',
+                           'unit' => 'mm',
+                           'pageSize' => 'A4',
+                           'orientation' => 'P',
+                           'defaultMargin' => 20,
+                           'margin' => ['top' => 20,
+                                        'left' =>20,
+                                        'right' => 20,
+                                        'bottom' => 20,],
+                           'defaultFontType' => 'times',
+                           'defaultFontSize' => 12,
+                           'defaultFontStyle' => '',
+                           'defaultFontColor' => [0, 0, 0],
+                           'defaultDrawColor' => [0, 0, 0],
+                           'defaultStartIndex' => 1,
+                           'defaultNumberingLevel' => -1,
+                           'defaultNumberingFormat' => 'int',
+                           'defaultNumberingSeparator' => '.',
+                           'defaultNumberingPrefix' =>'',
+                           'defaultNumberingPostfix' => ']',
+                           'allowSubContent' => true];
 
     /**
      * @var int

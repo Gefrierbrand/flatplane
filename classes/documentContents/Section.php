@@ -21,25 +21,29 @@
 namespace de\flatplane\documentContents;
 
 use de\flatplane\documentContents\AbstractDocumentContentElement;
-use de\flatplane\interfaces\ConfigInterface;
-use de\flatplane\interfaces\StyleInterface;
+use de\flatplane\interfaces\documentelements\SectionInterface;
 
 /**
  * Description of section
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Section extends AbstractDocumentContentElement
+class Section extends AbstractDocumentContentElement implements SectionInterface
 {
     protected $type = 'section';
 
     protected $settings = ['title' => '',
                            'altTitle' => '',
                            'enumerate' => true,
-                           'showInIndex' => true,
-                           'showInDocument' => true];
+                           'showInList' => true,
+                           'showInDocument' => true,
+                           'allowSubContent' => true,
+                           'isSplitable' => false,
+                           'minFreePage' => 25,
+                           'startsNewLine' => false,
+                           'startsNewPage' => false];
 
-    public function __construct(ConfigInterface $config)
+    public function __construct(array $config)
     {
         parent::__construct($config);
 
@@ -65,22 +69,31 @@ class Section extends AbstractDocumentContentElement
     }
 
     /**
-     * @param \de\flatplane\interfaces\StyleInterface $style
+     * @return bool
      */
-    public function setStyle(StyleInterface $style)
+    public function getShowInDocument()
     {
-        parent::setStyle($style);
+        return (bool) $this->getSettings('showInDocument');
     }
 
+    /**
+     * @param bool $showInDocument
+     */
+    public function setShowInDocument($showInDocument)
+    {
+        $this->setSettings(['showInDocument' => (bool) $showInDocument]);
+    }
 
     /**
-     * @assert (1, 2) == 3
-     * @param int $a
-     * @param int $b
-     * @return int
+     * @return bool
      */
-//    public function add($a, $b)
-//    {
-//        return $a+$b;
-//    }
+    public function getStartsNewLine()
+    {
+        return (bool) $this->getSettings('startsNewLine', $this->getLevel());
+    }
+
+    public function getMinFreePage()
+    {
+        return $this->getSettings('minFreePage', $this->getLevel());
+    }
 }

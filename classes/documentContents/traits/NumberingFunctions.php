@@ -65,7 +65,7 @@ trait NumberingFunctions
      * @param string $name
      * @return Counter
      */
-    protected function addCounter(CounterInterface $counter, $name)
+    public function addCounter(CounterInterface $counter, $name)
     {
         return $this->counter[$name] = $counter;
     }

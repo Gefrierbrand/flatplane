@@ -27,7 +27,7 @@ namespace de\flatplane\interfaces;
  */
 interface DocumentElementInterface
 {
-    public function __construct(ConfigInterface $config);
+    public function __construct(array $config);
     public function __toString();
     public function __clone();
 
@@ -36,12 +36,11 @@ interface DocumentElementInterface
     public function hasContent();
     public function addContent(DocumentElementInterface $content);
     public function toRoot();
+    public function toParentAtLevel($level);
 
     public function getParent();
     public function getLevel();
     public function getContent();
-    public function getIsSplitable();
-    public function getStyle();
     public function getType();
     public function getSize();
     public function getPage();
@@ -50,11 +49,17 @@ interface DocumentElementInterface
     public function getCounter($name);
     public function getLabelName();
     public function getSettings($key = null, $subKey = null);
+    public function getAllowSubContent();
+    public function getEnumerate();
+    public function getShowInIndex();
+    public function getIsSplitable();
 
     public function setParent(DocumentElementInterface $parent);
-    public function setStyle(StyleInterface $style);
     public function setType($type);
     public function setNumbers(array $numbers);
-    public function setIsSplitable($isSplitable);
     public function setSettings(array $settings);
+    public function setAllowSubContent($allowSubContent);
+    public function setEnumerate($enumerate);
+    public function setShowInList($showInIndex);
+    //public function setSize(array $zize); ?
 }
