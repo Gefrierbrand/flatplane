@@ -19,28 +19,16 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\interfaces;
+namespace de\flatplane\styles;
+
+use de\flatplane\interfaces\styles\DocumentStyleInterface;
 
 /**
+ * Description of SectionStyle
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-interface StyleInterface
+class DocumentStyle extends AbstractGeneralStyles implements DocumentStyleInterface
 {
-    public function __construct(array $settings);
-    public function addFont($type, array $files); //files: paths / names for styles
-
-    public function getFont();
-    public function getDrawColor();
-    public function getMargins();
-    public function getPaddings();
-
-    //todo: move these to subclasses
-    //public function getTitlePosition();
-    //public function getCaptionPosition();
-
-    public function setFont(array $font);
-    public function setDrawColor(array $color);
-    public function setMargins(array $margins);
-    public function setPaddings(array $paddings);
+    //todo: implement
 }

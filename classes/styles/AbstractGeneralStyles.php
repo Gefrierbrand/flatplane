@@ -22,75 +22,70 @@
 namespace de\flatplane\styles;
 
 use de\flatplane\interfaces\StyleInterface;
-use de\flatplane\utilities\Config;
 
 //TODO: DOC!!!!
+//Todo: implement validation for setters
+//Todo: implement addfont
 
 abstract class AbstractGeneralStyles implements StyleInterface
 {
-    protected $defaultConfigFile = 'config/generalStyles.ini';
-    protected $config;
+    protected $margins = ['top' => 0, 'bottom' => 0, 'left' => 0, 'right' => 0];
+    protected $paddings = ['top' => 0, 'bottom' => 0, 'left' => 0, 'right' => 0];
+    protected $font = ['type' => 'times', 'size' => 12, 'style' => '', 'color' => [0,0,0]];
+    protected $drawColor = [0,0,0];
 
-    protected $captionposition;
-    protected $titleposition;
-    protected $margins;
-    protected $paddings; //?
-    protected $softmargins = true; //margins can be ignored at page end, ggf. min value
-
-    public function __construct(Config $config = null)
+    public function __construct(array $config)
     {
-        if (empty($config)) {
-            $config = new Config($this->defaultConfigFile);
+        foreach ($config as $key => $setting) {
+            $name = 'set'.ucfirst($key);
+            if (method_exists($this, $name)) {
+                $this->{$name}($setting);
+            }
         }
-        $this->config = $config;
     }
 
-    /**
-     *
-     * @return array
-     */
-    public function getDrawColor()
+    public function addFont($type, array $files)
     {
-        return $this->config->getSettings('defaultDrawColor');
+        //todo: implement
     }
 
-    /**
-     *
-     * @return array
-     *  Returns array with the keys 'type', 'size', 'style' and 'color'
-     */
+    public function getMargins()
+    {
+        return $this->margins;
+    }
+
+    public function getPaddings()
+    {
+        return $this->paddings;
+    }
+
     public function getFont()
     {
-        return $this->config->getSettings('defaultFont');
+        return $this->font;
     }
 
-    public function setDrawColor(array $color)
+    public function getDrawColor()
     {
-        $this->config->setSettings(['drawColor' => $color]);
+        return $this->drawColor;
     }
 
-    public function setFont($type, $size = 12, $style = '', array $color = [0,0,0])
+    public function setMargins(array $margins)
     {
-        //todo: validate, ggf addfonts to pdf
-        $this->config->setSettings(
-            ['defaultFont' =>
-                [
-                    'type' => $type,
-                    'size' => $size,
-                    'style' => $style,
-                    'color' => $color
-                ]
-            ]
-        );
+        $this->margins = $margins;
     }
 
-    /**
-     *
-     * @return Config
-     *  returns the Configuration object
-     */
-    public function getConfig()
+    public function setPaddings(array $paddings)
     {
-        return $this->config;
+        $this->paddings = $paddings;
+    }
+
+    public function setFont(array $font)
+    {
+        $this->font = $font;
+    }
+
+    public function setDrawColor(array $drawColor)
+    {
+        $this->drawColor = $drawColor;
     }
 }

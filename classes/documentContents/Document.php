@@ -23,9 +23,7 @@ namespace de\flatplane\documentContents;
 
 use de\flatplane\interfaces\DocumentElementInterface;
 use de\flatplane\interfaces\documentelements\DocumentInterface;
-use de\flatplane\interfaces\StyleInterface;
-use de\flatplane\interfaces\styles\DocumentStyleInterface;
-use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * This class represents the base document.
@@ -33,7 +31,10 @@ use InvalidArgumentException;
  */
 class Document extends AbstractDocumentContentElement implements DocumentInterface
 {
-    //TODO: DOC!
+    /**
+     * @var int
+     *  type of the element
+     */
     protected $type='document';
     protected $labels = [];
     protected $isSplitable = true;
@@ -61,25 +62,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
      */
     private $pages;
 
-    public function __construct(array $config, StyleInterface $style)
-    {
-        if (!($style instanceof DocumentStyleInterface)) {
-            throw new InvalidArgumentException(
-                'The documentStyle must be an instanceof DocumentStyleInterface'
-            );
-        }
-        parent::__construct($config, $style);
-    }
-
-
     public function __toString()
     {
         return (string) $this->getSettings('title');
-    }
-
-    public function __clone()
-    {
-        //currently: do nothing
     }
 
     /**
@@ -95,17 +80,17 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
      */
     public function getParent()
     {
-        return $this;
+        return null;
     }
 
     public function setParent(DocumentElementInterface $parent)
     {
-        //currently: do nothing
+        throw new RuntimeException('You can\'t set a parent for the document');
     }
 
     public function addLabel(DocumentElementInterface $instance)
     {
-        $this->labels[$instance->getLabelName()] = $instance;
+        $this->labels[$instance->getLabel()] = $instance;
     }
 
     public function getType()
@@ -188,11 +173,6 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         $this->keywords = $keywords;
     }
 
-    public function setUnit($unit)
-    {
-        $this->unit = $unit;
-    }
-
     public function getNumberingFormat($type = '')
     {
         if (empty($type) || !array_key_exists($type, $this->numberingFormat)) {
@@ -245,38 +225,5 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         } else {
             return $this->startIndex[$type];
         }
-    }
-
-    public function setNumberingFormat(array $format)
-    {
-        $this->numberingFormat = array_merge($this->numberingFormat, $format);
-    }
-
-    public function setNumberingLevel(array $level)
-    {
-        $this->numberingLevel = array_merge($this->numberingLevel, $level);
-    }
-
-    public function setNumberingPostfix(array $postfix)
-    {
-        $this->numberingPostfix = array_merge($this->numberingPostfix, $postfix);
-    }
-
-    public function setNumberingPrefix(array $prefix)
-    {
-        $this->numberingPrefix = array_merge($this->numberingPrefix, $prefix);
-    }
-
-    public function setNumberingSeparator(array $separator)
-    {
-        $this->numberingSeparator = array_merge(
-            $this->numberingSeparator,
-            $separator
-        );
-    }
-
-    public function setStartIndex(array $startIndex)
-    {
-        $this->startIndex = array_merge($this->startIndex, $startIndex);
     }
 }

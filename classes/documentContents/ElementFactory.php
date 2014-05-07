@@ -22,6 +22,7 @@
 namespace de\flatplane\documentContents;
 
 use de\flatplane\interfaces\DocumentElementInterface;
+use de\flatplane\styles\DocumentStyle;
 use de\flatplane\utilities\Config;
 use InvalidArgumentException;
 
@@ -32,24 +33,23 @@ use InvalidArgumentException;
  */
 class ElementFactory
 {
-    //todo: maybe aliases?
+    //todo: doc!
 
-    /**
-     * @var array
-     *  Defines paths to default config files for each element type
-     */
-    protected $configFiles = [
-        'section' => 'config/sectionSettings.ini',
-        'formula' => 'config/formulaSettings.ini',
-        'image' => 'config/imageSettings.ini',
-        'list' => 'config/listSettings.ini',
-    ];
+    protected $documentConfig = 'config/documentSettings.ini';
+    protected $sectionConfig  = 'config/sectionSettings.ini';
+    protected $listConfig     = 'config/listSettings.ini';
 
     /**
      * @var array
      *  Array containing references to named prototype-page-elements
      */
     protected $prototypes;
+
+    public function createDocument(array $documentSettings = [])
+    {
+        $config = new Config($this->documentConfig, $documentSettings);
+        return new Document($config->getSettings());
+    }
 
     /**
      * Factory method for creating new DocumentElements, uses prototypes to
@@ -109,22 +109,22 @@ class ElementFactory
 
     /**
      * @param array $settings
-     * @return \de\flatplane\documentContents\Section
+     * @return Section
      */
-    protected function createSection(array $settings)
+    public function createSection(array $settings)
     {
-        $config = new Config($this->configFiles['section'], $settings);
+        $config = new Config($this->sectionConfig, $settings);
         $section = new Section($config->getSettings());
         return $section;
     }
 
     /**
      * @param array $settings
-     * @return \de\flatplane\documentContents\ListOfContents
+     * @return ListOfContents
      */
-    protected function createList(array $settings)
+    public function createList(array $settings)
     {
-        $config = new Config($this->configFiles['list'], $settings);
+        $config = new Config($this->listConfig, $settings);
         $list = new ListOfContents($config->getSettings());
         return $list;
     }

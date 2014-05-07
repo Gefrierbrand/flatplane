@@ -25,34 +25,30 @@ use de\flatplane\interfaces\documentelements\SectionInterface;
 
 /**
  * Description of section
- *
+ * TODO: doc!
  * @author Nikolai Neff <admin@flatplane.de>
  */
 class Section extends AbstractDocumentContentElement implements SectionInterface
 {
     protected $type = 'section';
 
-    protected $settings = ['title' => '',
-                           'altTitle' => '',
-                           'enumerate' => true,
-                           'showInList' => true,
-                           'showInDocument' => true,
-                           'allowSubContent' => true,
-                           'isSplitable' => false,
-                           'minFreePage' => 25,
-                           'startsNewLine' => false,
-                           'startsNewPage' => false];
+    protected $title = '';
+    protected $altTitle = '';
+    protected $showInDocument = true;
+    protected $minFreePage = ['default' => 25];
+    protected $startsNewLine = ['default' => true];
+    protected $startsNewPage = ['default' => false];
 
     public function __construct(array $config)
     {
         parent::__construct($config);
 
-        if (empty($this->getSettings('title'))) {
+        if (empty($this->getTitle())) {
             trigger_error('The section title is empty', E_USER_WARNING);
         }
 
-        if (empty($this->getSettings('altTitle'))) {
-            $this->setSettings(['altTitle' => $this->getSettings('title')]);
+        if (empty($this->getAltTitle())) {
+            $this->altTitle = $this->getTitle();
         }
     }
 
@@ -68,32 +64,57 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         return (string) $numStr. $this->getSettings('title');
     }
 
-    /**
-     * @return bool
-     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function getAltTitle()
+    {
+        return $this->altTitle;
+    }
+
     public function getShowInDocument()
     {
-        return (bool) $this->getSettings('showInDocument');
+        return $this->showInDocument;
     }
 
-    /**
-     * @param bool $showInDocument
-     */
-    public function setShowInDocument($showInDocument)
+    public function getMinFreePage($level = 0)
     {
-        $this->setSettings(['showInDocument' => (bool) $showInDocument]);
+        if (isset($this->minFreePage[$level])) {
+            return $this->minFreePage[$level];
+        } elseif (isset($this->minFreePage['default'])) {
+            return $this->minFreePage['default'];
+        } else {
+            throw new RuntimeException(
+                'The required property minFreePage is not set.'
+            );
+        }
     }
 
-    /**
-     * @return bool
-     */
-    public function getStartsNewLine()
+    public function getStartsNewLine($level = 0)
     {
-        return (bool) $this->getSettings('startsNewLine', $this->getLevel());
+        if (isset($this->startsNewLine[$level])) {
+            return $this->startsNewLine[$level];
+        } elseif (isset($this->startsNewLine['default'])) {
+            return $this->startsNewLine['default'];
+        } else {
+            throw new RuntimeException(
+                'The required property minFreePage is not set.'
+            );
+        }
     }
 
-    public function getMinFreePage()
+    public function getStartsNewPage($level = 0)
     {
-        return $this->getSettings('minFreePage', $this->getLevel());
+        if (isset($this->startsNewPage[$level])) {
+            return $this->startsNewPage[$level];
+        } elseif (isset($this->startsNewPage['default'])) {
+            return $this->startsNewPage['default'];
+        } else {
+            throw new RuntimeException(
+                'The required property minFreePage is not set.'
+            );
+        }
     }
 }

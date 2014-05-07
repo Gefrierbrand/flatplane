@@ -48,14 +48,11 @@ $settings = array(
     'numberingLevel' => ['formula' => -1]
 );
 
-$config = new Config('config/documentSettings.ini', $settings);
+$document = $factory->createDocument($settings);
 
-//todo: mabe merge factory with document to ensure documents existance and add elements while creating them?
-$document = new Document($config->getSettings());
+$vorwort = $factory->createSection(['title' => 'Vorwort']);
+$einleitung = $factory->createSection(['title' => 'Einleitung', 'label' => 'sec:einleitung']);
 
-
-$vorwort = $factory->createElement('section', ['title' => 'Vorwort']);
-$einleitung = $factory->createElement('section', ['title' => 'Einleitung', 'label' => 'sec:einleitung']);
 //$inhaltsverzeichnis = $factory->createElement('list', []);
 
 //$vorwort->setEnumerate(false);
@@ -63,62 +60,4 @@ $einleitung = $factory->createElement('section', ['title' => 'Einleitung', 'labe
 $document->addContent($vorwort);
 $document->addContent($einleitung);
 
-//$inhalt = new ListOfContents('Inhaltsverzeichnis', 'section');
-//$inhalt->setEnumerate(false);
-//$document->addContent($inhalt);
-//
-//
-//$kapitel1 = $document->addContent(new Section('kapitel 1'));
-//
-//$kapitel1->addContent(new Section('Subkapitel1'));
-//$subkap2 = $kapitel1->addContent(new Section('Subkapitel2', 'alternativtext'));
-//
-//
-//$subkap2->addContent(new Formula('\frac{1}{2}'));
-//$subkap2->addContent(new Formula('\frac{1}{2}'));
-//$subkap2->addContent(new Formula('\frac{1}{2}'));
-//
-//$subkap3 = $kapitel1->addContent(new Section('Subkapitel3'));
-//
-//$subkap3->addContent(new Formula('\frac{1}{2}'));
-//$subkap3->addContent(new Formula('\frac{1}{2}'));
-//$subkap3->addContent(new Formula('\frac{1}{2}'));
-//
-//$subsubkap = new Section('SubSub');
-//$subkap3->addContent($subsubkap);
-//
-//$subsubkap->addContent(new Formula('test'));
-//
-//$formelverz = $document->addContent(
-//    new ListOfContents('Formelverzeichnis', 'formula', -1, false)
-//);
-//
-//$kap2 = $document->addContent(new Section('titel', '', false));
-//$kap2->addContent(new Formula('asd'));
-//
-//$anhang = $document->addContent(new Section('Anhang', '', true, false));
-//
-///*
-// * ENDE DOKUMENTDEFINITION
-// */
-//
-//$t->now('after Def');
-//
-//echo 'GESAMTES DOKUMENT'.PHP_EOL;
-//$RecItIt = new RecursiveTreeIterator(
-//    new RecursiveContentIterator($document->getContent()),
-//    RecursiveIteratorIterator::SELF_FIRST
-//);
-//
-//foreach ($RecItIt as $value) {
-//    echo $value.PHP_EOL;
-//}
-//
-//echo PHP_EOL.PHP_EOL.PHP_EOL;
-//echo 'Alle nicht ausgeblendeten Kapitel (incl. Nummerierung):'.PHP_EOL.PHP_EOL;
-//$inhalt->generateStructure();
-//
-//echo PHP_EOL.PHP_EOL.PHP_EOL;
-//echo 'Alle nicht ausgeblendeten Formeln (incl. Nummerierung):'.PHP_EOL.PHP_EOL;
-//$formelverz->setPropertiesToDisplay(['altTitle', 'code']);
-//$formelverz->generateStructure();
+var_dump($document);

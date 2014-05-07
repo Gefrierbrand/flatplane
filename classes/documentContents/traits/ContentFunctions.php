@@ -91,7 +91,7 @@ trait ContentFunctions
             $this->calculateNumber($content);
         }
 
-        if ($content->getLabelName()) {
+        if ($content->getLabel()) {
             $this->toRoot()->addLabel($content);
         }
 
