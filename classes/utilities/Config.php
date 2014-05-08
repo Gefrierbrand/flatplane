@@ -95,7 +95,7 @@ class Config implements ConfigInterface
     protected function checkSettingsValues(&$value)
     {
         //match strings of the with an array-structure: '[a, b, c, ... , n]'
-        $pattern = '/^\[([^\[\],]*,+[^,\[\]]{1})+\]$/';
+        $pattern = '/^\[(\w+,?)+\]$/';
         if (is_string($value) && preg_match($pattern, $value)) {
             $value = explode(',', trim($value, '[]'));
         }

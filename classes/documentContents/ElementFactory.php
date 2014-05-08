@@ -111,7 +111,7 @@ class ElementFactory
      * @param array $settings
      * @return Section
      */
-    public function createSection(array $settings)
+    public function createSection(array $settings = [])
     {
         $config = new Config($this->sectionConfig, $settings);
         $section = new Section($config->getSettings());
@@ -122,7 +122,7 @@ class ElementFactory
      * @param array $settings
      * @return ListOfContents
      */
-    public function createList(array $settings)
+    public function createList(array $settings = [])
     {
         $config = new Config($this->listConfig, $settings);
         $list = new ListOfContents($config->getSettings());

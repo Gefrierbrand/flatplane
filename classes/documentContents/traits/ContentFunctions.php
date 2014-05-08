@@ -112,14 +112,13 @@ trait ContentFunctions
      */
     protected function checkAllowedContent(DocumentElementInterface $content)
     {
-        if ($this->getAllowSubContent() === true) {
-            return true;
-        } else {
-            $erg = in_array(
+        if (is_array($this->getAllowSubContent())) {
+            return in_array(
                 $content->getType(),
-                (array) $this->getAllowSubContent()
+                $this->getAllowSubContent()
             );
-            return $erg;
+        } else {
+            return (bool) $this->getAllowSubContent();
         }
     }
 
@@ -157,6 +156,7 @@ trait ContentFunctions
                 'toRoot() did not return an instance of Document'
             );
         }
+        return $root;
     }
 
     /**

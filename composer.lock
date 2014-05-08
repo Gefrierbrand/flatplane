@@ -7,11 +7,11 @@
     "packages": [
         {
             "name": "tecnick.com/tcpdf",
-            "version": "6.0.075",
+            "version": "6.0.077",
             "source": {
                 "type": "git",
                 "url": "git://git.code.sf.net/p/tcpdf/code",
-                "reference": "04215e835942a3c27bce531f3504d23c3b0d87f9"
+                "reference": "957d538d7efdfa26eae330596ae2063d786246fd"
             },
             "require": {
                 "php": ">=5.3.0"
@@ -60,7 +60,7 @@
                 "pdf417",
                 "qrcode"
             ],
-            "time": "2014-05-05 09:05:23"
+            "time": "2014-05-06 22:13:40"
         }
     ],
     "packages-dev": [

@@ -32,7 +32,6 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
 {
     protected $type = 'section';
 
-    protected $title = '';
     protected $altTitle = '';
     protected $showInDocument = true;
     protected $minFreePage = ['default' => 25];
@@ -52,21 +51,9 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         }
     }
 
-    //TODO: fixme!
     public function __toString()
     {
-        if ($this->getEnumerate()) {
-            //this will not work if the section has no parent!
-            $numStr = $this->getFormattedNumbers().' ';
-        } else {
-            $numStr = '';
-        }
-        return (string) $numStr. $this->getSettings('title');
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
+        return (string) $this->getAltTitle();
     }
 
     public function getAltTitle()

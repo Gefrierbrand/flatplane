@@ -48,7 +48,6 @@ interface DocumentElementInterface
     public function getFormattedNumbers();
     public function getCounter($name);
     public function getLabel();
-    public function getStyle();
     public function getAllowSubContent();
     public function getEnumerate();
     public function getShowInList();
@@ -57,7 +56,6 @@ interface DocumentElementInterface
     public function setParent(DocumentElementInterface $parent);
     public function setType($type);
     public function setNumbers(array $numbers);
-    public function setStyle(StyleInterface $style);
     public function setAllowSubContent($allowSubContent);
     public function setEnumerate($enumerate);
     public function setShowInList($showInIndex);

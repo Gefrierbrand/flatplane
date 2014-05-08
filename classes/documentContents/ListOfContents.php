@@ -21,7 +21,7 @@
 
 namespace de\flatplane\documentContents;
 
-use de\flatplane\interfaces\DocumentElementInterface;
+use de\flatplane\interfaces\documentelements\ListInterface;
 use de\flatplane\iterators\DocumentContentElementFilterIterator;
 use de\flatplane\iterators\RecursiveContentIterator;
 use RecursiveIteratorIterator;
@@ -31,46 +31,50 @@ use RecursiveIteratorIterator;
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class ListOfContents extends AbstractDocumentContentElement
+class ListOfContents extends AbstractDocumentContentElement implements ListInterface
 {
-    protected $type='list';
     /**
-     * @var array $settings
-     * Array containing key=>value pairs of configuration and style options.
-     * Required keys for lists are:
-     * <ul>
-     *  <li>enumerate (bool): determines if the list itself is enumerated</li>
-     *  <li>showInLists (bool): determines if the list can be shown in other
-     *   lists</li>
-     *  <li>allowSubContent (mixed): determines if the list can contain other
-     *   content</li>
-     *  <li>isSplitable (bool): indicates whether the list can be printed across
-     *   multiple pages</li>
-     *  <li>maxDepth (int): Determines to wich level inside the documenttree the
-     *   contents are displayed inside the list. Contents given on the top level
-     *   are at depth 0. This value might differ from the contents level-property,
-     *   as subtrees might also be processed by this function.
-     *   Use -1 for unlimited depth.</li>
-     *  <li>displayTypes (array): Array containing the content-types to be
-     *   included in the list. For example use ['image', 'table'] to list all
-     *   images and all tables wich have their 'showInList' setting set to true
-     *   in one index.</li>
-     *  <li>propDisplay (array): Array containing the 'properties' / 'settings' of
-     *   the listed objects wich will be displayes as their name</li>
-     *  <li>indent (array): key maxLevel: (int) defines to which depth the
-     *   list entries should be indented: use 0 for off and -1 for unlimited
-     *   key amount (int): defines how far a level should be indented, in
-     *   character-widths</li>
-     * </ul>
+     * @var int
+     *  type of the element
      */
-    protected $settings = ['enumerate' => true,
-                           'showInList' => true,
-                           'allowSubContent' => false,
-                           'isSplitable' => true,
-                           'maxDepth' => -1,
-                           'displayTypes' => ['section'],
-                           'propDisplay' => ['altTitle'],
-                           'indent' => ['maxLevel' => -1, 'amount' => 4]];
+    protected $type = 'list';
+
+    /**
+     * @var mixed
+     *  use a bool to completely allow/disallow subcontent for the element or
+     *  define allowed types as array values: e.g. ['section', 'formula']
+     */
+    protected $allowSubContent = false;
+
+    /**
+     * @var bool
+     *  indicates if the element can be split across multiple pages
+     */
+    protected $isSplitable = true;
+
+    /**
+     * @var int
+     *  Determines to wich level inside the documenttree the
+     *  contents are displayed inside the list. Contents given on the top level
+     *  are at depth 0. The actual depth might differ from the contents
+     *  level-property, as subtrees can also be processed by this function.
+     *  Use -1 for unlimited depth.
+     */
+    protected $maxDepth = -1;
+
+    /**
+     * @var array
+     *  Array containing the content-types to be included in the list.
+     *  For example use ['image', 'table'] to list all images and all tables
+     *  wich have their 'showInList' property set to true.
+     */
+    protected $displayTypes = ['section'];
+
+    /**
+     * @var array
+     *  todo: fixme
+     */
+    protected $indent = ['level' => -1, 'maxAmount' => 20, 'mode' => 'relative'];
 
     /**
      * Generates a new list of arbitrary content elements. Used to create a
@@ -91,6 +95,7 @@ class ListOfContents extends AbstractDocumentContentElement
      */
     public function generateStructure(array $content = [])
     {
+        //todo: validate content type and parent
         if (empty($content)) {
             $content = $this->getParent()->toRoot()->getContent();
         }
@@ -100,15 +105,15 @@ class ListOfContents extends AbstractDocumentContentElement
             RecursiveIteratorIterator::SELF_FIRST
         );
 
-        $RecItIt->setMaxDepth($this->getSettings('maxDepth'));
+        $RecItIt->setMaxDepth($this->getMaxDepth());
 
         $FilterIt = new DocumentContentElementFilterIterator(
             $RecItIt,
-            $this->getSettings('displayTypes')
+            $this->getDisplayTypes()
         );
 
 
-        //TODO: return array with level; resolve hard references
+        //TODO: return array with level; resolve hard references?
         foreach ($FilterIt as $element) {
             //echo "tiefe: ".$RecItIt->getDepth()." "; // current iteration depth
             //echo " tiefe: ".$element->getLevel()." "; // element depth regarding document
@@ -117,67 +122,24 @@ class ListOfContents extends AbstractDocumentContentElement
                 //$depth = $RecItIt->getDepth();
                 $depth = count($element->getNumbers())-1; //extra parameter um level abzuziehen? oder ohne einrückung?
 
+                //todo: use indent pr
                 echo str_repeat(' ', 2*$depth);
 
                 echo $element->getFormattedNumbers().
-                ' ' .
-                $this->getPropertiesAsString($element).
-                PHP_EOL;
+                ' ' .$element.PHP_EOL;
             } else {
-                echo $this->getPropertiesAsString($element) . PHP_EOL;
+                echo $element.PHP_EOL;
             }
         }
-    }
-
-    protected function getPropertiesAsString(DocumentElementInterface $element)
-    {
-        foreach ($this->getSettings('display') as $prop) {
-            $methodName = 'get'.ucfirst($prop);
-            if (method_exists($element, $methodName)) {
-                $erg[] = $element->{$methodName}();
-            }
-        }
-        return implode(' ', $erg);
     }
 
     public function getDisplayTypes()
     {
-        return $this->getSettings('display');
-    }
-
-    public function setDisplayTypes($displayTypes)
-    {
-        if (!is_array($displayTypes)) {
-            $displayTypes = [$displayTypes];
-        }
-        $this->setSettings(['display' => $displayTypes]);
+        return $this->displayTypes;
     }
 
     public function getMaxDepth()
     {
-        return $this->getSettings('maxDepth');
-    }
-
-    public function getPropertiesToDisplay()
-    {
-        return $this->getSettings('propDisplay');
-    }
-
-    public function setMaxDepth($maxDepth)
-    {
-        $this->maxDepth = $maxDepth;
-    }
-
-    public function setPropertiesToDisplay(array $propertiesToDisplay)
-    {
-        $this->propertiesToDisplay = $propertiesToDisplay;
-    }
-
-    public function getStyle()
-    {
-        if (empty($this->style)) {
-            $this->setStyle(new ListStyle);
-        }
-        return $this->style;
+        return $this->maxDepth;
     }
 }

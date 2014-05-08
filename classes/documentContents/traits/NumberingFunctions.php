@@ -81,7 +81,7 @@ trait NumberingFunctions
     {
         $root = $this->toRoot();
         //the numbering level is a document wide setting, so retrieve it from
-        //the documents config object
+        //the documents config
         $numberingLevel = $root->getNumberingLevel($content->getType());
         //check the contents numberingLevel settings (-1 for arbitrary depth)
         if ($numberingLevel == -1) {

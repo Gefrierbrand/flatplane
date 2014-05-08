@@ -19,34 +19,19 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\iterators;
+namespace de\flatplane\interfaces\documentelements;
+
+use de\flatplane\interfaces\DocumentElementInterface;
 
 /**
- * Description of TocElementFilterIterator
- * TODO: document!
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-
-
-class DocumentContentElementFilterIterator extends \FilterIterator
+interface ListInterface extends DocumentElementInterface
 {
-    protected $type;
+    public function generateStructure();
 
-    public function __construct(\Iterator $iterator, array $type)
-    {
-        $this->type = $type;
-        parent::__construct($iterator);
-    }
-
-    public function accept()
-    {
-        $content = parent::current();
-        if (in_array($content->getType(), $this->type)
-            && $content->getShowInList()) {
-                return true;
-        } else {
-            return false;
-        }
-    }
+    public function getTitle();
+    public function getMaxDepth();
+    public function getDisplayTypes();
 }

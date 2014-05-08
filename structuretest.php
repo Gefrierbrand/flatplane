@@ -24,12 +24,10 @@ require 'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
 //lange, volldefinierte Klassennamen aus Namespaces laden
 
 
-use de\flatplane\documentContents\Document;
 use de\flatplane\documentContents\ElementFactory;
-use de\flatplane\utilities\Config;
 use de\flatplane\utilities\Timer;
 
-$t = new Timer;
+$t = new Timer();
 $factory = new ElementFactory;
 
 /*
@@ -51,13 +49,15 @@ $settings = array(
 $document = $factory->createDocument($settings);
 
 $vorwort = $factory->createSection(['title' => 'Vorwort']);
-$einleitung = $factory->createSection(['title' => 'Einleitung', 'label' => 'sec:einleitung']);
-
-//$inhaltsverzeichnis = $factory->createElement('list', []);
-
-//$vorwort->setEnumerate(false);
-
 $document->addContent($vorwort);
+
+$einleitung = $factory->createSection(['title' => 'Einleitung', 'label' => 'sec:einleitung']);
 $document->addContent($einleitung);
 
-var_dump($document);
+$inhaltsverzeichnis = $factory->createSection(['title' => 'Inhaltsverzeichnis']);
+$document->addContent($inhaltsverzeichnis);
+
+$list = $factory->createList();
+$inhaltsverzeichnis->addContent($list);
+
+$list->generateStructure($document->getContent());
