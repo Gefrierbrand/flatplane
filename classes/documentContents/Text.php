@@ -28,20 +28,14 @@ namespace de\flatplane\documentContents;
  */
 class Text extends AbstractDocumentContentElement
 {
+    protected $type = 'text';
+    protected $enumerate = false;
+    protected $showInList = false;
+    protected $allowSubContent = false;
+    protected $isSplitable = true;
+
     protected $text;
-    protected $parse = true; //parse special content like eqn, etc
-    protected $containsReferences; //??
-
-    public function getSize()
-    {
-        //do_nothing_loop()
-    }
-
-    public function getStyle()
-    {
-        if (empty($this->style)) {
-            $this->setStyle(new TextStyle);
-        }
-        return $this->style;
-    }
+    protected $parse = true; //parse special content like eqn, etc?
+    protected $containsReferences = false;
+    protected $hyphenate = true;
 }

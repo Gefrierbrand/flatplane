@@ -82,4 +82,19 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
     {
         return $this->availableCodeFormats;
     }
+
+    protected function setCode($code)
+    {
+        $this->code = $code;
+    }
+
+    protected function setFont($font)
+    {
+        $this->font = $font;
+    }
+
+    protected function setCodeFormat($codeFormat)
+    {
+        $this->codeFormat = $codeFormat;
+    }
 }

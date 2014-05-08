@@ -34,9 +34,14 @@ interface DocumentElementInterface
     public function addCounter(CounterInterface $counter, $name);
     public function checkLocalCounter(DocumentElementInterface $content);
     public function hasContent();
-    public function addContent($type, array $settings, $position = 'last');
     public function toRoot();
     public function toParentAtLevel($level);
+
+    public function addSection($title, array $settings);
+    public function addFormula($code, array $settings);
+    public function addImage($path, array $settings);
+    public function addTable(array $data, array $settings);
+    public function addText($text, array $settings);
 
     public function getParent();
     public function getLevel();
@@ -54,11 +59,11 @@ interface DocumentElementInterface
     public function getIsSplitable();
 
     public function setParent(DocumentElementInterface $parent);
-    public function setType($type);
+    //public function setType($type);
     public function setNumbers(array $numbers);
-//    public function setAllowSubContent($allowSubContent);
-    public function setEnumerate($enumerate);
-    public function setShowInList($showInIndex);
+    //public function setAllowSubContent($allowSubContent);
+    //public function setEnumerate($enumerate);
+    //public function setShowInList($showInIndex);
     public function setLabel($label);
     //public function setSize(array $zize); ?
 }

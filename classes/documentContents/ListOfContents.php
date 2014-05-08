@@ -39,6 +39,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
      */
     protected $type = 'list';
 
+    protected $title = 'list';
     /**
      * @var mixed
      *  use a bool to completely allow/disallow subcontent for the element or
@@ -141,5 +142,26 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
     public function getMaxDepth()
     {
         return $this->maxDepth;
+    }
+
+    protected function setMaxDepth($maxDepth)
+    {
+        //cast to int as all settings from ini files are returned as strings
+        $maxDepth = (int) $maxDepth;
+        if ($maxDepth < -1) {
+            trigger_error('Invalid Max depth, defaulting to -1', E_USER_NOTICE);
+            $maxDepth = -1;
+        }
+        $this->maxDepth = $maxDepth;
+    }
+
+    public function setDisplayTypes(array $displayTypes)
+    {
+        $this->displayTypes = $displayTypes;
+    }
+
+    public function setIndent(array $indent)
+    {
+        $this->indent = $indent;
     }
 }

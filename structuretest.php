@@ -42,19 +42,25 @@ $settings = array(
 //    'numberingPrefix' => ['formula' => '['],
 //    'numberingPostfix' => ['formula' => ']'],
 //    'numberingSeparator' => ['formula' => '.'],
-//    'numberingLevel' => ['formula' => -1]
+    'numberingLevel' => ['formula' => 0, 'list' => 0]
 );
 
 $factory = new ElementFactory;
-$document =  $factory->createDocument($settings);
+$document = $factory->createDocument($settings);
 
-$vorwort = $document->addContent('section', ['title' => 'vorwort', 'enumerate' => false]);
-$inhalt = $document->addContent('section', ['title' => 'inhaltsverzeichnis']);
-$list = $inhalt->addContent('list', ['displayTypes' => ['section', 'formula']]);
-$einleitung = $document->addContent('section', ['title' => 'einleitung', 'label' => 'sec:einleitung']);
-$hauptteil = $document->addContent('section', ['title' => 'hauptteil']);
-$sub = $hauptteil->addContent('section', ['title' => 'subkapitel']);
-$sub->addContent('section', ['title' => 'subsub']);
-$formula = $sub->addContent('formula', ['code' => '\frac{1}{2}', 'label' => 'eq:f1']);
-$formula->addContent('formula');
+$vorwort = $document->addSection('vorwort', ['enumerate' => false]);
+$inhalt = $document->addSection('inhaltsverzeichnis');
+$list = $inhalt->addList(['section', 'formula']);
+$einleitung = $document->addSection('einleitung', ['label' => 'sec:einleitung']);
+$hauptteil = $document->addSection('hauptteil');
+$sub = $hauptteil->addSection('subkapitel');
+$sub->addSection('subsub');
+$formula = $sub->addFormula('\frac{1}{2}', ['label' => 'eq:f1']);
+$formula->addFormula('\text{subformula}');
+$listoflists = $document->addList(['list']);
+
+echo PHP_EOL;
 $list->generateStructure($document->getContent());
+echo PHP_EOL.PHP_EOL;
+$listoflists->generateStructure($document->getContent());
+echo PHP_EOL;

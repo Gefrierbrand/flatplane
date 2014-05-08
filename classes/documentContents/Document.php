@@ -241,4 +241,49 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     {
         $this->elementFactory = $elementFactory;
     }
+
+    protected function setUnit($unit)
+    {
+        $this->unit = $unit;
+    }
+
+    protected function setPageSize($pageSize)
+    {
+        $this->pageSize = $pageSize;
+    }
+
+    protected function setOrientation($orientation)
+    {
+        $this->orientation = $orientation;
+    }
+
+    protected function setNumberingFormat($numberingFormat)
+    {
+        $this->numberingFormat = $numberingFormat;
+    }
+
+    protected function setNumberingLevel($numberingLevel)
+    {
+        $this->numberingLevel = $numberingLevel;
+    }
+
+    protected function setNumberingPrefix($numberingPrefix)
+    {
+        $this->numberingPrefix = $numberingPrefix;
+    }
+
+    protected function setNumberingPostfix($numberingPostfix)
+    {
+        $this->numberingPostfix = $numberingPostfix;
+    }
+
+    protected function setNumberingSeparator($numberingSeparator)
+    {
+        $this->numberingSeparator = $numberingSeparator;
+    }
+
+    protected function setStartIndex($startIndex)
+    {
+        $this->startIndex = $startIndex;
+    }
 }

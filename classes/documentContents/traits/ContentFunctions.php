@@ -61,21 +61,18 @@ trait ContentFunctions
      * It checks if the given, to-be-added, content-type is allowed for the
      * current object and returns false on failure or a reference to the
      * added content.
+     *
      * TODO: doc
      *
-     * @param string $type
-     * @param array $settings
+     * @param DocumentElementInterface $content
      * @param string $position (optional)
      *  String indicating the position where the new content will be appended to
      *  existing content. use 'first' for the beginning. defaults to 'last'
      * @return DocumentElementInterface
      *  returns a reference to the just added content instance
      */
-    public function addContent($type, array $settings = [], $position = 'last')
+    protected function addContent(DocumentElementInterface $content, $position = 'last')
     {
-        $factory = $this->toRoot()->getElementFactory();
-        $content = $factory->createElement($type, $settings);
-
         if (!$this->checkAllowedContent($content)) {
             throw new RuntimeException(
                 "You can't add content of type {$content->getType()} to content".
@@ -106,6 +103,84 @@ trait ContentFunctions
             //append content as last array entry
             return $this->content[] = $content;
         }
+    }
+
+    /**
+     * @param string $title
+     * @param array $settings
+     * @return de\flatplane\documentContents\Section
+     */
+    public function addSection($title, array $settings = [])
+    {
+        $factory = $this->toRoot()->getElementFactory();
+        $settings['title'] = $title;
+        $content = $factory->createElement('section', $settings);
+        return $this->addContent($content);
+    }
+
+    /**
+     * @param array $displayTypes (optional)
+     * @param array $settings (optional)
+     * @return de\flatplane\documentContents\ListOfContent
+     */
+    public function addList(array $displayTypes = ['section'], array $settings = [])
+    {
+        $factory = $this->toRoot()->getElementFactory();
+        $settings['displayTypes'] = $displayTypes;
+        $content = $factory->createElement('list', $settings);
+        return $this->addContent($content);
+    }
+
+    /**
+     * @param string $code
+     * @param array $settings
+     * @return de\flatplane\documentContents\Formula
+     */
+    public function addFormula($code, array $settings = [])
+    {
+        $factory = $this->toRoot()->getElementFactory();
+        $settings['code'] = $code;
+        $content = $factory->createElement('formula', $settings);
+        return $this->addContent($content);
+    }
+
+    /**
+     * @param string $path
+     * @param array $settings
+     * @return de\flatplane\documentContents\Image
+     */
+    public function addImage($path, array $settings = [])
+    {
+        $factory = $this->toRoot()->getElementFactory();
+        $settings['path'] = $path;
+        $content = $factory->createElement('section', $settings);
+        return $this->addContent($content);
+    }
+
+    /**
+     * @param array $data
+     * @param array $settings
+     * @return de\flatplane\documentContents\Table
+     */
+    public function addTable(array $data, array $settings = [])
+    {
+        $factory = $this->toRoot()->getElementFactory();
+        $settings['data'] = $data;
+        $content = $factory->createElement('table', $settings);
+        return $this->addContent($content);
+    }
+
+    /**
+     * @param string $text
+     * @param array $settings
+     * @return de\flatplane\documentContents\Text
+     */
+    public function addText($text, array $settings = [])
+    {
+        $factory = $this->toRoot()->getElementFactory();
+        $settings['text'] = $text;
+        $content = $factory->createElement('section', $settings);
+        return $this->addContent($content);
     }
 
     /**

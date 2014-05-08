@@ -177,19 +177,16 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      */
     public function setConfig(array $config)
     {
-        //search each given key in the classes properties and replace the default
-        //value if it exists.
-        //Todo: validation
-        //todo: test empty props
-        //fixme: overwrite
-        //todo: prevent 'protected' props
+        $this->testNoParent();
         foreach ($config as $key => $setting) {
-            if (isset($this->$key)) {
-                if (is_array($this->$key)) {
-                    $this->$key = array_merge($this->$key, (array) $setting);
-                } else {
-                    $this->$key = $setting;
-                }
+            $name = 'set'.ucfirst($key);
+            if (method_exists($this, $name)) {
+                $this->$name($setting);
+            } else {
+                trigger_error(
+                    "$key is not a valid Configuration option, ignoring",
+                    E_USER_NOTICE
+                );
             }
         }
     }
@@ -199,9 +196,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      */
     public function __clone()
     {
-        //if ($this->getParent() instanceof DocumentElementInterface) {
-        //    $this->setParent(clone $this->getParent());
-        //}
+        $this->parent = null;
     }
 
     public function __toString()
@@ -252,33 +247,71 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     }
 
     /**
-     * @param bool $enumerate
+     * @thros RuntimeException
      */
-    public function setEnumerate($enumerate)
+    protected function testNoParent()
     {
-        if ($this->parent !== null) {
-            trigger_error(
-                'setEnumerate() should not be called after adding the element'.
-                ' as content',
-                E_USER_WARNING
+        if ($this->getParent() !== null) {
+            throw new RuntimeException(
+                "The configuration can't be changed after setting the parent"
             );
         }
-        $this->enumerate = $enumerate;
+    }
+
+    /**
+     * @param bool $enumerate
+     */
+    protected function setEnumerate($enumerate)
+    {
+        $this->enumerate = (bool) $enumerate;
     }
 
     /**
      * @param bool $showInList
      */
-    public function setShowInList($showInList)
+    protected function setShowInList($showInList)
     {
-        if ($this->parent !== null) {
-            trigger_error(
-                'setShowInIndex() should not be called after adding the element'.
-                ' as content',
-                E_USER_WARNING
-            );
-        }
-        $this->showInList = $showInList;
+        $this->showInList = (bool) $showInList;
+    }
+
+    protected function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    protected function setMargins(array $margins)
+    {
+        $this->margins = $margins;
+    }
+
+    protected function setPaddings(array $paddings)
+    {
+        $this->paddings = $paddings;
+    }
+
+    protected function setFontType(array $fontType)
+    {
+        $this->fontType = $fontType;
+    }
+
+    protected function setFontSize(array $fontSize)
+    {
+        $this->fontSize = $fontSize;
+    }
+
+    protected function setFontStyle(array $fontStyle)
+    {
+        $this->fontStyle = $fontStyle;
+    }
+
+    protected function setFontColor(array $fontColor)
+    {
+        $this->fontColor = $fontColor;
+    }
+
+    protected function setDrawColor(array $drawColor)
+    {
+        $this->drawColor = $drawColor;
     }
 
     /**

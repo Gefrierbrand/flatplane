@@ -31,7 +31,6 @@ use de\flatplane\interfaces\documentelements\SectionInterface;
 class Section extends AbstractDocumentContentElement implements SectionInterface
 {
     protected $type = 'section';
-
     protected $title = 'section';
     protected $altTitle = '';
     protected $showInDocument = true;
@@ -103,5 +102,30 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
                 'The required property minFreePage is not set.'
             );
         }
+    }
+
+    protected function setAltTitle($altTitle)
+    {
+        $this->altTitle = $altTitle;
+    }
+
+    protected function setShowInDocument($showInDocument)
+    {
+        $this->showInDocument = (bool) $showInDocument;
+    }
+
+    protected function setMinFreePage($minFreePage)
+    {
+        $this->minFreePage = $minFreePage;
+    }
+
+    protected function setStartsNewLine($startsNewLine)
+    {
+        $this->startsNewLine = (bool) $startsNewLine;
+    }
+
+    public function setStartsNewPage($startsNewPage)
+    {
+        $this->startsNewPage = (bool) $startsNewPage;
     }
 }

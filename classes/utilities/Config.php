@@ -33,7 +33,6 @@ use RuntimeException;
  */
 class Config implements ConfigInterface
 {
-    use \de\flatplane\documentContents\traits\SetSettings;
     /**
      * @var mixed
      *  Holds Settings as array or null if unitialized
@@ -65,6 +64,31 @@ class Config implements ConfigInterface
     public function getSettings()
     {
         return $this->settings;
+    }
+
+    /**
+     * Overrides or extends the default options with the given settings array
+     * @param array $settings
+     */
+    public function setSettings(array $settings)
+    {
+        //replace defaults with given settings
+        foreach ($settings as $key => $value) {
+            if (array_key_exists($key, $this->settings)
+                && is_array($value)
+                && is_array($this->settings[$key])
+            ) {
+                //Merges the given settings with already existing settings
+                //instead of completely overwriting them with (possibly)
+                //incomplete data
+                $this->settings[$key] = array_merge(
+                    $this->settings[$key],
+                    $value
+                );
+            } else {
+                $this->settings[$key] = $value;
+            }
+        }
     }
 
     /**

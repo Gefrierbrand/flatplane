@@ -30,18 +30,4 @@ class Footnote extends AbstractDocumentContentElement
 {
     protected $type='footnote';
     protected $text;
-
-    //TODO: maybe use text class?
-    public function __construct($text)
-    {
-        $this->text = $text;
-    }
-
-    public function getStyle()
-    {
-        if (empty($this->style)) {
-            $this->setStyle(new FootnoteStyle);
-        }
-        return $this->style;
-    }
 }
