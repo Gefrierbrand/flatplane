@@ -21,63 +21,46 @@
 
 namespace de\flatplane\documentContents;
 
+use de\flatplane\interfaces\documentelements\FormulaInterface;
+
 /**
  * Description of formula
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Formula extends AbstractDocumentContentElement
+class Formula extends AbstractDocumentContentElement implements FormulaInterface
 {
     protected $type='formula';
     protected $allowSubContent = ['formula'];
-
+    protected $isSplitable = false;
     protected $title='Formula';
 
     protected $code;
-    protected $font;
-    protected $codeFormat;
+    protected $font = 'TeX';
+    protected $codeFormat = 'TeX';
     protected $availableFonts = ['TeX', 'STIX-Web', 'Asana-Math', 'Neo-Euler',
                                 'Gyre-Pagella', 'Gyre-Termes', 'Latin-Modern'];
     protected $availableCodeFormats = ['TeX','MathML','AsciiMath'];
 
-    public function __construct(
-        $code,
-        $font = 'TeX',
-        $format = 'TeX',
-        $showInIndex = true,
-        $enumerate = true
-    ) {
-        $this->code = $code;
-        $this->showInIndex = $showInIndex;
-        $this->enumerate = $enumerate;
+    public function __construct(array $config)
+    {
+        parent::__construct($config);
 
-        if (in_array($font, $this->availableFonts, true)) {
-            $this->font = $font;
-        } else {
+        if (!in_array($this->font, $this->availableFonts, true)) {
             trigger_error(
-                "Font $font not available, defaulting to TeX",
+                "Font $this->font not available, defaulting to TeX",
                 E_USER_NOTICE
             );
             $this->font = 'TeX';
         }
 
-        if (in_array($format, $this->availableCodeFormats, true)) {
-            $this->codeFormat = $format;
-        } else {
+        if (!in_array($this->codeFormat, $this->availableCodeFormats, true)) {
             trigger_error(
-                "Format $format not available, defaulting to TeX",
+                "Format $this->codeFormat not available, defaulting to TeX",
                 E_USER_NOTICE
             );
             $this->codeFormat = 'TeX';
         }
-    }
-
-    public function getStyle()
-    {
-        if (empty($this->style)) {
-            $this->setStyle(new FormulaStyle);
-        }
-        return $this->style;
     }
 
     public function getCode()
@@ -85,12 +68,7 @@ class Formula extends AbstractDocumentContentElement
         return $this->code;
     }
 
-    public function getFont()
-    {
-        return $this->font;
-    }
-
-    public function getFormat()
+    public function getCodeFormat()
     {
         return $this->codeFormat;
     }
@@ -103,30 +81,5 @@ class Formula extends AbstractDocumentContentElement
     public function getAvailableCodeFormats()
     {
         return $this->availableCodeFormats;
-    }
-
-    public function setCode($code)
-    {
-        $this->code = $code;
-    }
-
-    public function setFont($font)
-    {
-        $this->font = $font;
-    }
-
-    public function setCodeFormat($codeFormat)
-    {
-        $this->codeFormat = $codeFormat;
-    }
-
-    public function setAvailableFonts(array $availableFonts)
-    {
-        $this->availableFonts = $availableFonts;
-    }
-
-    public function setAvailableCodeFormats(array $availableCodeFormats)
-    {
-        $this->availableCodeFormats = $availableCodeFormats;
     }
 }

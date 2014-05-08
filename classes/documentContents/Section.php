@@ -32,6 +32,7 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
 {
     protected $type = 'section';
 
+    protected $title = 'section';
     protected $altTitle = '';
     protected $showInDocument = true;
     protected $minFreePage = ['default' => 25];

@@ -24,7 +24,6 @@ require 'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
 //lange, volldefinierte Klassennamen aus Namespaces laden
 
 
-use de\flatplane\documentContents\Document;
 use de\flatplane\documentContents\ElementFactory;
 use de\flatplane\utilities\Timer;
 
@@ -40,22 +39,22 @@ $settings = array(
     'title' => 'Ganz wichtiges Dokument',
     'keywords' => 'super, toll, top, gigantisch, superlative!',
     'startIndex' => ['section' => 0],
-    'numberingPrefix' => ['formula' => '['],
-    'numberingPostfix' => ['formula' => ']'],
-    'numberingSeparator' => ['formula' => '#'],
-    'numberingLevel' => ['formula' => -1]
+//    'numberingPrefix' => ['formula' => '['],
+//    'numberingPostfix' => ['formula' => ']'],
+//    'numberingSeparator' => ['formula' => '.'],
+//    'numberingLevel' => ['formula' => -1]
 );
 
-$document = new Document($settings);
 $factory = new ElementFactory;
-$document->setElementFactory($factory);
+$document =  $factory->createDocument($settings);
 
 $vorwort = $document->addContent('section', ['title' => 'vorwort', 'enumerate' => false]);
 $inhalt = $document->addContent('section', ['title' => 'inhaltsverzeichnis']);
-$list = $inhalt->addContent('list');
+$list = $inhalt->addContent('list', ['displayTypes' => ['section', 'formula']]);
 $einleitung = $document->addContent('section', ['title' => 'einleitung', 'label' => 'sec:einleitung']);
 $hauptteil = $document->addContent('section', ['title' => 'hauptteil']);
 $sub = $hauptteil->addContent('section', ['title' => 'subkapitel']);
 $sub->addContent('section', ['title' => 'subsub']);
-
+$formula = $sub->addContent('formula', ['code' => '\frac{1}{2}', 'label' => 'eq:f1']);
+$formula->addContent('formula');
 $list->generateStructure($document->getContent());

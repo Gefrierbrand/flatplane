@@ -182,6 +182,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         //Todo: validation
         //todo: test empty props
         //fixme: overwrite
+        //todo: prevent 'protected' props
         foreach ($config as $key => $setting) {
             if (isset($this->$key)) {
                 if (is_array($this->$key)) {

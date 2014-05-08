@@ -37,6 +37,7 @@ class ElementFactory
     protected $documentConfig = 'config/documentSettings.ini';
     protected $sectionConfig  = 'config/sectionSettings.ini';
     protected $listConfig     = 'config/listSettings.ini';
+    protected $formulaConfig  = 'config/formulaSettings.ini';
 
     /**
      * @var array
@@ -70,6 +71,18 @@ class ElementFactory
     }
 
     /**
+     * @param array $settings
+     * @return \de\flatplane\documentContents\Document
+     */
+    public function createDocument(array $settings = [])
+    {
+        $config = new Config($this->documentConfig, $settings);
+        $doc = new Document($config->getSettings());
+        $doc->setElementFactory($this);
+        return $doc;
+    }
+
+    /**
      * @param string $type
      * @param array $settings
      * @return DocumentElementInterface
@@ -81,7 +94,7 @@ class ElementFactory
         if (method_exists($this, $name)) {
             return $this->{$name}();
         } else {
-            throw InvalidArgumentException("$type is not a valid element type");
+            throw new InvalidArgumentException("$type is not a valid element type");
         }
     }
 
@@ -96,24 +109,29 @@ class ElementFactory
     }
 
     /**
-     * @param array $settings
      * @return \de\flatplane\documentContents\Section
      */
     protected function createSection()
     {
         $config = new Config($this->sectionConfig);
-        $section = new Section($config->getSettings());
-        return $section;
+        return new Section($config->getSettings());
     }
 
     /**
-     * @param array $settings
      * @return \de\flatplane\documentContents\ListOfContents
      */
     protected function createList()
     {
         $config = new Config($this->listConfig);
-        $list = new ListOfContents($config->getSettings());
-        return $list;
+        return new ListOfContents($config->getSettings());
+    }
+
+    /**
+     * @return \de\flatplane\documentContents\Formula
+     */
+    protected function createFormula()
+    {
+        $config = new Config($this->formulaConfig);
+        return new Formula($config->getSettings());
     }
 }
