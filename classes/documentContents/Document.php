@@ -56,6 +56,11 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     protected $startIndex = ['default' => 1];
 
     /**
+     * @var ElementFactory
+     */
+    protected $elementFactory;
+
+    /**
      * @var int
      *  Number of pages; used for internal representation.
      *  FIXME: Currently not used at all
@@ -225,5 +230,15 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         } else {
             return $this->startIndex[$type];
         }
+    }
+
+    public function getElementFactory()
+    {
+        return $this->elementFactory;
+    }
+
+    public function setElementFactory(ElementFactory $elementFactory)
+    {
+        $this->elementFactory = $elementFactory;
     }
 }

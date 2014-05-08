@@ -22,9 +22,9 @@
 namespace de\flatplane\documentContents;
 
 use de\flatplane\interfaces\DocumentElementInterface;
-use de\flatplane\interfaces\StyleInterface;
 
 //todo: formattierungsobjekte: newline, newpage, (h/v-space), clearpage?
+
 //todo: complete documentation!
 //todo: methoden sortieren
 
@@ -166,12 +166,29 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      */
     public function __construct(array $config)
     {
+        $this->setConfig($config);
+    }
+
+    /**
+     * @param array $config
+     *  Array containing key=>value pairs wich overwrite the default properties.
+     *  e.g.: $config = ['enumerate' => false] will disable numbering for the
+     *  created instance
+     */
+    public function setConfig(array $config)
+    {
         //search each given key in the classes properties and replace the default
         //value if it exists.
         //Todo: validation
+        //todo: test empty props
+        //fixme: overwrite
         foreach ($config as $key => $setting) {
             if (isset($this->$key)) {
-                $this->$key = $setting;
+                if (is_array($this->$key)) {
+                    $this->$key = array_merge($this->$key, (array) $setting);
+                } else {
+                    $this->$key = $setting;
+                }
             }
         }
     }
@@ -181,9 +198,9 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      */
     public function __clone()
     {
-        if ($this->getParent() instanceof DocumentElementInterface) {
-            $this->setParent(clone $this->getParent());
-        }
+        //if ($this->getParent() instanceof DocumentElementInterface) {
+        //    $this->setParent(clone $this->getParent());
+        //}
     }
 
     public function __toString()

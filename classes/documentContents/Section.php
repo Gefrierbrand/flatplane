@@ -38,17 +38,12 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
     protected $startsNewLine = ['default' => true];
     protected $startsNewPage = ['default' => false];
 
-    public function __construct(array $config)
+    public function setConfig(array $config)
     {
-        parent::__construct($config);
-
-        if (empty($this->getTitle())) {
-            trigger_error('The section title is empty', E_USER_WARNING);
+        if (!array_key_exists('altTitle', $config)) {
+            $config['altTitle'] = '';
         }
-
-        if (empty($this->getAltTitle())) {
-            $this->altTitle = $this->getTitle();
-        }
+        parent::setConfig($config);
     }
 
     public function __toString()
@@ -58,7 +53,11 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
 
     public function getAltTitle()
     {
-        return $this->altTitle;
+        if (empty($this->altTitle)) {
+            return $this->getTitle();
+        } else {
+            return $this->altTitle;
+        }
     }
 
     public function getShowInDocument()

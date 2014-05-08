@@ -21,6 +21,7 @@
 
 namespace de\flatplane\interfaces\documentelements;
 
+use de\flatplane\documentContents\ElementFactory;
 use de\flatplane\interfaces\DocumentElementInterface;
 
 /**
@@ -50,9 +51,6 @@ interface DocumentInterface extends DocumentElementInterface
 
     public function getPages();
 
-//    public function setAuthor($author);
-//    public function setTitle($title);
-//    public function setDescription($description);
-//    public function setSubject($subject);
-//    public function setKeywords($keywords);
+    public function getElementFactory();
+    public function setElementFactory(ElementFactory $elementFactory);
 }

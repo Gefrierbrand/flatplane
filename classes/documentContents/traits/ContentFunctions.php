@@ -61,18 +61,21 @@ trait ContentFunctions
      * It checks if the given, to-be-added, content-type is allowed for the
      * current object and returns false on failure or a reference to the
      * added content.
-     * @param DocumentElementInterface $content
-     *  TODO: doc
+     * TODO: doc
+     *
+     * @param string $type
+     * @param array $settings
      * @param string $position (optional)
      *  String indicating the position where the new content will be appended to
      *  existing content. use 'first' for the beginning. defaults to 'last'
-     * @return DocumentContent
+     * @return DocumentElementInterface
      *  returns a reference to the just added content instance
      */
-    public function addContent(
-        DocumentElementInterface $content,
-        $position = 'last'
-    ) {
+    public function addContent($type, array $settings = [], $position = 'last')
+    {
+        $factory = $this->toRoot()->getElementFactory();
+        $content = $factory->createElement($type, $settings);
+
         if (!$this->checkAllowedContent($content)) {
             throw new RuntimeException(
                 "You can't add content of type {$content->getType()} to content".
@@ -199,16 +202,16 @@ trait ContentFunctions
      *  set to a bool to enable/disable subcontent completeley or use an array
      *  containting the names of allowed subcontent-types
      */
-    public function setAllowSubContent($allowSubContent)
-    {
-        if (!empty($this->getContent())) {
-            trigger_error(
-                'setAllowSubContent should not be called after adding content',
-                E_USER_NOTICE
-            );
-        }
-        $this->setAllowSubContent($allowSubContent);
-    }
+//    public function setAllowSubContent($allowSubContent)
+//    {
+//        if (!empty($this->getContent())) {
+//            trigger_error(
+//                'setAllowSubContent should not be called after adding content',
+//                E_USER_NOTICE
+//            );
+//        }
+//        $this->setAllowSubContent($allowSubContent);
+//    }
 
     /**
      * @return int

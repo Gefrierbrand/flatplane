@@ -24,11 +24,11 @@ require 'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
 //lange, volldefinierte Klassennamen aus Namespaces laden
 
 
+use de\flatplane\documentContents\Document;
 use de\flatplane\documentContents\ElementFactory;
 use de\flatplane\utilities\Timer;
 
 $t = new Timer();
-$factory = new ElementFactory;
 
 /*
  * BEGIN DOKUMENTDEFINITION
@@ -46,18 +46,16 @@ $settings = array(
     'numberingLevel' => ['formula' => -1]
 );
 
-$document = $factory->createDocument($settings);
+$document = new Document($settings);
+$factory = new ElementFactory;
+$document->setElementFactory($factory);
 
-$vorwort = $factory->createSection(['title' => 'Vorwort']);
-$document->addContent($vorwort);
-
-$einleitung = $factory->createSection(['title' => 'Einleitung', 'label' => 'sec:einleitung']);
-$document->addContent($einleitung);
-
-$inhaltsverzeichnis = $factory->createSection(['title' => 'Inhaltsverzeichnis']);
-$document->addContent($inhaltsverzeichnis);
-
-$list = $factory->createList();
-$inhaltsverzeichnis->addContent($list);
+$vorwort = $document->addContent('section', ['title' => 'vorwort', 'enumerate' => false]);
+$inhalt = $document->addContent('section', ['title' => 'inhaltsverzeichnis']);
+$list = $inhalt->addContent('list');
+$einleitung = $document->addContent('section', ['title' => 'einleitung', 'label' => 'sec:einleitung']);
+$hauptteil = $document->addContent('section', ['title' => 'hauptteil']);
+$sub = $hauptteil->addContent('section', ['title' => 'subkapitel']);
+$sub->addContent('section', ['title' => 'subsub']);
 
 $list->generateStructure($document->getContent());

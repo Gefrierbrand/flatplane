@@ -22,7 +22,6 @@
 namespace de\flatplane\documentContents;
 
 use de\flatplane\interfaces\DocumentElementInterface;
-use de\flatplane\styles\DocumentStyle;
 use de\flatplane\utilities\Config;
 use InvalidArgumentException;
 
@@ -45,12 +44,6 @@ class ElementFactory
      */
     protected $prototypes;
 
-    public function createDocument(array $documentSettings = [])
-    {
-        $config = new Config($this->documentConfig, $documentSettings);
-        return new Document($config->getSettings());
-    }
-
     /**
      * Factory method for creating new DocumentElements, uses prototypes to
      * reduce the number of neccesary object initialisations. This method
@@ -66,12 +59,12 @@ class ElementFactory
     {
         $type = strtolower($type);
         if (!isset($this->prototypes[$type])) {
-            $prototype = $this->createPrototype($type, $settings);
+            $prototype = $this->createPrototype($type);
             $this->addPrototype($type, $prototype);
         }
         $erg = clone $this->prototypes[$type];
-        if (is_array($settings)) {
-            $erg->setSettings($settings);
+        if (!empty($settings)) {
+            $erg->setConfig($settings);
         }
         return $erg;
     }
@@ -82,18 +75,13 @@ class ElementFactory
      * @return DocumentElementInterface
      * @throws InvalidArgumentException
      */
-    protected function createPrototype($type, array $settings)
+    protected function createPrototype($type)
     {
-        switch (strtolower($type))
-        {
-            case 'section':
-                return $this->createSection($settings);
-            case 'list':
-                return $this->createList($settings);
-            default:
-                throw new InvalidArgumentException(
-                    "The requested type $type is not a valid element type"
-                );
+        $name = 'create'.ucfirst($type);
+        if (method_exists($this, $name)) {
+            return $this->{$name}();
+        } else {
+            throw InvalidArgumentException("$type is not a valid element type");
         }
     }
 
@@ -109,22 +97,22 @@ class ElementFactory
 
     /**
      * @param array $settings
-     * @return Section
+     * @return \de\flatplane\documentContents\Section
      */
-    public function createSection(array $settings = [])
+    protected function createSection()
     {
-        $config = new Config($this->sectionConfig, $settings);
+        $config = new Config($this->sectionConfig);
         $section = new Section($config->getSettings());
         return $section;
     }
 
     /**
      * @param array $settings
-     * @return ListOfContents
+     * @return \de\flatplane\documentContents\ListOfContents
      */
-    public function createList(array $settings = [])
+    protected function createList()
     {
-        $config = new Config($this->listConfig, $settings);
+        $config = new Config($this->listConfig);
         $list = new ListOfContents($config->getSettings());
         return $list;
     }

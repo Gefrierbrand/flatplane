@@ -34,7 +34,7 @@ interface DocumentElementInterface
     public function addCounter(CounterInterface $counter, $name);
     public function checkLocalCounter(DocumentElementInterface $content);
     public function hasContent();
-    public function addContent(DocumentElementInterface $content);
+    public function addContent($type, array $settings, $position = 'last');
     public function toRoot();
     public function toParentAtLevel($level);
 
@@ -56,7 +56,7 @@ interface DocumentElementInterface
     public function setParent(DocumentElementInterface $parent);
     public function setType($type);
     public function setNumbers(array $numbers);
-    public function setAllowSubContent($allowSubContent);
+//    public function setAllowSubContent($allowSubContent);
     public function setEnumerate($enumerate);
     public function setShowInList($showInIndex);
     public function setLabel($label);
