@@ -19,20 +19,23 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\interfaces\documentelements;
-
-use de\flatplane\interfaces\DocumentElementInterface;
+namespace de\flatplane\interfaces;
 
 /**
+ * Description of DocumentContentStructureInterface
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-interface SectionInterface extends DocumentElementInterface
+interface DocumentContentStructureInterface
 {
-    public function getTitle();
-    public function getAltTitle();
-    public function getShowInDocument();
-    public function getStartsNewLine($level = 0);
-    public function getStartsNewPage($level = 0);
-    public function getMinFreePage($level = 0);
+    public function hasContent();
+    public function addContent(DocumentContentElementInterface $content);
+    public function toRoot();
+
+    public function getParent();
+    public function getLevel();
+    public function getContent();
+    public function getIsSplitable();
+
+    public function setParent(DocumentContentStructureInterface $parent);
 }

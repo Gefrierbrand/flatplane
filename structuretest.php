@@ -42,7 +42,7 @@ $settings = array(
 //    'numberingPrefix' => ['formula' => '['],
 //    'numberingPostfix' => ['formula' => ']'],
 //    'numberingSeparator' => ['formula' => '.'],
-    'numberingLevel' => ['formula' => 0, 'list' => 0]
+    'numberingLevel' => ['formula' => 1, 'list' => 0]
 );
 
 $factory = new ElementFactory;

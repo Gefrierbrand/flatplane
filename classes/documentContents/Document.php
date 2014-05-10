@@ -22,7 +22,7 @@
 namespace de\flatplane\documentContents;
 
 use de\flatplane\interfaces\DocumentElementInterface;
-use de\flatplane\interfaces\documentelements\DocumentInterface;
+use de\flatplane\interfaces\documentElements\DocumentInterface;
 use RuntimeException;
 
 /**

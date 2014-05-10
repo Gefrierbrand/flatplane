@@ -21,7 +21,7 @@
 
 namespace de\flatplane\documentContents;
 
-use de\flatplane\interfaces\documentelements\FormulaInterface;
+use de\flatplane\interfaces\documentElements\FormulaInterface;
 
 /**
  * Description of formula

@@ -21,7 +21,7 @@
 namespace de\flatplane\documentContents;
 
 use de\flatplane\documentContents\AbstractDocumentContentElement;
-use de\flatplane\interfaces\documentelements\SectionInterface;
+use de\flatplane\interfaces\documentElements\SectionInterface;
 
 /**
  * Description of section

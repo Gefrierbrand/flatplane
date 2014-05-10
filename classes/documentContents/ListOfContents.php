@@ -21,7 +21,7 @@
 
 namespace de\flatplane\documentContents;
 
-use de\flatplane\interfaces\documentelements\ListInterface;
+use de\flatplane\interfaces\documentElements\ListInterface;
 use de\flatplane\iterators\DocumentContentElementFilterIterator;
 use de\flatplane\iterators\RecursiveContentIterator;
 use RecursiveIteratorIterator;

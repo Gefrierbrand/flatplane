@@ -19,7 +19,7 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\interfaces\documentelements;
+namespace de\flatplane\interfaces\documentElements;
 
 use de\flatplane\documentContents\ElementFactory;
 use de\flatplane\interfaces\DocumentElementInterface;
