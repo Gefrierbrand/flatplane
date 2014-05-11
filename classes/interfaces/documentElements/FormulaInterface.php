@@ -19,7 +19,7 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\interfaces\documentelements;
+namespace de\flatplane\interfaces\documentElements;
 
 use de\flatplane\interfaces\DocumentElementInterface;
 
@@ -27,12 +27,10 @@ use de\flatplane\interfaces\DocumentElementInterface;
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-interface SectionInterface extends DocumentElementInterface
+interface FormulaInterface extends DocumentElementInterface
 {
-    public function getTitle();
-    public function getAltTitle();
-    public function getShowInDocument();
-    public function getStartsNewLine($level = 0);
-    public function getStartsNewPage($level = 0);
-    public function getMinFreePage($level = 0);
+    public function getCode();
+    public function getCodeFormat();
+    public function getAvailableFonts();
+    public function getAvailableCodeFormats();
 }
