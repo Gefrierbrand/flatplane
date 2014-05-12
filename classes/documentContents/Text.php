@@ -40,6 +40,10 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     protected $parse = true; //parse special content like eqn, etc?
     protected $hyphenate = true;
 
+    protected $isHyphenated = false; //?
+    protected $isParsed = false; //?
+    protected $containsReferences;
+
     public function getText()
     {
         return $this->text;
@@ -67,5 +71,10 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     protected function setHyphenate($hyphenate)
     {
         $this->hyphenate = (bool) $hyphenate;
+    }
+
+    public function getSize()
+    {
+        //todo: implement;
     }
 }

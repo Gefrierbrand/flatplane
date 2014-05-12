@@ -57,6 +57,7 @@ interface DocumentElementInterface
     public function getEnumerate();
     public function getShowInList();
     public function getIsSplitable();
+    public function getTitle();
 
     public function setParent(DocumentElementInterface $parent);
     //public function setType($type);

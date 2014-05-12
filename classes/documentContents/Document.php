@@ -387,4 +387,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     {
         return $this->unresolvedReferenceMarker;
     }
+
+    public function getSize()
+    {
+        //todo: implement me;
+    }
 }

@@ -37,11 +37,8 @@ class Image extends AbstractDocumentContentElement
     protected $angle; //?
     protected $scale; //?
 
-    public function getStyle()
+    public function getSize()
     {
-        if (empty($this->style)) {
-            $this->setStyle(new ImageStyle);
-        }
-        return $this->style;
+        //todo: implement me
     }
 }

@@ -231,11 +231,6 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         return $this->type;
     }
 
-    public function getSize()
-    {
-        //todo: IMPLEMENT : probably best in subclasses / content! //maybe as abstract?
-    }
-
     public function getPage()
     {
         //TODO: Implement me
@@ -357,4 +352,6 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     {
         $this->label = $label;
     }
+
+    //abstract public function getSize();
 }

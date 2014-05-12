@@ -83,6 +83,11 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
         return $this->availableCodeFormats;
     }
 
+    public function getSize()
+    {
+        //todo: use XML stuff;
+    }
+
     protected function setCode($code)
     {
         $this->code = $code;

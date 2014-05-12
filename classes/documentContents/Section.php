@@ -124,8 +124,13 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         $this->startsNewLine = (bool) $startsNewLine;
     }
 
-    public function setStartsNewPage($startsNewPage)
+    protected function setStartsNewPage($startsNewPage)
     {
         $this->startsNewPage = (bool) $startsNewPage;
+    }
+
+    public function getSize()
+    {
+        //todo: implement
     }
 }

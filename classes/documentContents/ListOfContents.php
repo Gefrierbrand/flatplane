@@ -164,4 +164,9 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
     {
         $this->indent = $indent;
     }
+
+    public function getSize()
+    {
+        //todo: implement me
+    }
 }

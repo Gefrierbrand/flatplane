@@ -30,11 +30,8 @@ class Table extends AbstractDocumentContentElement
 {
     protected $type = 'table';
 
-    public function getStyle()
+    public function getSize()
     {
-        if (empty($this->style)) {
-            $this->setStyle(new TableStyle);
-        }
-        return $this->style;
+        //todo: implement
     }
 }

@@ -30,4 +30,9 @@ class Footnote extends AbstractDocumentContentElement
 {
     protected $type='footnote';
     protected $text;
+
+    public function getSize()
+    {
+        //todo: implement;
+    }
 }
