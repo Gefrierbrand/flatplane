@@ -42,22 +42,29 @@ $settings = array(
 //    'numberingPrefix' => ['formula' => '['],
 //    'numberingPostfix' => ['formula' => ']'],
 //    'numberingSeparator' => ['formula' => '.'],
-    'numberingLevel' => ['formula' => 1, 'list' => 0]
+    'numberingLevel' => ['formula' => 0, 'list' => 0]
 );
 
 $factory = new ElementFactory;
 $document = $factory->createDocument($settings);
 
+
+$text = 'hallo welt! In kapitel '.$document->getReference('sec:subsub').' steht irgendwas ganz wichtiges';
 $vorwort = $document->addSection('vorwort', ['enumerate' => false]);
 $inhalt = $document->addSection('inhaltsverzeichnis');
 $list = $inhalt->addList(['section', 'formula']);
 $einleitung = $document->addSection('einleitung', ['label' => 'sec:einleitung']);
+$einleitung->addText($text);
 $hauptteil = $document->addSection('hauptteil');
 $sub = $hauptteil->addSection('subkapitel');
-$sub->addSection('subsub');
+$sub->addSection('subsub', ['label' => 'sec:subsub']);
 $formula = $sub->addFormula('\frac{1}{2}', ['label' => 'eq:f1']);
 $formula->addFormula('\text{subformula}');
 $listoflists = $document->addList(['list']);
+
+
+
+var_dump($text);
 
 echo PHP_EOL;
 $list->generateStructure($document->getContent());

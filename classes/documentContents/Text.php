@@ -21,12 +21,14 @@
 
 namespace de\flatplane\documentContents;
 
+use de\flatplane\interfaces\documentElements\TextInterface;
+
 /**
  * Description of Text
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Text extends AbstractDocumentContentElement
+class Text extends AbstractDocumentContentElement implements TextInterface
 {
     protected $type = 'text';
     protected $enumerate = false;
@@ -34,8 +36,36 @@ class Text extends AbstractDocumentContentElement
     protected $allowSubContent = false;
     protected $isSplitable = true;
 
-    protected $text;
+    protected $text = '';
     protected $parse = true; //parse special content like eqn, etc?
-    protected $containsReferences = false;
     protected $hyphenate = true;
+
+    public function getText()
+    {
+        return $this->text;
+    }
+
+    public function getParse()
+    {
+        return $this->parse;
+    }
+
+    public function getHyphenate()
+    {
+        return $this->hyphenate;
+    }
+
+    protected function setText($text)
+    {
+        $this->text = $text;
+    }
+
+    protected function setParse($parse) //todo: rename parse
+    {
+        $this->parse = (bool) $parse;
+    }
+    protected function setHyphenate($hyphenate)
+    {
+        $this->hyphenate = (bool) $hyphenate;
+    }
 }

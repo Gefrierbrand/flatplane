@@ -38,6 +38,7 @@ class ElementFactory
     protected $sectionConfig  = 'config/sectionSettings.ini';
     protected $listConfig     = 'config/listSettings.ini';
     protected $formulaConfig  = 'config/formulaSettings.ini';
+    protected $textConfig     = 'config/textSettings.ini';
 
     /**
      * @var array
@@ -133,5 +134,11 @@ class ElementFactory
     {
         $config = new Config($this->formulaConfig);
         return new Formula($config->getSettings());
+    }
+
+    protected function createText()
+    {
+        $config = new Config($this->textConfig);
+        return new Text($config->getSettings());
     }
 }

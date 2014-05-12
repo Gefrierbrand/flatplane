@@ -25,6 +25,7 @@ use de\flatplane\interfaces\DocumentElementInterface;
 use de\flatplane\interfaces\documentElements\DocumentInterface;
 use RuntimeException;
 
+//todo: count unresolved references
 /**
  * This class represents the base document.
  * @author Nikolai Neff <admin@flatplane.de>
@@ -54,6 +55,13 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     protected $numberingPostfix = ['default' => ''];
     protected $numberingSeparator = ['default' => '.'];
     protected $startIndex = ['default' => 1];
+
+    protected $validLabelTypes = ['page', 'title', 'number'];
+    protected $unresolvedReferenceMarker = '?';
+    protected $assumedPageNumberWidth = 3;
+    protected $assumedStructureNumberWidth = 4;
+    protected $assumedTitleWidth = 20;
+
 
     /**
      * @var ElementFactory
@@ -96,6 +104,60 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     public function addLabel(DocumentElementInterface $instance)
     {
         $this->labels[$instance->getLabel()] = $instance;
+    }
+
+    public function getReference($label, $type = 'number')
+    {
+        if (!in_array($type, $this->validLabelTypes)) {
+            trigger_error(
+                "$type is not a valid label type. Defaulting to Number",
+                E_USER_WARNING
+            );
+            $type = 'number';
+        }
+        if (array_key_exists($label, $this->getLabels())) {
+            return $this->getReferenceValue($this->getLabels()[$label], $type);
+        } else {
+            return $this->getDefaultReferenceValue($type);
+        }
+    }
+
+    protected function getReferenceValue(DocumentElementInterface $instance, $type)
+    {
+        switch ($type) {
+            case 'number':
+                return $instance->getFormattedNumbers();
+            case 'title':
+                return $instance->getTitle();
+            case 'page':
+                return $instance->getPage();
+            default:
+                trigger_error('Invalid reference type, defaulting to number');
+                return $instance->getFormattedNumbers();
+        }
+    }
+
+    protected function getDefaultReferenceValue($type)
+    {
+        switch ($type) {
+            case 'number':
+                $width = $this->getAssumedStructureNumberWidth();
+                //add num-1 to the width to account for number separation
+                $width += ($width-1);
+                return str_repeat($this->getUnresolvedReferenceMarker(), $width);
+            case 'title':
+                $width = $this->getAssumedTitleWidth();
+                return str_repeat($this->getUnresolvedReferenceMarker(), $width);
+            case 'page':
+                $width = $this->getAssumedPageNumberWidth();
+                return str_repeat($this->getUnresolvedReferenceMarker(), $width);
+            default:
+                trigger_error('Invalid reference type, defaulting to number');
+                $width = $this->getAssumedStructureNumberWidth();
+                //add num-1 to the width to account for number separation
+                $width += ($width-1);
+                return str_repeat($this->getUnresolvedReferenceMarker(), $width);
+        }
     }
 
     public function getType()
@@ -285,5 +347,44 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     protected function setStartIndex($startIndex)
     {
         $this->startIndex = $startIndex;
+    }
+    protected function setUnresolvedReferenceMarker($marker)
+    {
+        $this->unresolvedReferenceMarker = $marker;
+    }
+
+    protected function setAssumedPageNumberWidth($assumedPageNumberWidth)
+    {
+        $this->assumedPageNumberWidth = (int) $assumedPageNumberWidth;
+    }
+
+    protected function setAssumedStructureNumberWidth($assumedStructureNumberWidth)
+    {
+        $this->assumedStructureNumberWidth = (int) $assumedStructureNumberWidth;
+    }
+
+    protected function setAssumedTitleWidth($assumedTitleWidth)
+    {
+        $this->assumedTitleWidth = (int) $assumedTitleWidth;
+    }
+
+    public function getAssumedPageNumberWidth()
+    {
+        return $this->assumedPageNumberWidth;
+    }
+
+    public function getAssumedStructureNumberWidth()
+    {
+        return $this->assumedStructureNumberWidth;
+    }
+
+    public function getAssumedTitleWidth()
+    {
+        return $this->assumedTitleWidth;
+    }
+
+    public function getUnresolvedReferenceMarker()
+    {
+        return $this->unresolvedReferenceMarker;
     }
 }

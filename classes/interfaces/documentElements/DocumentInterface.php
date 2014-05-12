@@ -40,6 +40,8 @@ interface DocumentInterface extends DocumentElementInterface
     public function getNumberingSeparator($type = '');
 
     public function getLabels();
+    public function getReference($label, $type = 'number');
+
     public function getAuthor();
     public function getTitle();
     public function getDescription();

@@ -179,7 +179,7 @@ trait ContentFunctions
     {
         $factory = $this->toRoot()->getElementFactory();
         $settings['text'] = $text;
-        $content = $factory->createElement('section', $settings);
+        $content = $factory->createElement('text', $settings);
         return $this->addContent($content);
     }
 
