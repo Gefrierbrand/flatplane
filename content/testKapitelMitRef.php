@@ -1,0 +1,1 @@
+hallo welt! In kapitel <?=$document->getReference('sec:subsub')?> steht irgendwas ganz wichtiges auf Seite&nbsp;<?=$document->getReference('sec:subsub','page');?>

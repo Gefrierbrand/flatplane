@@ -23,6 +23,7 @@ namespace de\flatplane\documentContents;
 
 use de\flatplane\interfaces\DocumentElementInterface;
 use de\flatplane\utilities\Config;
+use de\flatplane\utilities\PDF;
 use InvalidArgumentException;
 
 /**
@@ -73,13 +74,18 @@ class ElementFactory
 
     /**
      * @param array $settings
-     * @return \de\flatplane\documentContents\Document
+     * @return Document
      */
     public function createDocument(array $settings = [])
     {
         $config = new Config($this->documentConfig, $settings);
         $doc = new Document($config->getSettings());
         $doc->setElementFactory($this);
+        $orientation = $doc->getOrientation();
+        $unit = $doc->getUnit();
+        $format = $doc->getPageSize();
+        $pdf = new PDF($orientation, $unit, $format);
+        $doc->setPdf($pdf);
         return $doc;
     }
 
@@ -110,7 +116,7 @@ class ElementFactory
     }
 
     /**
-     * @return \de\flatplane\documentContents\Section
+     * @return Section
      */
     protected function createSection()
     {
@@ -119,7 +125,7 @@ class ElementFactory
     }
 
     /**
-     * @return \de\flatplane\documentContents\ListOfContents
+     * @return ListOfContents
      */
     protected function createList()
     {
@@ -128,7 +134,7 @@ class ElementFactory
     }
 
     /**
-     * @return \de\flatplane\documentContents\Formula
+     * @return Formula
      */
     protected function createFormula()
     {

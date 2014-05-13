@@ -233,7 +233,8 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
 
     public function getPage()
     {
-        //TODO: Implement me
+        //todo: fix me
+        return '????';
     }
 
     /**

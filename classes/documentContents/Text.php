@@ -37,15 +37,22 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     protected $isSplitable = true;
 
     protected $text = '';
+    protected $path = '';
     protected $parse = true; //parse special content like eqn, etc?
     protected $hyphenate = true;
 
-    protected $isHyphenated = false; //?
-    protected $isParsed = false; //?
-    protected $containsReferences;
+    protected $hyphenation = ['file' => '',
+                              'dictionary' => [],
+                              'leftMin' => 2,
+                              'rightMin' => 2,
+                              'charMin' => 1,
+                              'charMax' => 8];
 
     public function getText()
     {
+        if (empty($this->text)) {
+            $this->readText();
+        }
         return $this->text;
     }
 
@@ -59,22 +66,65 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         return $this->hyphenate;
     }
 
-    protected function setText($text)
+    public function readText()
     {
-        $this->text = $text;
+        $document = $this->toRoot();
+        ob_start();
+        include $this->path;
+        $this->text = ob_get_clean();
+        if ($this->hyphenate) {
+            $this->text = $this->hypenateText($this->text);
+        }
+    }
+
+    public function getSize()
+    {
+        //todo: implement;
+    }
+
+    protected function hypenateText($text)
+    {
+        $doc = $this->toRoot();
+        return $doc->getPdf()->hyphenateText(
+            $text,
+            $this->hyphenation['file'],
+            $this->hyphenation['dictionary'],
+            $this->hyphenation['leftMin'],
+            $this->hyphenation['rightMin'],
+            $this->hyphenation['charMin'],
+            $this->hyphenation['charMax']
+        );
+    }
+
+    protected function setPath($path)
+    {
+        $this->path = $path;
     }
 
     protected function setParse($parse) //todo: rename parse
     {
         $this->parse = (bool) $parse;
     }
+
     protected function setHyphenate($hyphenate)
     {
         $this->hyphenate = (bool) $hyphenate;
     }
 
-    public function getSize()
+    public function getHyphenationPatternFile()
     {
-        //todo: implement;
+        return $this->hyphenationPatternFile;
+    }
+
+    protected function setHyphenation(array $hyphenation)
+    {
+        foreach ($hyphenation as $key => $option) {
+            if (array_key_exists($key, $this->hyphenation)) {
+                if ($option == ['']) {
+                    $option = [];
+                }
+                $this->hyphenation[$key] = $option;
+            }
+        }
     }
 }

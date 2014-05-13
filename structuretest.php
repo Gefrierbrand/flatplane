@@ -48,13 +48,11 @@ $settings = array(
 $factory = new ElementFactory;
 $document = $factory->createDocument($settings);
 
-
-$text = 'hallo welt! In kapitel '.$document->getReference('sec:subsub').' steht irgendwas ganz wichtiges';
 $vorwort = $document->addSection('vorwort', ['enumerate' => false]);
 $inhalt = $document->addSection('inhaltsverzeichnis');
 $list = $inhalt->addList(['section', 'formula']);
 $einleitung = $document->addSection('einleitung', ['label' => 'sec:einleitung']);
-$einleitung->addText($text);
+$text = $einleitung->addText('content/testKapitelMitRef.php');
 $hauptteil = $document->addSection('hauptteil');
 $sub = $hauptteil->addSection('subkapitel');
 $sub->addSection('subsub', ['label' => 'sec:subsub']);
@@ -62,12 +60,11 @@ $formula = $sub->addFormula('\frac{1}{2}', ['label' => 'eq:f1']);
 $formula->addFormula('\text{subformula}');
 $listoflists = $document->addList(['list']);
 
-
-
-var_dump($text);
-
 echo PHP_EOL;
 $list->generateStructure($document->getContent());
 echo PHP_EOL.PHP_EOL;
 $listoflists->generateStructure($document->getContent());
 echo PHP_EOL;
+
+//$text->readText();
+echo $text->getText();

@@ -22,6 +22,12 @@
 namespace de\flatplane\documentContents\traits;
 
 use de\flatplane\documentContents\Document;
+use de\flatplane\documentContents\Formula;
+use de\flatplane\documentContents\Image;
+use de\flatplane\documentContents\Section;
+use de\flatplane\documentContents\Table;
+use de\flatplane\documentContents\Text;
+use de\flatplane\documentContents\ListOfContents;
 use de\flatplane\interfaces\DocumentElementInterface;
 use RuntimeException;
 
@@ -31,6 +37,8 @@ use RuntimeException;
  * @internal
  *  This might get extended to be able to move or delete content elements,
  *  which is currently not needed.
+ *
+ * todo: update doc
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
@@ -108,7 +116,7 @@ trait ContentFunctions
     /**
      * @param string $title
      * @param array $settings
-     * @return de\flatplane\documentContents\Section
+     * @return Section
      */
     public function addSection($title, array $settings = [])
     {
@@ -121,7 +129,7 @@ trait ContentFunctions
     /**
      * @param array $displayTypes (optional)
      * @param array $settings (optional)
-     * @return de\flatplane\documentContents\ListOfContent
+     * @return ListOfContents
      */
     public function addList(array $displayTypes = ['section'], array $settings = [])
     {
@@ -134,7 +142,7 @@ trait ContentFunctions
     /**
      * @param string $code
      * @param array $settings
-     * @return de\flatplane\documentContents\Formula
+     * @return Formula
      */
     public function addFormula($code, array $settings = [])
     {
@@ -147,7 +155,7 @@ trait ContentFunctions
     /**
      * @param string $path
      * @param array $settings
-     * @return de\flatplane\documentContents\Image
+     * @return Image
      */
     public function addImage($path, array $settings = [])
     {
@@ -160,7 +168,7 @@ trait ContentFunctions
     /**
      * @param array $data
      * @param array $settings
-     * @return de\flatplane\documentContents\Table
+     * @return Table
      */
     public function addTable(array $data, array $settings = [])
     {
@@ -171,14 +179,17 @@ trait ContentFunctions
     }
 
     /**
-     * @param string $text
+     * @param string $path
      * @param array $settings
-     * @return de\flatplane\documentContents\Text
+     * @return Text
      */
-    public function addText($text, array $settings = [])
+    public function addText($path, array $settings = [])
     {
+        if (!is_readable($path)) {
+            throw new RuntimeException('File '.$path.' is not readable');
+        }
         $factory = $this->toRoot()->getElementFactory();
-        $settings['text'] = $text;
+        $settings['path'] = $path;
         $content = $factory->createElement('text', $settings);
         return $this->addContent($content);
     }

@@ -118,10 +118,18 @@ class Config implements ConfigInterface
      */
     protected function checkSettingsValues(&$value)
     {
-        //match strings of the with an array-structure: '[a, b, c, ... , n]'
-        $pattern = '/^\[(\w+,?)+\]$/';
+        //match strings with an array-structure: '[a, b, c, ... , n]'
+        $pattern = '/^\[([^,\s]+(,[ ]?)?)*\]$/';
         if (is_string($value) && preg_match($pattern, $value)) {
             $value = explode(',', trim($value, '[]'));
+        }
+
+        if (is_numeric($value)) {
+            if (intval($value) == floatval($value)) {
+                $value = (int) $value;
+            } else {
+                $value = (float) $value;
+            }
         }
     }
 
