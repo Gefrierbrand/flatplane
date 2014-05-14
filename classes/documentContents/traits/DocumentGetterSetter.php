@@ -25,7 +25,6 @@ use de\flatplane\documentContents\Document;
 use de\flatplane\documentContents\ElementFactory;
 use de\flatplane\interfaces\DocumentElementInterface;
 use de\flatplane\utilities\PDF;
-use RuntimeException;
 
 /**
  * Description of DocumentGetterSetter
@@ -40,11 +39,6 @@ trait DocumentGetterSetter
     public function getParent()
     {
         return null;
-    }
-
-    public function setParent(DocumentElementInterface $parent)
-    {
-        throw new RuntimeException('You can\'t set a parent for the document');
     }
 
     public function getType()
@@ -178,6 +172,24 @@ trait DocumentGetterSetter
             return $this->startIndex['default'];
         } else {
             return $this->startIndex[$type];
+        }
+    }
+
+    public function getPageMargins($dir = '')
+    {
+        if (empty($dir) || !array_key_exists($dir, $this->pageMargins)) {
+            return $this->pageMargins['default'];
+        } else {
+            return $this->pageMargins[$dir];
+        }
+    }
+
+    protected function setPageMargins(array $margins)
+    {
+        foreach ($margins as $key => $option) {
+            if (array_key_exists($key, $this->pageMargins)) {
+                $this->pageMargins[$key] = $option;
+            }
         }
     }
 

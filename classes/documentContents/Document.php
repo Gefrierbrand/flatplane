@@ -24,6 +24,7 @@ namespace de\flatplane\documentContents;
 use de\flatplane\interfaces\DocumentElementInterface;
 use de\flatplane\interfaces\documentElements\DocumentInterface;
 use de\flatplane\utilities\PDF;
+use RuntimeException;
 
 //todo: count unresolved references
 /**
@@ -59,6 +60,8 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     protected $numberingSeparator = ['default' => '.'];
     protected $startIndex = ['default' => 1];
 
+    protected $pageMargins = ['default' => 20];
+
     /**
      * @var PDF
      */
@@ -92,5 +95,10 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     public function addLabel(DocumentElementInterface $instance)
     {
         $this->labels[$instance->getLabel()] = $instance;
+    }
+
+    public function setParent(DocumentElementInterface $parent)
+    {
+        throw new RuntimeException('You can\'t set a parent for the document');
     }
 }

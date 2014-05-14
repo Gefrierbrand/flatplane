@@ -81,10 +81,19 @@ class ElementFactory
         $config = new Config($this->documentConfig, $settings);
         $doc = new Document($config->getSettings());
         $doc->setElementFactory($this);
+
         $orientation = $doc->getOrientation();
         $unit = $doc->getUnit();
         $format = $doc->getPageSize();
+        $marginTop = $doc->getPageMargins('top');
+        $marginBot = $doc->getPageMargins('bottom');
+        $marginLeft = $doc->getPageMargins('left');
+        $marginRight = $doc->getPageMargins('right');
+
         $pdf = new PDF($orientation, $unit, $format);
+        $pdf->SetMargins($marginLeft, $marginTop, $marginRight);
+        $pdf->SetAutoPageBreak(true, $marginBot);
+
         $doc->setPdf($pdf);
         return $doc;
     }

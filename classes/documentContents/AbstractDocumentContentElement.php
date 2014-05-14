@@ -111,13 +111,13 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      *  defines the elements fontType: use a name of a font definition file or
      *  an identifier from PDF::addFont()
      */
-    protected $fontType = ['default' => 'times'];
+    protected $fontType = 'times';
 
     /**
      * @var array
      *  possible values: Font size in pt
      */
-    protected $fontSize = ['default' => 12];
+    protected $fontSize = 12;
 
     /**
      * @var array
@@ -133,7 +133,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      * The variations can be combined: e.g. 'BIU' (in any order) for
      * bold-italic-underline
      */
-    protected $fontStyle = ['default' => ''];
+    protected $fontStyle = '';
 
     /**
      * Color used for Text
@@ -144,7 +144,21 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      *  array containing 3 values (0-255) for RGB colors or
      *  array contining 4 values (0-1) for CMYK colors
      */
-    protected $fontColor = ['default' => [0,0,0]];
+    protected $fontColor = [0,0,0];
+
+    /**
+	 * @var float amount to increase or decrease the space between characters
+     * in a text (0 = default spacing)
+     * @see TCPDF::setFontSpacing()
+     */
+    protected $fontSpacing = 0;
+
+    /**
+	 * @var int percentage of stretching (100 = no stretching)
+     * @see TCPDF::setFontStretching()
+     */
+    protected $fontStretching = 100;
+
 
     /**
      * todo: validate doc
@@ -211,6 +225,15 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     public function setParent(DocumentElementInterface $parent)
     {
         $this->parent = $parent;
+    }
+
+    public function applyStyles()
+    {
+        $pdf = $this->toRoot()->getPdf();
+        $pdf->SetFont($family, $style, $size, $fontfile, $subset, $out);
+        $pdf->setColorArray($type, $color);
+        $pdf->setFontSpacing($spacing);
+        $pdf->setFontStretching($perc);
     }
 
     /**

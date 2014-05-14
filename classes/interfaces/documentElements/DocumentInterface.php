@@ -50,6 +50,7 @@ interface DocumentInterface extends DocumentElementInterface
     public function getUnit();
     public function getPageSize();
     public function getOrientation();
+    public function getPageMargins($dir = '');
 
     public function getPages();
 

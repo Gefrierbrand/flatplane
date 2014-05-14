@@ -79,7 +79,12 @@ class Text extends AbstractDocumentContentElement implements TextInterface
 
     public function getSize()
     {
-        //todo: implement;
+        $pdf = $this->toRoot()->getPdf();
+        $pdf->startTransaction();
+        $pdf->AddPage();
+        $pdf->writeHTML($this->getText());
+        //todo: measure
+        $pdf->rollbackTransaction(true);
     }
 
     protected function hypenateText($text)
