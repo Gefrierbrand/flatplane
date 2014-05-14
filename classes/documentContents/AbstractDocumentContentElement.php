@@ -159,7 +159,6 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      */
     protected $fontStretching = 100;
 
-
     /**
      * todo: validate doc
      * Color used for drawings (includes some font-styles like underline)
@@ -303,17 +302,17 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         $this->paddings = $paddings;
     }
 
-    protected function setFontType(array $fontType)
+    protected function setFontType($fontType)
     {
         $this->fontType = $fontType;
     }
 
-    protected function setFontSize(array $fontSize)
+    protected function setFontSize($fontSize)
     {
         $this->fontSize = $fontSize;
     }
 
-    protected function setFontStyle(array $fontStyle)
+    protected function setFontStyle($fontStyle)
     {
         $this->fontStyle = $fontStyle;
     }
@@ -326,6 +325,26 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     protected function setDrawColor(array $drawColor)
     {
         $this->drawColor = $drawColor;
+    }
+
+    public function getFontSpacing()
+    {
+        return $this->fontSpacing;
+    }
+
+    public function getFontStretching()
+    {
+        return $this->fontStretching;
+    }
+
+    protected function setFontSpacing($fontSpacing)
+    {
+        $this->fontSpacing = $fontSpacing;
+    }
+
+    protected function setFontStretching($fontStretching)
+    {
+        $this->fontStretching = $fontStretching;
     }
 
     /**
