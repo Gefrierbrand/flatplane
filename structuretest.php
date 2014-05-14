@@ -68,7 +68,7 @@ echo PHP_EOL;
 
 $t->now('before reading');
 
-echo $text->getText();
-$t->now('after reading');
+//echo $text->getText();
+//$t->now('after reading');
 
 print_r($text->getSize());

@@ -71,6 +71,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
 
     public function readText()
     {
+        //make document available to template
         $document = $this->toRoot();
         ob_start();
         include $this->path;

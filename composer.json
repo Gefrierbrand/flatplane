@@ -7,7 +7,9 @@
         "php": ">=5.5",
         "ext-gd": "*",
         "ext-SimpleXML": "*",
-        "tecnick.com/tcpdf": ">=6.0.075"
+        "ext-curl": "*",
+        "tecnick.com/tcpdf": ">=6.0.075",
+        "symfony/process": "2.5.*@dev"
     },
     "license": "LGPLv3",
     "authors": [

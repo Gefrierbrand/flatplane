@@ -1,0 +1,3 @@
+[submodule "svgtex"]
+	path = svgtex
+	url = git@github.com:Gefrierbrand/svgtex.git

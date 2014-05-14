@@ -21,6 +21,7 @@
 namespace de\flatplane;
 
 use de\flatplane\utilities\Timer;
+use Symfony\Component\Process\Process;
 use TCPDF;
 
 require 'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
@@ -77,6 +78,33 @@ $t->now('preparing page');
  * TeX, STIX-Web, Asana-Math, Neo-Euler, Gyre-Pagella, Gyre-Termes and Latin-Modern
  */
 
+$command = 'phantomjs '.__DIR__.DIRECTORY_SEPARATOR.'svgtex'.DIRECTORY_SEPARATOR.'main.js -p 16003';
+var_dump($command);
+
+$process = new Process($command);
+$process->setTimeout(10);
+$process->start();
+//sleep(4);
+if (!$process->isSuccessful()) {
+    throw new \RuntimeException($process->getErrorOutput());
+}
+print $process->getOutput();
+// create a new cURL resource
+$ch = curl_init();
+
+// set URL and other appropriate options
+curl_setopt($ch, CURLOPT_URL, "http://localhost:16003/?type=tex&q=\frac{1}{2}");
+//curl_setopt($ch, CURLOPT_HEADER, 0);
+
+// grab URL and pass it to the browser
+curl_exec($ch);
+
+// close cURL resource, and free up system resources
+curl_close($ch);
+
+$process->stop();
+
+/*
 $cmd  = escapeshellcmd('phantomjs' . DIRECTORY_SEPARATOR . "phantomjs.exe jax.js --font 'TeX' '$tex'");
 $cmd2 = escapeshellcmd('phantomjs' . DIRECTORY_SEPARATOR . "phantomjs.exe jax.js --font 'STIX-Web' '$tex'");
 $cmd3 = escapeshellcmd('phantomjs' . DIRECTORY_SEPARATOR . "phantomjs.exe jax.js --font 'Asana-Math' '$tex'");
@@ -135,6 +163,8 @@ $pdf->Text(0, 240, 'Powered by:');
 $pdf->ImageSVG('logos/mathjax.svg', $x = 0, $y = 250, $w = 30, $h = 30);
 $pdf->ImageEps('logos/php-logo.eps', $x = 35, $y = 250, $w = 30, $h = 15.8);
 $pdf->Image('logos/phantomjs-logo.png', $x = 70, $y = 250);
+
+*/
 
 $pdf->Text(0, 0, date('d.m.Y H:i:s'));
 

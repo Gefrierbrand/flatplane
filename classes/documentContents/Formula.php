@@ -42,27 +42,6 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
                                 'Gyre-Pagella', 'Gyre-Termes', 'Latin-Modern'];
     protected $availableCodeFormats = ['TeX','MathML','AsciiMath'];
 
-    public function __construct(array $config)
-    {
-        parent::__construct($config);
-
-        if (!in_array($this->font, $this->availableFonts, true)) {
-            trigger_error(
-                "Font $this->font not available, defaulting to TeX",
-                E_USER_NOTICE
-            );
-            $this->font = 'TeX';
-        }
-
-        if (!in_array($this->codeFormat, $this->availableCodeFormats, true)) {
-            trigger_error(
-                "Format $this->codeFormat not available, defaulting to TeX",
-                E_USER_NOTICE
-            );
-            $this->codeFormat = 'TeX';
-        }
-    }
-
     public function getCode()
     {
         return $this->code;
@@ -95,11 +74,25 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
 
     protected function setFont($font)
     {
+        if (!in_array($font, $this->availableFonts, true)) {
+            trigger_error(
+                "Font $font not available, defaulting to TeX",
+                E_USER_NOTICE
+            );
+            $font = 'TeX';
+        }
         $this->font = $font;
     }
 
     protected function setCodeFormat($codeFormat)
     {
+        if (!in_array($codeFormat, $this->availableCodeFormats, true)) {
+            trigger_error(
+                "Format $codeFormat not available, defaulting to TeX",
+                E_USER_NOTICE
+            );
+            $codeFormat = 'TeX';
+        }
         $this->codeFormat = $codeFormat;
     }
 }

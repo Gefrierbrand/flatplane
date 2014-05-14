@@ -54,7 +54,7 @@ class PDF extends \TCPDF
         $start_page = $this->getPage();
         // call your printing functions with your parameters
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        $this->writeHTML($html, true, false, false, false, $alignment);
+        $this->writeHTML($html, false, false, false, false, $alignment);
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // get the new Y
         $end_y = $this->GetY();
