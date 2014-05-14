@@ -48,6 +48,9 @@ class Text extends AbstractDocumentContentElement implements TextInterface
                               'charMin' => 1,
                               'charMax' => 8];
 
+    protected $textAlignment = 'J';
+
+
     public function getText()
     {
         if (empty($this->text)) {
@@ -79,12 +82,16 @@ class Text extends AbstractDocumentContentElement implements TextInterface
 
     public function getSize()
     {
+        $this->applyStyles();
         $pdf = $this->toRoot()->getPdf();
-        $pdf->startTransaction();
-        $pdf->AddPage();
-        $pdf->writeHTML($this->getText());
-        //todo: measure
-        $pdf->rollbackTransaction(true);
+        list($height, $numPages) = $pdf->estimateHTMLTextHeight(
+            $this->getText(),
+            $this->getTextAlignment()
+        );
+        $width = $pdf->getPageWidth()
+            - $pdf->getMargins()['left']
+            - $pdf->getMargins()['right'];
+        return ['height' => $height, 'width' => $width, 'numPages' => $numPages];
     }
 
     protected function hypenateText($text)
@@ -132,4 +139,16 @@ class Text extends AbstractDocumentContentElement implements TextInterface
             }
         }
     }
+
+    public function getTextAlignment()
+    {
+        return $this->textAlignment;
+    }
+
+    protected function setTextAlignment($textAlignment)
+    {
+        $this->textAlignment = $textAlignment;
+    }
+
+
 }

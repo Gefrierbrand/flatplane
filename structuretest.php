@@ -66,5 +66,9 @@ echo PHP_EOL.PHP_EOL;
 $listoflists->generateStructure($document->getContent());
 echo PHP_EOL;
 
-//$text->readText();
+$t->now('before reading');
+
 echo $text->getText();
+$t->now('after reading');
+
+print_r($text->getSize());

@@ -136,13 +136,12 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     protected $fontStyle = '';
 
     /**
-     * Color used for Text
-     * todo: validate doc
+     * Color used for text
      * @var array
      *  possible values:
      *  array containing 1 value (0-255) for grayscale
      *  array containing 3 values (0-255) for RGB colors or
-     *  array contining 4 values (0-1) for CMYK colors
+     *  array contining 4 values (0-100) for CMYK colors
      */
     protected $fontColor = [0,0,0];
 
@@ -160,15 +159,24 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     protected $fontStretching = 100;
 
     /**
-     * todo: validate doc
      * Color used for drawings (includes some font-styles like underline)
      * @var array
      *  possible values:
      *  array containing 1 value (0-255) for grayscale
      *  array containing 3 values (0-255) for RGB colors or
-     *  array contining 4 values (0-1) for CMYK colors
+     *  array contining 4 values (0-100) for CMYK colors
      */
-    protected $drawColor = ['default' => [0,0,0]];
+    protected $drawColor = [0,0,0];
+
+    /**
+     * Color used for fillings like cell-backgrounds
+     * @var array
+     *  possible values:
+     *  array containing 1 value (0-255) for grayscale
+     *  array containing 3 values (0-255) for RGB colors or
+     *  array contining 4 values (0-100) for CMYK colors
+     */
+    protected $fillColor = [255,255,255];
 
     /**
      * This method is called on creating a new element.
@@ -229,10 +237,12 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     public function applyStyles()
     {
         $pdf = $this->toRoot()->getPdf();
-        $pdf->SetFont($family, $style, $size, $fontfile, $subset, $out);
-        $pdf->setColorArray($type, $color);
-        $pdf->setFontSpacing($spacing);
-        $pdf->setFontStretching($perc);
+        $pdf->SetFont($this->fontType, $this->fontStyle, $this->fontSize);
+        $pdf->setColorArray('text', $this->fontColor);
+        $pdf->setColorArray('draw', $this->drawColor);
+        $pdf->setColorArray('fill', $this->fillColor);
+        $pdf->setFontSpacing($this->fontSpacing);
+        $pdf->setFontStretching($this->fontStretching);
     }
 
     /**
@@ -396,5 +406,13 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         $this->label = $label;
     }
 
-    //abstract public function getSize();
+    public function getFillColor()
+    {
+        return $this->fillColor;
+    }
+
+    protected function setFillColor(array $fillColor)
+    {
+        $this->fillColor = $fillColor;
+    }
 }

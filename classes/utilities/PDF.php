@@ -37,72 +37,56 @@ class PDF extends \TCPDF
         return $this->h;
     }
 
-    public function estimateHeight($html)
+    /**
+     * todo: doc
+     * @param string $html
+     * @param string $alignment
+     * @return array
+     *  height in user-units
+     *  number of pages needed
+     */
+    public function estimateHTMLTextHeight($html, $alignment = '')
     {
         $this->startTransaction();
         // store starting values
+        $this->AddPage();
         $start_y = $this->GetY();
         $start_page = $this->getPage();
         // call your printing functions with your parameters
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        $this->writeHTML($txt, true, false, false, false, 'J');
+        $this->writeHTML($html, true, false, false, false, $alignment);
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // get the new Y
         $end_y = $this->GetY();
         $end_page = $this->getPage();
         // calculate height
         $height = 0;
-        $this->SetFillColor(255, 255, 255);
+        $numPages = 1;
 
         if ($end_page == $start_page) {
             $height = $end_y - $start_y;
-
-            echo "transaction height (onepage): ".number_format($height, 2, '.', '') . PHP_EOL;
-            $this->Line(8, $start_y, 8, $end_y, ['width'=>0.1]);
-            $textheight = $this->getStringHeight(0, 'Ü');
-            $y = $start_y+($height-$textheight)/2;
-            $this->SetXY(7, $y);
-            $this->Write(0, number_format($height, 2, '.', '')." mm", '', true);
-
         } else {
             for ($page = $start_page; $page <= $end_page; ++$page) {
                 $this->setPage($page);
+                $numPages ++;
                 if ($page == $start_page) {
                     // first page
-                    $height = $this->getH() - $start_y - $this->getMargins()['bottom'];
-
-                    echo "transaction height (first): ".number_format($height, 2, '.', '') . PHP_EOL;
-                    $this->Line(8, $start_y, 8, $this->getH()-$this->getMargins()['bottom'], ['width'=>0.1]);
-                    $textheight = $this->getStringHeight(0, 'Ü');
-                    $y = $start_y+($height-$textheight)/2;
-
-                    $this->SetXY(7, $y);
-                    $this->Write(0, number_format($height, 2, '.', '')." mm", '', true);
+                    $height += $this->getH()
+                        - $start_y
+                        - $this->getMargins()['bottom'];
                 } elseif ($page == $end_page) {
                     // last page
-                    $height = $end_y - $this->getMargins()['top'];
-
-                    echo "transaction height (last): ".number_format($height, 2, '.', '') . PHP_EOL;
-                    $this->Line(8, $this->getMargins()['top'], 8, $end_y, ['width'=>0.1]);
-                    $textheight = $this->getStringHeight(0, 'Ü');
-                    $y = $this->getMargins()['top']+($height-$textheight)/2;
-                    $this->SetXY(7, $y);
-                    $this->Write(0, number_format($height, 2, '.', '')." mm", '', true);
+                    $height += $end_y - $this->getMargins()['top'];
                 } else {
                     // other pages
-                    $height = $this->getH() - $this->getMargins()['top'] - $this->getMargins()['bottom'];
-
-                    echo "transaction height: ".number_format($height, 2, '.', '') . PHP_EOL;
-                    $this->Line(8, $this->getMargins()['top'], 8, $this->getH()-$this->getMargins()['bottom'], ['width'=>0.1]);
-                    $textheight = $this->getStringHeight(0, 'Ü');
-                    $y = $this->getMargins()['top']+($this->getH()-$this->getMargins()['top'])/2-$textheight/2;
-
-                    $this->SetXY(7, $y);
-                    $this->Write(0, number_format($height, 2, '.', '')." mm", '', true);
+                    $height += $this->getH()
+                        - $this->getMargins()['top']
+                        - $this->getMargins()['bottom'];
                 }
             }
         }
 
-        $this->commitTransaction();
+        $this->rollbackTransaction(true);
+        return [$height, $numPages];
     }
 }

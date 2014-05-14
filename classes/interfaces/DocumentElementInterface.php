@@ -36,6 +36,7 @@ interface DocumentElementInterface
     public function hasContent();
     public function toRoot();
     public function toParentAtLevel($level);
+    public function applyStyles();
 
     public function addSection($title, array $settings);
     public function addFormula($code, array $settings);
