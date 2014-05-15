@@ -29,21 +29,20 @@ namespace de\flatplane\iterators;
  */
 
 
-class DocumentContentElementFilterIterator extends \FilterIterator
+class ContentTypeFilterIterator extends \FilterIterator
 {
-    protected $type;
+    protected $allowedTypes;
 
-    public function __construct(\Iterator $iterator, array $type)
+    public function __construct(\Iterator $iterator, array $allowedTypes)
     {
-        $this->type = $type;
+        $this->allowedTypes = $allowedTypes;
         parent::__construct($iterator);
     }
 
     public function accept()
     {
         $content = parent::current();
-        if (in_array($content->getType(), $this->type)
-            && $content->getShowInList()) {
+        if (in_array($content->getType(), $this->allowedTypes)) {
                 return true;
         } else {
             return false;

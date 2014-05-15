@@ -19,15 +19,11 @@
  */
 
 //use composer autoloading for dependencies
-require 'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
+require 'flatplane.inc.php';
 
 //lange, volldefinierte Klassennamen aus Namespaces laden
 
-
 use de\flatplane\documentContents\ElementFactory;
-use de\flatplane\utilities\Timer;
-
-$t = new Timer();
 
 /*
  * BEGIN DOKUMENTDEFINITION

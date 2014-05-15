@@ -18,22 +18,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
+namespace de\flatplane;
 
-namespace de\flatplane\interfaces\documentElements;
+use de\flatplane\utilities\Timer;
 
-use de\flatplane\interfaces\DocumentElementInterface;
+//todo: doc;
 
-/**
- *
- * @author Nikolai Neff <admin@flatplane.de>
- */
-interface FormulaInterface extends DocumentElementInterface
-{
-    public function getCode();
-    public function getCodeFormat();
-    public function getAvailableFonts();
-    public function getAvailableCodeFormats();
-    public function getHash();
-    public function getPath();
-    public function setPath($path);
-}
+define('FLATPLANE_VERSION', '0.1-dev');
+define('FLATPLANE_PATH', __DIR__);
+define('FLATPLANE_IMAGE_PATH', FLATPLANE_PATH.DIRECTORY_SEPARATOR.'images');
+define('FLATPLANE_OUTPUT_PATH', FLATPLANE_PATH.DIRECTORY_SEPARATOR.'output');
+
+
+
+include(
+    FLATPLANE_PATH.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php'
+);
+
+$t = new Timer();

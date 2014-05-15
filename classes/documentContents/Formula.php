@@ -42,6 +42,9 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
                                 'Gyre-Pagella', 'Gyre-Termes', 'Latin-Modern'];
     protected $availableCodeFormats = ['TeX','MathML','AsciiMath'];
 
+    protected $useCache = true;
+    protected $path;
+
     public function getCode()
     {
         return $this->code;
@@ -65,6 +68,21 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
     public function getSize()
     {
         //todo: use XML stuff;
+    }
+
+    public function getHash()
+    {
+        return md5($this->getCode());
+    }
+
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    public function setPath($path)
+    {
+        $this->path = $path;
     }
 
     protected function setCode($code)
@@ -94,5 +112,15 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
             $codeFormat = 'TeX';
         }
         $this->codeFormat = $codeFormat;
+    }
+
+    public function getUseCache()
+    {
+        return $this->useCache;
+    }
+
+    protected function setUseCache($useCache)
+    {
+        $this->useCache = (bool) $useCache;
     }
 }

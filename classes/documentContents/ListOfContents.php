@@ -22,7 +22,7 @@
 namespace de\flatplane\documentContents;
 
 use de\flatplane\interfaces\documentElements\ListInterface;
-use de\flatplane\iterators\DocumentContentElementFilterIterator;
+use de\flatplane\iterators\ShowInListFilterIterator;
 use de\flatplane\iterators\RecursiveContentIterator;
 use RecursiveIteratorIterator;
 
@@ -108,7 +108,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
 
         $RecItIt->setMaxDepth($this->getMaxDepth());
 
-        $FilterIt = new DocumentContentElementFilterIterator(
+        $FilterIt = new ShowInListFilterIterator(
             $RecItIt,
             $this->getDisplayTypes()
         );

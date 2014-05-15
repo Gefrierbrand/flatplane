@@ -19,21 +19,33 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\interfaces\documentElements;
-
-use de\flatplane\interfaces\DocumentElementInterface;
+namespace de\flatplane\iterators;
 
 /**
+ * Description of TocElementFilterIterator
+ * TODO: document!
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-interface FormulaInterface extends DocumentElementInterface
+
+class ShowInListFilterIterator extends \FilterIterator
 {
-    public function getCode();
-    public function getCodeFormat();
-    public function getAvailableFonts();
-    public function getAvailableCodeFormats();
-    public function getHash();
-    public function getPath();
-    public function setPath($path);
+    protected $allowedTypes;
+
+    public function __construct(\Iterator $iterator, array $allowedTypes)
+    {
+        $this->allowedTypes = $allowedTypes;
+        parent::__construct($iterator);
+    }
+
+    public function accept()
+    {
+        $content = parent::current();
+        if (in_array($content->getType(), $this->allowedTypes)
+            && $content->getShowInList()) {
+                return true;
+        } else {
+            return false;
+        }
+    }
 }

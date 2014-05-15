@@ -28,13 +28,13 @@ namespace de\flatplane\iterators;
  */
 class RecursiveContentIterator implements \RecursiveIterator
 {
-
+    //todo: doc
     private $position;
     private $content;
 
-    public function __construct($sections = array())
+    public function __construct(array $content = [])
     {
-        $this->content = $sections;
+        $this->content = $content;
     }
 
     public function valid()
