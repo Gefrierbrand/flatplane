@@ -21,7 +21,7 @@
 use de\flatplane\utilities\Timer;
 use Symfony\Component\Process\Process;
 
-include '../vendor/autoload.php';
+include 'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
 
 $t = new Timer;
 
@@ -35,13 +35,13 @@ $i=0;
 $t->now('starting individual processing');
 foreach ($tex as $texContent) {
     $i++;
-    $cmd = escapeshellcmd("phantomjs ../jax.js --font 'TeX' '$texContent'");
+    $cmd = escapeshellcmd("phantomjs jax.js --font 'TeX' '$texContent'");
     $svgdata = shell_exec($cmd);
-    file_put_contents('out/info_s'.$i.'.svg', $svgdata);
+    file_put_contents('output/single'.$i.'.svg', $svgdata);
 }
 $t->now('after all normal');
 
-$process = new Process('phantomjs c:\php\WWW\flatplane\svgtex\main.js -p 16000');
+$process = new Process('phantomjs svgtex'.DIRECTORY_SEPARATOR.'main.js -p 16000');
 $process->setTimeout(20);
 $process->setIdleTimeout(20);
 $process->start();
@@ -84,7 +84,7 @@ foreach ($tex as $texContent) {
     $svg = curl_exec($ch);
     // close cURL resource, and free up system resources
     curl_close($ch);
-    file_put_contents('out/infos_p'.$i.'.svg', $svg);
+    file_put_contents('output/post'.$i.'.svg', $svg);
 
 
 }
@@ -105,7 +105,7 @@ foreach ($tex as $texContent) {
     $svg = curl_exec($ch);
     // close cURL resource, and free up system resources
     curl_close($ch);
-    file_put_contents('out/infos_g'.$i.'.svg', $svg);
+    file_put_contents('output/get'.$i.'.svg', $svg);
 
 
 }
@@ -136,7 +136,7 @@ do {
 
 for ($i = 0; $i < $node_count; $i++) {
     $results = curl_multi_getcontent($curl_arr[$i]);
-    file_put_contents('out/infos_m'.($i+1).'.svg', $results);
+    file_put_contents('output/multiple'.($i+1).'.svg', $results);
     //echo( $i . "\n" . $results . "\n");
 }
 $t->now('after all multiCurl');
