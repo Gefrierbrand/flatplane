@@ -1,0 +1,12 @@
+*~*
+*.pdf
+*.log
+docs
+images
+logos
+nbproject
+output
+phantomjs
+tests
+/vendor/*
+UnitTests
