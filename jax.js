@@ -131,9 +131,9 @@ page.open(path+'examples2.html', function(status) {
                 });
 
                 //uncomment this to write the output to a file
-                var fs = require('fs');
-                var path = 'output.svg';
-                fs.write(path, svgContent, 'w');
+                //var fs = require('fs');
+                //var path = 'output.svg';
+                //fs.write(path, svgContent, 'w');
 
 
                 console.log(svgContent);
