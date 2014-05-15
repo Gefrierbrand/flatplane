@@ -32,6 +32,7 @@ var font = 'TeX';
 
 var page = require('webpage').create();
 var system = require('system');
+var fs = require('fs');
 
 //
 //  Get arguments, and print usage if not enough
@@ -46,7 +47,7 @@ switch (equation)
 {
     case '--inline':
         inline = true;
-        if(system.args[2] === '--font')
+        if (system.args[2] === '--font')
         {
             if (system.args.length !== 5) {
                 console.log('Usage: ' + system.args[0] + ' [--inline] [--font FONT] equation');
@@ -58,16 +59,16 @@ switch (equation)
         } else {
             equation = system.args[2];
         }
-    break;
+        break;
 
     case '--font':
         if (system.args.length !== 4) {
-                console.log('Usage: ' + system.args[0] + ' [--inline] [--font FONT] equation');
-                phantom.exit();
+            console.log('Usage: ' + system.args[0] + ' [--inline] [--font FONT] equation');
+            phantom.exit();
         }
         font = system.args[2];
         equation = system.args[3];
-    break;
+        break;
 }
 
 
@@ -91,17 +92,18 @@ function evaluate(page, func) {
 //  Open a page from the CDN so we can load MathJax into it (can't do that from a blank page)
 //  page.open("http://cdn.mathjax.org/mathjax/latest/test/examples.html", function (status) {
 
+var path = fs.absolute(system.args[0]).replace(/jax.js/, '');
 //use a local page instead to be faster
-page.open('examples2.html', function(status) {
+page.open(path+'examples2.html', function(status) {
     //console.log(window.location);
     if (status !== "success") {
         console.log("Unable to access network or demopage");
-        phantom.exit();
+        phantom.exit(1);
     } else {
         //
         //  This gets called when MathJax is done
         //
-            page.onAlert = function(msg) {
+        page.onAlert = function(msg) {
             if (msg === "MathJax Done") {
                 var svgContent = page.evaluate(function() {
                     //
@@ -142,7 +144,7 @@ page.open('examples2.html', function(status) {
             } else {
                 console.log(msg);
             }
-        }
+        };
         //
         //  Clear the page and make it only include the math
         //
@@ -155,7 +157,7 @@ page.open('examples2.html', function(status) {
         page.evaluate(function(font) {
             var script = document.createElement("script");
             script.type = "text/x-mathjax-config";
-            script.text = 'MathJax.Hub.Config({SVG:{font: "'+font+'"}});';
+            script.text = 'MathJax.Hub.Config({SVG:{font: "' + font + '"}});';
             script.text += "MathJax.Hub.Queue([alert,'MathJax Done'])";
             document.head.appendChild(script);
             var script = document.createElement("script");
@@ -167,6 +169,6 @@ page.open('examples2.html', function(status) {
             setTimeout(function() {
                 alert("MathJax Timeout");
             }, 10000);  // timeout after 10 seconds
-        },font);
+        }, font);
     }
 });

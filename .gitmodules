@@ -1,3 +1,6 @@
 [submodule "svgtex"]
 	path = svgtex
 	url = git@github.com:Gefrierbrand/svgtex.git
+[submodule "MathJax"]
+	path = MathJax
+	url = https://github.com/mathjax/MathJax.git

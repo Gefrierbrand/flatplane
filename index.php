@@ -65,7 +65,7 @@ $pdf->AddPage();
 $pdf->setRasterizeVectorImages(false);
 $path = dirname(__FILE__); // = __DIR__
 
-$tex = '\mathcal{F}(f)(t) = \frac{1}{\left(2\pi\right)^{\frac{n}{2}}}~ \int\limits_{\mathbb{R}^n} f(x)\,e^{-\mathrm{i} t \cdot x} \,\mathrm{d} x';
+$tex = '\displaystyle{\mathcal{F}(f)(t) = \frac{1}{\left(2\pi\right)^{\frac{n}{2}}}~ \int\limits_{\mathbb{R}^n} f(x)\,e^{-\mathrm{i} t \cdot x} \,\mathrm{d} x}';
 //$tex2 = '\int_a^b(f(x)+c)\,\mathrm dx=\int_a^b f(x)\,\mathrm dx+(b-a)\cdot c';
 //$tex3 = 'Z = \sum_{i=1}^{n} a_i~;~~~a_i = k_i \cdot b^i~;~~~b=2~;~~~k_i \in \{0,1\}~;~~~i\in \mathbb{N}';
 //$tex4 = '\overline{\overline{\left(A\, \wedge\, B\right)}\, \wedge\, C} \neq\overline{ A\, \wedge\, \overline{\left(B\, \wedge\,C \right)}}';
@@ -94,7 +94,7 @@ $ch = curl_init();
 
 // set URL and other appropriate options
 curl_setopt($ch, CURLOPT_URL, "http://localhost:16003/?type=tex&q=\frac{1}{2}");
-//curl_setopt($ch, CURLOPT_HEADER, 0);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 // grab URL and pass it to the browser
 curl_exec($ch);
