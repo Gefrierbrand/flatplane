@@ -55,6 +55,7 @@ class GenerateFormulas
                     gettype($formula)
                 );
             }
+            $formula->applyStyles();
             if ($formula->getUseCache() == false || $this->isCached($formula) == false) {
                 $this->formulas[] = $formula;
             }
@@ -73,12 +74,13 @@ class GenerateFormulas
         } else {
             trigger_error('nothing to render', E_USER_NOTICE);
         }
+        echo 'Formulas generated'.PHP_EOL;
     }
 
     protected function isCached(Formula $formula)
     {
-        $filename = FLATPLANE_IMAGE_PATH.
-            DIRECTORY_SEPARATOR.$formula->getHash().'.svg';
+        $filename = FLATPLANE_IMAGE_PATH.DIRECTORY_SEPARATOR.
+            'formulas'.DIRECTORY_SEPARATOR.$formula->getHash().'.svg';
         if (file_exists($filename) && is_readable($filename)) {
             return true;
         } else {
@@ -132,21 +134,18 @@ class GenerateFormulas
         foreach ($this->formulas as $key => $formula) {
             $format = strtolower($formula->getCodeFormat());
             $url = 'http://localhost:16000/';
-            $request = '?type='.$format.'&q='.urlencode($formula->getCode());
+            $request = 'type='.$format.'&q='.urlencode($formula->getCode());
 
-            $curlHandles[$key] = curl_init($url.$request);
+            //echo 'generating: '.$formula->getCode();
+
+            $curlHandles[$key] = curl_init();
             curl_setopt($curlHandles[$key], CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curlHandles[$key], CURLOPT_URL, $url);
             curl_setopt($curlHandles[$key], CURLOPT_HEADER, false);
+            curl_setopt($curlHandles[$key], CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curlHandles[$key], CURLOPT_POST, true);
+            curl_setopt($curlHandles[$key], CURLOPT_POSTFIELDS, $request);
             curl_multi_add_handle($masterCurlHandle, $curlHandles[$key]);
-
-//            $curlHandles[$key] = curl_init();
-//            curl_setopt($curlHandles[$key], CURLOPT_RETURNTRANSFER, true);
-//            curl_setopt($curlHandles[$key], CURLOPT_URL, "http://localhost:16000/");
-//            curl_setopt($curlHandles[$key], CURLOPT_HEADER, false);
-//            curl_setopt($curlHandles[$key], CURLOPT_RETURNTRANSFER, true);
-//            curl_setopt($curlHandles[$key], CURLOPT_POST, true);
-//            curl_setopt($curlHandles[$key], CURLOPT_POSTFIELDS, $request);
-//            curl_multi_add_handle($masterCurlHandle, $curlHandles[$key]);
         }
         do {
             curl_multi_exec($masterCurlHandle, $running);
@@ -155,13 +154,13 @@ class GenerateFormulas
         foreach ($this->formulas as $key => $formula) {
             $result = curl_multi_getcontent($curlHandles[$key]);
 
-            //todo: propper error handling
-            if (empty($result)) {
-                trigger_error('EMPTY');
-            }
+            $this->validateResult($result);
 
-            $filename = FLATPLANE_IMAGE_PATH.
-                DIRECTORY_SEPARATOR.$formula->getHash().'.svg';
+            $dir = FLATPLANE_IMAGE_PATH.DIRECTORY_SEPARATOR.'formulas';
+            if (!is_dir($dir)) {
+                mkdir($dir);
+            }
+            $filename = $dir.DIRECTORY_SEPARATOR.$formula->getHash().'.svg';
             file_put_contents($filename, $result);
             $formula->setPath($filename);
         }
@@ -171,5 +170,15 @@ class GenerateFormulas
     {
         $this->process->stop();
         echo "SVGTeX stopped".PHP_EOL;
+    }
+
+    protected function validateResult($result)
+    {
+        if (empty($result) || strpos($result, '<svg') !== 0) {
+            trigger_error(
+                'The SVGTeX result is not a valid SVG file. Error: '.$result,
+                E_USER_WARNING
+            );
+        }
     }
 }

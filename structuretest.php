@@ -58,7 +58,54 @@ $sub->addSection('subsub', ['label' => 'sec:subsub']);
 $formula = $sub->addFormula('\frac{1}{2}', ['label' => 'eq:f1', 'useCache' => false]);
 $formula->addFormula('\text{subformula}');
 $listoflists = $document->addList(['list']);
+$document->addFormula(
+    '<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+      <mrow>
+        <mi>x</mi>
+        <mo>=</mo>
+        <mfrac>
+          <mrow>
+            <mo>&#x2212;</mo>
+            <mi>b</mi>
+            <mo>&#xB1;</mo>
+            <msqrt>
+              <mrow>
+                <msup>
+                  <mi>b</mi>
+                  <mn>2</mn>
+                </msup>
+                <mo>&#x2212;</mo>
+                <mn>4</mn>
+                <mi>a</mi>
+                <mi>c</mi>
+              </mrow>
+            </msqrt>
+          </mrow>
+          <mrow>
+            <mn>2</mn>
+            <mi>a</mi>
+          </mrow>
+        </mfrac>
+      </mrow>
+    </math>',
+    ['codeFormat' => 'MML']
+);
 
+$tex[] = '\displaystyle{\mathcal{F}(f)(t) = \frac{1}{\left(2\pi\right)^{\frac{n}{2}}}~ \int\limits_{\mathbb{R}^n} f(x)\,e^{-\mathrm{i} t \cdot x} \,\mathrm{d} x}';
+$tex[] = '\int_a^b(f(x)+c)\,\mathrm dx=\int_a^b f(x)\,\mathrm dx+(b-a)\cdot c';
+$tex[] = 'Z = \sum_{i=1}^{n} a_i~;~~~a_i = k_i \cdot b^i~;~~~b=2~;~~~k_i \in \{0,1\}~;~~~i\in \mathbb{N}';
+$tex[] = '\overline{\overline{\left(A\, \wedge\, B\right)}\, \wedge\, C} \neq\overline{ A\, \wedge\, \overline{\left(B\, \wedge\,C \right)}}';
+$tex[] = '\LaTeX ~ 2 \cdot 2 \\ 2\mathbin{\cdot}2 \\ 2 \times 2 \\ 2\mathbin{\times}2​';
+$tex[] = 'e = \lim_{n\to\infty} \left(1+\frac{1}{n}\right)^n';
+$tex[] = 'e = \sum_{k=0}^{\infty}{\frac{1}{k!}} = \frac{1}{0!} + \frac{1}{1!} + \frac{1}{2!} + \frac{1}{3!} + \frac{1}{4!} + \cdots = 1 + 1 + \frac{1}{2} + \frac{1}{6} + \frac{1}{24} + \cdots';
+$tex[] = '\begin{align}
+e &= [2; 1, 2, 1, 1, 4, 1, 1, 6, 1, 1, 8, 1, 1, 10, 1,\dots] \\
+  &= 2+\cfrac{1}{1+\cfrac{1}{2+\cfrac{1}{1+\cfrac{1}{1+\cfrac{1}{4+\cfrac{1}{1+\cfrac{1}{1+\cfrac{1}{6+\dotsb}}}}}}}}
+\end{align}';
+
+foreach ($tex as $content) {
+    $document->addFormula($content);
+}
 
 echo 'GESAMTES DOKUMENT'.PHP_EOL;
 $RecItIt = new RecursiveTreeIterator(

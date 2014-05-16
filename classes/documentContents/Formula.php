@@ -41,6 +41,7 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
     protected $availableFonts = ['TeX', 'STIX-Web', 'Asana-Math', 'Neo-Euler',
                                 'Gyre-Pagella', 'Gyre-Termes', 'Latin-Modern'];
     protected $availableCodeFormats = ['TeX','MML'];
+    protected $formulaStyle = 'display'; //options: display, inline
 
     protected $useCache = true;
     protected $path;
@@ -72,7 +73,7 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
 
     public function getHash()
     {
-        return md5($this->getCode());
+        return sha1($this->getCode());
     }
 
     public function getPath()
@@ -122,5 +123,35 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
     protected function setUseCache($useCache)
     {
         $this->useCache = (bool) $useCache;
+    }
+
+    public function getFormulaStyle()
+    {
+        return $this->formulaStyle;
+    }
+
+    protected function setFormulaStyle($formulaStyle)
+    {
+        $this->formulaStyle = $formulaStyle;
+    }
+
+    public function applyStyles()
+    {
+        if ($this->getCodeFormat() == 'TeX') {
+            switch ($this->getFormulaStyle()) {
+                case 'inline':
+                    if (strpos($this->code, '\displaystyle') === 0) {
+                        $this->code = substr($this->code, 12);
+                    }
+                    break;
+                case 'display':
+                    if (strpos($this->code, '\displaystyle') !== 0) {
+                        $this->code = '\displaystyle{'.$this->code.'}';
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }
