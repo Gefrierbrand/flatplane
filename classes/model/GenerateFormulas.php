@@ -21,14 +21,16 @@
 
 namespace de\flatplane\model;
 
+use de\flatplane\controller\Flatplane;
 use de\flatplane\documentContents\Formula;
-use de\flatplane\iterators\RecursiveContentIterator;
 use de\flatplane\iterators\ContentTypeFilterIterator;
+use de\flatplane\iterators\RecursiveContentIterator;
 use RecursiveIteratorIterator;
+use Symfony\Component\Process\Exception\RuntimeException;
 use Symfony\Component\Process\Process;
 
 /**
- * todo: doc, error-checking
+ * todo: doc, error-checking, update paths?
  * Description of GenerateFormulas
  *
  * @author Nikolai Neff <admin@flatplane.de>
@@ -76,9 +78,10 @@ class GenerateFormulas
 
     protected function isCached(Formula $formula)
     {
-        $filename = FLATPLANE_IMAGE_PATH.DIRECTORY_SEPARATOR.
+        $filename = Flatplane::getWorkingDir().DIRECTORY_SEPARATOR.
             'formulas'.DIRECTORY_SEPARATOR.$formula->getHash().'.svg';
         if (file_exists($filename) && is_readable($filename)) {
+            $formula->setPath($filename);
             return true;
         } else {
             return false;
@@ -153,7 +156,7 @@ class GenerateFormulas
 
             $this->validateResult($result);
 
-            $dir = FLATPLANE_IMAGE_PATH.DIRECTORY_SEPARATOR.'formulas';
+            $dir = Flatplane::getWorkingDir().DIRECTORY_SEPARATOR.'formulas';
             if (!is_dir($dir)) {
                 mkdir($dir);
             }

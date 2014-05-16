@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (C) 2014 Nikolai Neff <admin@flatplane.de>.
  *
@@ -18,15 +19,18 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use de\flatplane\iterators\RecursiveContentIterator;
+use de\flatplane\model\GenerateFormulas;
+
 //use composer autoloading for dependencies
 require 'flatplane.inc.php';
 
-//lange, volldefinierte Klassennamen aus Namespaces laden
+//$flatplane::setInputDir(__DIR__.DIRECTORY_SEPARATOR.'input');
+//$flatplane::setWorkingDir(__DIR__);
+$flatplane::setOutputDir('output');
+$flatplane::setVerboseOutput(true);
 
 
-use de\flatplane\documentContents\ElementFactory;
-use de\flatplane\iterators\RecursiveContentIterator;
-use de\flatplane\model\GenerateFormulas;
 
 /*
  * BEGIN DOKUMENTDEFINITION
@@ -44,14 +48,14 @@ $settings = array(
     'numberingLevel' => ['formula' => 0, 'list' => 0]
 );
 
-$factory = new ElementFactory;
-$document = $factory->createDocument($settings);
+$document = $flatplane->createDocument($settings);
+
 
 $vorwort = $document->addSection('vorwort', ['enumerate' => false]);
 $inhalt = $document->addSection('inhaltsverzeichnis');
 $list = $inhalt->addList(['section', 'formula']);
 $einleitung = $document->addSection('einleitung', ['label' => 'sec:einleitung']);
-$text = $einleitung->addText('content/testKapitelMitRef.php');
+$text = $einleitung->addText('input/testKapitelMitRef.php');
 $hauptteil = $document->addSection('hauptteil');
 $sub = $hauptteil->addSection('subkapitel');
 $sub->addSection('subsub', ['label' => 'sec:subsub']);
@@ -139,4 +143,4 @@ print_r($text->getSize());
 $formulagenerator = new GenerateFormulas($document->getContent());
 $formulagenerator->generateFiles();
 
-$formula->getSize();
+var_dump($formula->getSize());

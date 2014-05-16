@@ -20,18 +20,10 @@
  */
 namespace de\flatplane;
 
+use de\flatplane\controller\Flatplane;
 use de\flatplane\utilities\Timer;
 
-//todo: doc;
-
-define('FLATPLANE_VERSION', '0.1-dev');
-define('FLATPLANE_PATH', __DIR__);
-define('FLATPLANE_IMAGE_PATH', FLATPLANE_PATH.DIRECTORY_SEPARATOR.'images');
-define('FLATPLANE_OUTPUT_PATH', FLATPLANE_PATH.DIRECTORY_SEPARATOR.'output');
-define('FLATPLANE_VERBOSE', true);
-
-include(
-    FLATPLANE_PATH.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php'
-);
+include('vendor'.DIRECTORY_SEPARATOR.'autoload.php');
 
 $t = new Timer();
+$flatplane = new Flatplane();

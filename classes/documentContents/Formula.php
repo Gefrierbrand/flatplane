@@ -77,20 +77,53 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
         return $size;
     }
 
+    /**
+     * todo: doc
+     * @return array
+     */
     protected function getSizeFromFile()
     {
         if (!is_readable($this->getPath())) {
             trigger_error('formula svg path not readable', E_USER_WARNING);
         }
-        //dimensionen aus SVG extrahieren
+        //extract dimensions frome the SVGs style-tag using simplexml
         $xml = simplexml_load_file($this->getPath());
+        $attrib = explode('; ', $xml->attributes()->style[0]);
 
-        var_dump($attrib = explode(';', $xml->attributes()->style[0]));
-        echo $width = ltrim($attrib[0], 'width: '), PHP_EOL;
-        echo $height =ltrim($attrib[1], ' height: '), PHP_EOL;
+        //extract numeric information
+        $regExMatchWidth = preg_match(
+            '/(^width:[ ]*)([-+]?[0-9]*\.?[0-9]+)([ ]?ex$)/',
+            $attrib[0],
+            $widthMatches
+        );
+        $regExMatchHeight = preg_match(
+            '/(^height:[ ]*)([-+]?[0-9]*\.?[0-9]+)([ ]?ex$)/',
+            $attrib[1],
+            $heightMatches
+        );
 
-        echo $this->toRoot()->getPdf()->getHTMLUnitToUnits($width). PHP_EOL;
-        echo $this->toRoot()->getPdf()->getHTMLUnitToUnits($width). PHP_EOL;
+        if (!$regExMatchWidth || !$regExMatchHeight) {
+            trigger_error(
+                'SVG did not contain valid size information',
+                E_USER_WARNING
+            );
+        }
+
+        if (!isset($widthMatches[2], $heightMatches[2])) {
+            trigger_error('Invalid SVG-size RegEx Result', E_USER_WARNING);
+        }
+        $width_ex = $widthMatches[2];
+        $height_ex = $heightMatches[2];
+
+        $pdf = $this->toRoot()->getPdf();
+
+        $width = $pdf->getHTMLUnitToUnits($width_ex, $pdf->getFontSize(), 'ex');
+        $height = $pdf->getHTMLUnitToUnits($height_ex, $pdf->getFontSize(), 'ex');
+
+        return ['width' => $width,
+                'height' => $height,
+                'width_ex' => $width_ex,
+                'height_ex' => $height_ex];
     }
 
     public function getHash()
@@ -157,6 +190,7 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
         $this->formulaStyle = $formulaStyle;
     }
 
+    //todo: test me more! (remove styles etc)
     public function applyStyles()
     {
         if ($this->getCodeFormat() == 'TeX') {
