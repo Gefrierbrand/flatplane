@@ -50,6 +50,10 @@ class Text extends AbstractDocumentContentElement implements TextInterface
 
     protected $textAlignment = 'J';
 
+    public function __toString()
+    {
+        return '('.$this->type.') '.substr($this->getText(), 0, 15).'...';
+    }
 
     public function getText()
     {

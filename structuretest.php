@@ -23,7 +23,10 @@ require 'flatplane.inc.php';
 
 //lange, volldefinierte Klassennamen aus Namespaces laden
 
+
 use de\flatplane\documentContents\ElementFactory;
+use de\flatplane\iterators\RecursiveContentIterator;
+use de\flatplane\model\GenerateFormulas;
 
 /*
  * BEGIN DOKUMENTDEFINITION
@@ -52,14 +55,31 @@ $text = $einleitung->addText('content/testKapitelMitRef.php');
 $hauptteil = $document->addSection('hauptteil');
 $sub = $hauptteil->addSection('subkapitel');
 $sub->addSection('subsub', ['label' => 'sec:subsub']);
-$formula = $sub->addFormula('\frac{1}{2}', ['label' => 'eq:f1']);
+$formula = $sub->addFormula('\frac{1}{2}', ['label' => 'eq:f1', 'useCache' => false]);
 $formula->addFormula('\text{subformula}');
 $listoflists = $document->addList(['list']);
 
-echo PHP_EOL;
-$list->generateStructure($document->getContent());
+
+echo 'GESAMTES DOKUMENT'.PHP_EOL;
+$RecItIt = new RecursiveTreeIterator(
+    new RecursiveContentIterator($document->getContent()),
+    RecursiveIteratorIterator::SELF_FIRST
+);
+foreach ($RecItIt as $value) {
+    echo $value.PHP_EOL;
+}
+
 echo PHP_EOL.PHP_EOL;
+echo 'SECTION & FORMULA'.PHP_EOL;
+$list->generateStructure($document->getContent());
+
+
+echo PHP_EOL.PHP_EOL;
+echo 'LIST'.PHP_EOL;
 $listoflists->generateStructure($document->getContent());
+
+
+
 echo PHP_EOL;
 
 $t->now('before reading');
@@ -68,3 +88,6 @@ $t->now('before reading');
 //$t->now('after reading');
 
 print_r($text->getSize());
+
+$formulagenerator =  new GenerateFormulas($document->getContent());
+$formulagenerator->generateFiles();

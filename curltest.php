@@ -84,27 +84,21 @@ function cb_urlencode(&$value, $key)
 array_walk($tex, 'cb_urlencode');
 
 $masterCurlHandle = curl_multi_init();
-$i = 0;
-foreach ($tex as $texContent) {
-    $fields = 'type=tex&q='.$texContent;
-    $curlHandles[$i] = curl_init();
+$curlHandles = [];
+foreach ($tex as $i => $texContent) {
+    echo "url: ".$texContent.PHP_EOL;
+    $curlHandles[$i] = curl_init($texContent);
     curl_setopt($curlHandles[$i], CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($curlHandles[$i], CURLOPT_URL, "http://localhost:16000/");
     curl_setopt($curlHandles[$i], CURLOPT_HEADER, false);
-    curl_setopt($curlHandles[$i], CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($curlHandles[$i], CURLOPT_POST, true);
-    curl_setopt($curlHandles[$i], CURLOPT_POSTFIELDS, $fields);
     curl_multi_add_handle($masterCurlHandle, $curlHandles[$i]);
-    $i++;
 }
 
 do {
     curl_multi_exec($masterCurlHandle, $running);
-} while ($running == CURLM_CALL_MULTI_PERFORM);
+} while ($running > 0);
 
-for ($i = 0; $i < count($tex); $i++) {
+foreach ($tex as $i => $texContent) {
     $results = curl_multi_getcontent($curlHandles[$i]);
     file_put_contents('output/multiple'.($i).'.svg', $results);
-    //echo( $i . "\n" . $results . "\n");
 }
 $t->now('after all multiCurl');

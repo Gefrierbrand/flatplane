@@ -19,12 +19,12 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\view;
+namespace de\flatplane\model;
 
 use de\flatplane\documentContents\Formula;
-use de\flatplane\iterators\ContentTypeFilterIterator;
 use de\flatplane\iterators\RecursiveContentIterator;
-use RuntimeException;
+use de\flatplane\iterators\ContentTypeFilterIterator;
+use RecursiveIteratorIterator;
 use Symfony\Component\Process\Process;
 
 /**
@@ -40,11 +40,14 @@ class GenerateFormulas
 
     public function __construct(array $content = [])
     {
-        $filterIterator = new ContentTypeFilterIterator(
+        $RecItIt = new RecursiveIteratorIterator(
             new RecursiveContentIterator($content),
-            ['formula']
+            RecursiveIteratorIterator::SELF_FIRST
         );
 
+        $filterIterator = new ContentTypeFilterIterator($RecItIt, ['formula']);
+
+        $num = 0;
         foreach ($filterIterator as $formula) {
             if (!($formula instanceof Formula)) {
                 throw new RuntimeException(
@@ -52,22 +55,35 @@ class GenerateFormulas
                     gettype($formula)
                 );
             }
-            if ($formula->getUseCache() && !$this->checkCache($formula)) {
+            if ($formula->getUseCache() == false || $this->isCached($formula) == false) {
                 $this->formulas[] = $formula;
             }
+            $num ++;
         }
+        echo $num. ' Formulas total, '.
+            count($this->formulas). ' need rendering'.PHP_EOL;
     }
 
     public function generateFiles()
     {
-        $this->startSVGTEX();
-        $this->curlRequest();
-        $this->stopSVGTEX();
+        if (!empty($this->formulas)) {
+            $this->startSVGTEX();
+            $this->curlRequest();
+            $this->stopSVGTEX();
+        } else {
+            trigger_error('nothing to render', E_USER_NOTICE);
+        }
     }
 
-    protected function checkCache(Formula $formula)
+    protected function isCached(Formula $formula)
     {
-        return ;
+        $filename = FLATPLANE_IMAGE_PATH.
+            DIRECTORY_SEPARATOR.$formula->getHash().'.svg';
+        if (file_exists($filename) && is_readable($filename)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -103,48 +119,57 @@ class GenerateFormulas
             //wait 1/8 sec: this value is exactly representable as float
             sleep(0.125);
         }
-        echo "SVGTeX is running";
+        echo "SVGTeX is running".PHP_EOL;
     }
 
     protected function curlRequest()
     {
-        $masterCurlHandle = curl_multi_init();
-        $i = 0;
-        foreach ($this->formulas as $formula) {
-            /* Set the request in URL-format. Using an array with key=>value pairs
-             * would set the Content-Type header to multipart/form-data, which
-             * would break svgTeX' request handling which expects the POST
-             * Content-Type to be application/x-www-form-urlencoded
-             * @see http://www.php.net/manual/en/function.curl-setopt.php
-             */
-            $request = 'type='.$formula->getCodeType().'&q='.$formula->getCode();
-            $curlHandles[$i] = curl_init();
-            curl_setopt($curlHandles[$i], CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curlHandles[$i], CURLOPT_URL, "http://localhost:16000/");
-            curl_setopt($curlHandles[$i], CURLOPT_HEADER, false);
-            curl_setopt($curlHandles[$i], CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curlHandles[$i], CURLOPT_POST, true);
-            curl_setopt($curlHandles[$i], CURLOPT_POSTFIELDS, $request);
-            curl_multi_add_handle($masterCurlHandle, $curlHandles[$i]);
-            $i++;
+        if (!$this->process->isRunning()) {
+            trigger_error('The SVGTeX process is not runnig', E_USER_WARNING);
         }
+        $masterCurlHandle = curl_multi_init();
+        $curlHandles = array();
+        foreach ($this->formulas as $key => $formula) {
+            $format = strtolower($formula->getCodeFormat());
+            $url = 'http://localhost:16000/';
+            $request = '?type='.$format.'&q='.urlencode($formula->getCode());
 
+            $curlHandles[$key] = curl_init($url.$request);
+            curl_setopt($curlHandles[$key], CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curlHandles[$key], CURLOPT_HEADER, false);
+            curl_multi_add_handle($masterCurlHandle, $curlHandles[$key]);
+
+//            $curlHandles[$key] = curl_init();
+//            curl_setopt($curlHandles[$key], CURLOPT_RETURNTRANSFER, true);
+//            curl_setopt($curlHandles[$key], CURLOPT_URL, "http://localhost:16000/");
+//            curl_setopt($curlHandles[$key], CURLOPT_HEADER, false);
+//            curl_setopt($curlHandles[$key], CURLOPT_RETURNTRANSFER, true);
+//            curl_setopt($curlHandles[$key], CURLOPT_POST, true);
+//            curl_setopt($curlHandles[$key], CURLOPT_POSTFIELDS, $request);
+//            curl_multi_add_handle($masterCurlHandle, $curlHandles[$key]);
+        }
         do {
             curl_multi_exec($masterCurlHandle, $running);
-        } while ($running == CURLM_CALL_MULTI_PERFORM);
+        } while ($running > 0);
 
-        $n = 0;
-        foreach ($this->formulas as $formula) {
-            $results = curl_multi_getcontent($curlHandles[$n]);
-            $path = FLATPLANE_IMAGE_PATH.$formula->getHash().'.svg';
-            file_put_contents($path, $results);
-            $formula->setPath($path);
-            $n++;
+        foreach ($this->formulas as $key => $formula) {
+            $result = curl_multi_getcontent($curlHandles[$key]);
+
+            //todo: propper error handling
+            if (empty($result)) {
+                trigger_error('EMPTY');
+            }
+
+            $filename = FLATPLANE_IMAGE_PATH.
+                DIRECTORY_SEPARATOR.$formula->getHash().'.svg';
+            file_put_contents($filename, $result);
+            $formula->setPath($filename);
         }
     }
 
     protected function stopSVGTEX()
     {
         $this->process->stop();
+        echo "SVGTeX stopped".PHP_EOL;
     }
 }

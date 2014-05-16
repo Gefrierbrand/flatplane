@@ -40,7 +40,7 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
     protected $codeFormat = 'TeX';
     protected $availableFonts = ['TeX', 'STIX-Web', 'Asana-Math', 'Neo-Euler',
                                 'Gyre-Pagella', 'Gyre-Termes', 'Latin-Modern'];
-    protected $availableCodeFormats = ['TeX','MathML','AsciiMath'];
+    protected $availableCodeFormats = ['TeX','MML'];
 
     protected $useCache = true;
     protected $path;
