@@ -68,7 +68,29 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
 
     public function getSize()
     {
-        //todo: use XML stuff;
+        if (!empty($this->getPath())) {
+            $size = $this->getSizeFromFile();
+        } else {
+            trigger_error('formula size requested before render', E_USER_WARNING);
+            $size = ['height' => 0, 'width' => 0, 'numPages' => 0];
+        }
+        return $size;
+    }
+
+    protected function getSizeFromFile()
+    {
+        if (!is_readable($this->getPath())) {
+            trigger_error('formula svg path not readable', E_USER_WARNING);
+        }
+        //dimensionen aus SVG extrahieren
+        $xml = simplexml_load_file($this->getPath());
+
+        var_dump($attrib = explode(';', $xml->attributes()->style[0]));
+        echo $width = ltrim($attrib[0], 'width: '), PHP_EOL;
+        echo $height =ltrim($attrib[1], ' height: '), PHP_EOL;
+
+        echo $this->toRoot()->getPdf()->getHTMLUnitToUnits($width). PHP_EOL;
+        echo $this->toRoot()->getPdf()->getHTMLUnitToUnits($width). PHP_EOL;
     }
 
     public function getHash()

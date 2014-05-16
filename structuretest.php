@@ -55,7 +55,7 @@ $text = $einleitung->addText('content/testKapitelMitRef.php');
 $hauptteil = $document->addSection('hauptteil');
 $sub = $hauptteil->addSection('subkapitel');
 $sub->addSection('subsub', ['label' => 'sec:subsub']);
-$formula = $sub->addFormula('\frac{1}{2}', ['label' => 'eq:f1', 'useCache' => false]);
+$formula = $sub->addFormula('\frac{1}{2}', ['label' => 'eq:f1', 'useCache' => true]);
 $formula->addFormula('\text{subformula}');
 $listoflists = $document->addList(['list']);
 $document->addFormula(
@@ -136,5 +136,7 @@ $t->now('before reading');
 
 print_r($text->getSize());
 
-$formulagenerator =  new GenerateFormulas($document->getContent());
+$formulagenerator = new GenerateFormulas($document->getContent());
 $formulagenerator->generateFiles();
+
+$formula->getSize();

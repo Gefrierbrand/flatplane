@@ -71,10 +71,7 @@ class GenerateFormulas
             $this->startSVGTEX();
             $this->curlRequest();
             $this->stopSVGTEX();
-        } else {
-            trigger_error('nothing to render', E_USER_NOTICE);
         }
-        echo 'Formulas generated'.PHP_EOL;
     }
 
     protected function isCached(Formula $formula)
@@ -164,6 +161,7 @@ class GenerateFormulas
             file_put_contents($filename, $result);
             $formula->setPath($filename);
         }
+        echo 'Formulas generated'.PHP_EOL;
     }
 
     protected function stopSVGTEX()

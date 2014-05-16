@@ -21,7 +21,6 @@
 namespace de\flatplane;
 
 use de\flatplane\utilities\Timer;
-use Symfony\Component\Process\Process;
 use TCPDF;
 
 require 'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
