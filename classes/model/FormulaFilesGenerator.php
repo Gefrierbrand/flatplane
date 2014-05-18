@@ -53,8 +53,9 @@ class FormulaFilesGenerator
             }
             $num ++;
         }
-        echo $num. ' Formulas total, '.
-            count($this->formulas). ' need rendering'.PHP_EOL;
+        Flatplane::log(
+            $num.' Formulas total, '.count($this->formulas). ' need rendering'
+        );
     }
 
     public function generateFiles()
@@ -92,7 +93,9 @@ class FormulaFilesGenerator
         $this->process->setIdleTimeout(20);
         $this->process->start();
 
-        echo "Starting SVGTeX, please wait.".PHP_EOL;
+
+        Flatplane::log("Starting SVGTeX, please wait.");
+
         while ($this->process->isRunning()) {
             $this->process->checkTimeout();
             $out = $this->process->getOutput();
@@ -103,7 +106,7 @@ class FormulaFilesGenerator
                 //exit loop
                 break;
             } elseif (strpos($out, 'error')!==false) {
-                echo 'Error:', $this->process->getOutput();
+                Flatplane::log('Error:', $this->process->getOutput());
                 $this->process->clearOutput();
             } else {
                 $this->process->clearOutput();
@@ -111,7 +114,7 @@ class FormulaFilesGenerator
             //wait 1/8 sec: this value is exactly representable as float
             sleep(0.125);
         }
-        echo "SVGTeX is running".PHP_EOL;
+        Flatplane::log("SVGTeX is running");
     }
 
     protected function curlRequest()
@@ -152,13 +155,13 @@ class FormulaFilesGenerator
             file_put_contents($filename, $result);
             $formula->setPath($filename);
         }
-        echo 'Formulas generated'.PHP_EOL;
+        Flatplane::log('Formulas generated');
     }
 
     protected function stopSVGTEX()
     {
         $this->process->stop();
-        echo "SVGTeX stopped".PHP_EOL;
+        Flatplane::log("SVGTeX stopped");
     }
 
     protected function validateResult($result)

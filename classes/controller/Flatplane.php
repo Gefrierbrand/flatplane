@@ -66,6 +66,13 @@ class Flatplane
         $this->stopTimer('generateDocument', true);
     }
 
+    public static function log($msg)
+    {
+        if (self::$verboseOutput) {
+            echo $msg.PHP_EOL;
+        }
+    }
+
     public static function setInputDir($inputDir)
     {
         self::$inputDir = $inputDir;
@@ -165,7 +172,9 @@ class Flatplane
      */
     public function generatePDF(array $settings = [])
     {
-        if (isset($settings['showDocumentTree']) && $settings['showDocumentTree']) {
+        if (self::$verboseOutput
+            && isset($settings['showDocumentTree'])
+            && $settings['showDocumentTree']) {
             $this->showDocumentTree();
         }
 
@@ -243,22 +252,29 @@ class Flatplane
 
     private function startTimer($name)
     {
-        echo "Starting $name".PHP_EOL;
+        if (self::$verboseOutput) {
+            echo "Starting $name".PHP_EOL;
+        }
         $this->stopwatch->start($name);
     }
 
     private function stopTimer($name, $showMem = false)
     {
-        echo "Finished $name: ";
         $event = $this->stopwatch->stop($name);
-        $duration = number_format($event->getDuration()/1000, 3, '.', '').' s';
-        $memory = number_format($event->getMemory()/1024/1024, 3, '.', '').' MiB';
 
-        if ($showMem) {
-            echo " $duration; Peak memory usage: $memory".PHP_EOL;
-        } else {
-            echo ' '.$duration.PHP_EOL;
+        if (self::$verboseOutput) {
+            $duration = number_format($event->getDuration()/1000, 3, '.', '').' s';
+
+            if ($showMem) {
+                $memory = '; Peak memory usage: ';
+                $memory .= number_format($event->getMemory()/1024/1024, 3, '.', '');
+                $memory .= ' MiB';
+            } else {
+                $memory = '';
+            }
+
+            echo "Finished $name: {$duration}$memory".PHP_EOL.PHP_EOL;
         }
-        echo PHP_EOL;
+        return $event;
     }
 }

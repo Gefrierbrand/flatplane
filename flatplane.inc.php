@@ -20,8 +20,4 @@
  */
 namespace de\flatplane;
 
-use de\flatplane\controller\Flatplane;
-
 include('vendor'.DIRECTORY_SEPARATOR.'autoload.php');
-
-$flatplane = new Flatplane();

@@ -22,11 +22,12 @@
 //use composer autoloading for dependencies
 require 'flatplane.inc.php';
 
-//$flatplane::setInputDir(__DIR__.DIRECTORY_SEPARATOR.'input');
-//$flatplane::setWorkingDir(__DIR__);
+use de\flatplane\controller\Flatplane;
+
+$flatplane = new Flatplane();
+
 $flatplane::setOutputDir('output');
 $flatplane::setVerboseOutput(true);
-
 
 
 /*
@@ -109,3 +110,7 @@ foreach ($tex as $content) {
 }
 
 $flatplane->generatePDF(['showDocumentTree' => true]);
+
+
+print_r($text->getSize());
+echo $text->getText();
