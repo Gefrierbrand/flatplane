@@ -26,6 +26,7 @@ use de\flatplane\documentContents\ElementFactory;
 use de\flatplane\iterators\ContentTypeFilterIterator;
 use de\flatplane\iterators\RecursiveContentIterator;
 use de\flatplane\model\FormulaFilesGenerator;
+use de\flatplane\model\ListGenerator;
 use RecursiveIteratorIterator;
 use RecursiveTreeIterator;
 use RuntimeException;
@@ -211,8 +212,12 @@ class Flatplane
     protected function generatePreliminaryLists()
     {
         $lists = $this->getAllContentOfType('list');
-        foreach ($lists as $list) {
-            $list->generateStructure($this->document->getContent());
+        foreach ($lists as $element) {
+            $element->generateStructure($this->document->getContent());
+
+            //temp
+            $ListGenerator = new ListGenerator();
+            $ListGenerator->generate($element);
         }
     }
 

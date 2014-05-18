@@ -19,19 +19,36 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\interfaces\documentElements;
+namespace de\flatplane\model;
 
-use de\flatplane\interfaces\DocumentElementInterface;
+use de\flatplane\documentContents\ListOfContents;
 
 /**
+ * Description of ListGenerator
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-interface ListInterface extends DocumentElementInterface
+class ListGenerator
 {
-    public function generateStructure(array $elements);
+    protected $content;
+    public function __construct()
+    {
+        ;
+    }
 
-    public function getMaxDepth();
-    public function getDisplayTypes();
-    public function getData();
+    public function generate(ListOfContents $element)
+    {
+        $this->content = $element->getData();
+        $this->outputList();
+    }
+
+    protected function outputList()
+    {
+        echo PHP_EOL, 'DEMO OUTPUT: LIST', PHP_EOL;
+        foreach ($this->content as $line) {
+            $indent = str_repeat(' ', $line['level']);
+            echo $indent.$line['numbers'].' '.$line['text'].PHP_EOL;
+        }
+        echo PHP_EOL;
+    }
 }

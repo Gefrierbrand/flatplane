@@ -131,7 +131,8 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             $this->getDisplayTypes()
         );
 
-        foreach ($FilterIt as $key => $element) {
+        $key = 0; //FIXME: order/sorting!
+        foreach ($FilterIt as $element) {
             // current iteration depth
             $this->data[$key]['iteratorDepth'] = $RecItIt->getDepth();
             // element depth regarding document structure
@@ -143,6 +144,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             }
             $this->data[$key]['text'] = $element->__toString();
             $this->data[$key]['page'] = $element->getPage();
+            $key ++;
         }
 
         //fixme: return?
@@ -183,5 +185,10 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
     public function getSize()
     {
         //todo: implement me
+    }
+
+    public function getData()
+    {
+        return $this->data;
     }
 }
