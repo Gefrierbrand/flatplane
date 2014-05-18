@@ -113,4 +113,4 @@ $flatplane->generatePDF(['showDocumentTree' => true]);
 
 
 print_r($text->getSize());
-echo $text->getText();
+echo $text->getText().PHP_EOL;

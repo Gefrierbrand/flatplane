@@ -80,6 +80,7 @@ class FormulaFilesGenerator
     }
 
     /**
+     * fixme: check for nonexistant phantomjs!
      * todo: error checking, outputhandling/logging?
      * todo: doc
      */
