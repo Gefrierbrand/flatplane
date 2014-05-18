@@ -19,9 +19,6 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use de\flatplane\iterators\RecursiveContentIterator;
-use de\flatplane\model\FormulaFilesGenerator;
-
 //use composer autoloading for dependencies
 require 'flatplane.inc.php';
 

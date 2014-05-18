@@ -63,7 +63,7 @@ class Flatplane
 
     public function __destruct()
     {
-        $event = $this->stopTimer('generateDocument');
+        $this->stopTimer('generateDocument', true);
     }
 
     public static function setInputDir($inputDir)
@@ -180,16 +180,16 @@ class Flatplane
 
         // generate structure
 
-        $this->startTimer('generatingLists');
+        $this->startTimer('generateLists');
         $this->generatePreliminaryLists();
-        $this->stopTimer('generatingLists');
+        $this->stopTimer('generateLists');
 
         // validate / update cache: TBD
 
         // generate dynamic content
-        $this->startTimer('generatingFormulas');
+        $this->startTimer('generateFormulas');
         $this->generateFormulas();
-        $this->stopTimer('generatingFormulas');
+        $this->stopTimer('generateFormulas');
     }
 
     protected function generateFormulas()
@@ -243,16 +243,22 @@ class Flatplane
 
     private function startTimer($name)
     {
-        echo "Starting ($name):".PHP_EOL;
+        echo "Starting $name".PHP_EOL;
         $this->stopwatch->start($name);
     }
 
-    private function stopTimer($name)
+    private function stopTimer($name, $showMem = false)
     {
-        echo PHP_EOL."Finished ($name): ";
+        echo "Finished $name: ";
         $event = $this->stopwatch->stop($name);
         $duration = number_format($event->getDuration()/1000, 3, '.', '').' s';
         $memory = number_format($event->getMemory()/1024/1024, 3, '.', '').' MiB';
-        echo " $duration; ($memory)".PHP_EOL;
+
+        if ($showMem) {
+            echo " $duration; Peak memory usage: $memory".PHP_EOL;
+        } else {
+            echo ' '.$duration.PHP_EOL;
+        }
+        echo PHP_EOL;
     }
 }
