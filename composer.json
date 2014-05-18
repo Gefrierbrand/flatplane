@@ -9,7 +9,8 @@
         "ext-SimpleXML": "*",
         "ext-curl": "*",
         "tecnick.com/tcpdf": ">=6.0.075",
-        "symfony/process": "2.5.*@dev"
+        "symfony/process": "2.5.*@dev",
+        "symfony/stopwatch": "dev-master"
     },
     "license": "LGPLv3",
     "authors": [

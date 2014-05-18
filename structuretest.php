@@ -20,7 +20,7 @@
  */
 
 use de\flatplane\iterators\RecursiveContentIterator;
-use de\flatplane\model\GenerateFormulas;
+use de\flatplane\model\FormulaFilesGenerator;
 
 //use composer autoloading for dependencies
 require 'flatplane.inc.php';
@@ -111,36 +111,4 @@ foreach ($tex as $content) {
     $document->addFormula($content);
 }
 
-echo 'GESAMTES DOKUMENT'.PHP_EOL;
-$RecItIt = new RecursiveTreeIterator(
-    new RecursiveContentIterator($document->getContent()),
-    RecursiveIteratorIterator::SELF_FIRST
-);
-foreach ($RecItIt as $value) {
-    echo $value.PHP_EOL;
-}
-
-echo PHP_EOL.PHP_EOL;
-echo 'SECTION & FORMULA'.PHP_EOL;
-$list->generateStructure($document->getContent());
-
-
-echo PHP_EOL.PHP_EOL;
-echo 'LIST'.PHP_EOL;
-$listoflists->generateStructure($document->getContent());
-
-
-
-echo PHP_EOL;
-
-$t->now('before reading');
-
-//echo $text->getText();
-//$t->now('after reading');
-
-print_r($text->getSize());
-
-$formulagenerator = new GenerateFormulas($document->getContent());
-$formulagenerator->generateFiles();
-
-var_dump($formula->getSize());
+$flatplane->generatePDF(['showDocumentTree' => true]);

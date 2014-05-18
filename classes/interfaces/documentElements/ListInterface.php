@@ -29,9 +29,8 @@ use de\flatplane\interfaces\DocumentElementInterface;
  */
 interface ListInterface extends DocumentElementInterface
 {
-    public function generateStructure();
+    public function generateStructure(array $elements);
 
-    public function getTitle();
     public function getMaxDepth();
     public function getDisplayTypes();
 }

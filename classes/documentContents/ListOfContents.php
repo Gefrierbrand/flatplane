@@ -28,7 +28,7 @@ use RecursiveIteratorIterator;
 
 /**
  * Description of ListOfContent
- *
+ * todo: generate lists for individual sections, not the whole document
  * @author Nikolai Neff <admin@flatplane.de>
  */
 class ListOfContents extends AbstractDocumentContentElement implements ListInterface
@@ -78,6 +78,18 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
     protected $indent = ['level' => -1, 'maxAmount' => 20, 'mode' => 'relative'];
 
     /**
+     * todo: implement/ fix
+     * @var array
+     */
+    protected $verticalFill = ['default' => ['type' => 'dots', 'spacing' => 1, 'size' => 'inherit']];
+
+    /**
+     * Array containig the lists raw data for outputting
+     * @var array
+     */
+    protected $data = [];
+
+    /**
      * Generates a new list of arbitrary content elements. Used to create a
      * Table of Contents (TOC) or List of Figures (LOF) and so on.
      * @param array $config
@@ -89,16 +101,22 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
     }
 
     /**
-     * This method traverses the documenttree and filters the desired content-
-     * types to be displayed
-     * @param array $content (optional)
-     *  Array containing objects implementing DocumentContentStructureInterface
+     * todo: order by: level, structure, content-type
+     * This method traverses the document-tree and filters for the desired
+     * contenttypes to be displayed. It then generates an array corresponding to
+     * a line in the finished list.
+     * @param array $content
+     *  Array containing objects implementing DocumentElementInterface
+     * @return array
+     *  Array with information for each line: formatted Number, absolute and
+     *  relative depth, Text determined by the elements __toString() method.
      */
-    public function generateStructure(array $content = [])
+    public function generateStructure(array $content)
     {
         //todo: validate content type and parent
         if (empty($content)) {
-            $content = $this->getParent()->toRoot()->getContent();
+            //$content = $this->getParent()->toRoot()->getContent();
+            trigger_error('no content to generate structure for', E_USER_NOTICE);
         }
 
         $RecItIt = new RecursiveIteratorIterator(
@@ -113,25 +131,22 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             $this->getDisplayTypes()
         );
 
-
-        //TODO: return array with level; resolve hard references?
-        foreach ($FilterIt as $element) {
-            //echo "tiefe: ".$RecItIt->getDepth()." "; // current iteration depth
-            //echo " tiefe: ".$element->getLevel()." "; // element depth regarding document
+        foreach ($FilterIt as $key => $element) {
+            // current iteration depth
+            $this->data[$key]['iteratorDepth'] = $RecItIt->getDepth();
+            // element depth regarding document structure
+            $this->data[$key]['level'] = $element->getLevel();
             if ($element->getEnumerate()) {
-                //tiefe durch einrücken darstellen FIXME !!!! (nur sinnvoll, wenn erstes element auf level 0 liegt -> filterproblem?) tiefe aus nummerrierung ermitteln?
-                //$depth = $RecItIt->getDepth();
-                $depth = count($element->getNumbers())-1; //extra parameter um level abzuziehen? oder ohne einrückung?
-
-                //todo: use indent pr
-                echo str_repeat(' ', 2*$depth);
-
-                echo $element->getFormattedNumbers().
-                ' ' .$element.PHP_EOL;
+                $this->data[$key]['numbers'] = $element->getFormattedNumbers();
             } else {
-                echo $element.PHP_EOL;
+                $this->data[$key]['numbers'] = null;
             }
+            $this->data[$key]['text'] = $element->__toString();
+            $this->data[$key]['page'] = $element->getPage();
         }
+
+        //fixme: return?
+        return $this->data;
     }
 
     public function getDisplayTypes()

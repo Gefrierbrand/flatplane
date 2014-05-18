@@ -36,7 +36,6 @@ trait DocumentReferences
     protected $assumedStructureNumberWidth = 4;
     protected $assumedTitleWidth = 20;
 
-    //todo: fix page 
     public function getReference($label, $type = 'number')
     {
         if (!in_array($type, $this->validLabelTypes)) {
@@ -61,7 +60,13 @@ trait DocumentReferences
             case 'title':
                 return $instance->getTitle();
             case 'page':
-                return $instance->getPage();
+                $num = $instance->getPage();
+                if (!empty($num) && is_numeric($num)) {
+                    return $num;
+                } else {
+                    return $this->getDefaultReferenceValue('page');
+                }
+
             default:
                 trigger_error('Invalid reference type, defaulting to number');
                 return $instance->getFormattedNumbers();

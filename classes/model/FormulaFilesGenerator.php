@@ -23,9 +23,6 @@ namespace de\flatplane\model;
 
 use de\flatplane\controller\Flatplane;
 use de\flatplane\documentContents\Formula;
-use de\flatplane\iterators\ContentTypeFilterIterator;
-use de\flatplane\iterators\RecursiveContentIterator;
-use RecursiveIteratorIterator;
 use Symfony\Component\Process\Exception\RuntimeException;
 use Symfony\Component\Process\Process;
 
@@ -35,22 +32,15 @@ use Symfony\Component\Process\Process;
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class GenerateFormulas
+class FormulaFilesGenerator
 {
     protected $formulas = [];
     protected $process;
 
     public function __construct(array $content = [])
     {
-        $RecItIt = new RecursiveIteratorIterator(
-            new RecursiveContentIterator($content),
-            RecursiveIteratorIterator::SELF_FIRST
-        );
-
-        $filterIterator = new ContentTypeFilterIterator($RecItIt, ['formula']);
-
         $num = 0;
-        foreach ($filterIterator as $formula) {
+        foreach ($content as $formula) {
             if (!($formula instanceof Formula)) {
                 throw new RuntimeException(
                     'Invalid object supplied to GenerateFormulas: '.
@@ -135,8 +125,6 @@ class GenerateFormulas
             $format = strtolower($formula->getCodeFormat());
             $url = 'http://localhost:16000/';
             $request = 'type='.$format.'&q='.urlencode($formula->getCode());
-
-            //echo 'generating: '.$formula->getCode();
 
             $curlHandles[$key] = curl_init();
             curl_setopt($curlHandles[$key], CURLOPT_RETURNTRANSFER, true);

@@ -23,7 +23,13 @@ namespace de\flatplane\controller;
 
 use de\flatplane\documentContents\Document;
 use de\flatplane\documentContents\ElementFactory;
+use de\flatplane\iterators\ContentTypeFilterIterator;
+use de\flatplane\iterators\RecursiveContentIterator;
+use de\flatplane\model\FormulaFilesGenerator;
+use RecursiveIteratorIterator;
+use RecursiveTreeIterator;
 use RuntimeException;
+use Symfony\Component\Stopwatch\Stopwatch;
 
 /**
  * Description of Flatplane
@@ -40,24 +46,24 @@ class Flatplane
     protected static $verboseOutput = true; //todo: set this to false before shipping
 
     /**
-     * Set basic quasi-global variables. All supplied paths have to be read- and
-     * writable for php and spawned suprocesses.
-     * @param string $inputDir
-     *  absolute or relative path to input directory.
-     * @param string $workingDir (optional)
-     *  absolute or relative path to directory for work files. Will default to
-     *  $inputDir if ommited.
-     * @param string $outputDir (optional)
-     *  absolute or relative path to diretory where the output PDF will be
-     *  placed. Defaults to $workingDir (if set) or $inputDir. If the dir is
-     *  non-existant, flatplane will attempt to create it.
-     * @param bool $verbose
-     *  Toggle verbose console output. (false: show only essential
-     *  messages; true: show all messages; default: false)
+     * @var Document
      */
+    protected $document;
+
+    /**
+     * @var Stopwatch
+     */
+    protected $stopwatch;
+
     public function __construct()
     {
-        //todo: update doc
+        $this->stopwatch = new Stopwatch();
+        $this->startTimer('generateDocument');
+    }
+
+    public function __destruct()
+    {
+        $event = $this->stopTimer('generateDocument');
     }
 
     public static function setInputDir($inputDir)
@@ -139,18 +145,114 @@ class Flatplane
     public function createDocument(array $settings = [])
     {
         $factory = new ElementFactory();
-        return $factory->createDocument($settings);
+        $this->document = $factory->createDocument($settings);
+        return $this->document;
     }
 
-    public function generatePDF(array $settings)
+    /**
+     * steps needed:
+     * validate document
+     * include and parse input
+     * generate structure
+     * validate / update cache
+     * generate dynamic content (formulas etc)
+     * estimate sizes
+     * layout pages
+     * generate pages (including references)
+     *
+     * @param array $settings
+     * @throws \RuntimeException
+     */
+    public function generatePDF(array $settings = [])
     {
-        //steps needed:
-        // - include and parse input
-        // - generate structure
-        // - validate / update cache
-        // - generate dynamic content (formulas etc)
-        // - estiamte sizes
-        // - layout pages
-        // - generate pages (including references)
+        if (isset($settings['showDocumentTree']) && $settings['showDocumentTree']) {
+            $this->showDocumentTree();
+        }
+
+        // validate document
+        if (empty($this->document) || !($this->document instanceof Document)) {
+            throw new \RuntimeException(
+                'No document or invalid document supplied for PDF generation'
+            );
+        }
+
+        // include and parse input: TBD
+
+        // generate structure
+
+        $this->startTimer('generatingLists');
+        $this->generatePreliminaryLists();
+        $this->stopTimer('generatingLists');
+
+        // validate / update cache: TBD
+
+        // generate dynamic content
+        $this->startTimer('generatingFormulas');
+        $this->generateFormulas();
+        $this->stopTimer('generatingFormulas');
+    }
+
+    protected function generateFormulas()
+    {
+        $formulas = $this->getAllContentOfType('formula');
+        $formulaGenerator = new FormulaFilesGenerator($formulas);
+        $formulaGenerator->generateFiles();
+    }
+
+    protected function generatePreliminaryLists()
+    {
+        $lists = $this->getAllContentOfType('list');
+        foreach ($lists as $list) {
+            $list->generateStructure($this->document->getContent());
+        }
+    }
+
+    /**
+     * @param string $type
+     * @return ContentElementInterface
+     * todo: type validation etc
+     */
+    protected function getAllContentOfType($type)
+    {
+        $RecItIt = new RecursiveIteratorIterator(
+            new RecursiveContentIterator($this->document->getContent()),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
+
+        $filterIterator = new ContentTypeFilterIterator($RecItIt, [$type]);
+
+        $return = array();
+        foreach ($filterIterator as $element) {
+            $return[] = $element;
+        }
+        return $return;
+    }
+
+    protected function showDocumentTree()
+    {
+        echo 'Document Tree:'.PHP_EOL;
+        $RecItIt = new RecursiveTreeIterator(
+            new RecursiveContentIterator($this->document->getContent()),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
+        foreach ($RecItIt as $value) {
+            echo $value.PHP_EOL;
+        }
+        echo PHP_EOL;
+    }
+
+    private function startTimer($name)
+    {
+        echo "Starting ($name):".PHP_EOL;
+        $this->stopwatch->start($name);
+    }
+
+    private function stopTimer($name)
+    {
+        echo PHP_EOL."Finished ($name): ";
+        $event = $this->stopwatch->stop($name);
+        $duration = number_format($event->getDuration()/1000, 3, '.', '').' s';
+        $memory = number_format($event->getMemory()/1024/1024, 3, '.', '').' MiB';
+        echo " $duration; ($memory)".PHP_EOL;
     }
 }

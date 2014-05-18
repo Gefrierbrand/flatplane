@@ -21,9 +21,7 @@
 namespace de\flatplane;
 
 use de\flatplane\controller\Flatplane;
-use de\flatplane\utilities\Timer;
 
 include('vendor'.DIRECTORY_SEPARATOR.'autoload.php');
 
-$t = new Timer();
 $flatplane = new Flatplane();

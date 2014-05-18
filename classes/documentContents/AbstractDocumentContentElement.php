@@ -90,6 +90,14 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     protected $label = '';
 
     /**
+     * todo: pagegroups?
+     * @var int
+     *  Number of the page this element gets printed on. If the element spans
+     *  multiple pages, then this number references the first occurrence.
+     */
+    protected $page;
+
+    /**
      * @var array
      *  defines the elements margins in user-units. Valid keys are:
      *  'top', 'bottom', 'left', 'right'. If any of those is undefined, the
@@ -265,12 +273,20 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
 
     public function getPage()
     {
-        //todo: fix me
-        return '????';
+        return $this->page;
     }
 
     /**
-     * @thros RuntimeException
+     * todo: maybe protected, interface?
+     * @param int $page
+     */
+    public function setPage($page)
+    {
+        $this->page = $page;
+    }
+
+    /**
+     * @throws RuntimeException
      */
     protected function testNoParent()
     {
