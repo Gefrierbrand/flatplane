@@ -57,8 +57,8 @@ $text = $einleitung->addText('input/testKapitelMitRef.php');
 $hauptteil = $document->addSection('hauptteil');
 $sub = $hauptteil->addSection('subkapitel');
 $sub->addSection('subsub', ['label' => 'sec:subsub']);
-$formula = $sub->addFormula('\frac{1}{2}', ['label' => 'eq:f1', 'useCache' => true]);
-$formula->addFormula('\text{subformula}');
+$formula = $sub->addFormula('\frac{1}{2}\cdot\text{Auto}', ['label' => 'eq:f1', 'formulaFont' => 'Asana-Math']);
+$formula->addFormula('\frac{e^{i\pi}}{\sin{\Omega}}', ['formulaFont' => 'TeX', 'useCache' => false]);
 $listoflists = $document->addList(['list']);
 $document->addFormula(
     '<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
@@ -106,7 +106,7 @@ e &= [2; 1, 2, 1, 1, 4, 1, 1, 6, 1, 1, 8, 1, 1, 10, 1,\dots] \\
 \end{align}';
 
 foreach ($tex as $content) {
-    $document->addFormula($content);
+    $document->addFormula($content, ['formulaFont' => 'Neo-Euler']);
 }
 
 $document->addText('input/testKapitelMitRef.php');

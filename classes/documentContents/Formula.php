@@ -36,7 +36,7 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
     protected $title='Formula';
 
     protected $code;
-    protected $font = 'TeX';
+    protected $formulaFont = 'TeX';
     protected $codeFormat = 'TeX';
     protected $availableFonts = ['TeX', 'STIX-Web', 'Asana-Math', 'Neo-Euler',
                                 'Gyre-Pagella', 'Gyre-Termes', 'Latin-Modern'];
@@ -126,14 +126,30 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
                 'height_ex' => $height_ex];
     }
 
+    /**
+     * This method returns a (pseudo-unique) hash for the current instance
+     * depending on the formula-code and formula-font to be used as filename
+     * for the SVG-generation
+     * @return string
+     */
     public function getHash()
     {
-        return sha1($this->getCode());
+        return sha1($this->getCode().$this->getFormulaFont());
     }
 
+    /**
+     * Returns the path to the SVG file corresponding to the current instance if
+     * it exists or null otherwise.
+     * @return string|null
+     */
     public function getPath()
     {
         return $this->path;
+    }
+
+    public function getFormulaFont()
+    {
+        return $this->formulaFont;
     }
 
     public function setPath($path)
@@ -146,7 +162,7 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
         $this->code = $code;
     }
 
-    protected function setFont($font)
+    protected function setFormulaFont($font)
     {
         if (!in_array($font, $this->availableFonts, true)) {
             trigger_error(
@@ -155,7 +171,7 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
             );
             $font = 'TeX';
         }
-        $this->font = $font;
+        $this->formulaFont = $font;
     }
 
     protected function setCodeFormat($codeFormat)
