@@ -29,7 +29,7 @@ use Symfony\Component\Process\Process;
 /**
  * todo: doc, error-checking, update paths?
  * Description of GenerateFormulas
- *
+ * todo: fonts
  * @author Nikolai Neff <admin@flatplane.de>
  */
 class FormulaFilesGenerator

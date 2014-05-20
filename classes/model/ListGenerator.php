@@ -25,7 +25,7 @@ use de\flatplane\documentContents\ListOfContents;
 
 /**
  * Description of ListGenerator
- *
+ * todo: fonts
  * @author Nikolai Neff <admin@flatplane.de>
  */
 class ListGenerator
@@ -38,13 +38,14 @@ class ListGenerator
 
     public function generate(ListOfContents $element)
     {
+        $contentTypes = implode(', ', $element->getDisplayTypes());
+        echo PHP_EOL, 'DEMO OUTPUT: List of: '.$contentTypes, PHP_EOL;
         $this->content = $element->getData();
         $this->outputList();
     }
 
     protected function outputList()
     {
-        echo PHP_EOL, 'DEMO OUTPUT: LIST', PHP_EOL;
         foreach ($this->content as $line) {
             $indent = str_repeat(' ', $line['level']);
             echo $indent.$line['numbers'].' '.$line['text'].PHP_EOL;

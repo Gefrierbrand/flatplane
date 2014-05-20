@@ -109,8 +109,11 @@ foreach ($tex as $content) {
     $document->addFormula($content);
 }
 
+$document->addText('input/testKapitelMitRef.php');
+$document->addList(['text']);
+
 $flatplane->generatePDF(['showDocumentTree' => true]);
 
 
-print_r($text->getSize());
-echo $text->getText().PHP_EOL;
+//print_r($text->getSize());
+//echo $text->getText().PHP_EOL;
