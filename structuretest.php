@@ -53,12 +53,14 @@ $vorwort = $document->addSection('vorwort', ['enumerate' => false]);
 $inhalt = $document->addSection('inhaltsverzeichnis');
 $list = $inhalt->addList(['section', 'formula']);
 $einleitung = $document->addSection('einleitung', ['label' => 'sec:einleitung']);
-$text = $einleitung->addText('input/testKapitelMitRef.php');
+$text = $einleitung->addText('input/testKapitelMitRef.php', ['fontSize' => ['default' => 16]]);
 $hauptteil = $document->addSection('hauptteil');
 $sub = $hauptteil->addSection('subkapitel');
 $sub->addSection('subsub', ['label' => 'sec:subsub']);
 $listoflists = $document->addList(['list']);
 
+$testSec = $document->addSection('test');
+$testSec2 = $testSec->addSection('test');
 
 $tex[] = '\displaystyle{\mathcal{F}(f)(t) = \frac{1}{\left(2\pi\right)^{\frac{n}{2}}}~ \int\limits_{\mathbb{R}^n} f(x)\,e^{-\mathrm{i} t \cdot x} \,\mathrm{d} x}';
 $tex[] = '\int_a^b(f(x)+c)\,\mathrm dx=\int_a^b f(x)\,\mathrm dx+(b-a)\cdot c';
@@ -67,29 +69,15 @@ $tex[] = '\overline{\overline{\left(A\, \wedge\, B\right)}\, \wedge\, C} \neq\ov
 $tex[] = '\LaTeX ~ 2 \cdot 2 \\ 2\mathbin{\cdot}2 \\ 2 \times 2 \\ 2\mathbin{\times}2​';
 $tex[] = 'e = \lim_{n\to\infty} \left(1+\frac{1}{n}\right)^n';
 $tex[] = 'e = \sum_{k=0}^{\infty}{\frac{1}{k!}} = \frac{1}{0!} + \frac{1}{1!} + \frac{1}{2!} + \frac{1}{3!} + \frac{1}{4!} + \cdots = 1 + 1 + \frac{1}{2} + \frac{1}{6} + \frac{1}{24} + \cdots';
-$tex[] = '\begin{align}
-e &= [2; 1, 2, 1, 1, 4, 1, 1, 6, 1, 1, 8, 1, 1, 10, 1,\dots] \\
-  &= 2+\cfrac{1}{1+\cfrac{1}{2+\cfrac{1}{1+\cfrac{1}{1+\cfrac{1}{4+\cfrac{1}{1+\cfrac{1}{1+\cfrac{1}{6+\dotsb}}}}}}}}
-\end{align}';
+$tex[] = '\begin{align}e &= [2; 1, 2, 1, 1, 4, 1, 1, 6, 1, 1, 8, 1, 1, 10, 1,\dots] \\ &= 2+\cfrac{1}{1+\cfrac{1}{2+\cfrac{1}{1+\cfrac{1}{1+\cfrac{1}{4+\cfrac{1}{1+\cfrac{1}{1+\cfrac{1}{6+\dotsb}}}}}}}}\end{align}';
 
-$formulaNeoEuler = $document->addSection('Formulas: Font: Neo-Euler');
-foreach ($tex as $content) {
-    $formulaNeoEuler->addFormula($content, ['formulaFont' => 'Neo-Euler']);
-}
+$testFormula = new \de\flatplane\documentContents\Formula([]);
 
-$formulaTex = $document->addSection('Formulas: Font: TeX');
-foreach ($tex as $content) {
-    $formulaTex->addFormula($content, ['formulaFont' => 'TeX']);
-}
-
-$formulaAsana = $document->addSection('Formulas: Font: Asana-Math');
-foreach ($tex as $content) {
-    $formulaAsana->addFormula($content, ['formulaFont' => 'Asana-Math']);
-}
-
-$formulaStix = $document->addSection('Formulas: Font: STIX-Web');
-foreach ($tex as $content) {
-    $formulaStix->addFormula($content, ['formulaFont' => 'STIX-Web']);
+foreach ($testFormula->getAvailableFonts() as $key => $font) {
+    $sec[$key] = $document->addSection('Formulas: Font: '.$font);
+    foreach ($tex as $content) {
+        $sec[$key]->addFormula($content, ['formulaFont' => $font]);
+    }
 }
 
 $document->addText('input/testKapitelMitRef.php');
@@ -97,6 +85,4 @@ $document->addList(['text']);
 
 $flatplane->generatePDF(['showDocumentTree' => true]);
 
-
-//print_r($text->getSize());
-//echo $text->getText().PHP_EOL;
+var_dump($testSec->getSize());

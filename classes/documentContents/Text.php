@@ -25,7 +25,7 @@ use de\flatplane\interfaces\documentElements\TextInterface;
 
 /**
  * Description of Text
- *
+ * todo: add line-height to styles
  * @author Nikolai Neff <admin@flatplane.de>
  */
 class Text extends AbstractDocumentContentElement implements TextInterface
@@ -49,6 +49,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
                               'charMax' => 8];
 
     protected $textAlignment = 'J';
+    protected $lineHeight = '100%';
 
     public function __toString()
     {
@@ -155,5 +156,13 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         $this->textAlignment = $textAlignment;
     }
 
+    public function getLineHeight()
+    {
+        return $this->lineHeight;
+    }
 
+    protected function setLineHeight($lineHeight)
+    {
+        $this->lineHeight = $lineHeight;
+    }
 }

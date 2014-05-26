@@ -23,7 +23,6 @@ namespace de\flatplane\documentContents\traits;
 
 use de\flatplane\documentContents\Document;
 use de\flatplane\documentContents\ElementFactory;
-use de\flatplane\interfaces\DocumentElementInterface;
 use de\flatplane\utilities\PDF;
 
 /**
@@ -186,11 +185,7 @@ trait DocumentGetterSetter
 
     protected function setPageMargins(array $margins)
     {
-        foreach ($margins as $key => $option) {
-            if (array_key_exists($key, $this->pageMargins)) {
-                $this->pageMargins[$key] = $option;
-            }
-        }
+        $this->pageMargins = array_merge($this->pageMargins, $margins);
     }
 
     /**
@@ -202,7 +197,7 @@ trait DocumentGetterSetter
     }
 
     /**
-     * @param \de\flatplane\documentContents\ElementFactory $elementFactory
+     * @param ElementFactory $elementFactory
      */
     public function setElementFactory(ElementFactory $elementFactory)
     {
@@ -218,7 +213,7 @@ trait DocumentGetterSetter
     }
 
     /**
-     * @param \de\flatplane\utilities\PDF $pdf
+     * @param PDF $pdf
      */
     public function setPdf(PDF $pdf)
     {
@@ -265,9 +260,9 @@ trait DocumentGetterSetter
         $this->numberingSeparator = $numberingSeparator;
     }
 
-    protected function setStartIndex($startIndex)
+    protected function setStartIndex(array $startIndex)
     {
-        $this->startIndex = $startIndex;
+        $this->startIndex = array_merge($this->startIndex, $startIndex);
     }
 
     public function getSize()

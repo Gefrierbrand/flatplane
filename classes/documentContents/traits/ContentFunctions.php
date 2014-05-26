@@ -113,6 +113,13 @@ trait ContentFunctions
         }
     }
 
+    public function addElement($type, array $settings)
+    {
+        $factory = $this->toRoot()->getElementFactory();
+        $content = $factory->createElement($type, $settings);
+        return $this->addContent($content);
+    }
+
     /**
      * @param string $title
      * @param array $settings

@@ -38,6 +38,7 @@ interface DocumentElementInterface
     public function toParentAtLevel($level);
     public function applyStyles();
 
+    public function addElement($type, array $settings);
     public function addSection($title, array $settings);
     public function addFormula($code, array $settings);
     public function addImage($path, array $settings);
@@ -59,6 +60,17 @@ interface DocumentElementInterface
     public function getShowInList();
     public function getIsSplitable();
     public function getTitle();
+
+    public function getFontType($key = null);
+    public function getFontSize($key = null);
+    public function getFontStyle($key = null);
+    public function getFontColor($key = null);
+    public function getDrawColor($key = null);
+    public function getFillColor($key = null);
+
+    public function getMargins($key = null);
+    public function getPaddings($key = null);
+
 
     public function setParent(DocumentElementInterface $parent);
     //public function setType($type);

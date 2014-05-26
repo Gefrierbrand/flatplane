@@ -114,18 +114,18 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     protected $paddings = ['default' => 0];
 
     /**
-     * todo: update doc here
      * @var array
-     *  defines the elements fontType: use a name of a font definition file or
-     *  an identifier from PDF::addFont()
+     *  defines the font-type/name/family to be used. Possible values are the
+     *  name of a font-file or the family-identifier used by TCPDF::addFont()
+     * @see TCPDF::addFont()
      */
-    protected $fontType = 'times';
+    protected $fontType = ['default' => 'times'];
 
     /**
      * @var array
      *  possible values: Font size in pt
      */
-    protected $fontSize = 12;
+    protected $fontSize = ['default' => 12];
 
     /**
      * @var array
@@ -141,7 +141,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      * The variations can be combined (in any order): for example use 'BIU' to
      * create bold-italic-underlined text
      */
-    protected $fontStyle = '';
+    protected $fontStyle = ['default' => ''];
 
     /**
      * Color used for text
@@ -151,20 +151,21 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      *  array containing 3 values (0-255) for RGB colors or
      *  array contining 4 values (0-100) for CMYK colors
      */
-    protected $fontColor = [0,0,0];
+    protected $fontColor = ['default' => [0,0,0]];
 
     /**
-	 * @var float amount to increase or decrease the space between characters
-     * in a text (0 = default spacing)
+	 * @var array
+     *  value (float): amount to increase or decrease the space between
+     *  characters in a text (0 = default spacing)
      * @see TCPDF::setFontSpacing()
      */
-    protected $fontSpacing = 0;
+    protected $fontSpacing = ['default' => 0];
 
     /**
-	 * @var int percentage of stretching (100 = no stretching)
+	 * @var int percentage of stretching (default value: 100)
      * @see TCPDF::setFontStretching()
      */
-    protected $fontStretching = 100;
+    protected $fontStretching = ['default' => 100];
 
     /**
      * Color used for drawings (includes some font-styles like underline)
@@ -174,7 +175,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      *  array containing 3 values (0-255) for RGB colors or
      *  array contining 4 values (0-100) for CMYK colors
      */
-    protected $drawColor = [0,0,0];
+    protected $drawColor = ['default' => [0,0,0]];
 
     /**
      * Color used for fillings like cell-backgrounds
@@ -183,8 +184,9 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      *  array containing 1 value (0-255) for grayscale
      *  array containing 3 values (0-255) for RGB colors or
      *  array contining 4 values (0-100) for CMYK colors
+     * @ignore todo: associative keys?
      */
-    protected $fillColor = [255,255,255];
+    protected $fillColor = ['default' => [255,255,255]];
 
     /**
      * This method is called on creating a new element.
@@ -245,12 +247,16 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     public function applyStyles()
     {
         $pdf = $this->toRoot()->getPdf();
-        $pdf->SetFont($this->fontType, $this->fontStyle, $this->fontSize);
-        $pdf->setColorArray('text', $this->fontColor);
-        $pdf->setColorArray('draw', $this->drawColor);
-        $pdf->setColorArray('fill', $this->fillColor);
-        $pdf->setFontSpacing($this->fontSpacing);
-        $pdf->setFontStretching($this->fontStretching);
+        $pdf->SetFont(
+            $this->getFontType(),
+            $this->getFontStyle(),
+            $this->getFontSize()
+        );
+        $pdf->setColorArray('text', $this->getFontColor());
+        $pdf->setColorArray('draw', $this->getDrawColor());
+        $pdf->setColorArray('fill', $this->getFillColor());
+        $pdf->setFontSpacing($this->getFontSpacing());
+        $pdf->setFontStretching($this->getFontStretching());
     }
 
     /**
@@ -320,57 +326,65 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
 
     protected function setMargins(array $margins)
     {
-        $this->margins = $margins;
+        $this->margins = array_merge($this->margins, $margins);
     }
 
     protected function setPaddings(array $paddings)
     {
-        $this->paddings = $paddings;
+        $this->paddings = array_merge($this->paddings, $paddings);
     }
 
-    protected function setFontType($fontType)
+    protected function setFontType(array $fontType)
     {
-        $this->fontType = $fontType;
+        $this->fontType = array_merge($this->fontType, $fontType);
     }
 
-    protected function setFontSize($fontSize)
+    protected function setFontSize(array $fontSize)
     {
-        $this->fontSize = $fontSize;
+        $this->fontSize = array_merge($this->fontSize, $fontSize);
     }
 
-    protected function setFontStyle($fontStyle)
+    protected function setFontStyle(array $fontStyle)
     {
-        $this->fontStyle = $fontStyle;
+        $this->fontStyle = array_merge($this->fontStyle, $fontStyle);
     }
 
     protected function setFontColor(array $fontColor)
     {
-        $this->fontColor = $fontColor;
+        $this->fontColor = array_merge($this->fontColor, $fontColor);
     }
 
     protected function setDrawColor(array $drawColor)
     {
-        $this->drawColor = $drawColor;
+        $this->drawColor = array_merge($this->drawColor, $drawColor);
     }
 
-    public function getFontSpacing()
+    public function getFontSpacing($key = null)
     {
-        return $this->fontSpacing;
+        if ($key !== null && isset($this->fontSpacing[$key])) {
+            return $this->fontSpacing[$key];
+        } else {
+            return $this->fontSpacing['default'];
+        }
     }
 
-    public function getFontStretching()
+    public function getFontStretching($key = null)
     {
-        return $this->fontStretching;
+        if ($key !== null && isset($this->fontStretching[$key])) {
+            return $this->fontStretching[$key];
+        } else {
+            return $this->fontStretching['default'];
+        }
     }
 
-    protected function setFontSpacing($fontSpacing)
+    protected function setFontSpacing(array $fontSpacing)
     {
-        $this->fontSpacing = $fontSpacing;
+        $this->fontSpacing = array_merge($this->fontSpacing, $fontSpacing);
     }
 
-    protected function setFontStretching($fontStretching)
+    protected function setFontStretching(array $fontStretching)
     {
-        $this->fontStretching = $fontStretching;
+        $this->fontStretching = array_merge($this->fontStretching, $fontStretching);
     }
 
     /**
@@ -422,13 +436,81 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         $this->label = $label;
     }
 
-    public function getFillColor()
-    {
-        return $this->fillColor;
-    }
 
     protected function setFillColor(array $fillColor)
     {
         $this->fillColor = $fillColor;
+    }
+
+    public function getMargins($key = null)
+    {
+        if ($key !== null && isset($this->margins[$key])) {
+            return $this->margins[$key];
+        } else {
+            return $this->margins['default'];
+        }
+    }
+
+    public function getPaddings($key = null)
+    {
+        if ($key !== null && isset($this->paddings[$key])) {
+            return $this->paddings[$key];
+        } else {
+            return $this->paddings['default'];
+        }
+    }
+
+    public function getFontType($key = null)
+    {
+        if ($key !== null && isset($this->fontType[$key])) {
+            return $this->fontType[$key];
+        } else {
+            return $this->fontType['default'];
+        }
+    }
+
+    public function getFontSize($key = null)
+    {
+        if ($key !== null && isset($this->fontSize[$key])) {
+            return $this->fontSize[$key];
+        } else {
+            return $this->fontSize['default'];
+        }
+    }
+
+    public function getFontStyle($key = null)
+    {
+        if ($key !== null && isset($this->fontStyle[$key])) {
+            return $this->fontStyle[$key];
+        } else {
+            return $this->fontStyle['default'];
+        }
+    }
+
+    public function getFontColor($key = null)
+    {
+        if ($key !== null && isset($this->fontColor[$key])) {
+            return $this->fontColor[$key];
+        } else {
+            return $this->fontColor['default'];
+        }
+    }
+
+    public function getDrawColor($key = null)
+    {
+        if ($key !== null && isset($this->drawColor[$key])) {
+            return $this->drawColor[$key];
+        } else {
+            return $this->drawColor['default'];
+        }
+    }
+
+    public function getFillColor($key = null)
+    {
+        if ($key !== null && isset($this->fillColor[$key])) {
+            return $this->fillColor[$key];
+        } else {
+            return $this->fillColor['default'];
+        }
     }
 }

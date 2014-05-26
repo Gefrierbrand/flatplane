@@ -131,11 +131,27 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
 
     public function getSize()
     {
-        //todo: implement
+        $this->applyStyles();
+        $pdf = $this->toRoot()->getPdf();
+        $height = $pdf->getStringHeight(0, $this->getTitle());
+        $width = $pdf->getPageWidth()
+            - $pdf->getMargins()['left']
+            - $pdf->getMargins()['right'];
+        return ['height' => $height, 'width' => $width];
     }
 
     public function applyStyles()
     {
-        parent::applyStyles();
+        $pdf = $this->toRoot()->getPdf();
+        $pdf->SetFont(
+            $this->getFontType($this->getLevel()),
+            $this->getFontStyle($this->getLevel()),
+            $this->getFontSize($this->getLevel())
+        );
+        $pdf->setColorArray('text', $this->getFontColor($this->getLevel()));
+        $pdf->setColorArray('draw', $this->getDrawColor($this->getLevel()));
+        $pdf->setColorArray('fill', $this->getFillColor($this->getLevel()));
+        $pdf->setFontSpacing($this->getFontSpacing($this->getLevel()));
+        $pdf->setFontStretching($this->getFontStretching($this->getLevel()));
     }
 }
