@@ -133,4 +133,9 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
     {
         //todo: implement
     }
+
+    public function applyStyles()
+    {
+        parent::applyStyles();
+    }
 }

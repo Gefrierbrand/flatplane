@@ -38,8 +38,12 @@ class FormulaFilesGenerator
     protected $masterCurlHandle;
     protected $curlHandles;
 
-    public function __construct(array $content = [])
+    public function __construct(array $content, $cleanDir = false)
     {
+        if ($cleanDir) {
+            $this->cleanUp();
+        }
+        
         $totalNum = 0;
         $renderNum = 0;
         foreach ($content as $formula) {
@@ -64,7 +68,11 @@ class FormulaFilesGenerator
 
     public function cleanUp()
     {
-
+        $dir = Flatplane::getCacheDir().DIRECTORY_SEPARATOR.'formulas';
+        $files = glob($dir.DIRECTORY_SEPARATOR.'*.svg');
+        foreach ($files as $file) {
+            unlink($file);
+        }
     }
 
     public function generateFiles()

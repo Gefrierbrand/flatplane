@@ -22,6 +22,7 @@
 namespace de\flatplane\documentContents;
 
 use de\flatplane\interfaces\documentElements\FormulaInterface;
+use RuntimeException;
 
 /**
  * Description of formula
@@ -103,9 +104,8 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
         );
 
         if (!$regExMatchWidth || !$regExMatchHeight) {
-            trigger_error(
-                'SVG did not contain valid size information',
-                E_USER_WARNING
+            throw new RuntimeException(
+                'SVG did not contain valid size information'
             );
         }
 

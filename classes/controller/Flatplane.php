@@ -93,9 +93,9 @@ class Flatplane
     {
         self::$cacheDir = $workingDir;
 
-        if (!is_dir(self::$cacheDir )
-            || !is_readable(self::$cacheDir )
-            || !is_writable(self::$cacheDir )
+        if (!is_dir(self::$cacheDir)
+            || !is_readable(self::$cacheDir)
+            || !is_writable(self::$cacheDir)
         ) {
             throw new RuntimeException(
                 'Path '.self::$cacheDir .' is invalid: '
@@ -205,7 +205,7 @@ class Flatplane
     protected function generateFormulas()
     {
         $formulas = $this->getAllContentOfType('formula');
-        $formulaGenerator = new FormulaFilesGenerator($formulas);
+        $formulaGenerator = new FormulaFilesGenerator($formulas, false);
         $formulaGenerator->generateFiles();
     }
 

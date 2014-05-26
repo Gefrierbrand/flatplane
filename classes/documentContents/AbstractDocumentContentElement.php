@@ -138,8 +138,8 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      *   <li>I: italic</li>
      *   <li>O: overline</li>
      *  </ul>
-     * The variations can be combined: e.g. 'BIU' (in any order) for
-     * bold-italic-underline
+     * The variations can be combined (in any order): for example use 'BIU' to
+     * create bold-italic-underlined text
      */
     protected $fontStyle = '';
 
