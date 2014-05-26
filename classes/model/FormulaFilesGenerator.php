@@ -62,6 +62,11 @@ class FormulaFilesGenerator
         );
     }
 
+    public function cleanUp()
+    {
+
+    }
+
     public function generateFiles()
     {
         if (!empty($this->formulas)) {
@@ -78,7 +83,7 @@ class FormulaFilesGenerator
 
     protected function isCached(FormulaInterface $formula)
     {
-        $filename = Flatplane::getWorkingDir().DIRECTORY_SEPARATOR.
+        $filename = Flatplane::getCacheDir().DIRECTORY_SEPARATOR.
             'formulas'.DIRECTORY_SEPARATOR.$formula->getHash().'.svg';
         if (file_exists($filename) && is_readable($filename)) {
             $formula->setPath($filename);
@@ -97,6 +102,7 @@ class FormulaFilesGenerator
 
         $filename = 'MathJax'.DIRECTORY_SEPARATOR.'config'.
                     DIRECTORY_SEPARATOR.'local'.DIRECTORY_SEPARATOR.'font.js';
+
         if (!is_writable(dirname($filename))) {
             throw new \RuntimeException('SVGTEX font.js file is not writable');
         }
@@ -189,7 +195,7 @@ class FormulaFilesGenerator
 
             $this->validateResult($result);
 
-            $dir = Flatplane::getWorkingDir().DIRECTORY_SEPARATOR.'formulas';
+            $dir = Flatplane::getCacheDir().DIRECTORY_SEPARATOR.'formulas';
             if (!is_dir($dir)) {
                 mkdir($dir);
             }

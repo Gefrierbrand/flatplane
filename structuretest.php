@@ -57,41 +57,8 @@ $text = $einleitung->addText('input/testKapitelMitRef.php');
 $hauptteil = $document->addSection('hauptteil');
 $sub = $hauptteil->addSection('subkapitel');
 $sub->addSection('subsub', ['label' => 'sec:subsub']);
-$formula = $sub->addFormula('\frac{1}{2}\cdot\text{Auto}', ['label' => 'eq:f1', 'formulaFont' => 'Asana-Math']);
-$formula->addFormula('\frac{e^{i\pi}}{\sin{\Omega}}', ['formulaFont' => 'TeX', 'useCache' => false]);
 $listoflists = $document->addList(['list']);
-$document->addFormula(
-    '<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
-      <mrow>
-        <mi>x</mi>
-        <mo>=</mo>
-        <mfrac>
-          <mrow>
-            <mo>&#x2212;</mo>
-            <mi>b</mi>
-            <mo>&#xB1;</mo>
-            <msqrt>
-              <mrow>
-                <msup>
-                  <mi>b</mi>
-                  <mn>2</mn>
-                </msup>
-                <mo>&#x2212;</mo>
-                <mn>4</mn>
-                <mi>a</mi>
-                <mi>c</mi>
-              </mrow>
-            </msqrt>
-          </mrow>
-          <mrow>
-            <mn>2</mn>
-            <mi>a</mi>
-          </mrow>
-        </mfrac>
-      </mrow>
-    </math>',
-    ['codeFormat' => 'MML']
-);
+
 
 $tex[] = '\displaystyle{\mathcal{F}(f)(t) = \frac{1}{\left(2\pi\right)^{\frac{n}{2}}}~ \int\limits_{\mathbb{R}^n} f(x)\,e^{-\mathrm{i} t \cdot x} \,\mathrm{d} x}';
 $tex[] = '\int_a^b(f(x)+c)\,\mathrm dx=\int_a^b f(x)\,\mathrm dx+(b-a)\cdot c';
@@ -105,8 +72,24 @@ e &= [2; 1, 2, 1, 1, 4, 1, 1, 6, 1, 1, 8, 1, 1, 10, 1,\dots] \\
   &= 2+\cfrac{1}{1+\cfrac{1}{2+\cfrac{1}{1+\cfrac{1}{1+\cfrac{1}{4+\cfrac{1}{1+\cfrac{1}{1+\cfrac{1}{6+\dotsb}}}}}}}}
 \end{align}';
 
+$formulaNeoEuler = $document->addSection('Formulas: Font: Neo-Euler');
 foreach ($tex as $content) {
-    $document->addFormula($content, ['formulaFont' => 'Neo-Euler']);
+    $formulaNeoEuler->addFormula($content, ['formulaFont' => 'Neo-Euler']);
+}
+
+$formulaTex = $document->addSection('Formulas: Font: TeX');
+foreach ($tex as $content) {
+    $formulaTex->addFormula($content, ['formulaFont' => 'TeX']);
+}
+
+$formulaAsana = $document->addSection('Formulas: Font: Asana-Math');
+foreach ($tex as $content) {
+    $formulaAsana->addFormula($content, ['formulaFont' => 'Asana-Math']);
+}
+
+$formulaStix = $document->addSection('Formulas: Font: STIX-Web');
+foreach ($tex as $content) {
+    $formulaStix->addFormula($content, ['formulaFont' => 'STIX-Web']);
 }
 
 $document->addText('input/testKapitelMitRef.php');

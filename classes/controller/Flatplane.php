@@ -43,7 +43,7 @@ class Flatplane
 
     protected static $inputDir = '.';
     protected static $outputDir = '.';
-    protected static $workingDir = '.';
+    protected static $cacheDir = '.';
     protected static $verboseOutput = true; //todo: set this to false before shipping
 
     /**
@@ -89,16 +89,16 @@ class Flatplane
         }
     }
 
-    public static function setWorkingDir($workingDir)
+    public static function setCacheDir($workingDir)
     {
-        self::$workingDir = $workingDir;
+        self::$cacheDir = $workingDir;
 
-        if (!is_dir(self::$workingDir)
-            || !is_readable(self::$workingDir)
-            || !is_writable(self::$workingDir)
+        if (!is_dir(self::$cacheDir )
+            || !is_readable(self::$cacheDir )
+            || !is_writable(self::$cacheDir )
         ) {
             throw new RuntimeException(
-                'Path '.self::$workingDir.' is invalid: '
+                'Path '.self::$cacheDir .' is invalid: '
                 . 'Not a directory or not read/writable'
             );
         }
@@ -136,9 +136,9 @@ class Flatplane
         return self::$outputDir;
     }
 
-    public static function getWorkingDir()
+    public static function getCacheDir()
     {
-        return self::$workingDir;
+        return self::$cacheDir ;
     }
 
     public static function getVerboseOutput()
