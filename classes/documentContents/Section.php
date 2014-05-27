@@ -134,9 +134,7 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         $this->applyStyles();
         $pdf = $this->toRoot()->getPdf();
         $height = $pdf->getStringHeight(0, $this->getTitle());
-        $width = $pdf->getPageWidth()
-            - $pdf->getMargins()['left']
-            - $pdf->getMargins()['right'];
+        $width = $pdf->GetStringWidth($this->getTitle());
         return ['height' => $height, 'width' => $width];
     }
 

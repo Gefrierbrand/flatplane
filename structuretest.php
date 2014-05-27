@@ -84,5 +84,3 @@ $document->addText('input/testKapitelMitRef.php');
 $document->addList(['text']);
 
 $flatplane->generatePDF(['showDocumentTree' => true]);
-
-var_dump($testSec->getSize());

@@ -1,7 +1,7 @@
 {
     "name": "flatplane/flatplane",
     "type": "library",
-    "description": "Flatplane is a frontent to TCPDF to create scientific reports with automatic formatting",
+    "description": "Flatplane is a frontend to TCPDF to create scientific reports with automatic formatting",
     "keywords": ["Flatplane","PDF","typesetting","typography","report","article","LaTeX","TeX"],
     "require": {
         "php": ">=5.5",
@@ -22,5 +22,8 @@
     ],
     "autoload": {
         "psr-4": {"de\\flatplane\\": "classes/"}
+    },
+    "suggest": {
+        "ext-imagick": "*"
     }
 }
