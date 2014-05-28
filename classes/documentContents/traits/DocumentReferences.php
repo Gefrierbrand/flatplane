@@ -25,7 +25,7 @@ use de\flatplane\interfaces\DocumentElementInterface;
 
 /**
  * Description of Reference
- *
+ * todo: make this a separate class and use DI?
  * @author Nikolai Neff <admin@flatplane.de>
  */
 trait DocumentReferences
@@ -57,8 +57,10 @@ trait DocumentReferences
         switch ($type) {
             case 'number':
                 return $instance->getFormattedNumbers();
+                break;
             case 'title':
                 return $instance->getTitle();
+                break;
             case 'page':
                 $num = $instance->getPage();
                 if (!empty($num) && is_numeric($num)) {
@@ -66,7 +68,7 @@ trait DocumentReferences
                 } else {
                     return $this->getDefaultReferenceValue('page');
                 }
-
+                break;
             default:
                 trigger_error('Invalid reference type, defaulting to number');
                 return $instance->getFormattedNumbers();

@@ -84,7 +84,7 @@ class ElementFactory
 
         $orientation = $doc->getOrientation();
         $unit = $doc->getUnit();
-        $format = $doc->getPageSize();
+        $format = $doc->getPageFormat();
         $marginTop = $doc->getPageMargins('top');
         $marginBot = $doc->getPageMargins('bottom');
         $marginLeft = $doc->getPageMargins('left');

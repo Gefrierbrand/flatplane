@@ -6,11 +6,12 @@
     "require": {
         "php": ">=5.5",
         "ext-gd": "*",
-        "ext-SimpleXML": "*",
         "ext-curl": "*",
+        "ext-exif": "*",
         "tecnick.com/tcpdf": ">=6.0.075",
         "symfony/process": "2.5.*@dev",
-        "symfony/stopwatch": "dev-master"
+        "symfony/stopwatch": "dev-master",
+        "sabberworm/php-css-parser": "dev-master"
     },
     "license": "LGPLv3",
     "authors": [

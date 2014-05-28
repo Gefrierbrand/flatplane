@@ -22,7 +22,7 @@
 namespace de\flatplane\documentContents;
 
 use de\flatplane\interfaces\documentElements\FormulaInterface;
-use RuntimeException;
+use de\flatplane\utilities\SVGSize;
 
 /**
  * Description of formula
@@ -84,46 +84,25 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
      */
     protected function getSizeFromFile()
     {
-        if (!is_readable($this->getPath())) {
-            trigger_error('formula svg path not readable', E_USER_WARNING);
-        }
-        //extract dimensions frome the SVGs style-tag using simplexml
-        $xml = simplexml_load_file($this->getPath());
-        $attrib = explode('; ', $xml->attributes()->style[0]);
-
-        //extract numeric information
-        $regExMatchWidth = preg_match(
-            '/(^width:[ ]*)([-+]?[0-9]*\.?[0-9]+)([ ]?ex$)/',
-            $attrib[0],
-            $widthMatches
-        );
-        $regExMatchHeight = preg_match(
-            '/(^height:[ ]*)([-+]?[0-9]*\.?[0-9]+)([ ]?ex$)/',
-            $attrib[1],
-            $heightMatches
-        );
-
-        if (!$regExMatchWidth || !$regExMatchHeight) {
-            throw new RuntimeException(
-                'SVG did not contain valid size information'
-            );
-        }
-
-        if (!isset($widthMatches[2], $heightMatches[2])) {
-            trigger_error('Invalid SVG-size RegEx Result', E_USER_WARNING);
-        }
-        $width_ex = $widthMatches[2];
-        $height_ex = $heightMatches[2];
+        $svgSize = new SVGSize($this->getPath());
+        $dimensions = $svgSize->getDimensions();
 
         $pdf = $this->toRoot()->getPdf();
 
-        $width = $pdf->getHTMLUnitToUnits($width_ex, $pdf->getFontSize(), 'ex');
-        $height = $pdf->getHTMLUnitToUnits($height_ex, $pdf->getFontSize(), 'ex');
+        //convert given unit (usually "ex") to user-units
+        $width = $pdf->getHTMLUnitToUnits(
+            $dimensions['width'],
+            $pdf->getFontSize(),
+            $dimensions['wUnit']
+        );
+        $height = $pdf->getHTMLUnitToUnits(
+            $dimensions['height'],
+            $pdf->getFontSize(),
+            $dimensions['hUnit']
+        );
 
         return ['width' => $width,
-                'height' => $height,
-                'width_ex' => $width_ex,
-                'height_ex' => $height_ex];
+                'height' => $height];
     }
 
     /**

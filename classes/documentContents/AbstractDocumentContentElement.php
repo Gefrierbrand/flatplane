@@ -73,6 +73,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      * @var mixed
      *  use a bool to completely allow/disallow subcontent for the element or
      *  define allowed types as array values: e.g. ['section', 'formula']
+     *  todo: fix/use me?
      */
     protected $allowSubContent = true;
 
