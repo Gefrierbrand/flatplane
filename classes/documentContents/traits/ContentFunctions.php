@@ -160,19 +160,6 @@ trait ContentFunctions
     }
 
     /**
-     * @param string $path
-     * @param array $settings
-     * @return Image
-     */
-    public function addImage($path, array $settings = [])
-    {
-        $factory = $this->toRoot()->getElementFactory();
-        $settings['path'] = $path;
-        $content = $factory->createElement('section', $settings);
-        return $this->addContent($content);
-    }
-
-    /**
      * @param array $data
      * @param array $settings
      * @return Table
@@ -198,6 +185,17 @@ trait ContentFunctions
         $factory = $this->toRoot()->getElementFactory();
         $settings['path'] = $path;
         $content = $factory->createElement('text', $settings);
+        return $this->addContent($content);
+    }
+
+    public function addImage($path, array $settings = [])
+    {
+        if (!is_readable($path)) {
+            throw new RuntimeException('File '.$path.' is not readable');
+        }
+        $factory = $this->toRoot()->getElementFactory();
+        $settings['path'] = $path;
+        $content = $factory->createElement('image', $settings);
         return $this->addContent($content);
     }
 

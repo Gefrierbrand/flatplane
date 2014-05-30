@@ -83,4 +83,7 @@ foreach ($testFormula->getAvailableFonts() as $key => $font) {
 $document->addText('input/testKapitelMitRef.php');
 $document->addList(['text']);
 
+$image = $document->addImage('images/bild.png', ['fitOnPage' => false]);
+var_dump($image->getSize());
+
 $flatplane->generatePDF(['showDocumentTree' => true]);

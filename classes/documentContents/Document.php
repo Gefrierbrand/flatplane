@@ -156,7 +156,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     public function getPageSize()
     {
         if (empty($this->pageSize)) {
-            $this->getPageSizeFromFormat($this->getPageFormat());
+            $this->pageSize = $this->getPageSizeFromFormat($this->getPageFormat());
         }
         return $this->pageSize;
     }
@@ -172,7 +172,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         $val = PDF_STATIC::getPageSizeFromFormat($format);
         //convert points to user-units
         $width = $this->getPdf()->getHTMLUnitToUnits($val[0], 1, 'pt');
-        $height = $this>getPdf()->getHTMLUnitToUnits($val[1], 1, 'pt');
+        $height = $this->getPdf()->getHTMLUnitToUnits($val[1], 1, 'pt');
         return ['width' => $width, 'height' => $height];
     }
 

@@ -40,6 +40,7 @@ class ElementFactory
     protected $listConfig     = 'config/listSettings.ini';
     protected $formulaConfig  = 'config/formulaSettings.ini';
     protected $textConfig     = 'config/textSettings.ini';
+    protected $imageConfig    = 'config/imageSettings.ini';
 
     /**
      * @var array
@@ -155,5 +156,11 @@ class ElementFactory
     {
         $config = new Config($this->textConfig);
         return new Text($config->getSettings());
+    }
+
+    protected function createImage()
+    {
+        $config = new Config($this->imageConfig);
+        return new Image($config->getSettings());
     }
 }

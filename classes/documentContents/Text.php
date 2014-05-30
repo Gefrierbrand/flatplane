@@ -41,7 +41,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     protected $parse = true; //parse special content like eqn, etc?
     protected $hyphenate = true;
 
-    protected $hyphenation = ['file' => '',
+    protected $hyphenationOptions = ['file' => '',
                               'dictionary' => [],
                               'leftMin' => 2,
                               'rightMin' => 2,
@@ -53,7 +53,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
 
     public function __toString()
     {
-        return '('.$this->type.') '.substr($this->getText(), 0, 15).'...';
+        return 'Text ('.$this->getPath().')'.substr($this->getText(), 0, 15).'...';
     }
 
     public function getText()
@@ -79,9 +79,9 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         //make document available to template
         $document = $this->toRoot();
         ob_start();
-        include $this->path;
+        include ($this->getPath());
         $this->text = ob_get_clean();
-        if ($this->hyphenate) {
+        if ($this->getHyphenate()) {
             $this->text = $this->hypenateText($this->text);
         }
     }
@@ -103,14 +103,15 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     protected function hypenateText($text)
     {
         $doc = $this->toRoot();
+        $hyphenationOptions = $this->getHyphenationOptions();
         return $doc->getPdf()->hyphenateText(
             $text,
-            $this->hyphenation['file'],
-            $this->hyphenation['dictionary'],
-            $this->hyphenation['leftMin'],
-            $this->hyphenation['rightMin'],
-            $this->hyphenation['charMin'],
-            $this->hyphenation['charMax']
+            $hyphenationOptions['file'],
+            $hyphenationOptions['dictionary'],
+            $hyphenationOptions['leftMin'],
+            $hyphenationOptions['rightMin'],
+            $hyphenationOptions['charMin'],
+            $hyphenationOptions['charMax']
         );
     }
 
@@ -134,14 +135,14 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         return $this->hyphenationPatternFile;
     }
 
-    protected function setHyphenation(array $hyphenation)
+    protected function setHyphenationOptions(array $hyphenation)
     {
         foreach ($hyphenation as $key => $option) {
-            if (array_key_exists($key, $this->hyphenation)) {
+            if (array_key_exists($key, $this->hyphenationOptions)) {
                 if ($option == ['']) {
                     $option = [];
                 }
-                $this->hyphenation[$key] = $option;
+                $this->hyphenationOptions[$key] = $option;
             }
         }
     }
@@ -164,5 +165,15 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     protected function setLineHeight($lineHeight)
     {
         $this->lineHeight = $lineHeight;
+    }
+
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    public function getHyphenationOptions()
+    {
+        return $this->hyphenationOptions;
     }
 }

@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "bdf177636aaed4432679ba892e080055",
+    "hash": "638c6ef0d69ad7a870f32a3a87734f7a",
     "packages": [
         {
             "name": "sabberworm/php-css-parser",
@@ -212,9 +212,8 @@
     },
     "platform": {
         "php": ">=5.5",
-        "ext-gd": "*",
         "ext-curl": "*",
-        "ext-exif": "*"
+        "ext-imagick": "*"
     },
     "platform-dev": []
 }

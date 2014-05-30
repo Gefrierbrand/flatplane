@@ -21,6 +21,11 @@
 
 namespace de\flatplane\documentContents;
 
+use de\flatplane\utilities\SVGSize;
+use Imagick;
+use RuntimeException;
+use SplFileInfo;
+
 /**
  * Description of Image
  *
@@ -31,28 +36,34 @@ class Image extends AbstractDocumentContentElement
     protected $type = 'image';
     protected $allowSubContent = ['image'];
 
-    protected $title = 'Image';
-    protected $titlePosition = 'top';
-
     protected $path;
     protected $imageType;
 
+    protected $title = 'Image';
+    protected $titlePosition = 'top-left';
+
     protected $caption;
-    protected $captionPosition = 'bottom';
+    protected $captionPosition = 'bottom-center';
 
     protected $rotation = 0;
-    protected $resolution = '72'; //dpi
+    protected $resolution; //dpi
     protected $width;
     protected $height;
-    protected $keepAspectRatio = true;
+    protected $fitOnPage = true;
 
     protected $placement = 'here'; //other options: (?) section[level]/top/bot/page
+    protected $orientation = 'center';
+
+    public function __toString()
+    {
+        return (string) 'Image: ('.$this->getImageType().') '.$this->getPath();
+    }
 
     public function getSize()
     {
         $filename = $this->getPath();
         if (!is_readable($filename)) {
-            throw new \RuntimeException('Image '.$filename.' is not readable');
+            throw new RuntimeException('Image '.$filename.' is not readable');
         }
         if (empty($this->getImageType())) {
             $this->setImageType($this->estimateImageType());
@@ -62,9 +73,9 @@ class Image extends AbstractDocumentContentElement
 
     protected function estimateImageType()
     {
-        //todo: use MIME-types and EXIF Data?
+        //todo: use MIME-types and EXIF Data? / use imagick?
         $info = new SplFileInfo($this->getPath());
-        return strtolower($info->getExtensions());
+        return strtolower($info->getExtension());
     }
 
     protected function getImageDimensions()
@@ -79,7 +90,31 @@ class Image extends AbstractDocumentContentElement
                 $dimensions = $this->parseDimensions();
             }
         }
-        return $dimensions;
+        return $this->adjustDimensionsToPage($dimensions);
+    }
+
+    protected function adjustDimensionsToPage($dimensions)
+    {
+        if ($this->getFitOnPage()) {
+            $pageMeasurements = $this->getPageMeasurements();
+            if ($dimensions['width'] <= $pageMeasurements['textwidth']
+                && $dimensions['height'] <= $pageMeasurements['textheight']
+            ) {
+                return $dimensions;
+            }
+            //todo: check for correct values not equal to zero
+            $aspectRatio = $dimensions['width']/$dimensions['height'];
+            $newWidth = $pageMeasurements['textwidth'];
+            $newHeight = $newWidth/$aspectRatio;
+
+            if ($newHeight >= $pageMeasurements['textheight']) {
+                $newHeight = $pageMeasurements['textheight'];
+                $newWidth = $aspectRatio*$newHeight;
+            }
+            return ['width' => $newWidth, 'height' => $newHeight];
+        } else {
+            return $dimensions;
+        }
     }
 
     protected function parseDimensions()
@@ -96,13 +131,7 @@ class Image extends AbstractDocumentContentElement
             return $this->getImageDimensionsFromFile();
         }
 
-        $doc = $this->toRoot();
-        $pagewidth = $doc->getPageSize()['width'];
-        $textwidth = $pagewidth - $doc->getPageMargins('left')
-                                - $doc->getPageMargins('right');
-        $pageheight = $doc->getPageSize()['height'];
-        //todo: implement textheight:
-        //$textheight : pageheight - margins[top/bot] - footnotes - header/footer
+        $pageMeasurements = $this->getPageMeasurements();
 
         foreach ($componets as $key => $direction) {
             if (count($direction) == 2) {
@@ -112,32 +141,34 @@ class Image extends AbstractDocumentContentElement
                 $factor[$key] = 1;
                 $value[$key] = $direction[0];
             }
-            switch ($value[$key])
-            {
-                case 'pagewidth':
-                    $value[$key] = $pagewidth;
-                    break;
-                case 'textwidth':
-                    $value[$key] = $textwidth;
-                    break;
-                case 'pageheight':
-                    $value[$key] = $pageheight;
-                    break;
-                default:
-                    throw new \RuntimeException('invalid imagesize-component value');
+            if (array_key_exists($value[$key], $pageMeasurements)) {
+                $value[$key] = $pageMeasurements[$key];
+            } else {
+                throw new RuntimeException('invalid imagesize-component value');
             }
         }
 
         $width = $factor['width']*$value['width'];
         $height = $factor['height']*$value['height'];
 
-        if ($this->getKeepAspectRatio()) {
-            $origDim = $this->getImageDimensionsFromFile();
-            $aspectRatio = $origDim['width']/$origDim['height'];
-            $height = $width/$aspectRatio;
-        }
-
         return ['width' => $width, 'height' => $height];
+    }
+
+    protected function getPageMeasurements()
+    {
+        //doto: make this better
+        $doc = $this->toRoot();
+        $pagewidth = $doc->getPageSize()['width'];
+        $textwidth = $pagewidth - $doc->getPageMargins('left')
+                                - $doc->getPageMargins('right');
+        $pageheight = $doc->getPageSize()['height'];
+        //todo: implement textheight:
+        //$textheight : pageheight - margins[top/bot] - footnotes - header/footer
+
+        return ['pagewidth' => $pagewidth,
+                'textwidth' => $textwidth,
+                'pageheight' => $pageheight,
+                'textheight' => $pageheight];
     }
 
     /**
@@ -194,22 +225,7 @@ class Image extends AbstractDocumentContentElement
         $svgSize = new SVGSize($this->getPath());
         $dimensions = $svgSize->getDimensions();
 
-        $pdf = $this->toRoot()->getPdf();
-
-        //convert given unit (usually "ex") to user-units
-        $width = $pdf->getHTMLUnitToUnits(
-            $dimensions['width'],
-            $pdf->getFontSize(),
-            $dimensions['wUnit']
-        );
-        $height = $pdf->getHTMLUnitToUnits(
-            $dimensions['height'],
-            $pdf->getFontSize(),
-            $dimensions['hUnit']
-        );
-
-        return ['width' => $width,
-                'height' => $height];
+        return $this->convertImageSizeToUserUnits($dimensions);
     }
 
     protected function getEPSMeasurementsFromFile()
@@ -222,19 +238,25 @@ class Image extends AbstractDocumentContentElement
         $filename = $this->getPath();
         $imageInfos = getimagesize($filename);
         if ($imageInfos == false) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'imagesize of '.$filename.' can\'t be determined; check if the '.
                 'file is not corrupted and the image-format supported'
             );
         }
 
-        return $this->convertImageSizeToUserUnits($imageInfos[0], $imageInfos[1]);
+        return $this->convertImageSizeToUserUnits(
+            ['width' => $imageInfos[0],
+             'wUnit' => 'px',
+             'height' => $imageInfos[1],
+             'hUnit' => 'px']
+        );
     }
 
-    protected function convertImageSizeToUserUnits($width, $height)
+    protected function convertImageSizeToUserUnits($dimensions)
     {
         $resolution = $this->estimateImageResolution();
 
+        $pdf = $this->toRoot()->getPdf();
         //todo here: adjust image scaling factor according to DPI
 
         $newWidth = $pdf->getHTMLUnitToUnits(
@@ -252,9 +274,45 @@ class Image extends AbstractDocumentContentElement
                 'height' => $newHeight];
     }
 
+    /**
+     * todo: doc
+     * @return float
+     */
     protected function estimateImageResolution()
     {
+        if (!empty($this->getResolution())) {
+            return $this->getResolution();
+        } else {
+            if (extension_loaded('imagick')) {
+                $image = new Imagick($this->getPath());
+                $imageStats = $image->identifyimage();
 
+                if (empty($imageStats['resolution'])
+                    || !is_array($imageStats['resolution'])
+                ) {
+                    trigger_error(
+                        'Image resolution could not be determined, assuming 72 dpi',
+                        E_USER_NOTICE
+                    );
+                    return 72;
+                } else {
+                    //currently different resolutions per axis are not supported
+                    //use x-resolution for both.
+                    $resolution = $imageStats['resolution']['x'];
+                }
+                if (empty($imageStats['units'])) {
+                    $unit = 'PixelsPerInch';
+                } else {
+                    $unit = $imageStats['units'];
+                }
+                if ($unit == 'PixelsPerCentimeter') {
+                    $resolution = $resolution * 2.54;
+                }
+                return $resolution;
+            } else {
+                return 72;
+            }
+        }
     }
 
     public function getTitlePosition()
@@ -269,6 +327,9 @@ class Image extends AbstractDocumentContentElement
 
     public function getImageType()
     {
+        if (empty($this->imageType)) {
+            $this->imageType = $this->estimateImageType();
+        }
         return $this->imageType;
     }
 
@@ -375,5 +436,25 @@ class Image extends AbstractDocumentContentElement
     protected function setKeepAspectRatio($keepAspectRatio)
     {
         $this->keepAspectRatio = $keepAspectRatio;
+    }
+
+    public function getFitOnPage()
+    {
+        return $this->fitOnPage;
+    }
+
+    public function getOrientation()
+    {
+        return $this->orientation;
+    }
+
+    protected function setFitOnPage($fitOnPage)
+    {
+        $this->fitOnPage = $fitOnPage;
+    }
+
+    protected function setOrientation($orientation)
+    {
+        $this->orientation = $orientation;
     }
 }

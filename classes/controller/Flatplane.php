@@ -173,6 +173,11 @@ class Flatplane
      */
     public function generatePDF(array $settings = [])
     {
+        if (!extension_loaded('imagick')) {
+            echo 'Imagick extension is not available, assuming 72 dpi for'
+                 .' all images if not otherwise specified.';
+        }
+
         if (self::$verboseOutput
             && isset($settings['showDocumentTree'])
             && $settings['showDocumentTree']) {

@@ -1,13 +1,12 @@
 {
     "name": "flatplane/flatplane",
     "type": "library",
-    "description": "Flatplane is a frontend to TCPDF to create scientific reports with automatic formatting",
-    "keywords": ["Flatplane","PDF","typesetting","typography","report","article","LaTeX","TeX"],
+    "description": "Flatplane is a frontend to TCPDF to create scientific reports with automatic text-formatting and support for TeX and MathML equations",
+    "keywords": ["Flatplane", "PDF", "typesetting", "typography", "report", "article", "LaTeX", "TeX", "MathJax", "Equation", "Formula", "MathML"],
     "require": {
         "php": ">=5.5",
-        "ext-gd": "*",
         "ext-curl": "*",
-        "ext-exif": "*",
+        "ext-imagick": "*",
         "tecnick.com/tcpdf": ">=6.0.075",
         "symfony/process": "2.5.*@dev",
         "symfony/stopwatch": "dev-master",
@@ -25,6 +24,6 @@
         "psr-4": {"de\\flatplane\\": "classes/"}
     },
     "suggest": {
-        "ext-imagick": "*"
+        "ext-gd": "*"
     }
 }
