@@ -6,7 +6,6 @@
     "require": {
         "php": ">=5.5",
         "ext-curl": "*",
-        "ext-imagick": "*",
         "tecnick.com/tcpdf": ">=6.0.075",
         "symfony/process": "2.5.*@dev",
         "symfony/stopwatch": "dev-master",
@@ -24,6 +23,7 @@
         "psr-4": {"de\\flatplane\\": "classes/"}
     },
     "suggest": {
+        "ext-imagick": "*",
         "ext-gd": "*"
     }
 }

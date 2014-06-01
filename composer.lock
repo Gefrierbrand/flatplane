@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "638c6ef0d69ad7a870f32a3a87734f7a",
+    "hash": "aafbc338c9be46539f1077d08d2bf5f9",
     "packages": [
         {
             "name": "sabberworm/php-css-parser",
@@ -146,11 +146,11 @@
         },
         {
             "name": "tecnick.com/tcpdf",
-            "version": "6.0.082",
+            "version": "6.0.083",
             "source": {
                 "type": "git",
                 "url": "git://git.code.sf.net/p/tcpdf/code",
-                "reference": "23ce7ff380194d90d719af37a3a10940201af899"
+                "reference": "d6a2206ab366f493680a22151429f17fd045fe04"
             },
             "require": {
                 "php": ">=5.3.0"
@@ -199,7 +199,7 @@
                 "pdf417",
                 "qrcode"
             ],
-            "time": "2014-05-23 21:58:56"
+            "time": "2014-05-29 18:28:56"
         }
     ],
     "packages-dev": [],
@@ -212,8 +212,7 @@
     },
     "platform": {
         "php": ">=5.5",
-        "ext-curl": "*",
-        "ext-imagick": "*"
+        "ext-curl": "*"
     },
     "platform-dev": []
 }

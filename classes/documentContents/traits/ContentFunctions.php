@@ -24,10 +24,10 @@ namespace de\flatplane\documentContents\traits;
 use de\flatplane\documentContents\Document;
 use de\flatplane\documentContents\Formula;
 use de\flatplane\documentContents\Image;
+use de\flatplane\documentContents\ListOfContents;
 use de\flatplane\documentContents\Section;
 use de\flatplane\documentContents\Table;
 use de\flatplane\documentContents\Text;
-use de\flatplane\documentContents\ListOfContents;
 use de\flatplane\interfaces\DocumentElementInterface;
 use RuntimeException;
 
@@ -188,6 +188,12 @@ trait ContentFunctions
         return $this->addContent($content);
     }
 
+    /**
+     * @param string $path
+     * @param array $settings
+     * @return Image
+     * @throws RuntimeException
+     */
     public function addImage($path, array $settings = [])
     {
         if (!is_readable($path)) {

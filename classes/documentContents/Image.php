@@ -28,7 +28,7 @@ use SplFileInfo;
 
 /**
  * Description of Image
- *
+ * todo: title/desc/numbering
  * @author Nikolai Neff <admin@flatplane.de>
  */
 class Image extends AbstractDocumentContentElement
@@ -43,7 +43,7 @@ class Image extends AbstractDocumentContentElement
     protected $titlePosition = 'top-left';
 
     protected $caption;
-    protected $captionPosition = 'bottom-center';
+    protected $captionPosition = 'bottom-left';
 
     protected $rotation = 0;
     protected $resolution; //dpi
@@ -54,23 +54,93 @@ class Image extends AbstractDocumentContentElement
     protected $placement = 'here'; //other options: (?) section[level]/top/bot/page
     protected $orientation = 'center';
 
+    protected $margins = ['default' => 0, 'title' => 5, 'caption' => 5];
+
+    /**
+     * Returns image-type and -path as string
+     * @return string
+     */
     public function __toString()
     {
         return (string) 'Image: ('.$this->getImageType().') '.$this->getPath();
     }
 
+    /**
+     * This Methos returns the (estimated) size of the image in user units.
+     * The values include the space needed for Title and Caption (if set).
+     * @return array
+     *  associative array with keys 'width' & 'height' in user-units
+     * @throws RuntimeException
+     */
     public function getSize()
     {
         $filename = $this->getPath();
         if (!is_readable($filename)) {
             throw new RuntimeException('Image '.$filename.' is not readable');
         }
+
         if (empty($this->getImageType())) {
+            //if the imagetype is unset try to determine it by analyzing the file
             $this->setImageType($this->estimateImageType());
         }
-        return $this->getImageDimensions();
+        //get the raw image dimensions from the file or config
+        $imageDimensions = $this->getImageDimensions();
+        //get the size of title and caption (if present)
+        $descriptionDimensions = $this->applyStyles();
+
+        //add the space needed for margins and descriptions. The order does not
+        //matter as image and description can only be on top of each other and
+        //not side by side. This might get changed in a future version
+        $resultingDimensions = ['width' => $imageDimensions['width'],
+                                'height' => $imageDimensions['height']
+                                    + $descriptionDimensions['titleHeight']
+                                    + $descriptionDimensions['captionHeight']
+                                    + $this->getMargins('title')
+                                    + $this->getMargins('caption')];
+        return $resultingDimensions;
     }
 
+    /**
+     * This method estimates the vertical dimensions of the image descriptions
+     * @return array
+     *  space needed for title and caption
+     */
+    public function applyStyles()
+    {
+        //todo: use transactions and html styles
+        $pdf = $this->toRoot()->getPdf();
+        $this->setPDFFont('title');
+
+        $titleHeight = $pdf->getStringHeight(0, $this->getTitle());
+
+        $this->setPDFFont('caption');
+        $captionHeight = $pdf->getStringHeight(0, $this->getTitle());
+
+        return ['titleHeight' => $titleHeight, 'captionHeight' => $captionHeight];
+    }
+
+    /**
+     * This method sets the current pdf font-styles for the image descriptions
+     * @param string $param
+     *  type of the description to set font for (e.g. 'title'). If no settings
+     *  are present for that type, the defaults are used.
+     */
+    protected function setPDFFont($param)
+    {
+        $pdf = $this->toRoot()->getPdf();
+        $pdf->SetFont(
+            $this->getFontType($param),
+            $this->getFontStyle($param),
+            $this->getFontSize($param)
+        );
+        $pdf->setFontSpacing($this->getFontSpacing($param));
+        $pdf->setFontStretching($this->getFontStretching($param));
+    }
+
+    /**
+     * estimates the type of the image
+     * @return string
+     */
     protected function estimateImageType()
     {
         //todo: use MIME-types and EXIF Data? / use imagick?
@@ -78,35 +148,69 @@ class Image extends AbstractDocumentContentElement
         return strtolower($info->getExtension());
     }
 
+    /**
+     * This method returns the dimensions of the image in user units.
+     * These are either userdefined or estimated from the file itself.
+     * @return array
+     *  array containing width & height in user units.
+     */
     protected function getImageDimensions()
     {
         if (empty($this->getWidth()) && empty($this->getHeight())) {
+            //return the size defined by the user
             $dimensions = $this->getImageDimensionsFromFile();
         } else {
             if (is_numeric($this->getWidth()) && is_numeric($this->getHeight())) {
                 $dimensions['width'] = $this->getWidth();
                 $dimensions['height'] = $this->getHeight();
             } else {
+                //parse if the user-provides sizes are not numeric
+                //(e.g. for values like "textwidth")
                 $dimensions = $this->parseDimensions();
             }
         }
         return $this->adjustDimensionsToPage($dimensions);
     }
 
-    protected function adjustDimensionsToPage($dimensions)
+    /**
+     * This method tries to adjust the image dimensions to fit the page while
+     * keeping the aspect ratio of the image constant.
+     * The image is not resampled, just the drawing size is changed, which might
+     * lead to higher pixel-densities on the output medium.
+     * @param array $dimensions
+     *  original image size
+     * @return array
+     *  new adjusted image size
+     * @todo: factor in descriptions like title and caption
+     */
+    protected function adjustDimensionsToPage(array $dimensions)
     {
+        //check if the dimensions are set and not zero
+        $this->validateDimensions($dimensions);
+
+        //only change if the fitOnPage property is true
         if ($this->getFitOnPage()) {
+            //get the available space on the current page
             $pageMeasurements = $this->getPageMeasurements();
+            //return the old dimensions if they both fit in the available space
+            //todo: provide option to use max available space (with or without
+            //image upscaling/resampling)
             if ($dimensions['width'] <= $pageMeasurements['textwidth']
                 && $dimensions['height'] <= $pageMeasurements['textheight']
             ) {
                 return $dimensions;
             }
-            //todo: check for correct values not equal to zero
+
+            //the width is usually the constraining direction, so set it to
+            //the maximum size and ajust the height according to the original
+            //aspect ratio
             $aspectRatio = $dimensions['width']/$dimensions['height'];
             $newWidth = $pageMeasurements['textwidth'];
             $newHeight = $newWidth/$aspectRatio;
 
+            //if the height is still to big, adjust the image again, this time
+            //setting the height to the maximum available space and adjusting
+            //the width
             if ($newHeight >= $pageMeasurements['textheight']) {
                 $newHeight = $pageMeasurements['textheight'];
                 $newWidth = $aspectRatio*$newHeight;
@@ -117,30 +221,74 @@ class Image extends AbstractDocumentContentElement
         }
     }
 
+    /**
+     * This method checks if the required keys 'height' and 'width' are set and
+     * greater than 0. An error is triggered if they are missing.
+     * @param array $dimensions
+     *  array to check
+     * @param bool $units
+     *  if true, also check if the keys 'wUnit' and 'hUnit' are present and non-zero
+     */
+    protected function validateDimensions(array $dimensions, $units = false)
+    {
+        if (empty($dimensions['width']) || empty($dimensions['height'])) {
+            trigger_error('Image dimensions are unset or zero', E_USER_WARNING);
+        } else {
+            if ($dimensions['width'] < 0 or $dimensions['height'] < 0) {
+                trigger_error('image dimensions are negaive!', E_USER_WARNING);
+            }
+        }
+        if ($units) {
+            if (empty($dimensions['wUnit']) || empty($dimensions['hUnit'])) {
+                trigger_error('Image units are unset or zero', E_USER_WARNING);
+            }
+        }
+    }
+
+    /**
+     * This method parses a given string into an optional factor and a reference-
+     * size. The string has to be in the format "factor*referencesize".
+     * The factor and '*' might be omitted and will then default to 1.
+     * Currently available reference-sizes are defined in getPageMeasurements().
+     * These are then evaluated and the resulting dimensions are returned.
+     * @return array
+     *  dimensions in user units
+     * @throws RuntimeException
+     * @see getPageMeasurements()
+     */
     protected function parseDimensions()
     {
+        //split the with & height strings at the * sign
         $componets['width'] = explode('*', strtolower($this->getWidth()));
         $componets['height'] = explode('*', strtolower($this->getHeight()));
 
+        //check if the results are valid reference-sizes
         if (!$this->checkComponets($componets)) {
             trigger_error(
                 'Invalid Width/Height arguments supplied,'
                 .' trying to read dimensions from file instead.',
                 E_USER_WARNING
             );
+            //get the dimensions from the file if the string evaluation failed
             return $this->getImageDimensionsFromFile();
         }
 
+        //get the available reference-sizes
         $pageMeasurements = $this->getPageMeasurements();
 
+        //analyze the components of the strings for width & height and split
+        //them into factor and value
         foreach ($componets as $key => $direction) {
+            //direction (width or height) has 2 components if a factor is given
             if (count($direction) == 2) {
                 $factor[$key] = $direction[0];
                 $value[$key] = $direction[1];
             } else {
+                //default to factor 1 if not otherwise given
                 $factor[$key] = 1;
                 $value[$key] = $direction[0];
             }
+            //check if the requested reference-size is a defined page-measurement
             if (array_key_exists($value[$key], $pageMeasurements)) {
                 $value[$key] = $pageMeasurements[$key];
             } else {
@@ -148,15 +296,20 @@ class Image extends AbstractDocumentContentElement
             }
         }
 
+        //evaulate the resulting sizes
         $width = $factor['width']*$value['width'];
         $height = $factor['height']*$value['height'];
 
         return ['width' => $width, 'height' => $height];
     }
 
+    /**
+     * todo: doc
+     * @return array
+     */
     protected function getPageMeasurements()
     {
-        //doto: make this better
+        //doto: make this better ?
         $doc = $this->toRoot();
         $pagewidth = $doc->getPageSize()['width'];
         $textwidth = $pagewidth - $doc->getPageMargins('left')
@@ -208,7 +361,10 @@ class Image extends AbstractDocumentContentElement
         return true;
     }
 
-
+    /**
+     * This method returns the size of the image based on the actual file.
+     * @return array
+     */
     protected function getImageDimensionsFromFile()
     {
         if ($this->getImageType() == 'svg') {
@@ -220,6 +376,11 @@ class Image extends AbstractDocumentContentElement
         }
     }
 
+
+    /**
+     * todo: doc
+     * @return array
+     */
     protected function getSVGMeasurementsFromFile()
     {
         $svgSize = new SVGSize($this->getPath());
@@ -228,11 +389,21 @@ class Image extends AbstractDocumentContentElement
         return $this->convertImageSizeToUserUnits($dimensions);
     }
 
+    /**
+     * todo: implement, doc
+     * @return array
+     */
     protected function getEPSMeasurementsFromFile()
     {
         //todo: implement me
+        return ['width' => 0, 'height' => 0];
     }
 
+    /**
+     * todo: doc
+     * @return type
+     * @throws RuntimeException
+     */
     protected function getGDMeasurementsFromFile()
     {
         $filename = $this->getPath();
@@ -252,39 +423,67 @@ class Image extends AbstractDocumentContentElement
         );
     }
 
-    protected function convertImageSizeToUserUnits($dimensions)
+    /**
+     * todo: doc
+     * @param array $dimensions
+     * @return type
+     */
+    protected function convertImageSizeToUserUnits(array $dimensions)
     {
-        $resolution = $this->estimateImageResolution();
+        $this->validateDimensions($dimensions, true);
+        $resolution = $this->estimateImageResolution(); //result in dpi
 
         $pdf = $this->toRoot()->getPdf();
-        //todo here: adjust image scaling factor according to DPI
+
+        $oldImageScale = $pdf->getImageScale();
+        //scale to the default TCPDF resolution of 72 dpi
+        $pdf->setImageScale($resolution/72);
 
         $newWidth = $pdf->getHTMLUnitToUnits(
             $dimensions['width'],
-            $pdf->getFontSize(),
-            $dimensions['wUnit']
+            1,
+            $dimensions['wUnit'],
+            false
         );
         $newHeight = $pdf->getHTMLUnitToUnits(
             $dimensions['height'],
-            $pdf->getFontSize(),
-            $dimensions['hUnit']
+            1,
+            $dimensions['hUnit'],
+            false
         );
+
+        //restore previous image scale
+        $pdf->setImageScale($oldImageScale);
 
         return ['width' => $newWidth,
                 'height' => $newHeight];
     }
 
     /**
-     * todo: doc
+     * This method tries to use ImageMagic to determine the resolution of the
+     * image in question if no resolution is otherwise specified. The default
+     * value of 72 dpi is returned if imagick fails.
      * @return float
+     *  Image resolution in DPI (dots per inch)
      */
     protected function estimateImageResolution()
     {
         if (!empty($this->getResolution())) {
             return $this->getResolution();
         } else {
+            //we cannot savely rely on imagick being installed and working
+            //correctly, as it's installation is tricky at best on windows platforms
             if (extension_loaded('imagick')) {
                 $image = new Imagick($this->getPath());
+                if (empty($image->queryformats())) {
+                    trigger_error(
+                        'Imagick has no supported formats, please check'
+                        .' its installation. Defaulting to 72 dpi.',
+                        E_USER_NOTICE
+                    );
+                    return 72;
+                }
+                //ges basic information about the image
                 $imageStats = $image->identifyimage();
 
                 if (empty($imageStats['resolution'])
@@ -300,17 +499,20 @@ class Image extends AbstractDocumentContentElement
                     //use x-resolution for both.
                     $resolution = $imageStats['resolution']['x'];
                 }
+                //the resolution reported back from ImageMagick is dependend on
+                //the filetype. JPEG resolution is usually given in DPI while
+                //PNG defaults to PPCM (pixels per centimeter)
                 if (empty($imageStats['units'])) {
-                    $unit = 'PixelsPerInch';
+                    $unit = 'PixelsPerInch'; //default to dpi if the unit is unset
                 } else {
                     $unit = $imageStats['units'];
                 }
                 if ($unit == 'PixelsPerCentimeter') {
-                    $resolution = $resolution * 2.54;
+                    $resolution = $resolution * 2.54; //convert PPCM to DPI
                 }
                 return $resolution;
             } else {
-                return 72;
+                return 72; //default to 72 dpi if imagick is unavailable
             }
         }
     }
@@ -456,5 +658,15 @@ class Image extends AbstractDocumentContentElement
     protected function setOrientation($orientation)
     {
         $this->orientation = $orientation;
+    }
+
+    public function getTitleMargin()
+    {
+        return $this->titleMargin;
+    }
+
+    public function getCaptionMargin()
+    {
+        return $this->captionMargin;
     }
 }
