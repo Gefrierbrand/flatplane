@@ -28,7 +28,7 @@ use de\flatplane\interfaces\DocumentContentStructureInterface;
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Page implements DocumentContentStructureInterface
+class Page implements PageInterface
 {
     use \de\flatplane\documentContents\ContentFunctions;
 

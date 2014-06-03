@@ -9,7 +9,8 @@
         "tecnick.com/tcpdf": ">=6.0.075",
         "symfony/process": "2.5.*@dev",
         "symfony/stopwatch": "dev-master",
-        "sabberworm/php-css-parser": "dev-master"
+        "sabberworm/php-css-parser": "dev-master",
+        "audiolabs/bibtexparser": "dev-master"
     },
     "license": "LGPLv3",
     "authors": [

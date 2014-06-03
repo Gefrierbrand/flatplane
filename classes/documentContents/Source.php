@@ -29,7 +29,8 @@ namespace de\flatplane\documentContents;
 class Source extends AbstractDocumentContentElement
 {
     protected $type='source';
-    protected $text;
+    protected $author;
+    protected $title;
 
     //todo: implement here + in factory
     //todo: bibtex support?

@@ -40,10 +40,10 @@ class Image extends AbstractDocumentContentElement
     protected $imageType;
 
     protected $title = 'Image';
-    protected $titlePosition = 'top-left';
+    protected $titlePosition = ['top', 'left'];
 
     protected $caption;
-    protected $captionPosition = 'bottom-left';
+    protected $captionPosition = ['bottom', 'left'];
 
     protected $rotation = 0;
     protected $resolution; //dpi
@@ -52,7 +52,12 @@ class Image extends AbstractDocumentContentElement
     protected $fitOnPage = true;
 
     protected $placement = 'here'; //other options: (?) section[level]/top/bot/page
-    protected $orientation = 'center';
+    protected $alignment = 'center';
+
+    protected $titlePrefix = 'Figure';
+    protected $captionPrefix = '';
+    protected $descriptionSeparator = ':';
+    protected $numberingPosition = ['title', 'afterPrefix'];
 
     protected $margins = ['default' => 0, 'title' => 5, 'caption' => 5];
 
@@ -107,16 +112,58 @@ class Image extends AbstractDocumentContentElement
      */
     public function applyStyles()
     {
-        //todo: use transactions and html styles
+        //todo: use transactions and html styles?
         $pdf = $this->toRoot()->getPdf();
         $this->setPDFFont('title');
 
-        $titleHeight = $pdf->getStringHeight(0, $this->getTitle());
+        $title = $this->getCompleteTitle();
+        $titleHeight = $pdf->getStringHeight(0, $title);
 
         $this->setPDFFont('caption');
-        $captionHeight = $pdf->getStringHeight(0, $this->getTitle());
+        $caption = $this->getCompleteCaption();
+        $captionHeight = $pdf->getStringHeight(0, $caption);
 
         return ['titleHeight' => $titleHeight, 'captionHeight' => $captionHeight];
+    }
+
+    protected function getCompleteTitle()
+    {
+        $prefix = $this->getTitlePrefix();
+        if (empty($prefix)) {
+            $separator = '';
+        } else {
+            $separator = $this->getDescriptionSeparator();
+        }
+        if ($this->getEnumerate()) {
+            if (strtolower($this->getNumberingPosition()) == 'title') {
+                return $prefix.' '.$this->getFormattedNumbers()
+                       .$separator.$this->getTitle();
+            } else {
+                return $prefix.$separator.$this->getTitle();
+            }
+        } else {
+            return $prefix.$separator.$this->getTitle();
+        }
+    }
+
+    protected function getCompleteCaption()
+    {
+        $prefix = $this->getCaptionPrefix();
+        if (empty($prefix)) {
+            $separator = '';
+        } else {
+            $separator = $this->getDescriptionSeparator();
+        }
+        if ($this->getEnumerate()) {
+            if (strtolower($this->getNumberingPosition()) == 'caption') {
+                return $prefix.' '.$this->getFormattedNumbers()
+                       .$separator.$this->getCaption();
+            } else {
+                return $prefix.$separator.$this->getCaption();
+            }
+        } else {
+            return $prefix.$separator.$this->getCaption();
+        }
     }
 
     /**
@@ -309,19 +356,19 @@ class Image extends AbstractDocumentContentElement
      */
     protected function getPageMeasurements()
     {
-        //doto: make this better ?
+        //doto: footnotes
         $doc = $this->toRoot();
         $pagewidth = $doc->getPageSize()['width'];
         $textwidth = $pagewidth - $doc->getPageMargins('left')
                                 - $doc->getPageMargins('right');
         $pageheight = $doc->getPageSize()['height'];
-        //todo: implement textheight:
-        //$textheight : pageheight - margins[top/bot] - footnotes - header/footer
+        $textheight = $pageheight - $doc->getPageMargins('top')
+                                  - $doc->getPageMargins('bottom');
 
         return ['pagewidth' => $pagewidth,
                 'textwidth' => $textwidth,
                 'pageheight' => $pageheight,
-                'textheight' => $pageheight];
+                'textheight' => $textheight];
     }
 
     /**
@@ -645,9 +692,9 @@ class Image extends AbstractDocumentContentElement
         return $this->fitOnPage;
     }
 
-    public function getOrientation()
+    public function getAlignment()
     {
-        return $this->orientation;
+        return $this->alignment;
     }
 
     protected function setFitOnPage($fitOnPage)
@@ -655,9 +702,9 @@ class Image extends AbstractDocumentContentElement
         $this->fitOnPage = $fitOnPage;
     }
 
-    protected function setOrientation($orientation)
+    protected function setAlignment($alignment)
     {
-        $this->orientation = $orientation;
+        $this->alignment = $alignment;
     }
 
     public function getTitleMargin()
@@ -668,5 +715,45 @@ class Image extends AbstractDocumentContentElement
     public function getCaptionMargin()
     {
         return $this->captionMargin;
+    }
+
+    public function getTitlePrefix()
+    {
+        return $this->titlePrefix;
+    }
+
+    public function getCaptionPrefix()
+    {
+        return $this->captionPrefix;
+    }
+
+    public function getDescriptionSeparator()
+    {
+        return $this->descriptionSeparator;
+    }
+
+    public function getNumberingPosition()
+    {
+        return $this->numberingPosition;
+    }
+
+    protected function setTitlePrefix($titlePrefix)
+    {
+        $this->titlePrefix = $titlePrefix;
+    }
+
+    protected function setCaptionPrefix($captionPrefix)
+    {
+        $this->captionPrefix = $captionPrefix;
+    }
+
+    protected function setDescriptionSeparator($descriptionSeparator)
+    {
+        $this->descriptionSeparator = $descriptionSeparator;
+    }
+
+    protected function setNumberingPosition($numberingPosition)
+    {
+        $this->numberingPosition = $numberingPosition;
     }
 }
