@@ -23,10 +23,13 @@ namespace de\flatplane\controller;
 
 use de\flatplane\documentContents\Document;
 use de\flatplane\documentContents\ElementFactory;
+use de\flatplane\interfaces\documentElements\DocumentInterface;
 use de\flatplane\iterators\ContentTypeFilterIterator;
 use de\flatplane\iterators\RecursiveContentIterator;
 use de\flatplane\model\FormulaFilesGenerator;
 use de\flatplane\model\ListGenerator;
+use de\flatplane\utilities\PDF;
+use de\flatplane\view\PageLayout;
 use RecursiveIteratorIterator;
 use RecursiveTreeIterator;
 use RuntimeException;
@@ -89,9 +92,9 @@ class Flatplane
         }
     }
 
-    public static function setCacheDir($workingDir)
+    public static function setCacheDir($cacheDir)
     {
-        self::$cacheDir = $workingDir;
+        self::$cacheDir = $cacheDir;
 
         if (!is_dir(self::$cacheDir)
             || !is_readable(self::$cacheDir)
@@ -150,10 +153,10 @@ class Flatplane
      * @param array $settings
      * @return Document
      */
-    public function createDocument(array $settings = [])
+    public function createDocument(array $settings = [], PDF $pdf = null)
     {
         $factory = new ElementFactory();
-        $this->document = $factory->createDocument($settings);
+        $this->document = $factory->createDocument($settings, $pdf);
         return $this->document;
     }
 
@@ -185,7 +188,7 @@ class Flatplane
         }
 
         // validate document
-        if (empty($this->document) || !($this->document instanceof Document)) {
+        if (empty($this->document) || !($this->document instanceof DocumentInterface)) {
             throw new \RuntimeException(
                 'No document or invalid document supplied for PDF generation'
             );
@@ -205,6 +208,38 @@ class Flatplane
         $this->startTimer('generateFormulas');
         $this->generateFormulas();
         $this->stopTimer('generateFormulas');
+
+        // layout pages
+        $this->startTimer('layoutPages');
+        $pages = $this->layoutElements();
+        $this->stopTimer('layoutPages');
+
+        // generating Pages
+        $this->startTimer('generatingPages');
+        $this->generatePages($pages);
+        $this->stopTimer('generatingPages');
+
+        // generatingPDF
+        $this->startTimer('generatingPDFOutput');
+        $this->generatePDFOutput();
+        $this->stopTimer('generatingPDFOutput');
+    }
+
+    protected function generatePDFOutput()
+    {
+        //todo: implment me
+    }
+
+    protected function generatePages($pages)
+    {
+        //todo: implement me
+    }
+
+    protected function layoutElements()
+    {
+        $content = $this->getAllContent();
+        $pages = new PageLayout($content);
+        return $pages;
     }
 
     protected function generateFormulas()
@@ -227,18 +262,27 @@ class Flatplane
     }
 
     /**
+     *
+     * @return \RecursiveIteratorIterator
+     */
+    protected function getAllContent()
+    {
+        return new RecursiveIteratorIterator(
+            new RecursiveContentIterator($this->getDocument()->getContent()),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
+    }
+
+    /**
      * @param string $type
      * @return ContentElementInterface
-     * todo: type validation etc
+     *  todo: type validation etc
      */
     protected function getAllContentOfType($type)
     {
-        $RecItIt = new RecursiveIteratorIterator(
-            new RecursiveContentIterator($this->document->getContent()),
-            RecursiveIteratorIterator::SELF_FIRST
-        );
+        $recItIt = $this->getAllContent();
 
-        $filterIterator = new ContentTypeFilterIterator($RecItIt, [$type]);
+        $filterIterator = new ContentTypeFilterIterator($recItIt, [$type]);
 
         $return = array();
         foreach ($filterIterator as $element) {
@@ -251,7 +295,7 @@ class Flatplane
     {
         echo 'Document Tree:'.PHP_EOL;
         $RecItIt = new RecursiveTreeIterator(
-            new RecursiveContentIterator($this->document->getContent()),
+            new RecursiveContentIterator($this->getDocument()->getContent()),
             RecursiveIteratorIterator::SELF_FIRST
         );
         foreach ($RecItIt as $value) {
@@ -265,12 +309,12 @@ class Flatplane
         if (self::$verboseOutput) {
             echo "Starting $name".PHP_EOL;
         }
-        $this->stopwatch->start($name);
+        $this->getStopwatch()->start($name);
     }
 
     private function stopTimer($name, $showMem = false)
     {
-        $event = $this->stopwatch->stop($name);
+        $event = $this->getStopwatch()->stop($name);
 
         if (self::$verboseOutput) {
             $duration = number_format($event->getDuration()/1000, 3, '.', '').' s';
@@ -286,5 +330,15 @@ class Flatplane
             echo "Finished $name: {$duration}$memory".PHP_EOL.PHP_EOL;
         }
         return $event;
+    }
+
+    protected function getDocument() //todo: make this public?
+    {
+        return $this->document;
+    }
+
+    protected function getStopwatch()
+    {
+        return $this->stopwatch;
     }
 }

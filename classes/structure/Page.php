@@ -21,8 +21,6 @@
 
 namespace de\flatplane\structure;
 
-use de\flatplane\interfaces\DocumentContentStructureInterface;
-
 /**
  * Description of Page
  *
@@ -30,18 +28,59 @@ use de\flatplane\interfaces\DocumentContentStructureInterface;
  */
 class Page implements PageInterface
 {
-    use \de\flatplane\documentContents\ContentFunctions;
-
+    protected $number; //?
+    protected $group; //?
     protected $orientation;
     protected $size;
+    protected $content;
 
-    public function getParent()
+    public function getOrientation()
     {
-        return $this;
+        return $this->orientation;
     }
 
-    public function setParent(DocumentContentStructureInterface $parent)
+    public function getSize()
     {
-        //currently do nothing;
+        return $this->size;
+    }
+
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    public function setOrientation($orientation)
+    {
+        $this->orientation = $orientation;
+    }
+
+    public function setSize($size)
+    {
+        $this->size = $size;
+    }
+
+    public function setContent($content)
+    {
+        $this->content = $content;
+    }
+
+    public function getNumber()
+    {
+        return $this->number;
+    }
+
+    public function getGroup()
+    {
+        return $this->group;
+    }
+
+    public function setNumber($number)
+    {
+        $this->number = $number;
+    }
+
+    public function setGroup($group)
+    {
+        $this->group = $group;
     }
 }

@@ -89,4 +89,9 @@ class PDF extends \TCPDF
         $this->rollbackTransaction(true);
         return [$height, $numPages];
     }
+
+    public function header()
+    {
+        $this->Write(0, "zeile1\nzeile2\nzeile3\nzeile4\nzeile5\nzeile6\nzeile7\nzeile8");
+    }
 }

@@ -19,37 +19,14 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\model;
-
-use de\flatplane\interfaces\documentElements\ListInterface;
+namespace de\flatplane\view;
 
 /**
- * Description of ListGenerator
- * todo: fonts
+ * Description of PageLayout
+ *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class ListGenerator
+class PageLayout
 {
-    protected $content;
-    public function __construct()
-    {
-        //do stuff?
-    }
-
-    public function generate(ListInterface $element)
-    {
-        $contentTypes = implode(', ', $element->getDisplayTypes());
-        echo PHP_EOL, 'DEMO OUTPUT: List of: '.$contentTypes, PHP_EOL;
-        $this->content = $element->getData();
-        $this->outputList();
-    }
-
-    protected function outputList()
-    {
-        foreach ($this->content as $line) {
-            $indent = str_repeat(' ', $line['level']);
-            echo $indent.$line['numbers'].' '.$line['text'].PHP_EOL;
-        }
-        echo PHP_EOL;
-    }
+    //put your code here
 }

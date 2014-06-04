@@ -442,10 +442,42 @@ class Image extends AbstractDocumentContentElement
      */
     protected function getEPSMeasurementsFromFile()
     {
-        //todo: implement me
-        return ['width' => 0, 'height' => 0];
+        //search boundingbox
+        $boundingBox = $this->findBoundingBox();
+        if (!$boundingBox) {
+            throw new RuntimeException(
+                'EPS file did not contain valid BoundingBox.'
+            );
+        }
+
+        $dimensions = ['width' => $boundingBox['width'],
+                       'wUnit' => 'pt',
+                       'height' => $boundingBox['height'],
+                       'hUnit' => 'pt'];
+
+        //convert to user-units & return
+        return $this->convertImageSizeToUserUnits($dimensions);
     }
 
+    /**
+     *
+     * @return array|bool
+     */
+    protected function findBoundingBox()
+    {
+        //EPS syntax:
+        //%%BoundingBox: llx lly urx ury
+        $file = new SplFileObject($this->getPath());
+        foreach ($file as $line) {
+            $regEx = '/^(%%BoundingBox:){1}[ ]?(\d+)\ {1}(\d+)\ {1}(\d+)\ {1}(\d+)$/';
+            if (preg_match_all($regEx, trim($line), $matches)) {
+                $width = $matches[2] - $matches[0];
+                $height = $width = $matches[3] - $matches[1];
+                return ['width' => $width, 'height' => $height];
+            }
+        }
+        return false;
+    }
     /**
      * todo: doc
      * @return type

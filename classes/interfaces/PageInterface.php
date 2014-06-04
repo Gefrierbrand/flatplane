@@ -19,37 +19,18 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\model;
-
-use de\flatplane\interfaces\documentElements\ListInterface;
+namespace de\flatplane\interfaces;
 
 /**
- * Description of ListGenerator
- * todo: fonts
+ *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class ListGenerator
+interface PageInterface
 {
-    protected $content;
-    public function __construct()
-    {
-        //do stuff?
-    }
+    //put your code here
+    //methode um content anzunehmen
+    //ethode um content abzugeben
+    //ggf methode um content umzusortieren
 
-    public function generate(ListInterface $element)
-    {
-        $contentTypes = implode(', ', $element->getDisplayTypes());
-        echo PHP_EOL, 'DEMO OUTPUT: List of: '.$contentTypes, PHP_EOL;
-        $this->content = $element->getData();
-        $this->outputList();
-    }
-
-    protected function outputList()
-    {
-        foreach ($this->content as $line) {
-            $indent = str_repeat(' ', $line['level']);
-            echo $indent.$line['numbers'].' '.$line['text'].PHP_EOL;
-        }
-        echo PHP_EOL;
-    }
+    //ggf methoden um besonede inhaltsmerkmale bereitzustellen: z.b. titel usw des letzten kapitels für kopf/fußzeilen
 }

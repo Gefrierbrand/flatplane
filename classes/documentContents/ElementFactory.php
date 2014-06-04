@@ -77,7 +77,7 @@ class ElementFactory
      * @param array $settings
      * @return Document
      */
-    public function createDocument(array $settings = [])
+    public function createDocument(array $settings = [], PDF $pdf = null)
     {
         $config = new Config($this->documentConfig, $settings);
         $doc = new Document($config->getSettings());
@@ -91,7 +91,9 @@ class ElementFactory
         $marginLeft = $doc->getPageMargins('left');
         $marginRight = $doc->getPageMargins('right');
 
-        $pdf = new PDF($orientation, $unit, $format);
+        if ($pdf === null) {
+            $pdf = new PDF($orientation, $unit, $format);
+        }
         $pdf->SetMargins($marginLeft, $marginTop, $marginRight);
         $pdf->SetAutoPageBreak(true, $marginBot);
 
