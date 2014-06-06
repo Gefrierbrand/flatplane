@@ -56,9 +56,10 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
     /**
      * @var int
      *  Determines to wich level inside the documenttree the
-     *  contents are displayed inside the list. Contents given on the top level
-     *  are at depth 0. The actual depth might differ from the contents
-     *  level-property, as subtrees can also be processed by this function.
+     *  contents are displayed inside the list. The document is at level -1.
+     *  Contents given on the "top level" are therefore at depth 0.
+     *  The relative depth might differ from the contents level-property,
+     *  as subtrees can also be processed by this function.
      *  Use -1 for unlimited depth.
      */
     protected $maxDepth = -1;
@@ -72,16 +73,70 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
     protected $displayTypes = ['section'];
 
     /**
-     * @var array
-     *  todo: fixme
+     * @var bool
+     *  Toggle the display of page-numbers
      */
-    protected $indent = ['level' => -1, 'maxAmount' => 20, 'mode' => 'relative'];
+    protected $showPages = true;
 
     /**
-     * todo: implement/ fix
-     * @var array
+     * @var array(bool)
+     *  Toggle lines from the entry to its page for each level
      */
-    protected $verticalFill = ['default' => ['type' => 'dots', 'spacing' => 1, 'size' => 'inherit']];
+    protected $drawLinesToPage = ['default' => true];
+
+    /**
+     * @var int
+     *  depth of currently examined content line style
+     */
+    protected $contentStyleLevel = 0;
+
+    /**
+     * @var array
+     *  Array of linestyles for each level. Valid keys are:
+     *  <ul><li>mode:
+     *      <ul><li>solid: a continuous line will be drawn</li>
+     *          <li>dotted: a line of dots with spacing <i>distance</i>
+     *              and size <i>size</i> (in pt) will be used
+     *          <li>dashed: a line of dashes with spacing <i>distance</i>
+     *              and size <i>size</i> (in pt) will be used
+     *      </ul></li>
+     *      <li>distance: space between dots or dashes in pt</li>
+     *      <li>color: array of 1, 3 or 4 elements for grayscale, RGB or CMYK</li>
+     *      <li>size: font-size to use for points or dashes in pt</li>
+     *  </ul>
+     */
+    protected $lineStyle = ['default' => ['mode' => 'solid',
+                                          'distance' => 0,
+                                          'color' => [0, 0, 0],
+                                          'size' => 1]];
+
+    /**
+     * @var array
+     *  todo: doc
+     *  set maxlevel to 0 to disable indent
+     */
+    protected $indent = ['maxLevel' => -1, 'mode' => 'relative', 'amount' => 10];
+
+    /**
+     * @var float
+     *  minimum distance between the right end of the index-element and the left
+     *  end of the page number-column in user units
+     */
+    protected $minPageNumDistance = 15;
+
+    /**
+     * @var float
+     *  Minmum width reserved for the actual display of the titles in the list
+     *  in percent of the lists width (which currently equals the textwidth
+     *  of the page)
+     */
+    protected $minTitleWidthPercentage = 20;
+
+    /**
+     * @var float
+     *  Width of the pageNumber column in user units
+     */
+    protected $pageNumberWidth = 8;
 
     /**
      * Array containig the lists raw data for outputting
@@ -131,7 +186,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             $this->getDisplayTypes()
         );
 
-        $key = 0; //FIXME: order/sorting!
+        $key = 0; //todo: order/sorting!
         foreach ($FilterIt as $element) {
             // current iteration depth
             $this->data[$key]['iteratorDepth'] = $RecItIt->getDepth();
@@ -142,13 +197,131 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             } else {
                 $this->data[$key]['numbers'] = null;
             }
-            $this->data[$key]['text'] = $element->__toString();
+            $this->data[$key]['text'] = $element->getAltTitle();
             $this->data[$key]['page'] = $element->getPage();
             $key ++;
         }
 
         //fixme: return?
         return $this->data;
+    }
+
+    public function getSize()
+    {
+        //todo: automatically generate structure here?
+        if (empty($this->getData())) {
+            throw new \RuntimeException(
+                'The structure must be generated before calculating the size',
+                E_USER_ERROR
+            );
+
+        }
+        $indentAmounts = $this->calculateIndentAmounts();
+        $this->measureOutput($indentAmounts);
+    }
+
+    protected function measureOutput($indentAmounts)
+    {
+        $pdf = $this->toRoot()->getPdf();
+        $pdf->startMeasurement();
+
+        $this->generatePseudoOutput($indentAmounts);
+
+        list($height, $numpages) = $pdf->endMeasurement(true);
+    }
+
+    /**
+     * todo: doc, move to sane place?
+     * @param array $indentAmounts
+     */
+    protected function generatePseudoOutput(array $indentAmounts)
+    {
+        $pdf = $this->toRoot()->getPdf();
+        foreach ($this->getData() as $line) {
+            //steps:
+            //calculate maxtitlewidth:
+                //set style according to depth
+                //maxtitlewidth = textwidth- pageNoWidth - minspacewidth - totalindentwidth
+                //NO titlewidth from text
+                //error if maxtitlewidth < mintitlewidth
+            //check number of needed lines
+            //draw dots/lines to pagenum (in final version)
+                //determine actual string width -> multicell getx danach?
+        }
+    }
+
+    /**
+     * todo: doc
+     * number könnte mehrstellig sein, daher nötig alle zu testen und dies vor
+     * der ausgabe zu messen
+     * @return array(float)
+     */
+    protected function calculateIndentAmounts()
+    {
+        $data = $this->getData();
+        $formattedNumberString = [];
+        //loop through all lines of the list and save the highest formatted
+        //number for each depth by overwriting the old number each iteration.
+        foreach ($data as $line) {
+            if ($this->getIndent()['maxLevel'] != -1
+                && $line['iteratorDepth'] > $this->getIndent()['maxLevel']
+            ) {
+                //end iteration if the level of the line is deeper then the
+                //maximum indentation depth
+                break;
+            }
+            if ($line['numbers'] !== null) {
+                //add two spaces to conform to DIN 5008, which requires at least
+                //two spaces between a section number and its text (for top
+                //level sections)
+                //todo: add ability to customize amount
+                $numbers = $line['numbers'].'  ';
+            } else {
+                //the number might keep empty for a specific level if the
+                //enumerate-property of all contents on that depth is set to false.
+                //therefore the numberingstring for those levels is set to two
+                //spaces to keep indenting possible, unless the level in
+                //question is at depth 0
+                if ($line['iteratorDepth'] == 0) {
+                    $numbers = '';
+                } else {
+                    $numbers = '  ';
+                }
+            }
+            //add the lines numbers to the number list overwriting the last one
+            //for each level
+            //
+            //FIXME: use longest string instead of highest number due to
+            //prefix & separator etc.
+            $formattedNumberString[$line['iteratorDepth']] = $numbers;
+        }
+
+        $pdf = $this->toRoot()->getPdf();
+        //calculate the string width in user-units for the longest
+        //number string of each level according to the respective styles
+        foreach ($formattedNumberString as $level => $string) {
+            $this->setContentStyleLevel($level);
+            $this->applyStyles();
+            $amount[$level] = $pdf->GetStringWidth($string);
+        }
+
+        return $amount;
+    }
+
+    public function applyStyles()
+    {
+        $level = $this->getContentStyleLevel();
+        $pdf = $this->toRoot()->getPdf();
+        $pdf->SetFont(
+            $this->getFontType($level),
+            $this->getFontStyle($level),
+            $this->getFontSize($level)
+        );
+        $pdf->setColorArray('text', $this->getFontColor($level));
+        $pdf->setColorArray('draw', $this->getDrawColor($level));
+        $pdf->setColorArray('fill', $this->getFillColor($level));
+        $pdf->setFontSpacing($this->getFontSpacing($level));
+        $pdf->setFontStretching($this->getFontStretching($level));
     }
 
     public function getDisplayTypes()
@@ -179,16 +352,100 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
 
     public function setIndent(array $indent)
     {
-        $this->indent = $indent;
-    }
-
-    public function getSize()
-    {
-        //todo: implement me
+        $this->indent = array_merge($this->indent, $indent);
     }
 
     public function getData()
     {
         return $this->data;
+    }
+
+    public function getShowPages()
+    {
+        return $this->showPages;
+    }
+
+    public function getDrawLinesToPage($key = null)
+    {
+        if ($key !== null && isset($this->drawLinesToPage[$key])) {
+            return $this->drawLinesToPage[$key];
+        } else {
+            return $this->drawLinesToPage['default'];
+        }
+    }
+
+    public function getLineStyle($key = null)
+    {
+        if ($key !== null && isset($this->lineStyle[$key])) {
+            return $this->lineStyle[$key];
+        } else {
+            return $this->lineStyle['default'];
+        }
+    }
+
+    protected function setShowPages($showPages)
+    {
+        $this->showPages = $showPages;
+    }
+
+    protected function setDrawLinesToPage(array $drawLinesToPage)
+    {
+        $this->drawLinesToPage = array_merge(
+            $this->drawLinesToPage,
+            $drawLinesToPage
+        );
+    }
+
+    protected function setLineStyle(array $lineStyle)
+    {
+        $this->lineStyle = array_merge($this->lineStyle, $lineStyle);
+    }
+
+    public function getMinPageNumDistance()
+    {
+        return $this->minPageNumDistance;
+    }
+
+    protected function setMinPageNumDistance($minPageNumDistance)
+    {
+        $this->minPageNumDistance = $minPageNumDistance;
+    }
+
+    public function getIndent()
+    {
+        if ($this->indent['maxLevel'] < -1) {
+            throw new \OutOfRangeException('maxLevel can\'t be smaller than -1');
+        }
+        return $this->indent;
+    }
+
+    protected function getContentStyleLevel()
+    {
+        return $this->contentStyleLevel;
+    }
+
+    protected function setContentStyleLevel($contentStyleLevel)
+    {
+        $this->contentStyleLevel = $contentStyleLevel;
+    }
+
+    public function getMinTitleWidthPercentage()
+    {
+        return $this->minTitleWidthPercentage;
+    }
+
+    public function getPageNumberWidth()
+    {
+        return $this->pageNumberWidth;
+    }
+
+    public function setMinTitleWidthPercentage($minTitleWidthPercentage)
+    {
+        $this->minTitleWidthPercentage = $minTitleWidthPercentage;
+    }
+
+    public function setPageNumberWidth($pageNumberWidth)
+    {
+        $this->pageNumberWidth = $pageNumberWidth;
     }
 }

@@ -29,6 +29,7 @@ use SplFileInfo;
 /**
  * Description of Image
  * todo: title/desc/numbering
+ * todo: cite!!!!!!!!!!!!
  * @author Nikolai Neff <admin@flatplane.de>
  */
 class Image extends AbstractDocumentContentElement
@@ -348,27 +349,6 @@ class Image extends AbstractDocumentContentElement
         $height = $factor['height']*$value['height'];
 
         return ['width' => $width, 'height' => $height];
-    }
-
-    /**
-     * todo: doc
-     * @return array
-     */
-    protected function getPageMeasurements()
-    {
-        //doto: footnotes
-        $doc = $this->toRoot();
-        $pagewidth = $doc->getPageSize()['width'];
-        $textwidth = $pagewidth - $doc->getPageMargins('left')
-                                - $doc->getPageMargins('right');
-        $pageheight = $doc->getPageSize()['height'];
-        $textheight = $pageheight - $doc->getPageMargins('top')
-                                  - $doc->getPageMargins('bottom');
-
-        return ['pagewidth' => $pagewidth,
-                'textwidth' => $textwidth,
-                'pageheight' => $pageheight,
-                'textheight' => $textheight];
     }
 
     /**

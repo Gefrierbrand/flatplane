@@ -59,6 +59,12 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
 
     /**
      * @var string
+     *  alternative (shorter) title to be used in lists for this element
+     */
+    protected $altTitle = '';
+
+    /**
+     * @var string
      *  title of the element
      */
     protected $title = '';
@@ -513,5 +519,40 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         } else {
             return $this->fillColor['default'];
         }
+    }
+
+    protected function setAltTitle($altTitle)
+    {
+        $this->altTitle = $altTitle;
+    }
+
+    public function getAltTitle()
+    {
+        if (empty($this->altTitle)) {
+            return $this->getTitle();
+        } else {
+            return $this->altTitle;
+        }
+    }
+
+    /**
+     * todo: doc
+     * @return array
+     */
+    protected function getPageMeasurements()
+    {
+        //doto: footnotes
+        $doc = $this->toRoot();
+        $pagewidth = $doc->getPageSize()['width'];
+        $textwidth = $pagewidth - $doc->getPageMargins('left')
+                                - $doc->getPageMargins('right');
+        $pageheight = $doc->getPageSize()['height'];
+        $textheight = $pageheight - $doc->getPageMargins('top')
+                                  - $doc->getPageMargins('bottom');
+
+        return ['pagewidth' => $pagewidth,
+                'textwidth' => $textwidth,
+                'pageheight' => $pageheight,
+                'textheight' => $textheight];
     }
 }

@@ -90,10 +90,18 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     {
         $this->applyStyles();
         $pdf = $this->toRoot()->getPdf();
-        list($height, $numPages) = $pdf->estimateHTMLTextHeight(
+
+        $pdf->startMeasurement();
+        $pdf->writeHTML(
             $this->getText(),
+            false,
+            false,
+            false,
+            false,
             $this->getTextAlignment()
         );
+        list($height, $numPages) = $pdf->endMeasurement(true);
+
         $width = $pdf->getPageWidth()
             - $pdf->getMargins()['left']
             - $pdf->getMargins()['right'];

@@ -43,7 +43,7 @@ class FormulaFilesGenerator
         if ($cleanDir) {
             $this->cleanUp();
         }
-        
+
         $totalNum = 0;
         $renderNum = 0;
         foreach ($content as $formula) {
@@ -66,7 +66,7 @@ class FormulaFilesGenerator
         );
     }
 
-    public function cleanUp()
+    public static function cleanUp()
     {
         $dir = Flatplane::getCacheDir().DIRECTORY_SEPARATOR.'formulas';
         $files = glob($dir.DIRECTORY_SEPARATOR.'*.svg');

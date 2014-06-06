@@ -28,16 +28,8 @@ namespace de\flatplane\iterators;
  * @author Nikolai Neff <admin@flatplane.de>
  */
 
-class ShowInListFilterIterator extends \FilterIterator
+class ShowInListFilterIterator extends ContentTypeFilterIterator
 {
-    protected $allowedTypes;
-
-    public function __construct(\Iterator $iterator, array $allowedTypes)
-    {
-        $this->allowedTypes = $allowedTypes;
-        parent::__construct($iterator);
-    }
-
     public function accept()
     {
         $content = parent::current();

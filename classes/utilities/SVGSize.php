@@ -26,8 +26,13 @@ use DOMNode;
 use RuntimeException;
 
 /**
- * Description of SVGSize
- *
+ * This class provides the ability to estimate the intended size of a SVG file
+ * in user-units. The results might vary depending on the given unit of the file
+ * and it is highly recommended, to either define an absolute unit in the file
+ * itself or in the corresponding properties of the image element.
+ * For further information, consult the SVG specification:
+ * Scalable Vector Graphics (SVG) 1.1 (Second Edition), Chapter 7.10: Units
+ * @see http://www.w3.org/TR/SVG/coords.html#Units
  * @author Nikolai Neff <admin@flatplane.de>
  */
 class SVGSize
@@ -142,8 +147,9 @@ class SVGSize
      */
     protected function getDimensionsFromWH($width, $height)
     {
-        //the content of the with/heigt attribute may lack units
-        //in that case values in pixels are assumed
+        //the content of the width/heigt attribute may lack units
+        //in that case values in pixels are used, wich are the specific
+        //TCPDF-pixels and my not relate to your monitor or other outputs
         if (!is_numeric($width) || !is_numeric($height)) {
             //search result string for value and units
             $regEx = '/(\d*\.?\d+)([\w]*)/';

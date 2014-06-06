@@ -29,8 +29,6 @@ use de\flatplane\interfaces\DocumentElementInterface;
  */
 interface SectionInterface extends DocumentElementInterface
 {
-    public function getTitle();
-    public function getAltTitle();
     public function getShowInDocument();
     public function getStartsNewLine($level = 0);
     public function getStartsNewPage($level = 0);

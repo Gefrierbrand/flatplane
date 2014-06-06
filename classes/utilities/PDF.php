@@ -28,6 +28,10 @@ namespace de\flatplane\utilities;
  */
 class PDF extends \TCPDF
 {
+    protected $measureStartY;
+    protected $measureStartPage;
+    protected $oldPageBreak;
+
     /**
 	 * @return float
      *  Current height of page in user unit.
@@ -37,42 +41,36 @@ class PDF extends \TCPDF
         return $this->h;
     }
 
-    /**
-     * todo: doc
-     * @param string $html
-     * @param string $alignment
-     * @return array
-     *  height in user-units
-     *  number of pages needed
-     */
-    public function estimateHTMLTextHeight($html, $alignment = '')
+    public function startMeasurement()
     {
         $this->startTransaction();
         // store starting values
         $this->AddPage();
-        $start_y = $this->GetY();
-        $start_page = $this->getPage();
-        // call your printing functions with your parameters
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        $this->writeHTML($html, false, false, false, false, $alignment);
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        // get the new Y
+        $this->oldPageBreak = $this->getAutoPageBreak();
+        $this->SetAutoPageBreak(true);
+
+        $this->measureStartY = $this->GetY();
+        $this->measureStartPage = $this->getPage();
+    }
+
+    public function endMeasurement($rollback = true)
+    {
         $end_y = $this->GetY();
         $end_page = $this->getPage();
         // calculate height
         $height = 0;
         $numPages = 1;
 
-        if ($end_page == $start_page) {
-            $height = $end_y - $start_y;
+        if ($end_page == $this->measureStartPage) {
+            $height = $end_y - $this->measureStartY;
         } else {
-            for ($page = $start_page; $page <= $end_page; ++$page) {
+            for ($page = $this->measureStartPage; $page <= $end_page; ++$page) {
                 $this->setPage($page);
                 $numPages ++;
-                if ($page == $start_page) {
+                if ($page == $this->measureStartPage) {
                     // first page
                     $height += $this->getH()
-                        - $start_y
+                        - $this->measureStartY
                         - $this->getMargins()['bottom'];
                 } elseif ($page == $end_page) {
                     // last page
@@ -86,12 +84,16 @@ class PDF extends \TCPDF
             }
         }
 
-        $this->rollbackTransaction(true);
+        if ($rollback) {
+            $this->rollbackTransaction(true);
+        }
+
+        $this->SetAutoPageBreak($this->oldPageBreak);
         return [$height, $numPages];
     }
 
-    public function header()
-    {
-        $this->Write(0, "zeile1\nzeile2\nzeile3\nzeile4\nzeile5\nzeile6\nzeile7\nzeile8");
-    }
+//    public function header()
+//    {
+//        $this->Write(0, "zeile1\nzeile2\nzeile3\nzeile4\nzeile5\nzeile6\nzeile7\nzeile8");
+//    }
 }

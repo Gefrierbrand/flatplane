@@ -48,14 +48,18 @@ trait NumberingFunctions
      * @param string $name
      * @return Counter
      */
-    public function getCounter($name)
+    public function getCounter($name = null)
     {
-        if (array_key_exists($name, $this->counter)) {
-            return $this->counter[$name];
+        if ($name === null) {
+            return $this->counter;
         } else {
-            //todo: proper errors?
-            trigger_error('New Counter '.$name.' created', E_USER_WARNING);
-            return $this->addCounter(new Counter(), $name);
+            if (array_key_exists($name, $this->counter)) {
+                return $this->counter[$name];
+            } else {
+                //todo: proper errors?
+                trigger_error('New Counter '.$name.' created', E_USER_WARNING);
+                return $this->addCounter(new Counter(), $name);
+            }
         }
     }
 
@@ -125,13 +129,13 @@ trait NumberingFunctions
     public function checkLocalCounter(DocumentElementInterface $content)
     {
         $type = $content->getType();
-        if (array_key_exists($type, $this->counter)) {
-            $this->counter[$content->getType()]->add();
+        if (array_key_exists($type, $this->getCounter())) {
+            $this->getCounter($type)->add();
         } else {
             $startIndex = $this->toRoot()->getStartIndex($type);
             $this->addCounter(new Counter($startIndex), $type);
         }
-        return $this->counter[$content->getType()];
+        return $this->getCounter($content->getType());
     }
 
     /**
@@ -143,7 +147,7 @@ trait NumberingFunctions
     protected function checkRemoteCounter(DocumentElementInterface $content)
     {
         $level = $this->toRoot()->getNumberingLevel($content->getType());
-        if ($level < $this->level) {
+        if ($level < $this->getLevel()) {
             $parentAtLevel = $this->toParentAtLevel($level);
             return $parentAtLevel->checkLocalCounter($content);
         } else {

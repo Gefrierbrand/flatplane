@@ -47,6 +47,8 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
     protected $useCache = true;
     protected $path;
 
+    protected $scalingFactor = 0.85;
+
     public function getCode()
     {
         return $this->code;
@@ -72,10 +74,16 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
         if (!empty($this->getPath())) {
             $size = $this->getSizeFromFile();
         } else {
-            trigger_error('formula size requested before render', E_USER_WARNING);
-            $size = ['height' => 0, 'width' => 0, 'numPages' => 0];
+            throw new RuntimeException('formula size requested before render');
         }
-        return $size;
+        return $this->applyScalingFactor($size);
+    }
+
+    protected function applyScalingFactor(array $size)
+    {
+        $factor = $this->getScalingFactor();
+        return ['width' => $size['width'] * $factor,
+                'height' => $size['height'] * $factor];
     }
 
     /**
@@ -204,5 +212,15 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
                     break;
             }
         }
+    }
+
+    public function getScalingFactor()
+    {
+        return $this->scalingFactor;
+    }
+
+    protected function setScalingFactor($scalingFactor)
+    {
+        $this->scalingFactor = $scalingFactor;
     }
 }

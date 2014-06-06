@@ -43,7 +43,7 @@ class ContentTypeFilterIterator extends \FilterIterator
     {
         $content = parent::current();
         if (in_array($content->getType(), $this->allowedTypes)) {
-                return true;
+            return true;
         } else {
             return false;
         }

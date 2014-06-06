@@ -47,7 +47,7 @@ class ListGenerator
     protected function outputList()
     {
         foreach ($this->content as $line) {
-            $indent = str_repeat(' ', $line['level']);
+            $indent = str_repeat('  ', $line['level']);
             echo $indent.$line['numbers'].' '.$line['text'].PHP_EOL;
         }
         echo PHP_EOL;

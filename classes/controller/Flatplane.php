@@ -177,13 +177,13 @@ class Flatplane
     public function generatePDF(array $settings = [])
     {
         if (!extension_loaded('imagick')) {
-            echo 'Imagick extension is not available, assuming 72 dpi for'
-                 .' all images if not otherwise specified.';
+            self::log(
+                'Imagick extension is not available, assuming 72 dpi for'
+                .' all images if not otherwise specified.'
+            );
         }
 
-        if (self::$verboseOutput
-            && isset($settings['showDocumentTree'])
-            && $settings['showDocumentTree']) {
+        if (self::$verboseOutput && !empty($settings['showDocumentTree'])) {
             $this->showDocumentTree();
         }
 
@@ -203,6 +203,12 @@ class Flatplane
         $this->stopTimer('generateLists');
 
         // validate / update cache: TBD
+
+        if (!empty($settings['clearFormulaCache'])) {
+            $this->startTimer('clearFormulaCache');
+            $this->clearFormulaCache();
+            $this->stopTimer('clearFormulaCache');
+        }
 
         // generate dynamic content
         $this->startTimer('generateFormulas');
@@ -225,6 +231,11 @@ class Flatplane
         $this->stopTimer('generatingPDFOutput');
     }
 
+    protected function clearFormulaCache()
+    {
+        FormulaFilesGenerator::cleanUp();
+    }
+
     protected function generatePDFOutput()
     {
         //todo: implment me
@@ -232,7 +243,7 @@ class Flatplane
 
     protected function generatePages($pages)
     {
-        //todo: implement me
+        //todo: implement
     }
 
     protected function layoutElements()

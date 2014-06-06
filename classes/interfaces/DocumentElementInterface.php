@@ -60,6 +60,7 @@ interface DocumentElementInterface
     public function getShowInList();
     public function getIsSplitable();
     public function getTitle();
+    public function getAltTitle();
 
     public function getFontType($key = null);
     public function getFontSize($key = null);
@@ -80,4 +81,5 @@ interface DocumentElementInterface
     //public function setShowInList($showInIndex);
     public function setLabel($label);
     //public function setSize(array $zize); ?
+    public function setPage($page);
 }

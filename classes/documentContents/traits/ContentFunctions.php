@@ -60,9 +60,10 @@ trait ContentFunctions
     /**
      * @var int
      *  integer representing the depth of the current object inside the Document
-     *  tree, starting at 0 for the root (Document).
+     *  tree, starting at -1 for the root (Document). Don't confuse this with the
+     *  maxDepth "-1" of iterators which mean 'unlimited'
      */
-    protected $level = 0;
+    protected $level = -1;
 
     /**
      * This method is used to add content to the Document or other content.

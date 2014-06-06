@@ -32,7 +32,6 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
 {
     protected $type = 'section';
     protected $title = 'section';
-    protected $altTitle = '';
     protected $showInDocument = true;
     protected $minFreePage = ['default' => 25];
     protected $startsNewLine = ['default' => true];
@@ -50,16 +49,7 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
     {
         return (string) $this->getAltTitle();
     }
-
-    public function getAltTitle()
-    {
-        if (empty($this->altTitle)) {
-            return $this->getTitle();
-        } else {
-            return $this->altTitle;
-        }
-    }
-
+    
     public function getShowInDocument()
     {
         return $this->showInDocument;
@@ -102,11 +92,6 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
                 'The required property minFreePage is not set.'
             );
         }
-    }
-
-    protected function setAltTitle($altTitle)
-    {
-        $this->altTitle = $altTitle;
     }
 
     protected function setShowInDocument($showInDocument)
