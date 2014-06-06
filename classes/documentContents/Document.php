@@ -62,8 +62,15 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     protected $numberingSeparator = ['default' => '.'];
     protected $startIndex = ['default' => 1];
 
-
     protected $pageMargins = ['default' => 20];
+
+    protected $hyphenate = true;
+    protected $hyphenationOptions = ['file' => '',
+                             'dictionary' => [],
+                             'leftMin' => 2,
+                             'rightMin' => 2,
+                             'charMin' => 1,
+                             'charMax' => 8];
 
     /**
      * @var PDF
@@ -373,5 +380,51 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     protected function setPageFormat($format)
     {
         $this->pageFormat = $format;
+    }
+
+    public function hypenateText($text)
+    {
+        $hyphenationOptions = $this->getHyphenationOptions();
+        return $this->getPdf()->hyphenateText(
+            $text,
+            $hyphenationOptions['file'],
+            $hyphenationOptions['dictionary'],
+            $hyphenationOptions['leftMin'],
+            $hyphenationOptions['rightMin'],
+            $hyphenationOptions['charMin'],
+            $hyphenationOptions['charMax']
+        );
+    }
+
+    public function getHyphenationPatternFile()
+    {
+        return $this->hyphenationPatternFile;
+    }
+
+    protected function setHyphenationOptions(array $hyphenation)
+    {
+        foreach ($hyphenation as $key => $option) {
+            if (array_key_exists($key, $this->hyphenationOptions)) {
+                if ($option == ['']) {
+                    $option = [];
+                }
+                $this->hyphenationOptions[$key] = $option;
+            }
+        }
+    }
+
+    public function getHyphenationOptions()
+    {
+        return $this->hyphenationOptions;
+    }
+
+    public function getHyphenate()
+    {
+        return $this->hyphenate;
+    }
+
+    protected function setHyphenate($hyphenate)
+    {
+        $this->hyphenate = $hyphenate;
     }
 }

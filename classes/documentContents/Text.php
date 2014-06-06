@@ -41,13 +41,6 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     protected $parse = true; //parse special content like eqn, etc?
     protected $hyphenate = true;
 
-    protected $hyphenationOptions = ['file' => '',
-                              'dictionary' => [],
-                              'leftMin' => 2,
-                              'rightMin' => 2,
-                              'charMin' => 1,
-                              'charMax' => 8];
-
     protected $textAlignment = 'J';
     protected $lineHeight = '100%';
 
@@ -82,7 +75,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         include ($this->getPath());
         $this->text = ob_get_clean();
         if ($this->getHyphenate()) {
-            $this->text = $this->hypenateText($this->text);
+            $this->text = $this->toRoot()->hypenateText($this->text);
         }
     }
 
@@ -108,21 +101,6 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         return ['height' => $height, 'width' => $width, 'numPages' => $numPages];
     }
 
-    protected function hypenateText($text)
-    {
-        $doc = $this->toRoot();
-        $hyphenationOptions = $this->getHyphenationOptions();
-        return $doc->getPdf()->hyphenateText(
-            $text,
-            $hyphenationOptions['file'],
-            $hyphenationOptions['dictionary'],
-            $hyphenationOptions['leftMin'],
-            $hyphenationOptions['rightMin'],
-            $hyphenationOptions['charMin'],
-            $hyphenationOptions['charMax']
-        );
-    }
-
     protected function setPath($path)
     {
         $this->path = $path;
@@ -136,23 +114,6 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     protected function setHyphenate($hyphenate)
     {
         $this->hyphenate = (bool) $hyphenate;
-    }
-
-    public function getHyphenationPatternFile()
-    {
-        return $this->hyphenationPatternFile;
-    }
-
-    protected function setHyphenationOptions(array $hyphenation)
-    {
-        foreach ($hyphenation as $key => $option) {
-            if (array_key_exists($key, $this->hyphenationOptions)) {
-                if ($option == ['']) {
-                    $option = [];
-                }
-                $this->hyphenationOptions[$key] = $option;
-            }
-        }
     }
 
     public function getTextAlignment()
@@ -178,10 +139,5 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     public function getPath()
     {
         return $this->path;
-    }
-
-    public function getHyphenationOptions()
-    {
-        return $this->hyphenationOptions;
     }
 }

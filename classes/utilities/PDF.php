@@ -86,6 +86,8 @@ class PDF extends \TCPDF
 
         if ($rollback) {
             $this->rollbackTransaction(true);
+        } else {
+            $this->commitTransaction();
         }
 
         $this->SetAutoPageBreak($this->oldPageBreak);

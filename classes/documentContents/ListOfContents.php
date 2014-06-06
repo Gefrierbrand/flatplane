@@ -227,7 +227,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
 
         $this->generatePseudoOutput($indentAmounts);
 
-        list($height, $numpages) = $pdf->endMeasurement(true);
+        list($height, $numpages) = $pdf->endMeasurement(false);
     }
 
     /**
@@ -236,17 +236,52 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
      */
     protected function generatePseudoOutput(array $indentAmounts)
     {
+        //todo: validate amounts
         $pdf = $this->toRoot()->getPdf();
+        $textWidth = $this->getPageMeasurements()['textwidth'];
         foreach ($this->getData() as $line) {
-            //steps:
-            //calculate maxtitlewidth:
-                //set style according to depth
-                //maxtitlewidth = textwidth- pageNoWidth - minspacewidth - totalindentwidth
-                //NO titlewidth from text
-                //error if maxtitlewidth < mintitlewidth
-            //check number of needed lines
+            //add all indent amounts for the current level
+            $totalIndentWidth = 0;
+            for ($i=0; $i < $line['iteratorDepth']; $i++) {
+                echo "i: $i; indentamount: {$indentAmounts[$i]}\n";
+                $totalIndentWidth += $indentAmounts[$i];
+            }
+            //calculate the maximum available space for the title-display
+            $maxTitleWidth = $textWidth
+                             - $this->getPageNumberWidth()
+                             - $this->getMinPageNumDistance()
+                             - $totalIndentWidth;
+            //calculate minimum titleWidth
+            $minTitleWidth = $this->getMinTitleWidthPercentage()/100*$textWidth;
+            if ($maxTitleWidth < $minTitleWidth) {
+                trigger_error(
+                    'The remaining space for the title-display of '
+                    .$maxTitleWidth.' is lower than the set minimum of '
+                    .$minTitleWidth,
+                    E_USER_WARNING
+                );
+                //todo: reduce indent amounts etc
+            }
+
+            //set style according to depth
+            $this->setContentStyleLevel($line['iteratorDepth']);
+            $this->applyStyles();
+
+            //print demo-output and check number of needed lines
+            $numlines = $pdf->MultiCell(
+                $maxTitleWidth, //cellwidth
+                0, //cellheight: aotomatic
+                $line['numbers'].$line['text'], //text
+                1, //border
+                'L', //text-alignment
+                false, //fill
+                1, //ln(): next line
+                $totalIndentWidth+$pdf->getMargins()['left'] //x-position
+            );
+
+            //todo in actual output:
             //draw dots/lines to pagenum (in final version)
-                //determine actual string width -> multicell getx danach?
+            //determine actual string width -> multicell getx danach?
         }
     }
 

@@ -43,14 +43,16 @@ $settings = array(
     'numberingPrefix' => ['list' => '#']
 );
 
-$document = $flatplane->createDocument($settings);
+$pdf =  new \de\flatplane\utilities\PDF();
+$pdf->setHeaderData('', 0, date('d.m.Y H:i:s'));
+
+$document = $flatplane->createDocument($settings, $pdf);
 $sec0_1 = $document->addSection('ebene0', ['enumerate' => true]);
 $sec1_1 = $sec0_1->addSection('ebene1');
 $sec2_1 = $sec1_1->addSection('ebene2');
 $sec2_2 = $sec1_1->addSection('ebene2;2');
 $sec0_2 = $document->addSection('ebene0, item2');
 $list = $sec0_1->addList(['section', 'list']);
-
+$list->generateStructure($document->getContent());
+$list->getSize();
 $flatplane->generatePDF(['showDocumentTree' => true, 'clearFormulaCache' => true]);
-$listarray = $list->generateStructure($document->getContent());
-var_dump($list->getSize());

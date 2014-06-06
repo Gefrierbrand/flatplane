@@ -238,7 +238,8 @@ class Flatplane
 
     protected function generatePDFOutput()
     {
-        //todo: implment me
+        //todo: linelength, filename, (outputoptions?)
+        $this->getDocument()->getPdf()->Output(self::$outputDir.DIRECTORY_SEPARATOR.'output.pdf', 'F');
     }
 
     protected function generatePages($pages)
