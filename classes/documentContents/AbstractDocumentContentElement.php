@@ -288,6 +288,12 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
 
     public function getPage()
     {
+        if (empty($this->page)) {
+            $this->page = str_repeat(
+                $this->toRoot()->getUnresolvedReferenceMarker(),
+                $this->toRoot()->getAssumedPageNumberWidth()
+            );
+        }
         return $this->page;
     }
 

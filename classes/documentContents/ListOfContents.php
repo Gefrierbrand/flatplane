@@ -232,18 +232,17 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             );
 
         }
-        $indentAmounts = $this->calculateIndentAmounts();
-        $this->measureOutput($indentAmounts);
+        $this->measureOutput();
 
         //return ...;
     }
 
-    protected function measureOutput($indentAmounts)
+    protected function measureOutput()
     {
         $pdf = $this->toRoot()->getPdf();
         $pdf->startMeasurement();
 
-        $this->generatePseudoOutput($indentAmounts);
+        $this->generateOutput();
 
         list($height, $numpages) = $pdf->endMeasurement(false);
         //return ...;
@@ -253,28 +252,29 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
      * todo: doc, move to sane place?
      * @param array $indentAmounts
      */
-    protected function generatePseudoOutput(array $indentAmounts)
+    protected function generateOutput()
     {
-        //todo: validate amounts
         $pdf = $this->toRoot()->getPdf();
         $textWidth = $this->getPageMeasurements()['textwidth'];
-        foreach ($this->getData() as $line) {
-            //add all indent amounts for the current level
 
-            //calculate the maximum available space for the title-display
+        //save old pagemargins from before listoutput
+        $oldMargins = $pdf->getMargins();
+
+        //display each individual item as line(s) with indent
+        foreach ($this->getData() as $line) {
+            //get all indent amounts for the current level
+            //todo: validate amounts
+            $indentAmounts = $this->calculateIndentAmounts();
+
             $textIndent = $indentAmounts[$line['iteratorDepth']]['text'];
             $numberIndent = $indentAmounts[$line['iteratorDepth']]['number'];
+
+            //calculate the maximum available space for the title-display
             $maxTitleWidth = $textWidth
                              - $this->getPageNumberWidth()
                              - $this->getMinPageNumDistance()
                              - $textIndent;
 
-//            $oldRMargin = $pdf->getMargins()['right'];
-//            $pdf->SetMargins(
-//                $pdf->getMargins()['left'],
-//                $pdf->getMargins()['top'],
-//                $oldRMargin + $this->getPageNumberWidth() + $this->getMinPageNumDistance()
-//            );
             //calculate minimum titleWidth
             $minTitleWidth = $this->getMinTitleWidthPercentage()/100*$textWidth;
             if ($maxTitleWidth < $minTitleWidth) {
@@ -291,35 +291,73 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             $this->setContentStyleLevel($line['iteratorDepth']);
             $this->applyStyles();
 
+            //x-positions for numbers and text
             $textXPos = $textIndent+$pdf->getMargins()['left'];
             $numXPos = $numberIndent+$pdf->getMargins()['left'];
 
-
+            //adjust cell paddings and margins
+            //todo: empty line before level-0 entries
+            //todo: save defaults etc, doc
             $pdf->SetCellPaddings(0, 0, 0, 0);
             $pdf->setCellMargins(0, 0, 0, 0);
 
+            //display number for the entry
             $pdf->Text($numXPos, $pdf->GetY(), $line['numbers']);
 
-            $pdf->SetX($textXPos);
-            
-            $lineNum = $pdf->MultiCell(
-                $maxTitleWidth, //cellwidth
-                0, //cellheight: automatic
-                $line['text'], //text
-                false, //border
-                'L', //text-alignment
-                false, //fill
-                0, //ln(): 0: same line; 1: beginning next line; 2: same x-pos next line
-                $textXPos //x-position
+            //calculate and set new margins to use correct text-wrapping
+            //for entries longer than one line
+            $leftLineMargin = $textXPos;
+            $rightLineMargin = $oldMargins['right']
+                                + $this->getPageNumberWidth()
+                                + $this->getMinPageNumDistance();
+            $pdf->SetMargins(
+                $leftLineMargin,
+                $oldMargins['top'],
+                $rightLineMargin
             );
 
-            $page = str_repeat("\n", $lineNum-1).'123';
-            $pageNumXPos = $textWidth + $pdf->getMargins()['left'] - $this->getPageNumberWidth();
+            //write line content
+            $pdf->SetX($textXPos);
+            $pdf->Write(0, $line['text']);
 
-            $pdf->MultiCell(0, 0, $page, false, 'R', false, 1, $pageNumXPos);
-            //todo in actual output:
-            //draw dots/lines to pagenum (in final version)
-            //determine actual string width -> multicell getx danach?
+            //calculate space left for dots to pagenumber
+            $dotsXStartPos = $pdf->GetX();
+            $dotsXEndPos = $textWidth
+                            + $oldMargins['left']
+                            - $this->getPageNumberWidth();
+            $dotsDelta = $dotsXEndPos - $dotsXStartPos;
+
+            //todo: use line-options (solid, dots, ...)
+            /*
+             * $fontDesc = 1.2;
+             * $pdf->Line($dotsXEndPos, $pdf->GetY()+$pdf->getCellHeight($pdf->getFontSize())-$fontDesc, $dotsXStartPos, $pdf->GetY()+$pdf->getCellHeight($pdf->getFontSize())-$fontDesc, ['dash' => '1,1']);
+             */
+
+            //generate string of dots and spaces
+            $s = '';
+            //approximate space to leave at right end of title before dots start
+            $spaceCorrection = $pdf->GetStringWidth('  ');
+            do {
+                $s .= ' .';
+            } while ($pdf->GetStringWidth($s) < $dotsDelta - $spaceCorrection);
+
+            //print dots right-aligned
+            $pdf->Cell($dotsDelta, 0, $s, 0, 0, 'R');
+
+            //reset page margins to original value
+            $pdf->SetMargins(
+                $oldMargins['left'],
+                $oldMargins['top'],
+                $oldMargins['right']
+            );
+
+            //calculate position of page-numbers
+            $pageNumXPos = $textWidth + $pdf->getMargins()['left']
+                                      - $this->getPageNumberWidth();
+
+            //print page numbers
+            $pdf->SetX($pageNumXPos);
+            $pdf->Cell(0, 0, $line['page'], 0, 1, 'R');
         }
     }
 
