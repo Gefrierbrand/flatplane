@@ -43,13 +43,16 @@ $settings = array(
 );
 
 $pdf =  new \de\flatplane\utilities\PDF();
+$pdf->setHeaderMargin(10);
 $pdf->setHeaderData('', 0, date('d.m.Y H:i:s'));
 
 $document = $flatplane->createDocument($settings, $pdf);
 $sec0_1 = $document->addSection('ebene0', ['enumerate' => true]);
 $sec1_1 = $sec0_1->addSection('ebene1');
-$sec2_1 = $sec1_1->addSection('ebene2 ganz langer text der bestimmt umbricht und viele buchstaben enthällt donaudampfschifffahrt');
+$sec2_1 = $sec1_1->addSection('Ebene2: ganz langer Text, der bestimmt umbricht und viele Buchstaben enthällt Donaudampfschifffahrt Sonderzeichen: ¿öäüÖÄÜßþê¥©');
 $sec2_2 = $sec1_1->addSection('ebene2;2');
+$sec2_2->setNumbers([1, 1, 'q']);
+$sec1_1->addSection('test');
 $sec0_2 = $document->addSection('ebene0, item2');
 $sec1_2 = $sec0_1->addSection('test');
 $document->addSection('Inhalt3');

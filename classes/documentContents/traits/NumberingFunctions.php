@@ -156,7 +156,6 @@ trait NumberingFunctions
     }
 
     /**
-     *
      * @return array
      */
     public function getNumbers()
@@ -166,6 +165,11 @@ trait NumberingFunctions
 
     public function setNumbers(array $numbers)
     {
+        foreach ($numbers as $key => $number) {
+            if (!($number instanceof Number)) {
+                $numbers[$key] = new Number($number);
+            }
+        }
         $this->numbers = $numbers;
     }
 

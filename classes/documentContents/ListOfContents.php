@@ -28,7 +28,8 @@ use RecursiveIteratorIterator;
 
 /**
  * Description of ListOfContent
- * todo: generate lists for individual sections, not the whole document
+ * todo: generate lists for individual sections, not just the whole document
+ * todo: entry-margins
  * @author Nikolai Neff <admin@flatplane.de>
  */
 class ListOfContents extends AbstractDocumentContentElement implements ListInterface
@@ -267,6 +268,13 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
                              - $this->getPageNumberWidth()
                              - $this->getMinPageNumDistance()
                              - $textIndent;
+
+//            $oldRMargin = $pdf->getMargins()['right'];
+//            $pdf->SetMargins(
+//                $pdf->getMargins()['left'],
+//                $pdf->getMargins()['top'],
+//                $oldRMargin + $this->getPageNumberWidth() + $this->getMinPageNumDistance()
+//            );
             //calculate minimum titleWidth
             $minTitleWidth = $this->getMinTitleWidthPercentage()/100*$textWidth;
             if ($maxTitleWidth < $minTitleWidth) {
@@ -285,21 +293,30 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
 
             $textXPos = $textIndent+$pdf->getMargins()['left'];
             $numXPos = $numberIndent+$pdf->getMargins()['left'];
-            //print demo-output and check number of needed lines
-            $pdf->SetCellPaddings(0);
+
+
+            $pdf->SetCellPaddings(0, 0, 0, 0);
+            $pdf->setCellMargins(0, 0, 0, 0);
+
             $pdf->Text($numXPos, $pdf->GetY(), $line['numbers']);
 
-            $pdf->MultiCell(
+            $pdf->SetX($textXPos);
+            
+            $lineNum = $pdf->MultiCell(
                 $maxTitleWidth, //cellwidth
-                0, //cellheight: aotomatic
+                0, //cellheight: automatic
                 $line['text'], //text
-                0, //border
+                false, //border
                 'L', //text-alignment
                 false, //fill
-                1, //ln(): next line
+                0, //ln(): 0: same line; 1: beginning next line; 2: same x-pos next line
                 $textXPos //x-position
             );
 
+            $page = str_repeat("\n", $lineNum-1).'123';
+            $pageNumXPos = $textWidth + $pdf->getMargins()['left'] - $this->getPageNumberWidth();
+
+            $pdf->MultiCell(0, 0, $page, false, 'R', false, 1, $pageNumXPos);
             //todo in actual output:
             //draw dots/lines to pagenum (in final version)
             //determine actual string width -> multicell getx danach?

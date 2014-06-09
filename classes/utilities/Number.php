@@ -24,6 +24,7 @@ namespace de\flatplane\utilities;
 /**
  * Description of Number
  * TODO: NumberInterface
+ * todo: test formatting with floats
  * @author Nikolai Neff <admin@flatplane.de>
  */
 class Number
