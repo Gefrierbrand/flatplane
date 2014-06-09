@@ -212,9 +212,6 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             }
             //use the alternative title (if available) for list entries
             $text = $element->getAltTitle();
-            if ($this->getHyphenate()) {
-                $text = $this->toRoot()->hypenateText($text);
-            }
             $this->data[$key]['text'] = $text;
             $this->data[$key]['page'] = $element->getPage(); //todo: fix me?
             $key ++;
@@ -524,15 +521,5 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
     protected function setNumberSeparationWidth($numberSeparationWidth)
     {
         $this->numberSeparationWidth = $numberSeparationWidth;
-    }
-
-    public function getHyphenate()
-    {
-        return $this->hyphenate;
-    }
-
-    protected function setHyphenate($hyphenate)
-    {
-        $this->hyphenate = $hyphenate;
     }
 }

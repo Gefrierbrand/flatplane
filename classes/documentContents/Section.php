@@ -49,7 +49,7 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
     {
         return (string) $this->getAltTitle();
     }
-    
+
     public function getShowInDocument()
     {
         return $this->showInDocument;
@@ -116,6 +116,7 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
 
     public function getSize()
     {
+        //todo: number
         $this->applyStyles();
         $pdf = $this->toRoot()->getPdf();
         $height = $pdf->getStringHeight(0, $this->getTitle());

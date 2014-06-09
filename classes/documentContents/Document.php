@@ -198,11 +198,6 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         $this->author = $author;
     }
 
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
     public function setDescription($description)
     {
         $this->description = $description;
@@ -426,5 +421,14 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     protected function setHyphenate($hyphenate)
     {
         $this->hyphenate = $hyphenate;
+    }
+
+    /**
+     * FIXME: rename this!
+     * @param string $title
+     */
+    protected function setTitle($title)
+    {
+        $this->title = $title;
     }
 }

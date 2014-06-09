@@ -26,6 +26,7 @@ use de\flatplane\interfaces\documentElements\TextInterface;
 /**
  * Description of Text
  * todo: add line-height to styles
+ * todo: cache text (vgl formulas, v.a. wegen hyphenation)
  * @author Nikolai Neff <admin@flatplane.de>
  */
 class Text extends AbstractDocumentContentElement implements TextInterface
@@ -60,11 +61,6 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     public function getParse()
     {
         return $this->parse;
-    }
-
-    public function getHyphenate()
-    {
-        return $this->hyphenate;
     }
 
     public function readText()
@@ -109,11 +105,6 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     protected function setParse($parse) //todo: rename parse
     {
         $this->parse = (bool) $parse;
-    }
-
-    protected function setHyphenate($hyphenate)
-    {
-        $this->hyphenate = (bool) $hyphenate;
     }
 
     public function getTextAlignment()

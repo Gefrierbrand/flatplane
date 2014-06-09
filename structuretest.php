@@ -33,7 +33,6 @@ $flatplane::setVerboseOutput(true);
 /*
  * BEGIN DOKUMENTDEFINITION
  */
-
 //Vom Standard abweichende dokumentweite Einstellungen setzen
 $settings = array(
     'author' => 'Max Mustermann',
@@ -67,5 +66,6 @@ $document->addSection('Inhalt13');
 
 $list = $document->addList(['section']);
 $list->generateStructure($document->getContent());
+
 $list->getSize();
 $flatplane->generatePDF(['showDocumentTree' => true, 'clearFormulaCache' => true]);

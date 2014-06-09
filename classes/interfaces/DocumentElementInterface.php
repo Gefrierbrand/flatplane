@@ -82,4 +82,6 @@ interface DocumentElementInterface
     public function setLabel($label);
     //public function setSize(array $zize); ?
     public function setPage($page);
+
+    public function hyphenateTitle();
 }

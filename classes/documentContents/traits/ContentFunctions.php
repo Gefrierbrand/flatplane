@@ -29,6 +29,7 @@ use de\flatplane\documentContents\Section;
 use de\flatplane\documentContents\Table;
 use de\flatplane\documentContents\Text;
 use de\flatplane\interfaces\DocumentElementInterface;
+use de\flatplane\interfaces\documentElements\DocumentInterface;
 use RuntimeException;
 
 /**
@@ -92,6 +93,9 @@ trait ContentFunctions
         //traverse the document tree
         $content->setParent($this);
 
+        //hyphenate Title / alttitle of the content (if needed)
+        $content->hyphenateTitle();
+
         //the subcontents level is always one greater than the current level
         $content->setLevel($this->getLevel()+1);
 
@@ -100,6 +104,7 @@ trait ContentFunctions
             $this->calculateNumber($content);
         }
 
+        //add a label to the document-wide label list, if the content requires it
         if ($content->getLabel()) {
             $this->toRoot()->addLabel($content);
         }
@@ -252,7 +257,7 @@ trait ContentFunctions
         } else {
             $root = $this;
         }
-        if (!($root instanceof Document)) {
+        if (!($root instanceof DocumentInterface)) {
             throw new \RuntimeException(
                 'toRoot() did not return an instance of Document'
             );

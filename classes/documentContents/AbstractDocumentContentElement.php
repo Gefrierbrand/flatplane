@@ -195,6 +195,8 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      */
     protected $fillColor = ['default' => [255,255,255]];
 
+    protected $hyphenate = true;
+
     /**
      * This method is called on creating a new element.
      * @param array $config
@@ -554,5 +556,23 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
                 'textwidth' => $textwidth,
                 'pageheight' => $pageheight,
                 'textheight' => $textheight];
+    }
+
+    public function getHyphenate()
+    {
+        return $this->hyphenate;
+    }
+
+    protected function setHyphenate($hyphenate)
+    {
+        $this->hyphenate = $hyphenate;
+    }
+
+    public function hyphenateTitle()
+    {
+        if ($this->getHyphenate()) {
+            $this->setTitle($this->toRoot()->hypenateText($this->getTitle()));
+            $this->setAltTitle($this->toRoot()->hypenateText($this->getAltTitle()));
+        }
     }
 }

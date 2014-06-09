@@ -155,6 +155,7 @@ class Flatplane
      */
     public function createDocument(array $settings = [], PDF $pdf = null)
     {
+        $this->startTimer('AnalyzingInputs');
         $factory = new ElementFactory();
         $this->document = $factory->createDocument($settings, $pdf);
         return $this->document;
@@ -176,6 +177,7 @@ class Flatplane
      */
     public function generatePDF(array $settings = [])
     {
+        $this->stopTimer('AnalyzingInputs');
         if (!extension_loaded('imagick')) {
             self::log(
                 'Imagick extension is not available, assuming 72 dpi for'
@@ -316,7 +318,7 @@ class Flatplane
         echo PHP_EOL;
     }
 
-    private function startTimer($name)
+    public function startTimer($name)
     {
         if (self::$verboseOutput) {
             echo "Starting $name".PHP_EOL;
@@ -324,7 +326,7 @@ class Flatplane
         $this->getStopwatch()->start($name);
     }
 
-    private function stopTimer($name, $showMem = false)
+    public function stopTimer($name, $showMem = false)
     {
         $event = $this->getStopwatch()->stop($name);
 
