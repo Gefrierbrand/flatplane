@@ -91,6 +91,13 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
     protected $contentStyleLevel = 0;
 
     /**
+     * @var bool
+     *  toggle Hyphenation
+     */
+    protected $hyphenate = true;
+
+
+    /**
      * @var array
      *  Array of linestyles for each level. Valid keys are:
      *  <ul><li>mode:
@@ -137,6 +144,12 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
      *  Width of the pageNumber column in user units
      */
     protected $pageNumberWidth = 8;
+
+    /**
+     * @var float
+     *  space between the numbering and the text in the list. (in em)
+     */
+    protected $numberSeparationWidth = 1;
 
     /**
      * Array containig the lists raw data for outputting
@@ -195,10 +208,15 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             if ($element->getEnumerate()) {
                 $this->data[$key]['numbers'] = $element->getFormattedNumbers();
             } else {
-                $this->data[$key]['numbers'] = null;
+                $this->data[$key]['numbers'] = '';
             }
-            $this->data[$key]['text'] = $element->getAltTitle();
-            $this->data[$key]['page'] = $element->getPage();
+            //use the alternative title (if available) for list entries
+            $text = $element->getAltTitle();
+            if ($this->getHyphenate()) {
+                $text = $this->toRoot()->hypenateText($text);
+            }
+            $this->data[$key]['text'] = $text;
+            $this->data[$key]['page'] = $element->getPage(); //todo: fix me?
             $key ++;
         }
 
@@ -218,6 +236,8 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         }
         $indentAmounts = $this->calculateIndentAmounts();
         $this->measureOutput($indentAmounts);
+
+        //return ...;
     }
 
     protected function measureOutput($indentAmounts)
@@ -228,6 +248,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         $this->generatePseudoOutput($indentAmounts);
 
         list($height, $numpages) = $pdf->endMeasurement(false);
+        //return ...;
     }
 
     /**
@@ -241,16 +262,14 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         $textWidth = $this->getPageMeasurements()['textwidth'];
         foreach ($this->getData() as $line) {
             //add all indent amounts for the current level
-            $totalIndentWidth = 0;
-            for ($i=0; $i < $line['iteratorDepth']; $i++) {
-                echo "i: $i; indentamount: {$indentAmounts[$i]}\n";
-                $totalIndentWidth += $indentAmounts[$i];
-            }
+
             //calculate the maximum available space for the title-display
+            $textIndent = $indentAmounts[$line['iteratorDepth']]['text'];
+            $numberIndent = $indentAmounts[$line['iteratorDepth']]['number'];
             $maxTitleWidth = $textWidth
                              - $this->getPageNumberWidth()
                              - $this->getMinPageNumDistance()
-                             - $totalIndentWidth;
+                             - $textIndent;
             //calculate minimum titleWidth
             $minTitleWidth = $this->getMinTitleWidthPercentage()/100*$textWidth;
             if ($maxTitleWidth < $minTitleWidth) {
@@ -267,16 +286,21 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             $this->setContentStyleLevel($line['iteratorDepth']);
             $this->applyStyles();
 
+            $textXPos = $textIndent+$pdf->getMargins()['left'];
+            $numXPos = $numberIndent+$pdf->getMargins()['left'];
             //print demo-output and check number of needed lines
-            $numlines = $pdf->MultiCell(
+            $pdf->SetCellPaddings(0);
+            $pdf->Text($numXPos, $pdf->GetY(), $line['numbers']);
+
+            $pdf->MultiCell(
                 $maxTitleWidth, //cellwidth
                 0, //cellheight: aotomatic
-                $line['numbers'].$line['text'], //text
-                1, //border
+                $line['text'], //text
+                0, //border
                 'L', //text-alignment
                 false, //fill
                 1, //ln(): next line
-                $totalIndentWidth+$pdf->getMargins()['left'] //x-position
+                $textXPos //x-position
             );
 
             //todo in actual output:
@@ -294,53 +318,61 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
     protected function calculateIndentAmounts()
     {
         $data = $this->getData();
-        $formattedNumberString = [];
-        //loop through all lines of the list and save the highest formatted
-        //number for each depth by overwriting the old number each iteration.
+        $pdf = $this->toRoot()->getPdf();
+        $maxItDepth = 0;
+        $longestNumberWidth = [];
+        $indentAmounts = [];
+        //loop through all lines of the list and save the size of the longest
+        //string for each depth
         foreach ($data as $line) {
             if ($this->getIndent()['maxLevel'] != -1
                 && $line['iteratorDepth'] > $this->getIndent()['maxLevel']
             ) {
-                //end iteration if the level of the line is deeper then the
-                //maximum indentation depth
+                //end iteration if the level of the line is deeper than the
+                //maximum indentation-level
                 break;
             }
-            if ($line['numbers'] !== null) {
-                //add two spaces to conform to DIN 5008, which requires at least
-                //two spaces between a section number and its text (for top
-                //level sections)
-                //todo: add ability to customize amount
-                $numbers = $line['numbers'].'  ';
-            } else {
-                //the number might keep empty for a specific level if the
-                //enumerate-property of all contents on that depth is set to false.
-                //therefore the numberingstring for those levels is set to two
-                //spaces to keep indenting possible, unless the level in
-                //question is at depth 0
-                if ($line['iteratorDepth'] == 0) {
-                    $numbers = '';
-                } else {
-                    $numbers = '  ';
-                }
-            }
-            //add the lines numbers to the number list overwriting the last one
-            //for each level
-            //
-            //FIXME: use longest string instead of highest number due to
-            //prefix & separator etc.
-            $formattedNumberString[$line['iteratorDepth']] = $numbers;
-        }
 
-        $pdf = $this->toRoot()->getPdf();
-        //calculate the string width in user-units for the longest
-        //number string of each level according to the respective styles
-        foreach ($formattedNumberString as $level => $string) {
-            $this->setContentStyleLevel($level);
+            //use the longest string from each nunbering level to determine
+            //the min space needed for the indentation. The width will change
+            //with different fonts and fontsizes etc, so apply the specific
+            //styles first.
+            $this->setContentStyleLevel($line['iteratorDepth']);
             $this->applyStyles();
-            $amount[$level] = $pdf->GetStringWidth($string);
+            $strWidth = $pdf->GetStringWidth($line['numbers']);
+
+            if (!isset($longestNumberWidth[$line['iteratorDepth']]['text'])
+                || $strWidth > $longestNumberWidth[$line['iteratorDepth']]['text']
+            ) {
+                $longestNumberWidth[$line['iteratorDepth']] = $strWidth;
+            }
+
+            //calculate the distance from the numbers to the text.
+            $numDist[$line['iteratorDepth']] = $pdf->getHTMLUnitToUnits(
+                $this->getNumberSeparationWidth(),
+                $pdf->getFontSize(),
+                'em'
+            );
+
+            if ($line['iteratorDepth'] > $maxItDepth) {
+                $maxItDepth = $line['iteratorDepth'];
+            }
         }
 
-        return $amount;
+        for ($i=0; $i <= $maxItDepth; $i++) {
+            if (isset($indentAmounts[$i-1]['text'])) {
+                $indentAmounts[$i]['text'] = $indentAmounts[$i-1]['text']
+                                           + $longestNumberWidth[$i]
+                                           + $numDist[$i];
+                $indentAmounts[$i]['number'] = $indentAmounts[$i-1]['text'];
+            } else {
+                $indentAmounts[$i]['text'] = $longestNumberWidth[$i]+$numDist[$i];
+                $indentAmounts[$i]['number'] = 0;
+            }
+        }
+
+        //todo: indet for not enumerated lines
+        return $indentAmounts;
     }
 
     public function applyStyles()
@@ -482,5 +514,25 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
     public function setPageNumberWidth($pageNumberWidth)
     {
         $this->pageNumberWidth = $pageNumberWidth;
+    }
+
+    public function getNumberSeparationWidth()
+    {
+        return $this->numberSeparationWidth;
+    }
+
+    protected function setNumberSeparationWidth($numberSeparationWidth)
+    {
+        $this->numberSeparationWidth = $numberSeparationWidth;
+    }
+
+    public function getHyphenate()
+    {
+        return $this->hyphenate;
+    }
+
+    protected function setHyphenate($hyphenate)
+    {
+        $this->hyphenate = $hyphenate;
     }
 }
