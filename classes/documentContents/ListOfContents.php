@@ -232,9 +232,10 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             );
 
         }
-        $this->measureOutput();
+        $measurements = $this->measureOutput();
 
-        //return ...;
+        return ['width' => $this->getPageMeasurements()['textwidth'],
+                'height' => $measurements['height']];
     }
 
     protected function measureOutput()
@@ -244,8 +245,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
 
         $this->generateOutput();
 
-        list($height, $numpages) = $pdf->endMeasurement(false);
-        //return ...;
+        return $pdf->endMeasurement(false);
     }
 
     /**
@@ -298,8 +298,15 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             //adjust cell paddings and margins
             //todo: empty line before level-0 entries
             //todo: save defaults etc, doc
-            $pdf->SetCellPaddings(0, 0, 0, 0);
-            $pdf->setCellMargins(0, 0, 0, 0);
+            $pdf->SetCellPaddings(0, '', 0); //left, top, right
+
+            if ($line['iteratorDepth'] == 0) {
+                $topMargin = $pdf->getCellHeight($pdf->getFontSize());
+            } else {
+                $topMargin = 0;
+            }
+
+            $pdf->setCellMargins(0, $topMargin, 0);
 
             //display number for the entry
             $pdf->Text($numXPos, $pdf->GetY(), $line['numbers']);

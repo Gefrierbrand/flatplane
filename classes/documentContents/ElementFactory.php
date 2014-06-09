@@ -90,12 +90,17 @@ class ElementFactory
         $marginBot = $doc->getPageMargins('bottom');
         $marginLeft = $doc->getPageMargins('left');
         $marginRight = $doc->getPageMargins('right');
+        $headerMargin = $doc->getPageMargins('header');
+        $footerMargin = $doc->getPageMargins('footer');
 
         if ($pdf === null) {
             $pdf = new PDF($orientation, $unit, $format);
         }
         $pdf->SetMargins($marginLeft, $marginTop, $marginRight);
         $pdf->SetAutoPageBreak(true, $marginBot);
+
+        $pdf->setHeaderMargin($headerMargin);
+        $pdf->setFooterMargin($footerMargin);
 
         $doc->setPdf($pdf);
         return $doc;

@@ -91,7 +91,7 @@ class PDF extends \TCPDF
         }
 
         $this->SetAutoPageBreak($this->oldPageBreak);
-        return [$height, $numPages];
+        return ['height' => $height, 'numPages' => $numPages];
     }
 
 //    public function header()
