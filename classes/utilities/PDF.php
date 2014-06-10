@@ -47,7 +47,7 @@ class PDF extends \TCPDF
         // store starting values
         $this->AddPage();
         $this->oldPageBreak = $this->getAutoPageBreak();
-        $this->SetAutoPageBreak(true);
+        $this->SetAutoPageBreak(true, $this->getMargins()['bottom']);
 
         $this->measureStartY = $this->GetY();
         $this->measureStartPage = $this->getPage();
@@ -90,7 +90,7 @@ class PDF extends \TCPDF
             $this->commitTransaction();
         }
 
-        $this->SetAutoPageBreak($this->oldPageBreak);
+        $this->SetAutoPageBreak($this->oldPageBreak, $this->getMargins()['bottom']);
         return ['height' => $height, 'numPages' => $numPages];
     }
 

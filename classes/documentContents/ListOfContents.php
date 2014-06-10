@@ -224,13 +224,8 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
 
     public function getSize()
     {
-        //todo: automatically generate structure here?
         if (empty($this->getData())) {
-            throw new \RuntimeException(
-                'The structure must be generated before calculating the size',
-                E_USER_ERROR
-            );
-
+            $this->generateStructure($this->toRoot()->getContent());
         }
         $measurements = $this->measureOutput();
 
@@ -245,14 +240,14 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
 
         $this->generateOutput();
 
-        return $pdf->endMeasurement(false);
+        return $pdf->endMeasurement();
     }
 
     /**
      * todo: doc, move to sane place?
      * @param array $indentAmounts
      */
-    protected function generateOutput()
+    public function generateOutput()
     {
         $pdf = $this->toRoot()->getPdf();
         $textWidth = $this->getPageMeasurements()['textwidth'];

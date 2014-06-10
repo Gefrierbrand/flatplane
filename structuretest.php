@@ -86,7 +86,5 @@ $document->addSection('Inhalt12');
 $document->addSection('Inhalt13');
 
 $list = $document->addList(['section']);
-$list->generateStructure($document->getContent());
-
-$list->getSize();
+var_dump($list->getSize());
 $flatplane->generatePDF(['showDocumentTree' => true, 'clearFormulaCache' => true]);

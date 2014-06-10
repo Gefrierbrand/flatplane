@@ -268,10 +268,6 @@ class Flatplane
         $lists = $this->getAllContentOfType('list');
         foreach ($lists as $element) {
             $element->generateStructure($this->document->getContent());
-
-            //temp
-            $ListGenerator = new ListGenerator();
-            $ListGenerator->generate($element);
         }
     }
 

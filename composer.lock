@@ -146,12 +146,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Stopwatch.git",
-                "reference": "13c947fa49491a8b68b00bcf8696fa9815d0e319"
+                "reference": "a9b9d810c3244749252722890de6b56713202c8c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Stopwatch/zipball/13c947fa49491a8b68b00bcf8696fa9815d0e319",
-                "reference": "13c947fa49491a8b68b00bcf8696fa9815d0e319",
+                "url": "https://api.github.com/repos/symfony/Stopwatch/zipball/a9b9d810c3244749252722890de6b56713202c8c",
+                "reference": "a9b9d810c3244749252722890de6b56713202c8c",
                 "shasum": ""
             },
             "require": {
@@ -186,7 +186,7 @@
             ],
             "description": "Symfony Stopwatch Component",
             "homepage": "http://symfony.com",
-            "time": "2014-05-23 14:36:49"
+            "time": "2014-06-06 03:26:07"
         },
         {
             "name": "tecnick.com/tcpdf",
