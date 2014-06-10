@@ -4,6 +4,3 @@
 [submodule "MathJax"]
 	path = MathJax
 	url = https://github.com/mathjax/MathJax.git
-[submodule "bibtexparser"]
-	path = bibtexparser
-	url = git@github.com:Gefrierbrand/bibtexparser.git
