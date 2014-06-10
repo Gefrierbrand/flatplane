@@ -3,20 +3,20 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "1ec642bdaaedaa90ec79f32c677ec229",
+    "hash": "5a8d9eb7e39ee2f879781771b128e115",
     "packages": [
         {
-            "name": "audiolabs/bibtexparser",
+            "name": "flatplane/bibtexparser",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/audiolabs/bibtexparser.git",
-                "reference": "b2d7794f49887ee7801c780b215d4d66b0f2e475"
+                "url": "https://github.com/Gefrierbrand/bibtexparser.git",
+                "reference": "ab1f45c94e3e684a9ae45a41c83026fcff0cf505"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/audiolabs/bibtexparser/zipball/b2d7794f49887ee7801c780b215d4d66b0f2e475",
-                "reference": "b2d7794f49887ee7801c780b215d4d66b0f2e475",
+                "url": "https://api.github.com/repos/Gefrierbrand/bibtexparser/zipball/ab1f45c94e3e684a9ae45a41c83026fcff0cf505",
+                "reference": "ab1f45c94e3e684a9ae45a41c83026fcff0cf505",
                 "shasum": ""
             },
             "require": {
@@ -24,11 +24,10 @@
             },
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "AudioLabs": "src/"
+                "psr-4": {
+                    "de\\flatplane\\": "classes/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -38,16 +37,24 @@
                     "email": "nils.werner@audiolabs-erlangen.de",
                     "homepage": "http://www.audiolabs-erlangen.de",
                     "role": "Developer"
+                },
+                {
+                    "name": "Nikolai Neff",
+                    "email": "admin@flatplane.de",
+                    "homepage": "https://flatplane.de"
                 }
             ],
             "description": "Bibtex parser for PHP 5.3",
-            "homepage": "http://github.com/alabs/bibtexparser",
+            "homepage": "https://github.com/Gefrierbrand/bibtexparser",
             "keywords": [
                 "bibtex",
                 "latex",
                 "parsing"
             ],
-            "time": "2014-04-07 10:08:24"
+            "support": {
+                "source": "https://github.com/Gefrierbrand/bibtexparser/tree/master"
+            },
+            "time": "2014-06-10 10:47:14"
         },
         {
             "name": "sabberworm/php-css-parser",
@@ -253,7 +260,7 @@
         "symfony/process": 20,
         "symfony/stopwatch": 20,
         "sabberworm/php-css-parser": 20,
-        "audiolabs/bibtexparser": 20
+        "flatplane/bibtexparser": 20
     },
     "platform": {
         "php": ">=5.5",
