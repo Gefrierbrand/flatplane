@@ -62,6 +62,8 @@ class Image extends AbstractDocumentContentElement
 
     protected $margins = ['default' => 0, 'title' => 5, 'caption' => 5];
 
+    protected $source;
+
     /**
      * Returns image-type and -path as string
      * @return string

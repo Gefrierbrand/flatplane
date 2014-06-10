@@ -3,6 +3,12 @@
     "type": "library",
     "description": "Flatplane is a frontend to TCPDF to create scientific reports with automatic text-formatting and support for TeX and MathML equations",
     "keywords": ["Flatplane", "PDF", "typesetting", "typography", "report", "article", "LaTeX", "TeX", "MathJax", "Equation", "Formula", "MathML"],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Gefrierbrand/bibtexparser"
+        }
+    ],
     "require": {
         "php": ">=5.5",
         "ext-curl": "*",
@@ -10,7 +16,7 @@
         "symfony/process": "2.5.*@dev",
         "symfony/stopwatch": "dev-master",
         "sabberworm/php-css-parser": "dev-master",
-        "audiolabs/bibtexparser": "dev-master"
+        "flatplane/bibtexparser": "dev-master"
     },
     "license": "LGPLv3",
     "authors": [

@@ -29,6 +29,7 @@ namespace de\flatplane\documentContents;
 class Table extends AbstractDocumentContentElement
 {
     protected $type = 'table';
+    protected $title = 'Table';
 
     public function getSize()
     {
