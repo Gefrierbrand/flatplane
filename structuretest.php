@@ -44,7 +44,8 @@ $settings = array(
 
 $document = $flatplane->createDocument($settings);
 $document->getPdf()->setHeaderData('', 0, date('d.m.Y H:i:s'));
-//$document->getPdf()->SetAutoPageBreak(true, 50);
+$document->addSource('label', []);
+
 $sec0_1 = $document->addSection('ebene0', ['enumerate' => true]);
 $sec1_1 = $sec0_1->addSection('ebene1');
 $sec2_1 = $sec1_1->addSection('Ebene2: ganz langer Text, der bestimmt umbricht und viele Buchstaben enthällt Donaudampfschifffahrt Sonderzeichen: ¿öäüÖÄÜßþê¥©');
@@ -75,15 +76,7 @@ $subsub->addSection('tief unten');
 $subsub->addSection('tief unten');
 $sub->addSection('title');
 $sub->addSection('title');
-$on->addSection('test');
-$mn = $document->addSection('Inhalt10');
-$mn->addSection('test2');
-$mn->addSection('test2');
-$mn->addSection('test2');
-$mn->addSection('test2')->addSection('test3')->addSection('test4')->addSection('test5');
-$document->addSection('Inhalt11');
-$document->addSection('Inhalt12');
-$document->addSection('Inhalt13');
+
 
 $list = $document->addList(['section']);
 var_dump($list->getSize());

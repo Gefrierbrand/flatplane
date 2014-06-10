@@ -31,6 +31,8 @@ use de\flatplane\interfaces\DocumentElementInterface;
 interface DocumentInterface extends DocumentElementInterface
 {
     public function addLabel(DocumentElementInterface $label);
+    public function cite($source, $extras = '');
+    public function addSource($label, array $settings);
 
     public function getNumberingLevel($type = '');
     public function getNumberingFormat($type = '');

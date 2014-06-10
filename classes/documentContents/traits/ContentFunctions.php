@@ -111,6 +111,9 @@ trait ContentFunctions
 
         if ($position == 'first') {
             //add content as first array entry
+            if (!is_array($this->content)) {
+                $this->content = [];
+            }
             array_unshift($this->content, $content);
             return $this->content[0];
         } else {

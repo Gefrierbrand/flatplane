@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Gefrierbrand/bibtexparser.git",
-                "reference": "ab1f45c94e3e684a9ae45a41c83026fcff0cf505"
+                "reference": "51e0fc2c11cb71eb24ec9471cb4676df712d45a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Gefrierbrand/bibtexparser/zipball/ab1f45c94e3e684a9ae45a41c83026fcff0cf505",
-                "reference": "ab1f45c94e3e684a9ae45a41c83026fcff0cf505",
+                "url": "https://api.github.com/repos/Gefrierbrand/bibtexparser/zipball/51e0fc2c11cb71eb24ec9471cb4676df712d45a1",
+                "reference": "51e0fc2c11cb71eb24ec9471cb4676df712d45a1",
                 "shasum": ""
             },
             "require": {
@@ -54,7 +54,7 @@
             "support": {
                 "source": "https://github.com/Gefrierbrand/bibtexparser/tree/master"
             },
-            "time": "2014-06-10 10:47:14"
+            "time": "2014-06-10 11:10:27"
         },
         {
             "name": "sabberworm/php-css-parser",

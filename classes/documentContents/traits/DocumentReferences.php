@@ -30,7 +30,7 @@ use de\flatplane\interfaces\DocumentElementInterface;
  */
 trait DocumentReferences
 {
-    protected $validLabelTypes = ['page', 'title', 'number'];
+    protected $validLabelTypes = ['page', 'title', 'number', 'source'];
     protected $unresolvedReferenceMarker = '?';
     protected $assumedPageNumberWidth = 3;
     protected $assumedStructureNumberWidth = 4;
@@ -70,7 +70,10 @@ trait DocumentReferences
                 }
                 break;
             default:
-                trigger_error('Invalid reference type, defaulting to number');
+                trigger_error(
+                    'Invalid reference type, defaulting to number',
+                    E_USER_NOTICE
+                );
                 return $instance->getFormattedNumbers();
         }
     }
@@ -90,7 +93,10 @@ trait DocumentReferences
                 $width = $this->getAssumedPageNumberWidth();
                 return str_repeat($this->getUnresolvedReferenceMarker(), $width);
             default:
-                trigger_error('Invalid reference type, defaulting to number');
+                trigger_error(
+                    'Invalid reference type, defaulting to number',
+                    E_USER_NOTICE
+                );
                 $width = $this->getAssumedStructureNumberWidth();
                 //add num-1 to the width to account for number separation
                 $width += ($width-1);

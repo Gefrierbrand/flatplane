@@ -41,6 +41,7 @@ class ElementFactory
     protected $formulaConfig  = 'config/formulaSettings.ini';
     protected $textConfig     = 'config/textSettings.ini';
     protected $imageConfig    = 'config/imageSettings.ini';
+    protected $sourceConfig   = 'config/sourceSettings.ini';
 
     /**
      * @var array
@@ -169,5 +170,11 @@ class ElementFactory
     {
         $config = new Config($this->imageConfig);
         return new Image($config->getSettings());
+    }
+
+    protected function createSource()
+    {
+        $config = new Config($this->sourceConfig);
+        return new Source($config->getSettings());
     }
 }

@@ -36,17 +36,14 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
 {
     //todo: maybe without traits?
     use \de\flatplane\documentContents\traits\DocumentReferences;
-    //use \de\flatplane\documentContents\traits\DocumentGetterSetter;
-    /**
-     * @var int
-     *  type of the element
-     */
+
     protected $type='document';
     protected $labels = [];
+    protected $sources = [];
     protected $isSplitable = true;
 
     protected $author =  '';
-    protected $title = '';
+    protected $docTitle = '';
     protected $description = '';
     protected $subject = '';
     protected $keywords = '';
@@ -64,6 +61,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
 
     protected $pageMargins = ['default' => 20];
 
+    protected $citation = ['prefix' => '[', 'postfix' => ']', 'separator' => ','];
     protected $hyphenate = true;
     protected $hyphenationOptions = ['file' => '',
                              'dictionary' => [],
@@ -135,9 +133,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         return $this->author;
     }
 
-    public function getTitle()
+    public function getDocTitle()
     {
-        return $this->title;
+        return $this->docTitle;
     }
 
     public function getDescription()
@@ -424,11 +422,58 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     * FIXME: rename this!
-     * @param string $title
+     * @param string $docTitle
      */
-    protected function setTitle($title)
+    protected function setDocTitle($docTitle)
     {
-        $this->title = $title;
+        $this->docTitle = $docTitle;
+    }
+
+    public function cite($source, $extras = '')
+    {
+        if (array_key_exists($source, $this->getSources())) {
+            $citeStyle = $this->getCitation();
+            $cite = $citeStyle['prefix'];
+            $cite .= $this->getSources()[$source]->getFormattedNumbers();
+            if (!empty($extras)) {
+                $cite .= $citeStyle['separator'].' '.$extras;
+            }
+            $cite .= $citeStyle['postfix'];
+        } else {
+            trigger_error(
+                'Source "'.$source.'" for citation not found',
+                E_USER_NOTICE
+            );
+            $cite = '[??]'; //todo: use assumption settings
+        }
+        return $cite;
+    }
+
+    public function getSources()
+    {
+        return $this->sources;
+    }
+
+    public function getCitation()
+    {
+        return $this->citation;
+    }
+
+    protected function setSources(array $sources)
+    {
+        $this->sources = $sources;
+    }
+
+    protected function setCitation($cite)
+    {
+        $this->citation = $cite;
+    }
+
+    public function addSource($label, array $settings = [])
+    {
+        $factory = $this->getElementFactory();
+        $settings['label'] = $label;
+        $content = $factory->createElement('source', $settings);
+        return $this->addContent($content, 'first');
     }
 }
