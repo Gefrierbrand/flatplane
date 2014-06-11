@@ -343,6 +343,11 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
                 //print page numbers
                 $pdf->SetX($pageNumXPos);
                 $pdf->Cell(0, 0, $line['page'], 0, 1, 'R');
+            } else {
+                //use empty cell to set internal cursor to next line. This is
+                //needed to be able to use cell-paddings and margins for
+                //vertical distances
+                $pdf->Cell(0, 0, '', 0, 1);
             }
 
             //reset page margins to original value

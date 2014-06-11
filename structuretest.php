@@ -78,6 +78,6 @@ $sub->addSection('title');
 $sub->addSection('title');
 
 
-$list = $document->addList(['source'], ['showPages' => false, 'fontStyle' => ['level0' => '']]);
+$list = $document->addList(['section'], ['showPages' => false]);
 var_dump($list->getSize());
 $flatplane->generatePDF(['showDocumentTree' => true, 'clearFormulaCache' => true]);
