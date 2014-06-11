@@ -127,15 +127,16 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
     public function applyStyles()
     {
         $pdf = $this->toRoot()->getPdf();
+        $level = 'level'.$this->getLevel();
         $pdf->SetFont(
-            $this->getFontType($this->getLevel()),
-            $this->getFontStyle($this->getLevel()),
-            $this->getFontSize($this->getLevel())
+            $this->getFontType($level),
+            $this->getFontStyle($level),
+            $this->getFontSize($level)
         );
-        $pdf->setColorArray('text', $this->getFontColor($this->getLevel()));
-        $pdf->setColorArray('draw', $this->getDrawColor($this->getLevel()));
-        $pdf->setColorArray('fill', $this->getFillColor($this->getLevel()));
-        $pdf->setFontSpacing($this->getFontSpacing($this->getLevel()));
-        $pdf->setFontStretching($this->getFontStretching($this->getLevel()));
+        $pdf->setColorArray('text', $this->getFontColor($level));
+        $pdf->setColorArray('draw', $this->getDrawColor($level));
+        $pdf->setColorArray('fill', $this->getFillColor($level));
+        $pdf->setFontSpacing($this->getFontSpacing($level));
+        $pdf->setFontStretching($this->getFontStretching($level));
     }
 }

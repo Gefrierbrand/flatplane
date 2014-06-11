@@ -448,7 +448,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
 
     public function applyStyles()
     {
-        $level = $this->getContentStyleLevel();
+        $level = 'level'.$this->getContentStyleLevel();
         $pdf = $this->toRoot()->getPdf();
         $pdf->SetFont(
             $this->getFontType($level),
