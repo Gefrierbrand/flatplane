@@ -240,11 +240,11 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
 
         $this->generateOutput();
 
-        return $pdf->endMeasurement();
+        return $pdf->endMeasurement(false);
     }
 
     /**
-     * todo: doc, move to sane place?
+     * todo: doc
      * @param array $indentAmounts
      */
     public function generateOutput()
@@ -291,10 +291,11 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             $numXPos = $numberIndent+$pdf->getMargins()['left'];
 
             //adjust cell paddings and margins
-            //todo: empty line before level-0 entries
-            //todo: save defaults etc, doc
+            //todo: restore defaults, use customizes values
             $pdf->SetCellPaddings(0, '', 0); //left, top, right
 
+            //add a margin of about one line before each entry on level 0 for
+            //better visual chapter differentiation
             if ($line['iteratorDepth'] == 0) {
                 $topMargin = $pdf->getCellHeight($pdf->getFontSize());
             } else {
@@ -322,29 +323,27 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             $pdf->SetX($textXPos);
             $pdf->Write(0, $line['text']);
 
-            //calculate space left for dots to pagenumber
-            $dotsXStartPos = $pdf->GetX();
-            $dotsXEndPos = $textWidth
-                            + $oldMargins['left']
-                            - $this->getPageNumberWidth();
-            $dotsDelta = $dotsXEndPos - $dotsXStartPos;
+            //draw line or dots to pages, as the x-position is now behind the
+            //last char of the title
+            if ($this->getShowPages()) {
+                $this->printLineToPages($textWidth, $oldMargins);
 
-            //todo: use line-options (solid, dots, ...)
-            /*
-             * $fontDesc = 1.2;
-             * $pdf->Line($dotsXEndPos, $pdf->GetY()+$pdf->getCellHeight($pdf->getFontSize())-$fontDesc, $dotsXStartPos, $pdf->GetY()+$pdf->getCellHeight($pdf->getFontSize())-$fontDesc, ['dash' => '1,1']);
-             */
+                //calculate position of page-numbers
+                $pageNumXPos = $textWidth
+                                + $oldMargins['left']
+                                - $this->getPageNumberWidth();
 
-            //generate string of dots and spaces
-            $s = '';
-            //approximate space to leave at right end of title before dots start
-            $spaceCorrection = $pdf->GetStringWidth('  ');
-            do {
-                $s .= ' .';
-            } while ($pdf->GetStringWidth($s) < $dotsDelta - $spaceCorrection);
+                //reset pagemargins to allow text printing on the right side
+                $pdf->SetMargins(
+                    $oldMargins['left'],
+                    $oldMargins['top'],
+                    $oldMargins['right']
+                );
 
-            //print dots right-aligned
-            $pdf->Cell($dotsDelta, 0, $s, 0, 0, 'R');
+                //print page numbers
+                $pdf->SetX($pageNumXPos);
+                $pdf->Cell(0, 0, $line['page'], 0, 1, 'R');
+            }
 
             //reset page margins to original value
             $pdf->SetMargins(
@@ -353,14 +352,32 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
                 $oldMargins['right']
             );
 
-            //calculate position of page-numbers
-            $pageNumXPos = $textWidth + $pdf->getMargins()['left']
-                                      - $this->getPageNumberWidth();
-
-            //print page numbers
-            $pdf->SetX($pageNumXPos);
-            $pdf->Cell(0, 0, $line['page'], 0, 1, 'R');
+            //todo: reset cell margins / paddings
         }
+    }
+
+    protected function printLineToPages($textWidth, $oldMargins)
+    {
+        $pdf = $this->toRoot()->getPdf();
+        //calculate space left for dots to pagenumber
+        $dotsXStartPos = $pdf->GetX();
+        $dotsXEndPos = $textWidth
+                        + $oldMargins['left']
+                        - $this->getPageNumberWidth();
+        $dotsDelta = $dotsXEndPos - $dotsXStartPos;
+
+        //todo: use line-options (solid, dots, none, ...)
+
+        //generate string of dots and spaces
+        $s = '';
+        //approximate space to leave at right end of title before dots start
+        $spaceCorrection = $pdf->GetStringWidth('  ');
+        do {
+            $s .= ' .';
+        } while ($pdf->GetStringWidth($s) < $dotsDelta - $spaceCorrection);
+
+        //print dots right-aligned
+        $pdf->Cell($dotsDelta, 0, $s, 0, 0, 'R');
     }
 
     /**

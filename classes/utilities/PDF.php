@@ -41,11 +41,13 @@ class PDF extends \TCPDF
         return $this->h;
     }
 
-    public function startMeasurement()
+    public function startMeasurement($addPage = true)
     {
         $this->startTransaction();
+        if ($addPage) {
+            $this->AddPage();
+        }
         // store starting values
-        $this->AddPage();
         $this->oldPageBreak = $this->getAutoPageBreak();
         $this->SetAutoPageBreak(true, $this->getMargins()['bottom']);
 

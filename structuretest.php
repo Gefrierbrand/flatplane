@@ -44,7 +44,7 @@ $settings = array(
 
 $document = $flatplane->createDocument($settings);
 $document->getPdf()->setHeaderData('', 0, date('d.m.Y H:i:s'));
-$document->addSource('label', []);
+$document->addSource('quelle', ['altTitle' => 'Super Buch']);
 
 $sec0_1 = $document->addSection('ebene0', ['enumerate' => true]);
 $sec1_1 = $sec0_1->addSection('ebene1');
@@ -78,6 +78,6 @@ $sub->addSection('title');
 $sub->addSection('title');
 
 
-$list = $document->addList(['section']);
+$list = $document->addList(['source'], ['showPages' => false, 'fontStyle' => [0 => '']]);
 var_dump($list->getSize());
 $flatplane->generatePDF(['showDocumentTree' => true, 'clearFormulaCache' => true]);

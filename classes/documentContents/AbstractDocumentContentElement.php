@@ -106,17 +106,17 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
 
     /**
      * @var array
-     *  defines the elements margins in user-units. Valid keys are:
-     *  'top', 'bottom', 'left', 'right'. If any of those is undefined, the
-     *  value of the key 'default' is used.
+     *  defines the elements margins in user-units. Standard keys are:
+     *  'top', 'bottom', 'left', 'right'. Subclasses might define their own keys.
+     *  If any of those are undefined, the value of the key 'default' is used.
      */
     protected $margins = ['default' => 0];
 
     /**
      * @var array
-     *  defines the elements paddings in user-units. Valid keys are:
-     *  'top', 'bottom', 'left', 'right'. If any of those is undefined, the
-     *  value of the key 'default' is used.
+     *  defines the elements paddings in user-units. Standard keys are:
+     *  'top', 'bottom', 'left', 'right'. Subclasses might define their own keys.
+     *  If any of those are undefined, the value of the key 'default' is used.
      */
     protected $paddings = ['default' => 0];
 

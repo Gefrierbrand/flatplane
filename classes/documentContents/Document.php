@@ -61,7 +61,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
 
     protected $pageMargins = ['default' => 20];
 
-    protected $citation = ['prefix' => '[', 'postfix' => ']', 'separator' => ','];
+    protected $citationStyle = ['prefix' => '[', 'postfix' => ']', 'separator' => ','];
     protected $hyphenate = true;
     protected $hyphenationOptions = ['file' => '',
                              'dictionary' => [],
@@ -432,7 +432,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     public function cite($source, $extras = '')
     {
         if (array_key_exists($source, $this->getSources())) {
-            $citeStyle = $this->getCitation();
+            $citeStyle = $this->getCitationStyle();
             $cite = $citeStyle['prefix'];
             $cite .= $this->getSources()[$source]->getFormattedNumbers();
             if (!empty($extras)) {
@@ -454,9 +454,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         return $this->sources;
     }
 
-    public function getCitation()
+    public function getCitationStyle()
     {
-        return $this->citation;
+        return $this->citationStyle;
     }
 
     protected function setSources(array $sources)
@@ -464,16 +464,17 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         $this->sources = $sources;
     }
 
-    protected function setCitation($cite)
+    protected function setCitationStyle($cite)
     {
-        $this->citation = $cite;
+        $this->citationStyle = $cite;
     }
 
     public function addSource($label, array $settings = [])
     {
         $factory = $this->getElementFactory();
-        $settings['label'] = $label;
         $content = $factory->createElement('source', $settings);
-        return $this->addContent($content, 'first');
+        $source = $this->addContent($content, 'first');
+        $this->sources[$label] = $source;
+        return $source;
     }
 }

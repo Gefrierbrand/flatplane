@@ -30,7 +30,7 @@ class Source extends AbstractDocumentContentElement
 {
     protected $type='source';
 
-    protected $altTitle = '';
+    protected $altTitle;
     protected $fieldsToShow = ['sourceAuthor',
                                'sourceTitle',
                                 'sourcePublisher',
@@ -62,6 +62,28 @@ class Source extends AbstractDocumentContentElement
 
     //protected $quotingStyle = 'Chicago'; //alt: harvard
 
+    protected function generateTitleString()
+    {
+        $titleString = '';
+        //add each requested field to the string
+        foreach ($this->getFieldsToShow() as $field) {
+            $methodName = 'get'.ucfirst($field);
+            if (method_exists($this, $methodName)) {
+                $field = $this->$methodName();
+                //if the field is not empty, add the separator and the fields
+                //content to the string
+                if (!empty($field)) {
+                    $titleString .= $this->getFieldSeparator().' ';
+                    $titleString .= $field;
+                }
+            }
+        }
+        //remove first separator:
+        $titleString = ltrim($titleString, $this->getFieldSeparator().' ');
+        
+        $this->setAltTitle($titleString);
+    }
+
     public function getSize()
     {
         return ['width' => 0, 'height' => 0];
@@ -69,8 +91,10 @@ class Source extends AbstractDocumentContentElement
 
     public function getAltTitle()
     {
-        //todo: handle content display
-        parent::getAltTitle();
+        if (empty($this->altTitle)) {
+            $this->generateTitleString();
+        }
+        return $this->altTitle;
     }
 
     public function getSourceAuthor()

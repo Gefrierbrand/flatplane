@@ -117,7 +117,7 @@ class ElementFactory
     {
         $name = 'create'.ucfirst($type);
         if (method_exists($this, $name)) {
-            return $this->{$name}();
+            return $this->$name();
         } else {
             throw new InvalidArgumentException("$type is not a valid element type");
         }
