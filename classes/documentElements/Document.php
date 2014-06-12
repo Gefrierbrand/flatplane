@@ -21,6 +21,7 @@
 
 namespace de\flatplane\documentElements;
 
+use de\flatplane\BibtexParser\BibtexParser;
 use de\flatplane\interfaces\DocumentElementInterface;
 use de\flatplane\interfaces\documentElements\DocumentInterface;
 use de\flatplane\utilities\PDF;
@@ -473,8 +474,45 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     {
         $factory = $this->getElementFactory();
         $content = $factory->createElement('source', $settings);
-        $source = $this->addContent($content, 'first');
+        $source = $this->addContent($content);
         $this->sources[$label] = $source;
         return $source;
+    }
+
+    public function addBibTexSources($bibfile)
+    {
+        if (!is_readable($bibfile)) {
+            throw new RuntimeException('File '.$bibfile.' is not readable');
+        }
+        $this->parseBibFile($bibfile);
+    }
+
+    /**
+     * todo: doc
+     * @param type $bibfile
+     * @throws RuntimeException
+     */
+    protected function parseBibFile($bibfile)
+    {
+        $results = BibtexParser::parseFile($bibfile);
+        if (!is_array($results)) {
+            throw new RuntimeException('Parsing of BibTexFile failed');
+        }
+        foreach ($results as $source) {
+            if (!empty($source['reference'])) {
+                $src = $this->addSource($source['reference']);
+                foreach ($source as $fieldName => $fieldValue) {
+                    $methodName = 'setSource'.ucfirst($fieldName);
+                    if (method_exists($src, $methodName)) {
+                        $src->$methodName($fieldValue);
+                    }
+                }
+            } else {
+                trigger_error(
+                    'Source does not contain required "reference" property',
+                    E_USER_ERROR
+                );
+            }
+        }
     }
 }

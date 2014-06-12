@@ -41,6 +41,7 @@ class Source extends AbstractDocumentContentElement
 
     protected $sourceAuthor;
     protected $sourceTitle;
+    protected $sourceType;
     protected $sourceBooktitle;
     protected $sourceJournal;
     protected $sourcePublisher;
@@ -74,6 +75,10 @@ class Source extends AbstractDocumentContentElement
                 //content to the string
                 if (!empty($field)) {
                     $titleString .= $this->getFieldSeparator().' ';
+                    //concatenate multiple fieldentries (more than one author...)
+                    if (is_array($field)) {
+                        $field = implode(', ', $field);
+                    }
                     $titleString .= $field;
                 }
             }
@@ -97,6 +102,16 @@ class Source extends AbstractDocumentContentElement
         return $this->altTitle;
     }
 
+    public function getFieldsToShow()
+    {
+        return $this->fieldsToShow;
+    }
+
+    public function getFieldSeparator()
+    {
+        return $this->fieldSeparator;
+    }
+
     public function getSourceAuthor()
     {
         return $this->sourceAuthor;
@@ -105,6 +120,11 @@ class Source extends AbstractDocumentContentElement
     public function getSourceTitle()
     {
         return $this->sourceTitle;
+    }
+
+    public function getSourceType()
+    {
+        return $this->sourceType;
     }
 
     public function getSourceBooktitle()
@@ -197,123 +217,118 @@ class Source extends AbstractDocumentContentElement
         return $this->sourceUrl;
     }
 
-    protected function setSourceAuthor($sourceAuthor)
-    {
-        $this->sourceAuthor = $sourceAuthor;
-    }
-
-    protected function setSourceTitle($sourceTitle)
-    {
-        $this->sourceTitle = $sourceTitle;
-    }
-
-    protected function setSourceBooktitle($sourceBooktitle)
-    {
-        $this->sourceBooktitle = $sourceBooktitle;
-    }
-
-    protected function setSourceJournal($sourceJournal)
-    {
-        $this->sourceJournal = $sourceJournal;
-    }
-
-    protected function setSourcePublisher($sourcePublisher)
-    {
-        $this->sourcePublisher = $sourcePublisher;
-    }
-
-    protected function setSourceOrganization($sourceOrganization)
-    {
-        $this->sourceOrganization = $sourceOrganization;
-    }
-
-    protected function setSourceSchool($sourceSchool)
-    {
-        $this->sourceSchool = $sourceSchool;
-    }
-
-    protected function setSourceMonth($sourceMonth)
-    {
-        $this->sourceMonth = $sourceMonth;
-    }
-
-    protected function setSourceYear($sourceYear)
-    {
-        $this->sourceYear = $sourceYear;
-    }
-
-    protected function setSourceVolume($sourceVolume)
-    {
-        $this->sourceVolume = $sourceVolume;
-    }
-
-    protected function setSourceNumber($sourceNumber)
-    {
-        $this->sourceNumber = $sourceNumber;
-    }
-
-    protected function setSourceChapter($sourceChapter)
-    {
-        $this->sourceChapter = $sourceChapter;
-    }
-
-    protected function setSourcePages($sourcePages)
-    {
-        $this->sourcePages = $sourcePages;
-    }
-
-    protected function setSourceNote($sourceNote)
-    {
-        $this->sourceNote = $sourceNote;
-    }
-
-    protected function setSourceSeries($sourceSeries)
-    {
-        $this->sourceSeries = $sourceSeries;
-    }
-
-    protected function setSourceEdition($sourceEdition)
-    {
-        $this->sourceEdition = $sourceEdition;
-    }
-
-    protected function setSourceIsbn($sourceIsbn)
-    {
-        $this->sourceIsbn = $sourceIsbn;
-    }
-
-    protected function setSourceHowpublished($sourceHowpublished)
-    {
-        $this->sourceHowpublished = $sourceHowpublished;
-    }
-
-    protected function setSourceAddress($sourceAddress)
-    {
-        $this->sourceAddress = $sourceAddress;
-    }
-
-    protected function setSourceUrl($sourceUrl)
-    {
-        $this->sourceUrl = $sourceUrl;
-    }
-
-    public function getFieldsToShow()
-    {
-        return $this->fieldsToShow;
-    }
-
-    protected function setFieldsToShow($fieldsToShow)
+    public function setFieldsToShow($fieldsToShow)
     {
         $this->fieldsToShow = $fieldsToShow;
     }
 
-    public function getFieldSeparator()
-    {
-        return $this->fieldSeparator;
-    }
-
-    protected function setFieldSeparator($fieldSeparator)
+    public function setFieldSeparator($fieldSeparator)
     {
         $this->fieldSeparator = $fieldSeparator;
+    }
+
+    public function setSourceAuthor($sourceAuthor)
+    {
+        $this->sourceAuthor = $sourceAuthor;
+    }
+
+    public function setSourceTitle($sourceTitle)
+    {
+        $this->sourceTitle = $sourceTitle;
+    }
+
+    public function setSourceType($sourceType)
+    {
+        $this->sourceType = $sourceType;
+    }
+
+    public function setSourceBooktitle($sourceBooktitle)
+    {
+        $this->sourceBooktitle = $sourceBooktitle;
+    }
+
+    public function setSourceJournal($sourceJournal)
+    {
+        $this->sourceJournal = $sourceJournal;
+    }
+
+    public function setSourcePublisher($sourcePublisher)
+    {
+        $this->sourcePublisher = $sourcePublisher;
+    }
+
+    public function setSourceOrganization($sourceOrganization)
+    {
+        $this->sourceOrganization = $sourceOrganization;
+    }
+
+    public function setSourceSchool($sourceSchool)
+    {
+        $this->sourceSchool = $sourceSchool;
+    }
+
+    public function setSourceMonth($sourceMonth)
+    {
+        $this->sourceMonth = $sourceMonth;
+    }
+
+    public function setSourceYear($sourceYear)
+    {
+        $this->sourceYear = $sourceYear;
+    }
+
+    public function setSourceVolume($sourceVolume)
+    {
+        $this->sourceVolume = $sourceVolume;
+    }
+
+    public function setSourceNumber($sourceNumber)
+    {
+        $this->sourceNumber = $sourceNumber;
+    }
+
+    public function setSourceChapter($sourceChapter)
+    {
+        $this->sourceChapter = $sourceChapter;
+    }
+
+    public function setSourcePages($sourcePages)
+    {
+        $this->sourcePages = $sourcePages;
+    }
+
+    public function setSourceNote($sourceNote)
+    {
+        $this->sourceNote = $sourceNote;
+    }
+
+    public function setSourceSeries($sourceSeries)
+    {
+        $this->sourceSeries = $sourceSeries;
+    }
+
+    public function setSourceEdition($sourceEdition)
+    {
+        $this->sourceEdition = $sourceEdition;
+    }
+
+    public function setSourceIsbn($sourceIsbn)
+    {
+        $this->sourceIsbn = $sourceIsbn;
+    }
+
+    public function setSourceHowpublished($sourceHowpublished)
+    {
+        $this->sourceHowpublished = $sourceHowpublished;
+    }
+
+    public function setSourceAddress($sourceAddress)
+    {
+        $this->sourceAddress = $sourceAddress;
+    }
+
+    public function setSourceUrl($sourceUrl)
+    {
+        $this->sourceUrl = $sourceUrl;
     }
 }

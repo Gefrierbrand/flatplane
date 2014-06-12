@@ -44,7 +44,8 @@ $settings = array(
 
 $document = $flatplane->createDocument($settings);
 $document->getPdf()->setHeaderData('', 0, date('d.m.Y H:i:s'));
-$document->addSource('quelle', ['altTitle' => 'Erika Mustermann, Super Buch, DuckSpaß©-Verlag, 42. Auflage 1984']);
+$bibfile = 'tests/content/submarines.bib';
+$document->addBibTexSources($bibfile);
 
 $sec0_1 = $document->addSection('ebene0', ['enumerate' => true]);
 $sec1_1 = $sec0_1->addSection('ebene1');
@@ -78,6 +79,6 @@ $sub->addSection('title');
 $sub->addSection('title');
 
 
-$list = $document->addList(['section', 'image'], ['showPages' => false]);
+$list = $document->addList(['source'], ['showPages' => false]);
 var_dump($list->getSize());
 $flatplane->generatePDF(['showDocumentTree' => true, 'clearFormulaCache' => true]);
