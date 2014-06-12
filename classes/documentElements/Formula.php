@@ -19,10 +19,11 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\documentContents;
+namespace de\flatplane\documentElements;
 
 use de\flatplane\interfaces\documentElements\FormulaInterface;
 use de\flatplane\utilities\SVGSize;
+use RuntimeException;
 
 /**
  * Description of formula

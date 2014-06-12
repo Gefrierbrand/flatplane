@@ -19,11 +19,12 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\documentContents;
+namespace de\flatplane\documentElements;
 
 use de\flatplane\interfaces\documentElements\ListInterface;
-use de\flatplane\iterators\ShowInListFilterIterator;
 use de\flatplane\iterators\RecursiveContentIterator;
+use de\flatplane\iterators\ShowInListFilterIterator;
+use OutOfRangeException;
 use RecursiveIteratorIterator;
 
 /**
@@ -169,6 +170,11 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         parent::__construct($config);
     }
 
+    public function __toString()
+    {
+        return (string) 'List of: '. implode(', ', $this->getDisplayTypes());
+    }
+
     /**
      * todo: order by: level, structure, content-type
      * This method traverses the document-tree and filters for the desired
@@ -178,7 +184,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
      *  Array containing objects implementing DocumentElementInterface
      * @return array
      *  Array with information for each line: formatted Number, absolute and
-     *  relative depth, Text determined by the elements __toString() method.
+     *  relative depth, Text determined by the elements altTitle property
      */
     public function generateStructure(array $content)
     {
@@ -557,7 +563,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
     public function getIndent()
     {
         if ($this->indent['maxLevel'] < -1) {
-            throw new \OutOfRangeException('maxLevel can\'t be smaller than -1');
+            throw new OutOfRangeException('maxLevel can\'t be smaller than -1');
         }
         return $this->indent;
     }

@@ -44,7 +44,7 @@ $settings = array(
 
 $document = $flatplane->createDocument($settings);
 $document->getPdf()->setHeaderData('', 0, date('d.m.Y H:i:s'));
-$document->addSource('quelle', ['altTitle' => 'Super Buch']);
+$document->addSource('quelle', ['altTitle' => 'Erika Mustermann, Super Buch, DuckSpaß©-Verlag, 42. Auflage 1984']);
 
 $sec0_1 = $document->addSection('ebene0', ['enumerate' => true]);
 $sec1_1 = $sec0_1->addSection('ebene1');
@@ -54,7 +54,7 @@ $sec2_2->setNumbers([2, 1, 'q']);
 $sec1_1->addSection('test');
 $sec0_2 = $document->addSection('ebene0, item2');
 $sec1_2 = $sec0_1->addSection('test');
-$document->addSection('Inhalt3');
+$document->addSection('Inhalt3')->addImage('images/bild.png', ['caption' => 'tolles bild'.$document->cite('quelle')]);
 $document->addSection('Inhalt4');
 $i5 = $document->addSection('Inhalt5');
 $i5->addSection('i5');
@@ -78,6 +78,6 @@ $sub->addSection('title');
 $sub->addSection('title');
 
 
-$list = $document->addList(['section'], ['showPages' => false]);
+$list = $document->addList(['section', 'image'], ['showPages' => false]);
 var_dump($list->getSize());
 $flatplane->generatePDF(['showDocumentTree' => true, 'clearFormulaCache' => true]);

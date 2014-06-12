@@ -19,7 +19,8 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\documentContents;
+namespace de\flatplane\documentElements;
+
 
 /**
  * Description of Footnote

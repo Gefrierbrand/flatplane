@@ -19,15 +19,15 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\documentContents\traits;
+namespace de\flatplane\documentElements\traits;
 
-use de\flatplane\documentContents\Document;
-use de\flatplane\documentContents\Formula;
-use de\flatplane\documentContents\Image;
-use de\flatplane\documentContents\ListOfContents;
-use de\flatplane\documentContents\Section;
-use de\flatplane\documentContents\Table;
-use de\flatplane\documentContents\Text;
+use de\flatplane\documentElements\Document;
+use de\flatplane\documentElements\Formula;
+use de\flatplane\documentElements\Image;
+use de\flatplane\documentElements\ListOfContents;
+use de\flatplane\documentElements\Section;
+use de\flatplane\documentElements\Table;
+use de\flatplane\documentElements\Text;
 use de\flatplane\interfaces\DocumentElementInterface;
 use de\flatplane\interfaces\documentElements\DocumentInterface;
 use RuntimeException;

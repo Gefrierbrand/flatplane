@@ -18,10 +18,11 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\documentContents;
+namespace de\flatplane\documentElements;
 
-use de\flatplane\documentContents\AbstractDocumentContentElement;
+use de\flatplane\documentElements\AbstractDocumentContentElement;
 use de\flatplane\interfaces\documentElements\SectionInterface;
+use \RuntimeException;
 
 /**
  * Description of section

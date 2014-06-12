@@ -19,9 +19,10 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\documentContents;
+namespace de\flatplane\documentElements;
 
 use de\flatplane\interfaces\DocumentElementInterface;
+use RuntimeException;
 
 //todo: formattierungsobjekte: newline, newpage, (h/v-space), clearpage?
 

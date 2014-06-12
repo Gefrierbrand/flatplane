@@ -19,7 +19,7 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\documentContents;
+namespace de\flatplane\documentElements;
 
 use de\flatplane\interfaces\DocumentElementInterface;
 use de\flatplane\interfaces\documentElements\DocumentInterface;
@@ -35,7 +35,7 @@ use RuntimeException;
 class Document extends AbstractDocumentContentElement implements DocumentInterface
 {
     //todo: maybe without traits?
-    use \de\flatplane\documentContents\traits\DocumentReferences;
+    use \de\flatplane\documentElements\traits\DocumentReferences;
 
     protected $type='document';
     protected $labels = [];

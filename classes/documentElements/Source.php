@@ -19,7 +19,7 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\documentContents;
+namespace de\flatplane\documentElements;
 
 /**
  * Description of Footnote
@@ -80,7 +80,7 @@ class Source extends AbstractDocumentContentElement
         }
         //remove first separator:
         $titleString = ltrim($titleString, $this->getFieldSeparator().' ');
-        
+
         $this->setAltTitle($titleString);
     }
 

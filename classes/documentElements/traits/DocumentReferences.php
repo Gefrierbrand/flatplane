@@ -19,7 +19,7 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\documentContents\traits;
+namespace de\flatplane\documentElements\traits;
 
 use de\flatplane\interfaces\DocumentElementInterface;
 
