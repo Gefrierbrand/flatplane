@@ -19,7 +19,7 @@
  * along with Flatplane.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace de\flatplane\structure;
+namespace de\flatplane\view;
 
 /**
  * Description of Page

@@ -66,7 +66,7 @@ $i5->addSection('i5');
 $document->addSection('Inhalt6');
 $document->addSection('Inhalt7');
 $document->addSection('Inhalt8');
-$on = $document->addSection('Inhalt9 ohne nummer', ['enumerate' => false]);
+$on = $document->addSection('Inhalt9 ohne Nummer', ['enumerate' => false]);
 $on->addSection('test');
 $on->addSection('test');
 $sub = $on->addSection('test');
@@ -77,8 +77,7 @@ $subsub->addSection('tief unten');
 $subsub->addSection('tief unten');
 $sub->addSection('title');
 $sub->addSection('title');
+$list = $document->addList(['section'], ['showPages' => true]);
 
 
-$list = $document->addList(['source'], ['showPages' => false]);
-var_dump($list->getSize());
 $flatplane->generatePDF(['showDocumentTree' => true, 'clearFormulaCache' => true]);

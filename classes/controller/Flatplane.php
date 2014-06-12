@@ -48,6 +48,8 @@ class Flatplane
     protected static $cacheDir = '.';
     protected static $verboseOutput = true; //todo: set this to false before shipping
 
+    protected static $firstmessage = true;
+
     /**
      * @var Document
      */
@@ -69,10 +71,23 @@ class Flatplane
         $this->stopTimer('generateDocument', true);
     }
 
-    public static function log($msg)
+    public static function log($msg, $extraNewLine = false)
     {
+        if (self::$firstmessage) {
+            if (php_sapi_name() != 'cli') {
+                header('Content-Type: text/html; charset=UTF-8');
+            }
+            self::$firstmessage = false;
+        }
         if (self::$verboseOutput) {
-            echo $msg.PHP_EOL;
+            $msg = trim($msg).PHP_EOL;
+            if ($extraNewLine) {
+                $msg .= PHP_EOL;
+            }
+            if (php_sapi_name() != 'cli') {
+                $msg = nl2br($msg);
+            }
+            echo $msg;
         }
     }
 
@@ -200,7 +215,7 @@ class Flatplane
         // generate structure
 
         $this->startTimer('generateLists');
-        $this->generatePreliminaryLists();
+        $this->generateListStructures();
         $this->stopTimer('generateLists');
 
         // validate / update cache: TBD
@@ -223,7 +238,7 @@ class Flatplane
 
         // generating Pages
         $this->startTimer('generatingPages');
-        $this->generatePages($pages);
+        $this->generatePageContentOutput($pages);
         $this->stopTimer('generatingPages');
 
         // generatingPDF
@@ -243,7 +258,7 @@ class Flatplane
         $this->getDocument()->getPdf()->Output(self::$outputDir.DIRECTORY_SEPARATOR.'output.pdf', 'F');
     }
 
-    protected function generatePages($pages)
+    protected function generatePageContentOutput($pages)
     {
         //todo: implement
     }
@@ -262,7 +277,7 @@ class Flatplane
         $formulaGenerator->generateFiles();
     }
 
-    protected function generatePreliminaryLists()
+    protected function generateListStructures()
     {
         $lists = $this->getAllContentOfType('list');
         foreach ($lists as $element) {
@@ -276,10 +291,15 @@ class Flatplane
      */
     protected function getAllContent()
     {
-        return new RecursiveIteratorIterator(
+        $recItIt = new RecursiveIteratorIterator(
             new RecursiveContentIterator($this->getDocument()->getContent()),
             RecursiveIteratorIterator::SELF_FIRST
         );
+
+        foreach ($recItIt as $pagelements) {
+            $content[] = $pagelements;
+        }
+        return $content;
     }
 
     /**
@@ -289,7 +309,10 @@ class Flatplane
      */
     protected function getAllContentOfType($type)
     {
-        $recItIt = $this->getAllContent();
+        $recItIt = new RecursiveIteratorIterator(
+            new RecursiveContentIterator($this->getDocument()->getContent()),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
 
         $filterIterator = new ContentTypeFilterIterator($recItIt, [$type]);
 
@@ -315,9 +338,7 @@ class Flatplane
 
     public function startTimer($name)
     {
-        if (self::$verboseOutput) {
-            echo "Starting $name".PHP_EOL;
-        }
+        self::log("Starting $name");
         $this->getStopwatch()->start($name);
     }
 
@@ -336,7 +357,7 @@ class Flatplane
                 $memory = '';
             }
 
-            echo "Finished $name: {$duration}$memory".PHP_EOL.PHP_EOL;
+            self::log("Finished $name: {$duration}$memory", true);
         }
         return $event;
     }

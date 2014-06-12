@@ -29,6 +29,7 @@ namespace de\flatplane\documentElements;
 class Source extends AbstractDocumentContentElement
 {
     protected $type='source';
+    protected $title = 'Source';
 
     protected $altTitle;
     protected $fieldsToShow = ['sourceAuthor',
@@ -60,6 +61,8 @@ class Source extends AbstractDocumentContentElement
     protected $sourceHowpublished;
     protected $sourceAddress;
     protected $sourceUrl;
+
+    protected $hyphenate = false;
 
     //protected $quotingStyle = 'Chicago'; //alt: harvard
 

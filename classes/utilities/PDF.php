@@ -55,6 +55,11 @@ class PDF extends \TCPDF
         $this->measureStartPage = $this->getPage();
     }
 
+    /**
+     * todo: doc
+     * @param type $rollback
+     * @return array height of transaction in user units & number of pages needed
+     */
     public function endMeasurement($rollback = true)
     {
         $end_y = $this->GetY();
@@ -95,9 +100,4 @@ class PDF extends \TCPDF
         $this->SetAutoPageBreak($this->oldPageBreak, $this->getMargins()['bottom']);
         return ['height' => $height, 'numPages' => $numPages];
     }
-
-//    public function header()
-//    {
-//        $this->Write(0, "zeile1\nzeile2\nzeile3\nzeile4\nzeile5\nzeile6\nzeile7\nzeile8");
-//    }
 }

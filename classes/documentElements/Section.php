@@ -38,6 +38,8 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
     protected $startsNewLine = ['default' => true];
     protected $startsNewPage = ['default' => false];
 
+    protected $numberSeparationWidth = 1.5;
+
     public function setConfig(array $config)
     {
         if (!array_key_exists('altTitle', $config)) {
@@ -100,9 +102,9 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         $this->showInDocument = (bool) $showInDocument;
     }
 
-    protected function setMinFreePage($minFreePage)
+    protected function setMinFreePage(array $minFreePage)
     {
-        $this->minFreePage = $minFreePage;
+        $this->minFreePage = array_merge($this->minFreePage, $minFreePage);
     }
 
     protected function setStartsNewLine($startsNewLine)
@@ -117,12 +119,30 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
 
     public function getSize()
     {
-        //todo: number
-        $this->applyStyles();
         $pdf = $this->toRoot()->getPdf();
-        $height = $pdf->getStringHeight(0, $this->getTitle());
-        $width = $pdf->GetStringWidth($this->getTitle());
-        return ['height' => $height, 'width' => $width];
+        $pdf->startMeasurement();
+        $this->generateOutput();
+        return $pdf->endMeasurement();
+
+    }
+
+    protected function generateOutput()
+    {
+        $pdf = $this->toRoot()->getPdf();
+        $this->applyStyles();
+        if ($this->getEnumerate()) {
+            $numWidth = $pdf->GetStringWidth($this->getFormattedNumbers());
+            $numWidth += $pdf->getHTMLUnitToUnits(
+                $this->getNumberSeparationWidth(),
+                $pdf->getFontSize(),
+                'em'
+            );
+            $pdf->Cell(0, 0, $this->getFormattedNumbers());
+        } else {
+            $numWidth = 0;
+        }
+        $pdf->SetX($pdf->getMargins()['left'] + $numWidth);
+        $pdf->MultiCell(0, 0, $this->getTitle(), 0, 'L');
     }
 
     public function applyStyles()
@@ -139,5 +159,15 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         $pdf->setColorArray('fill', $this->getFillColor($level));
         $pdf->setFontSpacing($this->getFontSpacing($level));
         $pdf->setFontStretching($this->getFontStretching($level));
+    }
+
+    public function getNumberSeparationWidth()
+    {
+        return $this->numberSeparationWidth;
+    }
+
+    protected function setNumberSeparationWidth($numberSeparationWidth)
+    {
+        $this->numberSeparationWidth = $numberSeparationWidth;
     }
 }

@@ -149,7 +149,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
 
     /**
      * @var float
-     *  space between the numbering and the text in the list. (in em)
+     *  approx. space between the numbering and the text in the list. (in em)
      */
     protected $numberSeparationWidth = 1;
 
@@ -246,7 +246,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
 
         $this->generateOutput();
 
-        return $pdf->endMeasurement(false);
+        return $pdf->endMeasurement();
     }
 
     /**
@@ -441,6 +441,8 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             }
         }
 
+        //calculate indetamounts based on the current depth and the previous
+        //indent amounts
         for ($i=0; $i <= $maxItDepth; $i++) {
             if (isset($indentAmounts[$i-1]['text'])) {
                 $indentAmounts[$i]['text'] = $indentAmounts[$i-1]['text']
@@ -453,7 +455,6 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             }
         }
 
-        //todo: indet for not enumerated lines
         return $indentAmounts;
     }
 

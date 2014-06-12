@@ -43,7 +43,9 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
     protected $availableFonts = ['TeX', 'STIX-Web', 'Asana-Math', 'Neo-Euler',
                                 'Gyre-Pagella', 'Gyre-Termes', 'Latin-Modern'];
     protected $availableCodeFormats = ['TeX','MML'];
+
     protected $formulaStyle = 'display'; //options: display, inline
+    protected $numberPosition = 'right';
 
     protected $useCache = true;
     protected $path;
@@ -223,5 +225,15 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
     protected function setScalingFactor($scalingFactor)
     {
         $this->scalingFactor = $scalingFactor;
+    }
+
+    public function getNumberPosition()
+    {
+        return $this->numberPosition;
+    }
+
+    protected function setNumberPosition($numberPosition)
+    {
+        $this->numberPosition = $numberPosition;
     }
 }

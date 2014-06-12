@@ -21,6 +21,9 @@
 
 namespace de\flatplane\view;
 
+use de\flatplane\interfaces\documentElements\SectionInterface;
+use RuntimeException;
+
 /**
  * Description of PageLayout
  *
@@ -28,5 +31,58 @@ namespace de\flatplane\view;
  */
 class PageLayout
 {
-    //put your code here
+    protected $pages;
+
+    public function __construct(array $content)
+    {
+        foreach ($content as $pageElement) {
+            $type = $pageElement->getType();
+            $methodName = 'layout'.  ucfirst($type);
+            if (method_exists($this, $methodName)) {
+                $this->$methodName($pageElement);
+            } else {
+                throw new RuntimeException('Invalid element type "'.$type.'"');
+            }
+        }
+    }
+
+    protected function addPage()
+    {
+
+    }
+
+    protected function layoutSection(SectionInterface $section)
+    {
+        $section->getMinFreePage('level'.$section->getLevel());
+    }
+
+    protected function layoutImage()
+    {
+
+    }
+
+    protected function layoutFormula()
+    {
+
+    }
+
+    protected function layoutText()
+    {
+
+    }
+
+    protected function layoutList()
+    {
+
+    }
+
+    protected function layoutTable()
+    {
+
+    }
+
+    protected function layoutSource()
+    {
+
+    }
 }
