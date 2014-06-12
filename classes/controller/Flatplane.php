@@ -326,14 +326,21 @@ class Flatplane
     protected function showDocumentTree()
     {
         echo 'Document Tree:'.PHP_EOL;
+        if (!class_exists('RecursiveTreeIterator')) {
+            trigger_error(
+                'Showing the Document Tree is currently not supported by HHVM',
+                E_USER_NOTICE
+            );
+            return;
+        }
         $RecItIt = new RecursiveTreeIterator(
             new RecursiveContentIterator($this->getDocument()->getContent()),
             RecursiveIteratorIterator::SELF_FIRST
         );
         foreach ($RecItIt as $value) {
-            echo $value.PHP_EOL;
+            self::log($value);
         }
-        echo PHP_EOL;
+        self::log();
     }
 
     public function startTimer($name)

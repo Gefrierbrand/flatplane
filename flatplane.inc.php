@@ -20,4 +20,6 @@
  */
 namespace de\flatplane;
 
+date_default_timezone_set('Europe/Berlin');
+
 include('vendor'.DIRECTORY_SEPARATOR.'autoload.php');
