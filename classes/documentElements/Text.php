@@ -43,7 +43,6 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     protected $hyphenate = true;
 
     protected $textAlignment = 'J';
-    protected $lineHeight = '100%';
 
     public function __toString()
     {
@@ -89,12 +88,12 @@ class Text extends AbstractDocumentContentElement implements TextInterface
             false,
             $this->getTextAlignment()
         );
-        list($height, $numPages) = $pdf->endMeasurement(true);
+        $measurements = $pdf->endMeasurement(false);
 
         $width = $pdf->getPageWidth()
             - $pdf->getMargins()['left']
             - $pdf->getMargins()['right'];
-        return ['height' => $height, 'width' => $width, 'numPages' => $numPages];
+        return ['height' => $measurements['height'], 'width' => $width];
     }
 
     protected function setPath($path)

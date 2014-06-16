@@ -48,6 +48,9 @@ $bibfile = 'tests/content/submarines.bib';
 $document->addBibTexSources($bibfile);
 
 $sec0_1 = $document->addSection('ebene0', ['enumerate' => true]);
+
+//var_dump($sec0_1->getSize());
+
 $sec1_1 = $sec0_1->addSection('ebene1');
 $sec2_1 = $sec1_1->addSection('Ebene2: ganz langer Text, der bestimmt umbricht und viele Buchstaben enthällt Donaudampfschifffahrt Sonderzeichen: ¿öäüÖÄÜßþê¥©');
 $sec2_2 = $sec1_1->addSection('ebene2;2');
@@ -74,11 +77,13 @@ $sub->addSection('title');
 $sub->addSection('title');
 $subsub = $sub->addSection('title');
 $subsub->addSection('tief unten');
-$subsub->addSection('tief unten');
+$subsub->addSection('tief unten', ['label' => 'sec:on']);
 $sub->addSection('title');
 $sub->addSection('title');
 $list = $document->addList(['section'], ['showPages' => true]);
 
-$document->addFormula('\frac{1}{2}\cdot\Pi+x');
+$text = $sec0_1->addText('input/testKapitelMitRef.php');
 
-$flatplane->generatePDF(['showDocumentTree' => true, 'clearFormulaCache' => true]);
+$document->addFormula('\frac{1}{2}\cdot\Pi+x');
+var_dump($text->getSize());
+$flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => true]);

@@ -139,7 +139,9 @@ class FormulaFilesGenerator
         $this->process->start();
 
 
-        Flatplane::log("Starting SVGTeX for font $font, please wait.");
+        Flatplane::log(
+            "Starting SVGTeX for font $font on port $port, please wait."
+        );
 
         while ($this->process->isRunning()) {
             $this->process->checkTimeout();

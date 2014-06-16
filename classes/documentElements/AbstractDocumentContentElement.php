@@ -123,6 +123,24 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
 
     /**
      * @var array
+     *  defines the paddings of text-content in cells in user units
+     *  Standard keys are:
+     *  'top', 'bottom', 'left', 'right'. Subclasses might define their own keys.
+     *  If any of those are undefined, the value of the key 'default' is used.
+     */
+    protected $cellPaddings = ['default' => 0];
+
+    /**
+     * @var array
+     *  defines the margins of text-content in cells in user units
+     *  Standard keys are:
+     *  'top', 'bottom', 'left', 'right'. Subclasses might define their own keys.
+     *  If any of those are undefined, the value of the key 'default' is used.
+     */
+    protected $cellMargins = ['default' => 0];
+
+    /**
+     * @var array
      *  defines the font-type/name/family to be used. Possible values are the
      *  name of a font-file or the family-identifier used by TCPDF::addFont()
      * @see TCPDF::addFont()
@@ -199,6 +217,14 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     protected $hyphenate = true;
 
     /**
+     * @var float
+     *  line-pitch scaling factor. Adjust thois to increase or decrease the
+     *  vertical distance between lines relative to the font-size
+     * @see TCPDF::setCellHeightRatio()
+     */
+    protected $linePitch = 1.25;
+
+    /**
      * This method is called on creating a new element.
      * @param array $config
      *  Array containing key=>value pairs wich overwrite the default properties.
@@ -267,6 +293,24 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         $pdf->setColorArray('fill', $this->getFillColor());
         $pdf->setFontSpacing($this->getFontSpacing());
         $pdf->setFontStretching($this->getFontStretching());
+
+        $cellMargins = $this->getCellMargins();
+        $pdf->setCellMargins(
+            $cellMargins['left'],
+            $cellMargins['top'],
+            $cellMargins['right'],
+            $cellMargins['bottom']
+        );
+        $cellPaddings = $this->getCellPaddings();
+
+        $pdf->setCellPaddings(
+            $cellPaddings['left'],
+            $cellPaddings['top'],
+            $cellPaddings['right'],
+            $cellPaddings['bottom']
+        );
+
+        $pdf->setCellHeightRatio($this->getLinePitch());
     }
 
     /**
@@ -581,5 +625,43 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
             $this->setTitle($this->toRoot()->hypenateText($this->getTitle()));
             $this->setAltTitle($this->toRoot()->hypenateText($this->getAltTitle()));
         }
+    }
+
+    public function getCellMargins($key = null)
+    {
+        if ($key !== null && isset($this->cellMargins[$key])) {
+            return $this->cellMargins[$key];
+        } else {
+            return $this->cellMargins['default'];
+        }
+    }
+
+    public function getCellPaddings($key = null)
+    {
+        if ($key !== null && isset($this->cellPaddings[$key])) {
+            return $this->cellPaddings[$key];
+        } else {
+            return $this->cellPaddings['default'];
+        }
+    }
+
+    protected function setCellMargins(array $cellMargins)
+    {
+        $this->cellMargins = array_merge($this->cellMargins, $cellMargins);
+    }
+
+    protected function setCellPaddings(array $cellPaddings)
+    {
+        $this->cellPaddings = array_merge($this->cellPaddings, $cellPaddings);
+    }
+
+    public function getLinePitch()
+    {
+        return $this->linePitch;
+    }
+
+    protected function setLinePitch($linePitch)
+    {
+        $this->linePitch = $linePitch;
     }
 }

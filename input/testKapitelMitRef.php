@@ -1,4 +1,4 @@
-hallo welt! In kapitel <?=$document->getReference('sec:subsub');?> steht irgendwas ganz wichtiges auf Seite&nbsp;<?=$document->getReference('sec:subsub','page');?><br>
+hallo welt! In kapitel <?=$document->getReference('sec:on');?> steht irgendwas ganz wichtiges auf Seite&nbsp;<?=$document->getReference('sec:subsub','page');?><br>
 Nicht existierendes label: <?=$document->getReference('123123');?> asdf<br>
 Hier kommt ein relativ langer Text: lorem ipsum dolor sit amet consetetur ach was weiß ich und so weiter, am besten mit vielen styles:
 <u>underline</u> <span style="text-decoration: overline">overline</span> <s>strike</s> <b>bold</b> <i>italic</i> ein ganz langer Text zum umbrechen testen hier gehts weiter noch mehr Buchstaben ach hätte ich doch nur einen Schreiberling zur hand der neue Spitzer ist goil

@@ -45,7 +45,7 @@ class OSPaths
                 break;
             case 'linux':
                 if ($osArchitecture == 'x86_64' || $osArchitecture == 'amd64') {
-                    $pathSuffix = '_linux64'.DIRECTORY_SEPARATOR
+                    $pathSuffix = '_linux64'.DIRECTORY_SEPARATOR.'bin'
                                   .DIRECTORY_SEPARATOR.'phantomjs';
                 } else {
                     $pathSuffix = '_linux32'.DIRECTORY_SEPARATOR.'bin'

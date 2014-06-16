@@ -123,7 +123,6 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         $pdf->startMeasurement();
         $this->generateOutput();
         return $pdf->endMeasurement();
-
     }
 
     protected function generateOutput()
@@ -137,7 +136,9 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
                 $pdf->getFontSize(),
                 'em'
             );
-            $pdf->Cell(0, 0, $this->getFormattedNumbers());
+            $numWidth += $pdf->getCellPaddings()['L']
+                         + $pdf->getCellPaddings()['R'];
+            $pdf->Cell($numWidth, 0, $this->getFormattedNumbers());
         } else {
             $numWidth = 0;
         }
@@ -159,6 +160,22 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         $pdf->setColorArray('fill', $this->getFillColor($level));
         $pdf->setFontSpacing($this->getFontSpacing($level));
         $pdf->setFontStretching($this->getFontStretching($level));
+
+        $cellMargins = $this->getCellMargins();
+        $pdf->setCellMargins(
+            $cellMargins['left'],
+            $cellMargins['top'],
+            $cellMargins['right'],
+            $cellMargins['bottom']
+        );
+        $cellPaddings = $this->getCellPaddings();
+
+        $pdf->setCellPaddings(
+            $cellPaddings['left'],
+            $cellPaddings['top'],
+            $cellPaddings['right'],
+            $cellPaddings['bottom']
+        );
     }
 
     public function getNumberSeparationWidth()
