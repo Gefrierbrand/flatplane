@@ -27,6 +27,7 @@ use de\flatplane\interfaces\documentElements\DocumentInterface;
 use de\flatplane\iterators\ContentTypeFilterIterator;
 use de\flatplane\iterators\RecursiveContentIterator;
 use de\flatplane\model\FormulaFilesGenerator;
+use de\flatplane\utilities\OSPaths;
 use de\flatplane\utilities\PDF;
 use de\flatplane\view\PageLayout;
 use RecursiveIteratorIterator;
@@ -46,8 +47,7 @@ class Flatplane
     protected static $inputDir = '.';
     protected static $outputDir = '.';
     protected static $cacheDir = '.';
-    protected static $verboseOutput = true; //todo: set this to false before shipping
-
+    protected static $verboseOutput = true;
     protected static $firstmessage = true;
 
     /**
@@ -69,6 +69,11 @@ class Flatplane
     public function __destruct()
     {
         $this->stopTimer('generateDocument', true);
+    }
+
+    public static function getPhantomJsPath()
+    {
+        return OSPaths::getPhantomJsPath();
     }
 
     public static function log($msg, $extraNewLine = false)
@@ -340,7 +345,7 @@ class Flatplane
         foreach ($RecItIt as $value) {
             self::log($value);
         }
-        self::log();
+        self::log('');
     }
 
     public function startTimer($name)

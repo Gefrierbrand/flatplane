@@ -93,7 +93,7 @@ trait ContentFunctions
         //traverse the document tree
         $content->setParent($this);
 
-        //hyphenate Title / alttitle of the content (if needed)
+        //hyphenate Title / altTitle of the content (if needed)
         $content->hyphenateTitle();
 
         //the subcontents level is always one greater than the current level

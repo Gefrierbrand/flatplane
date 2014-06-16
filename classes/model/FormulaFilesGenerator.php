@@ -37,6 +37,7 @@ class FormulaFilesGenerator
     protected $process;
     protected $masterCurlHandle;
     protected $curlHandles;
+    protected $svgTexPort = 16000;
 
     public function __construct(array $content, $cleanDir = false)
     {
@@ -108,8 +109,9 @@ class FormulaFilesGenerator
         $content .= 'MathJax.Hub.Config({SVG:{font:"'.$font.'"}});'."\n";
         $content .= 'MathJax.Ajax.loadComplete("[MathJax]/config/local/font.js");';
 
-        $filename = 'MathJax'.DIRECTORY_SEPARATOR.'config'.
-                    DIRECTORY_SEPARATOR.'local'.DIRECTORY_SEPARATOR.'font.js';
+        $filename = 'vendor'.DIRECTORY_SEPARATOR.'mathjax'.DIRECTORY_SEPARATOR
+                    .'mathjax'.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR
+                    .'local'.DIRECTORY_SEPARATOR.'font.js';
 
         if (!is_writable(dirname($filename))) {
             throw new \RuntimeException('SVGTEX font.js file is not writable');
@@ -124,9 +126,13 @@ class FormulaFilesGenerator
      */
     protected function startSVGTEX($font)
     {
-        //todo: path, os, port?
+        //todo: path, os, port!
+        $phantomPath = Flatplane::getPhantomJsPath();
+        $svgTexPath = 'vendor'.DIRECTORY_SEPARATOR.'flatplane'
+                    .DIRECTORY_SEPARATOR.'svgtex'.DIRECTORY_SEPARATOR.'main.js';
+        $port = $this->getSvgTexPort();
         $this->process = new Process(
-            'phantomjs svgtex'.DIRECTORY_SEPARATOR.'main.js -p 16000'
+            $phantomPath.' '.$svgTexPath.' -p '.$port
         );
         $this->process->setTimeout(20);
         $this->process->setIdleTimeout(20);
@@ -230,5 +236,14 @@ class FormulaFilesGenerator
                 E_USER_WARNING
             );
         }
+    }
+    public function getSvgTexPort()
+    {
+        return $this->svgTexPort;
+    }
+
+    public function setSvgTexPort($svgTexPort)
+    {
+        $this->svgTexPort = $svgTexPort;
     }
 }

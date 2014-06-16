@@ -6,7 +6,66 @@
     "repositories": [
         {
             "type": "vcs",
+            "url": "https://github.com/Gefrierbrand/svgtex.git"
+        },
+        {
+            "type": "vcs",
             "url": "https://github.com/Gefrierbrand/bibtexparser"
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "mathjax/mathjax",
+                "version": "2.4",
+                "dist": {
+                    "type": "zip",
+                    "url": "https://github.com/mathjax/MathJax/archive/master.zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "phantomjs/phantomjs_win",
+                "version": "1.9",
+                "dist": {
+                    "type": "zip",
+                    "url": "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-windows.zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "phantomjs/phantomjs_linux32",
+                "version": "1.9",
+                "dist": {
+                    "type": "tar",
+                    "url": "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-linux-i686.tar.bz2"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "phantomjs/phantomjs_linux64",
+                "version": "1.9",
+                "dist": {
+                    "type": "tar",
+                    "url": "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-linux-x86_64.tar.bz2"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "phantomjs/phantomjs_osx",
+                "version": "1.9",
+                "dist": {
+                    "type": "zip",
+                    "url": "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-macosx.zip"
+                }
+            }
         }
     ],
     "require": {
@@ -16,7 +75,13 @@
         "symfony/process": "2.5.*@dev",
         "symfony/stopwatch": "dev-master",
         "sabberworm/php-css-parser": "dev-master",
-        "flatplane/bibtexparser": "dev-master"
+        "flatplane/bibtexparser": "dev-master",
+        "flatplane/svgtex": "dev-master",
+        "mathjax/mathjax": "2.4",
+        "phantomjs/phantomjs_win": "1.9",
+        "phantomjs/phantomjs_osx": "1.9",
+        "phantomjs/phantomjs_linux32": "1.9",
+        "phantomjs/phantomjs_linux64": "1.9"
     },
     "license": "LGPLv3",
     "authors": [

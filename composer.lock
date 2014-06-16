@@ -1,9 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
-    "hash": "5a8d9eb7e39ee2f879781771b128e115",
+    "hash": "8730f2c4e3d2bcee18c1eab3891fd07c",
     "packages": [
         {
             "name": "flatplane/bibtexparser",
@@ -57,6 +58,102 @@
             "time": "2014-06-10 11:10:27"
         },
         {
+            "name": "flatplane/svgtex",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Gefrierbrand/svgtex.git",
+                "reference": "fdbdc31a6bdf8bbbbf30cefc745f1fa435a40f18"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Gefrierbrand/svgtex/zipball/fdbdc31a6bdf8bbbbf30cefc745f1fa435a40f18",
+                "reference": "fdbdc31a6bdf8bbbbf30cefc745f1fa435a40f18",
+                "shasum": ""
+            },
+            "type": "library",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anton Grbin",
+                    "homepage": "https://github.com/agrbin/svgtex"
+                },
+                {
+                    "name": "Nikolai Neff",
+                    "email": "admin@flatplane.de",
+                    "homepage": "https://flatplane.de"
+                }
+            ],
+            "description": "Using MathJax and PhantomJS to create SVGs on server side with minimum overhead.",
+            "homepage": "https://github.com/Gefrierbrand/svgtex",
+            "keywords": [
+                "MathJax",
+                "PhantomJs",
+                "SVG"
+            ],
+            "support": {
+                "source": "https://github.com/Gefrierbrand/svgtex/tree/master"
+            },
+            "time": "2014-06-16 10:43:24"
+        },
+        {
+            "name": "mathjax/mathjax",
+            "version": "2.4",
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/mathjax/MathJax/archive/master.zip",
+                "reference": null,
+                "shasum": null
+            },
+            "type": "library"
+        },
+        {
+            "name": "phantomjs/phantomjs_linux32",
+            "version": "1.9",
+            "dist": {
+                "type": "tar",
+                "url": "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-linux-i686.tar.bz2",
+                "reference": null,
+                "shasum": null
+            },
+            "type": "library"
+        },
+        {
+            "name": "phantomjs/phantomjs_linux64",
+            "version": "1.9",
+            "dist": {
+                "type": "tar",
+                "url": "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-linux-x86_64.tar.bz2",
+                "reference": null,
+                "shasum": null
+            },
+            "type": "library"
+        },
+        {
+            "name": "phantomjs/phantomjs_osx",
+            "version": "1.9",
+            "dist": {
+                "type": "zip",
+                "url": "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-macosx.zip",
+                "reference": null,
+                "shasum": null
+            },
+            "type": "library"
+        },
+        {
+            "name": "phantomjs/phantomjs_win",
+            "version": "1.9",
+            "dist": {
+                "type": "zip",
+                "url": "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-windows.zip",
+                "reference": null,
+                "shasum": null
+            },
+            "type": "library"
+        },
+        {
             "name": "sabberworm/php-css-parser",
             "version": "dev-master",
             "source": {
@@ -104,12 +201,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Process.git",
-                "reference": "5d7d78e23894544740219e006320678cfa4cd45b"
+                "reference": "66312573dde34dcfcbd6776719382affa06a629b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Process/zipball/5d7d78e23894544740219e006320678cfa4cd45b",
-                "reference": "5d7d78e23894544740219e006320678cfa4cd45b",
+                "url": "https://api.github.com/repos/symfony/Process/zipball/66312573dde34dcfcbd6776719382affa06a629b",
+                "reference": "66312573dde34dcfcbd6776719382affa06a629b",
                 "shasum": ""
             },
             "require": {
@@ -144,7 +241,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "http://symfony.com",
-            "time": "2014-05-23 09:02:52"
+            "time": "2014-06-14 12:57:30"
         },
         {
             "name": "symfony/stopwatch",
@@ -153,12 +250,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Stopwatch.git",
-                "reference": "a9b9d810c3244749252722890de6b56713202c8c"
+                "reference": "8f53219a7869b65e4cd1568b22faa36d08bfff15"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Stopwatch/zipball/a9b9d810c3244749252722890de6b56713202c8c",
-                "reference": "a9b9d810c3244749252722890de6b56713202c8c",
+                "url": "https://api.github.com/repos/symfony/Stopwatch/zipball/8f53219a7869b65e4cd1568b22faa36d08bfff15",
+                "reference": "8f53219a7869b65e4cd1568b22faa36d08bfff15",
                 "shasum": ""
             },
             "require": {
@@ -193,15 +290,15 @@
             ],
             "description": "Symfony Stopwatch Component",
             "homepage": "http://symfony.com",
-            "time": "2014-06-06 03:26:07"
+            "time": "2014-06-06 10:36:27"
         },
         {
             "name": "tecnick.com/tcpdf",
-            "version": "6.0.083",
+            "version": "6.0.084",
             "source": {
                 "type": "git",
                 "url": "git://git.code.sf.net/p/tcpdf/code",
-                "reference": "d6a2206ab366f493680a22151429f17fd045fe04"
+                "reference": "5f4c7a6440b2b125f6ae6230a135c4c44db87a30"
             },
             "require": {
                 "php": ">=5.3.0"
@@ -250,7 +347,7 @@
                 "pdf417",
                 "qrcode"
             ],
-            "time": "2014-05-29 18:28:56"
+            "time": "2014-06-13 18:26:31"
         }
     ],
     "packages-dev": [],
@@ -260,7 +357,8 @@
         "symfony/process": 20,
         "symfony/stopwatch": 20,
         "sabberworm/php-css-parser": 20,
-        "flatplane/bibtexparser": 20
+        "flatplane/bibtexparser": 20,
+        "flatplane/svgtex": 20
     },
     "platform": {
         "php": ">=5.5",

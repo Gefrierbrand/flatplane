@@ -79,5 +79,6 @@ $sub->addSection('title');
 $sub->addSection('title');
 $list = $document->addList(['section'], ['showPages' => true]);
 
+$document->addFormula('\frac{1}{2}\cdot\Pi+x');
 
 $flatplane->generatePDF(['showDocumentTree' => true, 'clearFormulaCache' => true]);
