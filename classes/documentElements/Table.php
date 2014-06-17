@@ -35,4 +35,9 @@ class Table extends AbstractDocumentContentElement
     {
         //todo: implement
     }
+
+    public function generateOutput()
+    {
+        //todo: implement me
+    }
 }

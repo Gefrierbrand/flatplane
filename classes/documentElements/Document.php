@@ -70,6 +70,8 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
                              'rightMin' => 2,
                              'charMin' => 1,
                              'charMax' => 8];
+    protected $hyphenationPatterns;
+
 
     /**
      * @var PDF
@@ -379,20 +381,16 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     public function hypenateText($text)
     {
         $hyphenationOptions = $this->getHyphenationOptions();
+
         return $this->getPdf()->hyphenateText(
             $text,
-            $hyphenationOptions['file'],
+            $this->getHyphenationPatterns(),
             $hyphenationOptions['dictionary'],
             $hyphenationOptions['leftMin'],
             $hyphenationOptions['rightMin'],
             $hyphenationOptions['charMin'],
             $hyphenationOptions['charMax']
         );
-    }
-
-    public function getHyphenationPatternFile()
-    {
-        return $this->hyphenationPatternFile;
     }
 
     protected function setHyphenationOptions(array $hyphenation)
@@ -514,5 +512,22 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
                 );
             }
         }
+    }
+
+    public function generateOutput()
+    {
+        return;
+    }
+
+    public function getHyphenationPatterns()
+    {
+        if (empty($this->hyphenationPatterns)
+            || !is_array($this->hyphenationPatterns)
+        ) {
+            $this->hyphenationPatterns = \TCPDF_STATIC::getHyphenPatternsFromTEX(
+                $this->getHyphenationOptions()['file']
+            );
+        }
+        return $this->hyphenationPatterns;
     }
 }

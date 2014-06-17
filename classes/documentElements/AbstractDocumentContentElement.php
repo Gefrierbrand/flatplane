@@ -113,13 +113,13 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      */
     protected $margins = ['default' => 0];
 
-    /**
-     * @var array
-     *  defines the elements paddings in user-units. Standard keys are:
-     *  'top', 'bottom', 'left', 'right'. Subclasses might define their own keys.
-     *  If any of those are undefined, the value of the key 'default' is used.
-     */
-    protected $paddings = ['default' => 0];
+//    /**
+//     * @var array
+//     *  defines the elements paddings in user-units. Standard keys are:
+//     *  'top', 'bottom', 'left', 'right'. Subclasses might define their own keys.
+//     *  If any of those are undefined, the value of the key 'default' is used.
+//     */
+//    protected $paddings = ['default' => 0];
 
     /**
      * @var array
@@ -389,10 +389,10 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         $this->margins = array_merge($this->margins, $margins);
     }
 
-    protected function setPaddings(array $paddings)
-    {
-        $this->paddings = array_merge($this->paddings, $paddings);
-    }
+//    protected function setPaddings(array $paddings)
+//    {
+//        $this->paddings = array_merge($this->paddings, $paddings);
+//    }
 
     protected function setFontType(array $fontType)
     {
@@ -590,9 +590,10 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
 
     /**
      * todo: doc
+     * todo: change back to protected or add to interface
      * @return array
      */
-    protected function getPageMeasurements()
+    public function getPageMeasurements()
     {
         //doto: footnotes
         $doc = $this->toRoot();
@@ -622,8 +623,12 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     public function hyphenateTitle()
     {
         if ($this->getHyphenate()) {
+            if ($this->getAltTitle() !== $this->getTitle()) {
+                $this->setAltTitle(
+                    $this->toRoot()->hypenateText($this->getAltTitle())
+                );
+            }
             $this->setTitle($this->toRoot()->hypenateText($this->getTitle()));
-            $this->setAltTitle($this->toRoot()->hypenateText($this->getAltTitle()));
         }
     }
 

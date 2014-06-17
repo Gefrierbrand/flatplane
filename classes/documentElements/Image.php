@@ -110,13 +110,14 @@ class Image extends AbstractDocumentContentElement
     }
 
     /**
-     * This method estimates the vertical dimensions of the image descriptions
+     * This method applies the custom styles to the image descriptions and
+     * estimates their vertical dimensions
      * @return array
-     *  space needed for title and caption
+     *  vertical space needed for title and caption
      */
     public function applyStyles()
     {
-        //todo: use transactions and html styles?
+        //todo: use transactions
         $pdf = $this->toRoot()->getPdf();
         $this->setPDFFont('title');
 
@@ -128,6 +129,11 @@ class Image extends AbstractDocumentContentElement
         $captionHeight = $pdf->getStringHeight(0, $caption);
 
         return ['titleHeight' => $titleHeight, 'captionHeight' => $captionHeight];
+    }
+
+    public function generateOutput()
+    {
+        //todo: implement me;
     }
 
     protected function getCompleteTitle()

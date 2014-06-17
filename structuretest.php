@@ -43,47 +43,41 @@ $settings = array(
 );
 
 $document = $flatplane->createDocument($settings);
-$document->getPdf()->setHeaderData('', 0, date('d.m.Y H:i:s'));
-$bibfile = 'tests/content/submarines.bib';
-$document->addBibTexSources($bibfile);
+$pdf = $document->getPdf();
+$pdf->setHeaderData('', 0, date('d.m.Y H:i:s'));
 
-$sec0_1 = $document->addSection('ebene0', ['enumerate' => true]);
+$pdf->AddPage();
+$pdf->Rect(
+    $document->getPageMargins('left'),
+    $document->getPageMargins('right'),
+    $document->getPageMeasurements()['textwidth'],
+    $document->getPageMeasurements()['textheight'],
+    '',
+    ['all' => ['color' => [255, 0, 0]]]
+);
+$flatplane->startTimer('sections');
+$inhaltSec = $document->addSection('Inhaltsverzeichnis', ['enumerate' => false]);
+$flatplane->startTimer('addlists');
+$inhaltList = $inhaltSec->addList(['section', 'list'], ['showInList' => false]);
+$inhaltSec->addList(['image']);
+$inhaltSec->addList(['table']);
+$inhaltSec->addList(['formula']);
+$flatplane->stopTimer('addlists');
+$einleitungSec = $document->addSection('Einleitung');
+$einleitungSec->addSection('Vorwort');
+$einleitungSec->addSection('Danksagungen');
+$hauptteilSec = $document->addSection('Hauptteil');
+$hauptteilSec->addSection('Problemstellung');
+$hauptteilSec->addSection('Versuchsaufbau');
+$hauptteilSec->addSection('Versuchsdruchführung');
+$hauptteilSec->addSection('Datenanalyse');
 
-//var_dump($sec0_1->getSize());
+$schlussSec = $document->addSection('Schluss');
+$schlussSec->addSection('Fazit');
+$schlussSec->addSection('Ausblick');
+$anahngSec = $document->addSection('Anhang', ['enumerate' => false]);
+$flatplane->stopTimer('sections');
 
-$sec1_1 = $sec0_1->addSection('ebene1');
-$sec2_1 = $sec1_1->addSection('Ebene2: ganz langer Text, der bestimmt umbricht und viele Buchstaben enthällt Donaudampfschifffahrt Sonderzeichen: ¿öäüÖÄÜßþê¥©');
-$sec2_2 = $sec1_1->addSection('ebene2;2');
-$sec2_2->setNumbers([2, 1, 'q']);
-$sec1_1->addSection('test');
-$sec0_2 = $document->addSection('ebene0, item2');
-$sec1_2 = $sec0_1->addSection('test');
-$document->addSection('Inhalt3')->addImage('images/bild.png', ['caption' => 'tolles bild'.$document->cite('quelle')]);
-$document->addSection('Inhalt4');
-$i5 = $document->addSection('Inhalt5');
-$i5->addSection('i5');
-$i5->addSection('i5');
-$i5->addSection('i5');
-$i5->addSection('i5');
-$i5->addSection('i5');
-$document->addSection('Inhalt6');
-$document->addSection('Inhalt7');
-$document->addSection('Inhalt8');
-$on = $document->addSection('Inhalt9 ohne Nummer', ['enumerate' => false]);
-$on->addSection('test');
-$on->addSection('test');
-$sub = $on->addSection('test');
-$sub->addSection('title');
-$sub->addSection('title');
-$subsub = $sub->addSection('title');
-$subsub->addSection('tief unten');
-$subsub->addSection('tief unten', ['label' => 'sec:on']);
-$sub->addSection('title');
-$sub->addSection('title');
-$list = $document->addList(['section'], ['showPages' => true]);
+$inhaltList->getSize();
 
-$text = $sec0_1->addText('input/testKapitelMitRef.php');
-
-$document->addFormula('\frac{1}{2}\cdot\Pi+x');
-var_dump($text->getSize());
-$flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => true]);
+$flatplane->generatePDF(['showDocumentTree' => true, 'clearFormulaCache' => true]);

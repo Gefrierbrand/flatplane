@@ -41,7 +41,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
      */
     protected $type = 'list';
 
-    protected $title = 'list';
+    protected $title = '';
     /**
      * @var mixed
      *  use a bool to completely allow/disallow subcontent for the element or
@@ -218,9 +218,8 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
                 $this->data[$key]['numbers'] = '';
             }
             //use the alternative title (if available) for list entries
-            $text = $element->getAltTitle();
-            $this->data[$key]['text'] = $text;
-            $this->data[$key]['page'] = $element->getPage(); //todo: fix me?
+            $this->data[$key]['text'] = $element->getAltTitle();
+            $this->data[$key]['page'] = $element->getPage();
             $key ++;
         }
 
@@ -242,11 +241,11 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
     protected function measureOutput()
     {
         $pdf = $this->toRoot()->getPdf();
-        $pdf->startMeasurement();
+        $pdf->startMeasurement(false);
 
         $this->generateOutput();
 
-        return $pdf->endMeasurement();
+        return $pdf->endMeasurement(false);
     }
 
     /**
@@ -261,12 +260,20 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         //save old pagemargins from before listoutput
         $oldMargins = $pdf->getMargins();
 
+        //todo: validate amounts
+        $indentAmounts = $this->calculateIndentAmounts();
+
+        //calculate minimum titleWidth
+        $minTitleWidth = $this->getMinTitleWidthPercentage()/100*$textWidth;
+
+        //adjust cell paddings to zero to prevent tem from interfering with the
+        //layout.
+        $pdf->SetCellPaddings(0, '', 0); //left, top, right
+
+        $i = 0;
         //display each individual item as line(s) with indent
         foreach ($this->getData() as $line) {
             //get all indent amounts for the current level
-            //todo: validate amounts
-            $indentAmounts = $this->calculateIndentAmounts();
-
             $textIndent = $indentAmounts[$line['iteratorDepth']]['text'];
             $numberIndent = $indentAmounts[$line['iteratorDepth']]['number'];
 
@@ -276,8 +283,6 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
                              - $this->getMinPageNumDistance()
                              - $textIndent;
 
-            //calculate minimum titleWidth
-            $minTitleWidth = $this->getMinTitleWidthPercentage()/100*$textWidth;
             if ($maxTitleWidth < $minTitleWidth) {
                 trigger_error(
                     'The remaining space for the title-display of '
@@ -285,7 +290,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
                     .$minTitleWidth,
                     E_USER_WARNING
                 );
-                //todo: reduce indent amounts etc
+                //todo: reduce indent amounts etc ?
             }
 
             //set style according to depth
@@ -296,13 +301,9 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             $textXPos = $textIndent+$pdf->getMargins()['left'];
             $numXPos = $numberIndent+$pdf->getMargins()['left'];
 
-            //adjust cell paddings and margins
-            //todo: restore defaults, use customizes values
-            $pdf->SetCellPaddings(0, '', 0); //left, top, right
-
             //add a margin of about one line before each entry on level 0 for
             //better visual chapter differentiation
-            if ($line['iteratorDepth'] == 0) {
+            if ($line['iteratorDepth'] == 0 && $i != 0) {
                 $topMargin = $pdf->getCellHeight($pdf->getFontSize());
             } else {
                 $topMargin = 0;
@@ -363,7 +364,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
                 $oldMargins['right']
             );
 
-            //todo: reset cell margins / paddings
+            $i++; //increment element counter
         }
     }
 
@@ -472,6 +473,9 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         $pdf->setColorArray('fill', $this->getFillColor($level));
         $pdf->setFontSpacing($this->getFontSpacing($level));
         $pdf->setFontStretching($this->getFontStretching($level));
+
+        //don't set the cell margins or paddings, as they are set in the
+        //generateOutput() method
     }
 
     public function getDisplayTypes()
@@ -607,5 +611,10 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
     protected function setNumberSeparationWidth($numberSeparationWidth)
     {
         $this->numberSeparationWidth = $numberSeparationWidth;
+    }
+
+    public function getAltTitle()
+    {
+        return (string) $this;
     }
 }

@@ -29,7 +29,7 @@ namespace de\flatplane\documentElements;
 class Source extends AbstractDocumentContentElement
 {
     protected $type='source';
-    protected $title = 'Source';
+    protected $title = '';
 
     protected $altTitle;
     protected $fieldsToShow = ['sourceAuthor',
@@ -97,12 +97,12 @@ class Source extends AbstractDocumentContentElement
         return ['width' => 0, 'height' => 0];
     }
 
-    public function getAltTitle()
+    public function getTitle()
     {
-        if (empty($this->altTitle)) {
+        if (empty($this->title)) {
             $this->generateTitleString();
         }
-        return $this->altTitle;
+        return $this->title;
     }
 
     public function getFieldsToShow()
@@ -333,5 +333,10 @@ class Source extends AbstractDocumentContentElement
     public function setSourceUrl($sourceUrl)
     {
         $this->sourceUrl = $sourceUrl;
+    }
+
+    public function generateOutput()
+    {
+        return false;
     }
 }

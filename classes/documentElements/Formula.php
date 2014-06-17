@@ -82,6 +82,12 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
         return $this->applyScalingFactor($size);
     }
 
+    public function generateOutput()
+    {
+        //todo: implement me;
+    }
+
+
     protected function applyScalingFactor(array $size)
     {
         $factor = $this->getScalingFactor();

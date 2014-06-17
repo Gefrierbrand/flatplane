@@ -36,4 +36,9 @@ class Footnote extends AbstractDocumentContentElement
     {
         //todo: implement;
     }
+
+    public function generateOutput()
+    {
+        //todo: implement
+    }
 }

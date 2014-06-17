@@ -84,4 +84,5 @@ interface DocumentElementInterface
     public function setPage($page);
 
     public function hyphenateTitle();
+    public function generateOutput();
 }

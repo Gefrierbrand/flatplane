@@ -80,6 +80,18 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         $pdf = $this->toRoot()->getPdf();
 
         $pdf->startMeasurement();
+        $this->generateOutput();
+        $measurements = $pdf->endMeasurement();
+
+        $width = $pdf->getPageWidth()
+            - $pdf->getMargins()['left']
+            - $pdf->getMargins()['right'];
+        return ['height' => $measurements['height'], 'width' => $width];
+    }
+
+    public function generateOutput()
+    {
+        $pdf = $this->toRoot()->getPdf();
         $pdf->writeHTML(
             $this->getText(),
             false,
@@ -88,12 +100,6 @@ class Text extends AbstractDocumentContentElement implements TextInterface
             false,
             $this->getTextAlignment()
         );
-        $measurements = $pdf->endMeasurement(false);
-
-        $width = $pdf->getPageWidth()
-            - $pdf->getMargins()['left']
-            - $pdf->getMargins()['right'];
-        return ['height' => $measurements['height'], 'width' => $width];
     }
 
     protected function setPath($path)

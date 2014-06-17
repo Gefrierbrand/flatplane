@@ -125,7 +125,10 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         return $pdf->endMeasurement();
     }
 
-    protected function generateOutput()
+    /**
+     * todo: doc
+     */
+    public function generateOutput()
     {
         $pdf = $this->toRoot()->getPdf();
         $this->applyStyles();
