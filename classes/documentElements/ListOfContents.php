@@ -241,11 +241,11 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
     protected function measureOutput()
     {
         $pdf = $this->toRoot()->getPdf();
-        $pdf->startMeasurement(false);
+        $pdf->startMeasurement();
 
         $this->generateOutput();
 
-        return $pdf->endMeasurement(false);
+        return $pdf->endMeasurement();
     }
 
     /**

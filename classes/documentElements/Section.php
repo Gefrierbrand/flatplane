@@ -120,9 +120,9 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
     public function getSize()
     {
         $pdf = $this->toRoot()->getPdf();
-        $pdf->startMeasurement();
+        $pdf->startMeasurement(false);
         $this->generateOutput();
-        return $pdf->endMeasurement();
+        return $pdf->endMeasurement(false);
     }
 
     /**
@@ -131,22 +131,51 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
     public function generateOutput()
     {
         $pdf = $this->toRoot()->getPdf();
+        //save old pagemargins
+        $oldMargins = $pdf->getMargins();
+        //adjust left and right margins according tho the elements settings
+        $pdf->SetLeftMargin($oldMargins['left']+$this->getMargins('left'));
+        $pdf->SetRightMargin($oldMargins['right']+$this->getMargins('right'));
+
+        //add element top margins to current y-position
+        $pdf->SetY($pdf->GetY()+$this->getMargins('top'));
+
+        //set font size, color etc.
         $this->applyStyles();
+
+        //display a number, if neccesary
         if ($this->getEnumerate()) {
+            //calculate the formatted numbers width
             $numWidth = $pdf->GetStringWidth($this->getFormattedNumbers());
+            //add the number-title separation distance
             $numWidth += $pdf->getHTMLUnitToUnits(
                 $this->getNumberSeparationWidth(),
                 $pdf->getFontSize(),
                 'em'
             );
+            //add internal cell paddings (default to 0)
             $numWidth += $pdf->getCellPaddings()['L']
                          + $pdf->getCellPaddings()['R'];
+            //output numbers
             $pdf->Cell($numWidth, 0, $this->getFormattedNumbers());
         } else {
             $numWidth = 0;
         }
-        $pdf->SetX($pdf->getMargins()['left'] + $numWidth);
+
+        //set xposition for title
+        $pdf->SetX($oldMargins['left'] + $numWidth + $this->getMargins('left'));
+
+        //output title (might be more than one line)
         $pdf->MultiCell(0, 0, $this->getTitle(), 0, 'L');
+
+        //rest page margins
+        $pdf->SetLeftMargin($oldMargins['left']);
+        //workaround for TCPDF Bug #940:
+        $pdf->SetX($oldMargins['left']);
+        $pdf->SetRightMargin($oldMargins['right']);
+
+        //add bottom margin to y-position
+        $pdf->SetY($pdf->GetY()+$this->getMargins('bottom'));
     }
 
     public function applyStyles()

@@ -55,14 +55,17 @@ $pdf->Rect(
     '',
     ['all' => ['color' => [255, 0, 0]]]
 );
-$flatplane->startTimer('sections');
-$inhaltSec = $document->addSection('Inhaltsverzeichnis', ['enumerate' => false]);
-$flatplane->startTimer('addlists');
+
+
+$inhaltSec = $document->addSection('Inhaltsverzeichnis mit langen Informationen zum Umbrechen Langeswort', ['enumerate' => true]);
+
+var_dump($inhaltSec->getSize());
+
 $inhaltList = $inhaltSec->addList(['section', 'list'], ['showInList' => false]);
 $inhaltSec->addList(['image']);
 $inhaltSec->addList(['table']);
 $inhaltSec->addList(['formula']);
-$flatplane->stopTimer('addlists');
+
 $einleitungSec = $document->addSection('Einleitung');
 $einleitungSec->addSection('Vorwort');
 $einleitungSec->addSection('Danksagungen');
@@ -76,7 +79,6 @@ $schlussSec = $document->addSection('Schluss');
 $schlussSec->addSection('Fazit');
 $schlussSec->addSection('Ausblick');
 $anahngSec = $document->addSection('Anhang', ['enumerate' => false]);
-$flatplane->stopTimer('sections');
 
 $inhaltList->getSize();
 
