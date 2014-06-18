@@ -57,10 +57,7 @@ $pdf->Rect(
 );
 
 
-$inhaltSec = $document->addSection('Inhaltsverzeichnis mit langen Informationen zum Umbrechen Langeswort', ['enumerate' => true]);
-
-var_dump($inhaltSec->getSize());
-
+$inhaltSec = $document->addSection('Inhaltsverzeichnis mit langen Informationen zum Umbrechen Langeswort Überschallflugzeug', ['enumerate' => true]);
 $inhaltList = $inhaltSec->addList(['section', 'list'], ['showInList' => false]);
 $inhaltSec->addList(['image']);
 $inhaltSec->addList(['table']);
@@ -73,13 +70,15 @@ $hauptteilSec = $document->addSection('Hauptteil');
 $hauptteilSec->addSection('Problemstellung');
 $hauptteilSec->addSection('Versuchsaufbau');
 $hauptteilSec->addSection('Versuchsdruchführung');
-$hauptteilSec->addSection('Datenanalyse');
+$analyse = $hauptteilSec->addSection('Datenanalyse');
+$analyse->addSection('Programm A');
+$analyse->addSection('Programm B');
 
 $schlussSec = $document->addSection('Schluss');
 $schlussSec->addSection('Fazit');
 $schlussSec->addSection('Ausblick');
 $anahngSec = $document->addSection('Anhang', ['enumerate' => false]);
 
-$inhaltList->getSize();
+var_dump($inhaltList->getSize());
 
-$flatplane->generatePDF(['showDocumentTree' => true, 'clearFormulaCache' => true]);
+$flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => true]);

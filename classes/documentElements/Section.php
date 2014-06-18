@@ -120,9 +120,9 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
     public function getSize()
     {
         $pdf = $this->toRoot()->getPdf();
-        $pdf->startMeasurement(false);
+        $pdf->startMeasurement();
         $this->generateOutput();
-        return $pdf->endMeasurement(false);
+        return $pdf->endMeasurement();
     }
 
     /**

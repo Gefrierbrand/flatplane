@@ -241,15 +241,14 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
     protected function measureOutput()
     {
         $pdf = $this->toRoot()->getPdf();
-        $pdf->startMeasurement();
-
+        $pdf->startMeasurement(false);
         $this->generateOutput();
-
-        return $pdf->endMeasurement();
+        return $pdf->endMeasurement(false);
     }
 
     /**
      * todo: doc
+     * todo: element-margins (left/right)
      * @param array $indentAmounts
      */
     public function generateOutput()
@@ -259,6 +258,15 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
 
         //save old pagemargins from before listoutput
         $oldMargins = $pdf->getMargins();
+        $oldCellMargins = $pdf->getCellMargins();
+        $oldCellPaddings = $pdf->getCellPaddings();
+
+        //adjust left and right margins according tho the elements settings
+        //$pdf->SetLeftMargin($oldMargins['left']+$this->getMargins('left'));
+        //$pdf->SetRightMargin($oldMargins['right']+$this->getMargins('right'));
+
+        //add element top margins to current y-position
+        $pdf->SetY($pdf->GetY()+$this->getMargins('top'));
 
         //todo: validate amounts
         $indentAmounts = $this->calculateIndentAmounts();
@@ -266,9 +274,15 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         //calculate minimum titleWidth
         $minTitleWidth = $this->getMinTitleWidthPercentage()/100*$textWidth;
 
-        //adjust cell paddings to zero to prevent tem from interfering with the
-        //layout.
+        //adjust cell paddings to zero to prevent them from interfering
+        //with the layout.
         $pdf->SetCellPaddings(0, '', 0); //left, top, right
+
+        $rightLineMargin = $oldMargins['right']
+                                + $this->getPageNumberWidth()
+                                + $this->getMinPageNumDistance();
+
+        $pdf->SetRightMargin($rightLineMargin);
 
         $i = 0;
         //display each individual item as line(s) with indent
@@ -309,6 +323,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
                 $topMargin = 0;
             }
 
+            //set left/right cellmargins to zero and set topmargin for level0
             $pdf->setCellMargins(0, $topMargin, 0);
 
             //display number for the entry
@@ -317,14 +332,9 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             //calculate and set new margins to use correct text-wrapping
             //for entries longer than one line
             $leftLineMargin = $textXPos;
-            $rightLineMargin = $oldMargins['right']
-                                + $this->getPageNumberWidth()
-                                + $this->getMinPageNumDistance();
-            $pdf->SetMargins(
-                $leftLineMargin,
-                $oldMargins['top'],
-                $rightLineMargin
-            );
+
+            //set the pdf pagemargins for the indentation
+            $pdf->SetLeftMargin($leftLineMargin);
 
             //write line content
             $pdf->SetX($textXPos);
@@ -351,10 +361,9 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
                 $pdf->SetX($pageNumXPos);
                 $pdf->Cell(0, 0, $line['page'], 0, 1, 'R');
             } else {
-                //use empty cell to set internal cursor to next line. This is
-                //needed to be able to use cell-paddings and margins for
-                //vertical distances
-                $pdf->Cell(0, 0, '', 0, 1);
+                //Set internal cursor to next line. This is needed to be able
+                //to use cell-paddings and margins for vertical distances
+                $pdf->Ln();
             }
 
             //reset page margins to original value
@@ -364,8 +373,27 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
                 $oldMargins['right']
             );
 
+            //workaround for TCPDF Bug #940: not needed here?
+            //$pdf->SetX($oldMargins['left']);
+
             $i++; //increment element counter
         }
+        //reset cell-margins:
+        $pdf->setCellMargins(
+            $oldCellMargins['L'],
+            $oldCellMargins['T'],
+            $oldCellMargins['R'],
+            $oldCellMargins['B']
+        );
+        $pdf->setCellPaddings(
+            $oldCellPaddings['L'],
+            $oldCellPaddings['T'],
+            $oldCellPaddings['R'],
+            $oldCellPaddings['B']
+        );
+
+        //add bottom margin to y-position
+        $pdf->SetY($pdf->GetY()+$this->getMargins('bottom'));
     }
 
     protected function printLineToPages($textWidth, $oldMargins)
