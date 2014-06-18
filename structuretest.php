@@ -57,7 +57,7 @@ $pdf->Rect(
 );
 
 
-$inhaltSec = $document->addSection('Inhaltsverzeichnis mit langen Informationen zum Umbrechen Langeswort Überschallflugzeug', ['enumerate' => true]);
+$inhaltSec = $document->addSection('Inhaltsverzeichnis', ['enumerate' => false]);
 $inhaltList = $inhaltSec->addList(['section', 'list'], ['showInList' => false]);
 $inhaltSec->addList(['image']);
 $inhaltSec->addList(['table']);
@@ -69,7 +69,7 @@ $einleitungSec->addSection('Danksagungen');
 $hauptteilSec = $document->addSection('Hauptteil');
 $hauptteilSec->addSection('Problemstellung');
 $hauptteilSec->addSection('Versuchsaufbau');
-$hauptteilSec->addSection('Versuchsdruchführung');
+$hauptteilSec->addSection('Versuchsdruchführung mit langen Informationen zum Umbrechen Langeswort Überschallflugzeug');
 $analyse = $hauptteilSec->addSection('Datenanalyse');
 $analyse->addSection('Programm A');
 $analyse->addSection('Programm B');

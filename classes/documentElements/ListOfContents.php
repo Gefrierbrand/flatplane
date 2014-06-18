@@ -278,12 +278,6 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         //with the layout.
         $pdf->SetCellPaddings(0, '', 0); //left, top, right
 
-        $rightLineMargin = $oldMargins['right']
-                                + $this->getPageNumberWidth()
-                                + $this->getMinPageNumDistance();
-
-        $pdf->SetRightMargin($rightLineMargin);
-
         $i = 0;
         //display each individual item as line(s) with indent
         foreach ($this->getData() as $line) {
@@ -335,6 +329,11 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
 
             //set the pdf pagemargins for the indentation
             $pdf->SetLeftMargin($leftLineMargin);
+            $rightLineMargin = $oldMargins['right']
+                                + $this->getPageNumberWidth()
+                                + $this->getMinPageNumDistance();
+
+            $pdf->SetRightMargin($rightLineMargin);
 
             //write line content
             $pdf->SetX($textXPos);
