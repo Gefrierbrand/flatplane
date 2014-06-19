@@ -186,12 +186,12 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
      *  Array with information for each line: formatted Number, absolute and
      *  relative depth, Text determined by the elements altTitle property
      */
-    public function generateStructure(array $content)
+    public function generateStructure(array $content = [])
     {
         //todo: validate content type and parent
         if (empty($content)) {
-            //$content = $this->getParent()->toRoot()->getContent();
-            trigger_error('no content to generate structure for', E_USER_NOTICE);
+            $content = $this->toRoot()->getContent();
+            //trigger_error('no content to generate structure for', E_USER_NOTICE);
         }
 
         $RecItIt = new RecursiveIteratorIterator(
@@ -235,7 +235,8 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         $measurements = $this->measureOutput();
 
         return ['width' => $this->getPageMeasurements()['textwidth'],
-                'height' => $measurements['height']];
+                'height' => $measurements['height'],
+                'numPages' => $measurements['numPages']];
     }
 
     protected function measureOutput()
@@ -253,6 +254,9 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
      */
     public function generateOutput()
     {
+        if (empty($this->getData())) {
+            $this->generateStructure();
+        }
         $pdf = $this->toRoot()->getPdf();
         $textWidth = $this->getPageMeasurements()['textwidth'];
 
@@ -451,8 +455,8 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             $this->applyStyles();
             $strWidth = $pdf->GetStringWidth($line['numbers']);
 
-            if (!isset($longestNumberWidth[$line['iteratorDepth']]['text'])
-                || $strWidth > $longestNumberWidth[$line['iteratorDepth']]['text']
+            if (!isset($longestNumberWidth[$line['iteratorDepth']])
+                || $strWidth > $longestNumberWidth[$line['iteratorDepth']]
             ) {
                 $longestNumberWidth[$line['iteratorDepth']] = $strWidth;
             }
@@ -472,13 +476,25 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         //calculate indetamounts based on the current depth and the previous
         //indent amounts
         for ($i=0; $i <= $maxItDepth; $i++) {
+            //FIXME: offsets for deeper levels!
+            //workaround to supress error:
+            if (!isset($longestNumberWidth[$i])) {
+                $longestNumberWidth[$i] = 0;
+            }
+            if (!isset($numDist[$i])) {
+                $numDist[$i] = 0;
+            }
+
             if (isset($indentAmounts[$i-1]['text'])) {
                 $indentAmounts[$i]['text'] = $indentAmounts[$i-1]['text']
                                            + $longestNumberWidth[$i]
                                            + $numDist[$i];
+                //numbers of the current level are aligned with the text of the
+                //previous level
                 $indentAmounts[$i]['number'] = $indentAmounts[$i-1]['text'];
             } else {
-                $indentAmounts[$i]['text'] = $longestNumberWidth[$i]+$numDist[$i];
+                $indentAmounts[$i]['text'] = $longestNumberWidth[$i]
+                                           + $numDist[$i];
                 $indentAmounts[$i]['number'] = 0;
             }
         }

@@ -38,7 +38,7 @@ $settings = array(
     'author' => 'Max Mustermann',
     'title' => 'Ganz wichtiges Dokument',
     'keywords' => 'super, toll, top, gigantisch, superlative!',
-    'numberingLevel' => ['list' => -1],
+    'numberingLevel' => ['list' => -1, 'formula' => 0],
     'numberingPrefix' => ['list' => '#']
 );
 
@@ -58,27 +58,53 @@ $pdf->Rect(
 
 
 $inhaltSec = $document->addSection('Inhaltsverzeichnis', ['enumerate' => false]);
-$inhaltList = $inhaltSec->addList(['section', 'list'], ['showInList' => false]);
+$inhaltList = $inhaltSec->addList(['section', 'list', 'formula'], ['showInList' => true]);
 $inhaltSec->addList(['image']);
 $inhaltSec->addList(['table']);
-$inhaltSec->addList(['formula']);
+$flist = $inhaltSec->addList(['formula']);
 
 $einleitungSec = $document->addSection('Einleitung');
 $einleitungSec->addSection('Vorwort');
 $einleitungSec->addSection('Danksagungen');
 $hauptteilSec = $document->addSection('Hauptteil');
-$hauptteilSec->addSection('Problemstellung');
-$hauptteilSec->addSection('Versuchsaufbau');
+$problem = $hauptteilSec->addSection('Problemstellung');
+
+$problem->addFormula('1 \ 2');
+$problem->addFormula('1 \ 2');
+$problem->addFormula('1 \ 2');
+$problem->addFormula('1 \ 2');
+$problem->addFormula('1 \ 2');
+$problem->addFormula('1 \ 2');
+
+$versuch = $hauptteilSec->addSection('Versuchsaufbau');
+
+$versuch->addFormula('\pi + \varpi');
+$versuch->addFormula('\pi + \varpi');
+$versuch->addFormula('\pi + \varpi');
+$versuch->addFormula('\pi + \varpi');
+$versuch->addFormula('\pi + \varpi');
+
 $hauptteilSec->addSection('Versuchsdruchführung mit langen Informationen zum Umbrechen Langeswort Überschallflugzeug');
 $analyse = $hauptteilSec->addSection('Datenanalyse');
 $analyse->addSection('Programm A');
 $analyse->addSection('Programm B');
 
 $schlussSec = $document->addSection('Schluss');
-$schlussSec->addSection('Fazit');
+$fazit = $schlussSec->addSection('Fazit');
+for ($i=0; $i<13; $i++) {
+    $fazit->addSection('RND'.$i.': '.mt_rand());
+}
 $schlussSec->addSection('Ausblick');
 $anahngSec = $document->addSection('Anhang', ['enumerate' => false]);
 
-var_dump($inhaltList->getSize());
 
-$flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => true]);
+//$document->addFormula('test');
+//$document->addFormula('test');
+
+//$inhaltList->generateOutput();
+//$flist->generateOutput();
+$size = $inhaltSec->getSize();
+var_dump($size);
+$pdf->Line(5, $document->getPageMargins('top'), 5, $size['height'] + $document->getPageMargins('top'));
+
+$flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => false]);

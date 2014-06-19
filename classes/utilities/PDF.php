@@ -66,14 +66,12 @@ class PDF extends \TCPDF
         $end_page = $this->getPage();
         // calculate height
         $height = 0;
-        $numPages = 1;
 
         if ($end_page == $this->measureStartPage) {
             $height = $end_y - $this->measureStartY;
         } else {
             for ($page = $this->measureStartPage; $page <= $end_page; ++$page) {
                 $this->setPage($page);
-                $numPages ++;
                 if ($page == $this->measureStartPage) {
                     // first page
                     $height += $this->getH()
@@ -90,6 +88,9 @@ class PDF extends \TCPDF
                 }
             }
         }
+
+        //todo: use start transaction page
+        $numPages = ($end_page - $this->measureStartPage) + 1;
 
         if ($rollback) {
             $this->rollbackTransaction(true);
