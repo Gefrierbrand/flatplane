@@ -86,11 +86,6 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
      */
     protected $drawLinesToPage = ['default' => true];
 
-    /**
-     * @var int
-     *  depth of currently examined content line style
-     */
-    protected $contentStyleLevel = 0;
 
     /**
      * @var bool
@@ -232,19 +227,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         if (empty($this->getData())) {
             $this->generateStructure($this->toRoot()->getContent());
         }
-        $measurements = $this->measureOutput();
-
-        return ['width' => $this->getPageMeasurements()['textwidth'],
-                'height' => $measurements['height'],
-                'numPages' => $measurements['numPages']];
-    }
-
-    protected function measureOutput()
-    {
-        $pdf = $this->toRoot()->getPdf();
-        $pdf->startMeasurement(false);
-        $this->generateOutput();
-        return $pdf->endMeasurement(false);
+        return parent::getSize();
     }
 
     /**
@@ -266,6 +249,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         $oldCellPaddings = $pdf->getCellPaddings();
 
         //adjust left and right margins according tho the elements settings
+        //todo: implement this fully:
         //$pdf->SetLeftMargin($oldMargins['left']+$this->getMargins('left'));
         //$pdf->SetRightMargin($oldMargins['right']+$this->getMargins('right'));
 
@@ -305,9 +289,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
                 //todo: reduce indent amounts etc ?
             }
 
-            //set style according to depth
-            $this->setContentStyleLevel($line['iteratorDepth']);
-            $this->applyStyles();
+            $this->applyStyles('level'.$line['iteratorDepth']);
 
             //x-positions for numbers and text
             $textXPos = $textIndent+$pdf->getMargins()['left'];
@@ -381,7 +363,9 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
 
             $i++; //increment element counter
         }
-        //reset cell-margins:
+        //reset cell-margins: (keys are set this way by TCPDF and therefore
+        //differ from the usual keys), splat operator (php 5.6) can't be used
+        //either as it only works with numeric indices
         $pdf->setCellMargins(
             $oldCellMargins['L'],
             $oldCellMargins['T'],
@@ -451,8 +435,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             //the min space needed for the indentation. The width will change
             //with different fonts and fontsizes etc, so apply the specific
             //styles first.
-            $this->setContentStyleLevel($line['iteratorDepth']);
-            $this->applyStyles();
+            $this->applyStyles('level'.$line['iteratorDepth']);
             $strWidth = $pdf->GetStringWidth($line['numbers']);
 
             if (!isset($longestNumberWidth[$line['iteratorDepth']])
@@ -500,25 +483,6 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         }
 
         return $indentAmounts;
-    }
-
-    public function applyStyles()
-    {
-        $level = 'level'.$this->getContentStyleLevel();
-        $pdf = $this->toRoot()->getPdf();
-        $pdf->SetFont(
-            $this->getFontType($level),
-            $this->getFontStyle($level),
-            $this->getFontSize($level)
-        );
-        $pdf->setColorArray('text', $this->getFontColor($level));
-        $pdf->setColorArray('draw', $this->getDrawColor($level));
-        $pdf->setColorArray('fill', $this->getFillColor($level));
-        $pdf->setFontSpacing($this->getFontSpacing($level));
-        $pdf->setFontStretching($this->getFontStretching($level));
-
-        //don't set the cell margins or paddings, as they are set in the
-        //generateOutput() method
     }
 
     public function getDisplayTypes()
@@ -614,16 +578,6 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             throw new OutOfRangeException('maxLevel can\'t be smaller than -1');
         }
         return $this->indent;
-    }
-
-    protected function getContentStyleLevel()
-    {
-        return $this->contentStyleLevel;
-    }
-
-    protected function setContentStyleLevel($contentStyleLevel)
-    {
-        $this->contentStyleLevel = $contentStyleLevel;
     }
 
     public function getMinTitleWidthPercentage()

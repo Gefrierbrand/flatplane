@@ -98,8 +98,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     protected $label = '';
 
     /**
-     * todo: pagegroups?
-     * @var int
+     * @var Number
      *  Number of the page this element gets printed on. If the element spans
      *  multiple pages, then this number references the first occurrence.
      */
@@ -280,34 +279,32 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         $this->parent = $parent;
     }
 
-    public function applyStyles()
+    public function applyStyles($key = null)
     {
         $pdf = $this->toRoot()->getPdf();
         $pdf->SetFont(
-            $this->getFontType(),
-            $this->getFontStyle(),
-            $this->getFontSize()
+            $this->getFontType($key),
+            $this->getFontStyle($key),
+            $this->getFontSize($key)
         );
-        $pdf->setColorArray('text', $this->getFontColor());
-        $pdf->setColorArray('draw', $this->getDrawColor());
-        $pdf->setColorArray('fill', $this->getFillColor());
-        $pdf->setFontSpacing($this->getFontSpacing());
-        $pdf->setFontStretching($this->getFontStretching());
+        $pdf->setColorArray('text', $this->getFontColor($key));
+        $pdf->setColorArray('draw', $this->getDrawColor($key));
+        $pdf->setColorArray('fill', $this->getFillColor($key));
+        $pdf->setFontSpacing($this->getFontSpacing($key));
+        $pdf->setFontStretching($this->getFontStretching($key));
 
-        $cellMargins = $this->getCellMargins();
         $pdf->setCellMargins(
-            $cellMargins['left'],
-            $cellMargins['top'],
-            $cellMargins['right'],
-            $cellMargins['bottom']
+            $this->getCellMargins('left'),
+            $this->getCellMargins('top'),
+            $this->getCellMargins('right'),
+            $this->getCellMargins('bottom')
         );
-        $cellPaddings = $this->getCellPaddings();
 
         $pdf->setCellPaddings(
-            $cellPaddings['left'],
-            $cellPaddings['top'],
-            $cellPaddings['right'],
-            $cellPaddings['bottom']
+            $this->getCellPaddings('left'),
+            $this->getCellPaddings('top'),
+            $this->getCellPaddings('right'),
+            $this->getCellPaddings('bottom')
         );
 
         $pdf->setCellHeightRatio($this->getLinePitch());
@@ -668,5 +665,14 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     protected function setLinePitch($linePitch)
     {
         $this->linePitch = $linePitch;
+    }
+
+    public function getSize()
+    {
+        //todo: return width?
+        $pdf = $this->toRoot()->getPdf();
+        $pdf->startMeasurement(false);
+        $this->generateOutput();
+        return $pdf->endMeasurement(false);
     }
 }

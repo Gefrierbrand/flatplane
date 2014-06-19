@@ -42,10 +42,10 @@ class Image extends AbstractDocumentContentElement
     protected $imageType;
 
     protected $title = 'Image';
-    protected $titlePosition = ['top', 'left'];
+    protected $titlePosition = ['top', 'center'];
 
     protected $caption;
-    protected $captionPosition = ['bottom', 'left'];
+    protected $captionPosition = ['bottom', 'center'];
 
     protected $rotation = 0;
     protected $resolution; //dpi
@@ -63,8 +63,6 @@ class Image extends AbstractDocumentContentElement
 
     protected $margins = ['default' => 0, 'title' => 5, 'caption' => 5];
 
-    protected $source;
-
     /**
      * Returns image-type and -path as string
      * @return string
@@ -81,7 +79,81 @@ class Image extends AbstractDocumentContentElement
      *  associative array with keys 'width' & 'height' in user-units
      * @throws RuntimeException
      */
-    public function getSize()
+//    public function getSize()
+//    {
+//        $filename = $this->getPath();
+//        if (!is_readable($filename)) {
+//            throw new RuntimeException('Image '.$filename.' is not readable');
+//        }
+//
+//        if (empty($this->getImageType())) {
+//            //if the imagetype is unset try to determine it by analyzing the file
+//            $this->setImageType($this->estimateImageType());
+//        }
+//        //get the raw image dimensions from the file or config
+//        $imageDimensions = $this->getImageDimensions();
+//        //get the size of title and caption (if present)
+//        $descriptionDimensions = $this->applyStyles();
+//
+//        //add the space needed for margins and descriptions. The order does not
+//        //matter as image and description can only be on top of each other and
+//        //not side by side. This might get changed in a future version
+//        $resultingDimensions = ['width' => $imageDimensions['width'],
+//                                'height' => $imageDimensions['height']
+//                                    + $descriptionDimensions['titleHeight']
+//                                    + $descriptionDimensions['captionHeight']
+//                                    + $this->getMargins('title')
+//                                    + $this->getMargins('caption')];
+//        return $resultingDimensions;
+//    }
+
+    /**
+     * This method applies the custom styles to the image descriptions and
+     * estimates their vertical dimensions
+     * @return array
+     *  vertical space needed for title and caption
+     */
+//    public function applyStyles()
+//    {
+//        //todo: use transactions
+//        $pdf = $this->toRoot()->getPdf();
+//        $this->setPDFFont('title');
+//
+//        $title = $this->getCompleteTitle();
+//        $titleHeight = $pdf->getStringHeight(0, $title);
+//
+//        $this->setPDFFont('caption');
+//        $caption = $this->getCompleteCaption();
+//        $captionHeight = $pdf->getStringHeight(0, $caption);
+//
+//        return ['titleHeight' => $titleHeight, 'captionHeight' => $captionHeight];
+//    }
+
+    public function generateOutput()
+    {
+        $dim = $this->getImageDimensions();
+        $this->applyStyles('title');
+        $pdf = $this->toRoot()->getPdf();
+        //todo: implement title/caption position & placement
+        $pdf->MultiCell(0, 0, $this->getCompleteTitle(), 0, 'C');
+
+        if ($this->getImageType() == 'svg') {
+            $pdf->ImageSVG($this->getPath(), '', '', $dim['width'], $dim['height']);
+        } elseif ($this->getImageType() == 'eps' || $this->getImageType() == 'ai') {
+            $pdf->ImageEps($this->getPath(), '', '', $dim['width'], $dim['height']);
+        } else {
+            $pdf->Image($this->getPath(), '', '', $dim['width'], $dim['height']);
+        }
+
+        //tcpdf does not set a new Y-position after inserting an image
+        //todo: internal margins
+        $pdf->SetY($pdf->GetY()+$dim['height']);
+        $this->applyStyles('caption');
+        $pdf->MultiCell(0, 0, $this->getCompleteCaption(), 0, 'C');
+    }
+
+    //todo: use?
+    protected function getResultingDimensions()
     {
         $filename = $this->getPath();
         if (!is_readable($filename)) {
@@ -95,45 +167,21 @@ class Image extends AbstractDocumentContentElement
         //get the raw image dimensions from the file or config
         $imageDimensions = $this->getImageDimensions();
         //get the size of title and caption (if present)
-        $descriptionDimensions = $this->applyStyles();
+        $descriptionDimensions = $this->getDescriptionDimensions();
 
         //add the space needed for margins and descriptions. The order does not
         //matter as image and description can only be on top of each other and
         //not side by side. This might get changed in a future version
-        $resultingDimensions = ['width' => $imageDimensions['width'],
+
+        //todo: return actual width including descriptions
+        $resultingDimensions = ['imageWidth' => $imageDimensions['width'],
+                                'imageHeight' => $imageDimensions['height'],
                                 'height' => $imageDimensions['height']
                                     + $descriptionDimensions['titleHeight']
                                     + $descriptionDimensions['captionHeight']
                                     + $this->getMargins('title')
                                     + $this->getMargins('caption')];
         return $resultingDimensions;
-    }
-
-    /**
-     * This method applies the custom styles to the image descriptions and
-     * estimates their vertical dimensions
-     * @return array
-     *  vertical space needed for title and caption
-     */
-    public function applyStyles()
-    {
-        //todo: use transactions
-        $pdf = $this->toRoot()->getPdf();
-        $this->setPDFFont('title');
-
-        $title = $this->getCompleteTitle();
-        $titleHeight = $pdf->getStringHeight(0, $title);
-
-        $this->setPDFFont('caption');
-        $caption = $this->getCompleteCaption();
-        $captionHeight = $pdf->getStringHeight(0, $caption);
-
-        return ['titleHeight' => $titleHeight, 'captionHeight' => $captionHeight];
-    }
-
-    public function generateOutput()
-    {
-        //todo: implement me;
     }
 
     protected function getCompleteTitle()
@@ -182,17 +230,17 @@ class Image extends AbstractDocumentContentElement
      *  type of the description to set font for (e.g. 'title'). If no settings
      *  are present for that type, the defaults are used.
      */
-    protected function setPDFFont($param)
-    {
-        $pdf = $this->toRoot()->getPdf();
-        $pdf->SetFont(
-            $this->getFontType($param),
-            $this->getFontStyle($param),
-            $this->getFontSize($param)
-        );
-        $pdf->setFontSpacing($this->getFontSpacing($param));
-        $pdf->setFontStretching($this->getFontStretching($param));
-    }
+//    protected function setPDFFont($param)
+//    {
+//        $pdf = $this->toRoot()->getPdf();
+//        $pdf->SetFont(
+//            $this->getFontType($param),
+//            $this->getFontStyle($param),
+//            $this->getFontSize($param)
+//        );
+//        $pdf->setFontSpacing($this->getFontSpacing($param));
+//        $pdf->setFontStretching($this->getFontStretching($param));
+//    }
 
     /**
      * estimates the type of the image
@@ -214,10 +262,10 @@ class Image extends AbstractDocumentContentElement
     protected function getImageDimensions()
     {
         if (empty($this->getWidth()) && empty($this->getHeight())) {
-            //return the size defined by the user
             $dimensions = $this->getImageDimensionsFromFile();
         } else {
             if (is_numeric($this->getWidth()) && is_numeric($this->getHeight())) {
+                //return the size defined by the user
                 $dimensions['width'] = $this->getWidth();
                 $dimensions['height'] = $this->getHeight();
             } else {
@@ -238,7 +286,7 @@ class Image extends AbstractDocumentContentElement
      *  original image size
      * @return array
      *  new adjusted image size
-     * @todo: factor in descriptions like title and caption
+     * @todo: factor in descriptions (title and caption)
      */
     protected function adjustDimensionsToPage(array $dimensions)
     {

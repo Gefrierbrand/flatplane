@@ -203,8 +203,9 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
     }
 
     //todo: test me more! (remove styles etc)
-    public function applyStyles()
+    public function applyStyles($key = null)
     {
+        parent::applyStyles($key);
         if ($this->getCodeFormat() == 'TeX') {
             switch ($this->getFormulaStyle()) {
                 case 'inline':

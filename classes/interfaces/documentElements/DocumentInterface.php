@@ -55,7 +55,7 @@ interface DocumentInterface extends DocumentElementInterface
     public function getOrientation();
     public function getPageMargins($dir = '');
 
-    public function getPages();
+    //public function getPages();
 
     public function getElementFactory();
     public function setElementFactory(ElementFactory $elementFactory);

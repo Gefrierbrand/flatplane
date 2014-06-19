@@ -117,15 +117,6 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         $this->startsNewPage = (bool) $startsNewPage;
     }
 
-    public function getSize()
-    {
-        //todo: return width?
-        $pdf = $this->toRoot()->getPdf();
-        $pdf->startMeasurement(false);
-        $this->generateOutput();
-        return $pdf->endMeasurement(false);
-    }
-
     /**
      * todo: doc
      */
@@ -142,7 +133,7 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         $pdf->SetY($pdf->GetY()+$this->getMargins('top'));
 
         //set font size, color etc.
-        $this->applyStyles();
+        $this->applyStyles('level'.$this->getLevel());
 
         //display a number, if neccesary
         if ($this->getEnumerate()) {
@@ -177,38 +168,6 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
 
         //add bottom margin to y-position
         $pdf->SetY($pdf->GetY()+$this->getMargins('bottom'));
-    }
-
-    public function applyStyles()
-    {
-        $pdf = $this->toRoot()->getPdf();
-        $level = 'level'.$this->getLevel();
-        $pdf->SetFont(
-            $this->getFontType($level),
-            $this->getFontStyle($level),
-            $this->getFontSize($level)
-        );
-        $pdf->setColorArray('text', $this->getFontColor($level));
-        $pdf->setColorArray('draw', $this->getDrawColor($level));
-        $pdf->setColorArray('fill', $this->getFillColor($level));
-        $pdf->setFontSpacing($this->getFontSpacing($level));
-        $pdf->setFontStretching($this->getFontStretching($level));
-
-        $cellMargins = $this->getCellMargins();
-        $pdf->setCellMargins(
-            $cellMargins['left'],
-            $cellMargins['top'],
-            $cellMargins['right'],
-            $cellMargins['bottom']
-        );
-        $cellPaddings = $this->getCellPaddings();
-
-        $pdf->setCellPaddings(
-            $cellPaddings['left'],
-            $cellPaddings['top'],
-            $cellPaddings['right'],
-            $cellPaddings['bottom']
-        );
     }
 
     public function getNumberSeparationWidth()

@@ -36,7 +36,7 @@ interface DocumentElementInterface
     public function hasContent();
     public function toRoot();
     public function toParentAtLevel($level);
-    public function applyStyles();
+    public function applyStyles($key = null);
 
     public function addElement($type, array $settings);
     public function addSection($title, array $settings);

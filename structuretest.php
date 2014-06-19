@@ -38,7 +38,7 @@ $settings = array(
     'author' => 'Max Mustermann',
     'title' => 'Ganz wichtiges Dokument',
     'keywords' => 'super, toll, top, gigantisch, superlative!',
-    'numberingLevel' => ['list' => -1, 'formula' => 0],
+    'numberingLevel' => ['list' => -1, 'formula' => -1, 'section' => -1],
     'numberingPrefix' => ['list' => '#']
 );
 
@@ -97,14 +97,13 @@ for ($i=0; $i<13; $i++) {
 $schlussSec->addSection('Ausblick');
 $anahngSec = $document->addSection('Anhang', ['enumerate' => false]);
 
-
-//$document->addFormula('test');
-//$document->addFormula('test');
+$bild = $inhaltSec->addImage('images/bild.png', ['caption' => 'HALLO WELT']);
+var_dump($bild->getSize());
 
 //$inhaltList->generateOutput();
 //$flist->generateOutput();
-$size = $inhaltSec->getSize();
-var_dump($size);
-$pdf->Line(5, $document->getPageMargins('top'), 5, $size['height'] + $document->getPageMargins('top'));
+//$size = $inhaltList->getSize();
+//var_dump($size);
+//$pdf->Line(5, $document->getPageMargins('top'), 5, $size['height'] + $document->getPageMargins('top'));
 
 $flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => false]);

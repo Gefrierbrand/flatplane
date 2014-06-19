@@ -53,18 +53,11 @@ trait ContentFunctions
     protected $content;
 
     /**
-     * @var array
-     *  Named-key array holding instances of Counter
-     */
-    protected $counter = array();
-
-    /**
      * @var int
-     *  integer representing the depth of the current object inside the Document
-     *  tree, starting at -1 for the root (Document). Don't confuse this with the
-     *  maxDepth "-1" of iterators which mean 'unlimited'
+     *  integer representing the depth of the current object inside the document
+     *  tree, starting at 0 for the root (Document). 
      */
-    protected $level = -1;
+    protected $level = 0;
 
     /**
      * This method is used to add content to the Document or other content.

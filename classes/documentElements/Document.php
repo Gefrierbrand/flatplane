@@ -85,10 +85,23 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
 
     /**
      * @var int
-     *  Number of pages; used for internal representation.
-     *  FIXME: Currently not used at all
+     *  Number of pages;
      */
-    private $pages;
+    protected $numPages;
+
+    /**
+     * @var string
+     *  identifier used to separate different pagegroups
+     */
+    protected $pageGroup = 'default';
+
+    /**
+     * @var string
+     *  number style for the current pagegroup. For possible values:
+     * @see Number::getFormattedValue()
+     */
+    protected $pageNumberStyle = 'int';
+
 
     public function __toString()
     {
@@ -189,9 +202,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         return $this->orientation;
     }
 
-    public function getPages()
+    public function getNumPages()
     {
-        return $this->pages;
+        return $this->numPages;
     }
 
     public function setAuthor($author)
@@ -529,5 +542,26 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
             );
         }
         return $this->hyphenationPatterns;
+    }
+
+    public function getPageGroup()
+    {
+        return $this->pageGroup;
+    }
+
+    public function setPageGroup($pageGroup)
+    {
+        $this->pageGroup = $pageGroup;
+    }
+
+    //todo: pagenumberstyle for each group
+    public function getPageNumberStyle()
+    {
+        return $this->pageNumberStyle;
+    }
+
+    public function setPageNumberStyle($pageNumberStyle)
+    {
+        $this->pageNumberStyle = $pageNumberStyle;
     }
 }

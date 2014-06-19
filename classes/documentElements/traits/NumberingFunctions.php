@@ -41,6 +41,12 @@ trait NumberingFunctions
     protected $numbers = array();
 
     /**
+     * @var array
+     *  Named-key array holding instances of Counter
+     */
+    protected $counter = array();
+
+    /**
      * Returns an existing Counter for the given type or creates a new one if
      * a counter for that type is not already present. This might create
      * unwanted side effects like wrong element-numbering and therefore also
@@ -83,7 +89,7 @@ trait NumberingFunctions
      */
     protected function calculateNumber(DocumentElementInterface $content)
     {
-        $root = $this->toRoot();
+        $root = $content->toRoot();
         //the numbering level is a document wide setting, so retrieve it from
         //the documents config
         $numberingLevel = $root->getNumberingLevel($content->getType());
@@ -100,6 +106,7 @@ trait NumberingFunctions
             $counterValue = $this->checkRemoteCounter($content)->getValue();
 
             //remove unneccesary parts from the current numbering scheme
+            //array_slice(originalarray, offset, legth)
             $parentnum = array_slice($this->getNumbers(), 0, $numberingLevel);
         } else {
             throw new OutOfBoundsException(
@@ -146,7 +153,7 @@ trait NumberingFunctions
      */
     protected function checkRemoteCounter(DocumentElementInterface $content)
     {
-        $level = $this->toRoot()->getNumberingLevel($content->getType());
+        $level = $content->toRoot()->getNumberingLevel($content->getType());
         if ($level < $this->getLevel()) {
             $parentAtLevel = $this->toParentAtLevel($level);
             return $parentAtLevel->checkLocalCounter($content);

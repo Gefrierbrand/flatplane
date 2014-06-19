@@ -21,6 +21,8 @@
 
 namespace de\flatplane\view;
 
+use de\flatplane\interfaces\PageInterface;
+
 /**
  * Description of Page
  *
@@ -28,11 +30,14 @@ namespace de\flatplane\view;
  */
 class Page implements PageInterface
 {
-    protected $number; //?
-    protected $group; //?
     protected $orientation;
     protected $size;
     protected $content;
+
+    public function __construct($number)
+    {
+        $this->number = $number;
+    }
 
     public function getOrientation()
     {

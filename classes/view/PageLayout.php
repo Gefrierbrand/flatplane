@@ -48,11 +48,16 @@ class PageLayout
 
     protected function addPage()
     {
-
+        $this->pages[] = new Page(1);
     }
 
     protected function layoutSection(SectionInterface $section)
     {
+        //check if a page already exists
+        if (empty($this->getPages())) {
+            $this->addPage();
+        }
+        //check free space on current page
         $section->getMinFreePage('level'.$section->getLevel());
     }
 
@@ -84,5 +89,10 @@ class PageLayout
     protected function layoutSource()
     {
 
+    }
+
+    public function getPages()
+    {
+        return $this->pages;
     }
 }
