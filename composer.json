@@ -71,7 +71,7 @@
     "require": {
         "php": ">=5.5",
         "ext-curl": "*",
-        "tecnick.com/tcpdf": ">=6.0.075",
+        "tecnick.com/tcpdf": ">=6.0.085",
         "symfony/process": "2.5.*@dev",
         "symfony/stopwatch": "dev-master",
         "sabberworm/php-css-parser": "dev-master",
