@@ -50,8 +50,8 @@ $pdf->AddPage();
 $pdf->Rect(
     $document->getPageMargins('left'),
     $document->getPageMargins('right'),
-    $document->getPageMeasurements()['textwidth'],
-    $document->getPageMeasurements()['textheight'],
+    $document->getPageMeasurements()['textWidth'],
+    $document->getPageMeasurements()['textHeight'],
     '',
     ['all' => ['color' => [255, 0, 0]]]
 );

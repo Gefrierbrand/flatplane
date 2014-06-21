@@ -270,7 +270,7 @@ class Image extends AbstractDocumentContentElement
                 $dimensions['height'] = $this->getHeight();
             } else {
                 //parse if the user-provides sizes are not numeric
-                //(e.g. for values like "textwidth")
+                //(e.g. for values like "textWidth")
                 $dimensions = $this->parseDimensions();
             }
         }
@@ -300,8 +300,8 @@ class Image extends AbstractDocumentContentElement
             //return the old dimensions if they both fit in the available space
             //todo: provide option to use max available space (with or without
             //image upscaling/resampling)
-            if ($dimensions['width'] <= $pageMeasurements['textwidth']
-                && $dimensions['height'] <= $pageMeasurements['textheight']
+            if ($dimensions['width'] <= $pageMeasurements['textWidth']
+                && $dimensions['height'] <= $pageMeasurements['textHeight']
             ) {
                 return $dimensions;
             }
@@ -310,14 +310,14 @@ class Image extends AbstractDocumentContentElement
             //the maximum size and ajust the height according to the original
             //aspect ratio
             $aspectRatio = $dimensions['width']/$dimensions['height'];
-            $newWidth = $pageMeasurements['textwidth'];
+            $newWidth = $pageMeasurements['textWidth'];
             $newHeight = $newWidth/$aspectRatio;
 
             //if the height is still to big, adjust the image again, this time
             //setting the height to the maximum available space and adjusting
             //the width
-            if ($newHeight >= $pageMeasurements['textheight']) {
-                $newHeight = $pageMeasurements['textheight'];
+            if ($newHeight >= $pageMeasurements['textHeight']) {
+                $newHeight = $pageMeasurements['textHeight'];
                 $newWidth = $aspectRatio*$newHeight;
             }
             return ['width' => $newWidth, 'height' => $newHeight];
@@ -416,7 +416,7 @@ class Image extends AbstractDocumentContentElement
     protected function checkComponents(array $components)
     {
         //todo: set this as property?
-        $allowedReferenceValues = ['textwidth','pagewidth','pageheight'];
+        $allowedReferenceValues = ['textWidth','pageWidth','pageHeight'];
         foreach ($components as $direction) {
             if (!is_array($direction)) {
                 return false;

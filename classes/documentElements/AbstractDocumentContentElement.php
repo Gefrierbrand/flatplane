@@ -589,22 +589,23 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      * todo: doc
      * todo: change back to protected or add to interface
      * @return array
+     *  Keys: pageWidth, textWidth, pageHeight, textHeight
      */
     public function getPageMeasurements()
     {
         //doto: footnotes
         $doc = $this->toRoot();
-        $pagewidth = $doc->getPageSize()['width'];
-        $textwidth = $pagewidth - $doc->getPageMargins('left')
+        $pageWidth = $doc->getPageSize()['width'];
+        $textWidth = $pageWidth - $doc->getPageMargins('left')
                                 - $doc->getPageMargins('right');
-        $pageheight = $doc->getPageSize()['height'];
-        $textheight = $pageheight - $doc->getPageMargins('top')
+        $pageHeight = $doc->getPageSize()['height'];
+        $textHeight = $pageHeight - $doc->getPageMargins('top')
                                   - $doc->getPageMargins('bottom');
 
-        return ['pagewidth' => $pagewidth,
-                'textwidth' => $textwidth,
-                'pageheight' => $pageheight,
-                'textheight' => $textheight];
+        return ['pageWidth' => $pageWidth,
+                'textWidth' => $textWidth,
+                'pageHeight' => $pageHeight,
+                'textHeight' => $textHeight];
     }
 
     public function getHyphenate()

@@ -36,7 +36,7 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
     protected $title = 'section';
     protected $showInDocument = true;
     protected $minFreePage = ['default' => 25];
-    protected $startsNewLine = ['default' => true];
+    protected $startsNewLine = ['default' => true]; //not implemented yet
     protected $startsNewPage = ['default' => false];
 
     /**
@@ -65,6 +65,13 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         return $this->showInDocument;
     }
 
+    /**     *
+     * @param type $level
+     * @return float
+     *  minimum free percentage of textheight needed to start a section on
+     *  the current page instead of a new one.
+     * @throws RuntimeException
+     */
     public function getMinFreePage($level = 0)
     {
         if (isset($this->minFreePage[$level])) {

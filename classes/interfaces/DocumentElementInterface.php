@@ -88,4 +88,5 @@ interface DocumentElementInterface
 
     public function hyphenateTitle();
     public function generateOutput();
+    public function getPageMeasurements();
 }

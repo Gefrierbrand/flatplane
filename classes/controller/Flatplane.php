@@ -273,9 +273,8 @@ class Flatplane
 
     protected function layoutElements()
     {
-        $content = $this->getAllContent();
-        $pages = new PageLayout($content);
-        var_dump($pages);
+        //$content = $this->getAllContent();
+        $pages = new PageLayout($this->getDocument());
         return $pages;
     }
 

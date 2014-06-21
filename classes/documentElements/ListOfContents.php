@@ -131,7 +131,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
     /**
      * @var float
      *  Minmum width reserved for the actual display of the titles in the list
-     *  in percent of the lists width (which currently equals the textwidth
+     *  in percent of the lists width (which currently equals the textWidth
      *  of the page)
      */
     protected $minTitleWidthPercentage = 20;
@@ -241,7 +241,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             $this->generateStructure();
         }
         $pdf = $this->toRoot()->getPdf();
-        $textWidth = $this->getPageMeasurements()['textwidth'];
+        $textWidth = $this->getPageMeasurements()['textWidth'];
 
         //save old pagemargins from before listoutput
         $oldMargins = $pdf->getMargins();
