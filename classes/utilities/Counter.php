@@ -8,7 +8,7 @@
  * Flatplane is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
- * License, or(at your option) any later version.
+ * License, or (at your option) any later version.
  *
  * Flatplane is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -46,7 +46,10 @@ class Counter implements CounterInterface
         return (string) $this->value;
     }
 
-    /**     *
+    /**
+     * Add the provided amount to the current value or increment by the standard
+     * increment value for this counter, which defaults to 1. Negative values
+     * are possible to decrease the counters value.
      * @param int|float $increment
      * @return int|float
      */
@@ -62,6 +65,14 @@ class Counter implements CounterInterface
     }
 
     /**
+     * increment the current value by the default amount
+     */
+    public function increment()
+    {
+        $this->add();
+    }
+
+    /**
      * @return int|float
      */
     public function getValue()
@@ -69,29 +80,48 @@ class Counter implements CounterInterface
         return $this->value;
     }
 
+    /**
+     * Set the counters value to a specific quantity
+     * @param int|float $val
+     */
     public function setValue($val)
     {
         $this->value = $val;
         $this->validate();
     }
 
+    /**
+     * get the current default increment value
+     * @return float
+     */
     public function getIncrement()
     {
         return $this->increment;
     }
 
+    /**
+     * set the current default increment value which will be used if add gets
+     * called without parameters
+     * @param int|float $inc
+     */
     public function setIncrement($inc)
     {
         $this->increment = $inc;
         $this->validate();
     }
 
+    /**
+     * reset the counters value to zero
+     */
     public function resetValue()
     {
         $this->value = 0;
     }
 
-    protected function validate() //TODO: gf schöne Fehlermeldungen
+    /**
+     * checks if the counters value and increment are numeric
+     */
+    protected function validate()
     {
         if (!is_numeric($this->increment)) {
             trigger_error(

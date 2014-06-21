@@ -8,7 +8,7 @@
  * Flatplane is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
- * License, or(at your option) any later version.
+ * License, or (at your option) any later version.
  *
  * Flatplane is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -34,6 +34,9 @@ interface DocumentElementInterface
     public function addCounter(CounterInterface $counter, $name);
     public function checkLocalCounter(DocumentElementInterface $content);
     public function hasContent();
+    /**
+     * @return DocumentInterface
+     */
     public function toRoot();
     public function toParentAtLevel($level);
     public function applyStyles($key = null);

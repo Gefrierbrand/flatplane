@@ -98,7 +98,7 @@ $schlussSec->addSection('Ausblick');
 $anahngSec = $document->addSection('Anhang', ['enumerate' => false]);
 
 $bild = $inhaltSec->addImage('images/bild.png', ['caption' => 'HALLO WELT']);
-var_dump($bild->getSize());
+
 
 //$inhaltList->generateOutput();
 //$flist->generateOutput();
@@ -107,3 +107,4 @@ var_dump($bild->getSize());
 //$pdf->Line(5, $document->getPageMargins('top'), 5, $size['height'] + $document->getPageMargins('top'));
 
 $flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => false]);
+unset($flatplane);

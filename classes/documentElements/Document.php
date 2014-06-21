@@ -8,7 +8,7 @@
  * Flatplane is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
- * License, or(at your option) any later version.
+ * License, or (at your option) any later version.
  *
  * Flatplane is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -25,7 +25,7 @@ use de\flatplane\BibtexParser\BibtexParser;
 use de\flatplane\interfaces\DocumentElementInterface;
 use de\flatplane\interfaces\documentElements\DocumentInterface;
 use de\flatplane\utilities\PDF;
-use de\flatplane\utilities\PDF_STATIC;
+use de\flatplane\utilities\StaticPDF;
 use RuntimeException;
 
 //todo: count unresolved references
@@ -39,6 +39,11 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     use \de\flatplane\documentElements\traits\DocumentReferences;
 
     protected $type='document';
+
+    /**
+     *
+     * @var string[]
+     */
     protected $labels = [];
     protected $sources = [];
     protected $isSplitable = true;
@@ -90,17 +95,17 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     protected $numPages;
 
     /**
-     * @var string
-     *  identifier used to separate different pagegroups
-     */
-    protected $pageGroup = 'default';
-
-    /**
-     * @var string
+     * @var array
      *  number style for the current pagegroup. For possible values:
      * @see Number::getFormattedValue()
      */
-    protected $pageNumberStyle = 'int';
+    protected $pageNumberStyle = ['default' => 'int'];
+
+    /**
+     * todo: doc
+     * @var array
+     */
+    protected $pageNumberStartValue = ['default' => 1];
 
 
     public function __toString()
@@ -190,7 +195,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     protected function getPageSizeFromFormat($format)
     {
         //get the pagesize from predefined formats in points
-        $val = PDF_STATIC::getPageSizeFromFormat($format);
+        $val = StaticPDF::getPageSizeFromFormat($format);
         //convert points to user-units
         $width = $this->getPdf()->getHTMLUnitToUnits($val[0], 1, 'pt');
         $height = $this->getPdf()->getHTMLUnitToUnits($val[1], 1, 'pt');
@@ -544,24 +549,41 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         return $this->hyphenationPatterns;
     }
 
-    public function getPageGroup()
+    /**
+     * todo: doc, error handling
+     * @param string $pageGroup
+     * @return string
+     */
+    public function getPageNumberStyle($pageGroup = 'default')
     {
-        return $this->pageGroup;
-    }
-
-    public function setPageGroup($pageGroup)
-    {
-        $this->pageGroup = $pageGroup;
-    }
-
-    //todo: pagenumberstyle for each group
-    public function getPageNumberStyle()
-    {
-        return $this->pageNumberStyle;
+        if (isset($this->pageNumberStyle[$pageGroup])) {
+            return $this->pageNumberStyle[$pageGroup];
+        } else {
+            return $this->pageNumberStyle['default'];
+        }
     }
 
     public function setPageNumberStyle($pageNumberStyle)
     {
         $this->pageNumberStyle = $pageNumberStyle;
+    }
+
+    /**
+     * todo: doc, error handling
+     * @param string $pageGroup
+     * @return int|float
+     */
+    public function getPageNumberStartValue($pageGroup = 'default')
+    {
+        if (isset($this->pageNumberStartValue[$pageGroup])) {
+            return $this->pageNumberStartValue[$pageGroup];
+        } else {
+            return $this->pageNumberStartValue['default'];
+        }
+    }
+
+    public function setPageNumberStartValue($pageNumberStartValue)
+    {
+        $this->pageNumberStartValue = $pageNumberStartValue;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (C) 2014 Nikolai Neff <admin@flatplane.de>.
  *
@@ -7,7 +8,7 @@
  * Flatplane is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
- * License, or(at your option) any later version.
+ * License, or (at your option) any later version.
  *
  * Flatplane is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -37,6 +38,12 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
     protected $minFreePage = ['default' => 25];
     protected $startsNewLine = ['default' => true];
     protected $startsNewPage = ['default' => false];
+
+    /**
+     * @var string
+     *  identifier used to separate different pagegroups
+     */
+    protected $pageGroup = 'default';
 
     protected $numberSeparationWidth = 1.5;
 
@@ -178,5 +185,15 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
     protected function setNumberSeparationWidth($numberSeparationWidth)
     {
         $this->numberSeparationWidth = $numberSeparationWidth;
+    }
+
+    public function getPageGroup()
+    {
+        return $this->pageGroup;
+    }
+
+    public function setPageGroup($pageGroup)
+    {
+        $this->pageGroup = $pageGroup;
     }
 }

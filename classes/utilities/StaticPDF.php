@@ -8,7 +8,7 @@
  * Flatplane is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
- * License, or(at your option) any later version.
+ * License, or (at your option) any later version.
  *
  * Flatplane is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -22,11 +22,12 @@
 namespace de\flatplane\utilities;
 
 /**
- * Description of myPDF
+ * StaticPDF is (currently) only an empty alias for \TCPDF_STATIC
+ * inside a proper namespace with a name conforming to PSR-2
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class PDF_STATIC extends \TCPDF_STATIC
+class StaticPDF extends \TCPDF_STATIC
 {
-    
+
 }

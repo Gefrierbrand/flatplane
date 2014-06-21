@@ -8,7 +8,7 @@
  * Flatplane is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
- * License, or(at your option) any later version.
+ * License, or (at your option) any later version.
  *
  * Flatplane is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -33,7 +33,8 @@ class CSSParser
 {
     protected $parser;
 
-    public function __construct($css) {
+    public function __construct($css)
+    {
         $this->parser = new Parser($css);
     }
 
@@ -43,13 +44,11 @@ class CSSParser
         $width= $declarationBlocks[0]->getRules('width');
         $height= $declarationBlocks[0]->getRules('height');
 
-        if (empty($width) || empty($height))
-        {
+        if (empty($width) || empty($height)) {
             return false;
         }
 
-        if (!is_array($height) || !is_array($width))
-        {
+        if (!is_array($height) || !is_array($width)) {
             throw new RuntimeException(
                 'invalid css parsing results; width or height may be unset'
             );

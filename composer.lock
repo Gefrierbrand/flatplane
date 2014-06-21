@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8730f2c4e3d2bcee18c1eab3891fd07c",
+    "hash": "42b26989f3d7967e73023b2bc2f267b6",
     "packages": [
         {
             "name": "flatplane/bibtexparser",
@@ -294,11 +294,11 @@
         },
         {
             "name": "tecnick.com/tcpdf",
-            "version": "6.0.085",
+            "version": "6.0.086",
             "source": {
                 "type": "git",
                 "url": "git://git.code.sf.net/p/tcpdf/code",
-                "reference": "32868f330408aa95e0032acd694a7fd784d743a8"
+                "reference": "b1c0cc74a84948029d8c9824736d9021871a63a7"
             },
             "require": {
                 "php": ">=5.3.0"
@@ -347,7 +347,7 @@
                 "pdf417",
                 "qrcode"
             ],
-            "time": "2014-06-19 23:25:52"
+            "time": "2014-06-20 15:28:34"
         }
     ],
     "packages-dev": [],
