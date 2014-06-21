@@ -68,7 +68,7 @@ class PageLayout
      */
     protected function addPage(SectionInterface $section)
     {
-        $this->getDocument();
+        $document = $this->getDocument();
         $pageGroup = $section->getPageGroup();
         $pageNumStartValue = $document->getPageNumberStartValue($pageGroup);
 
@@ -84,7 +84,7 @@ class PageLayout
         $this->getCounter('linearPageNumberCounter')->add();
 
         //return the Counters value as formatted Number
-        return $this->getPageNumbers($pageGroup);
+        return $this->getCurrentPageNumber($pageGroup);
     }
 
     protected function getCurrentPageNumber($pageGroup = 'default')
