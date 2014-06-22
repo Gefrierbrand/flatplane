@@ -43,7 +43,7 @@ $settings = array(
 );
 
 $document = $flatplane->createDocument($settings);
-$pdf = $document->getPdf();
+$pdf = $document->getPDF();
 $pdf->setHeaderData('', 0, date('d.m.Y H:i:s'));
 
 $pdf->AddPage();

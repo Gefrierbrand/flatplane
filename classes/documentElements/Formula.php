@@ -104,7 +104,7 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
         $svgSize = new SVGSize($this->getPath());
         $dimensions = $svgSize->getDimensions();
 
-        $pdf = $this->toRoot()->getPdf();
+        $pdf = $this->toRoot()->getPDF();
 
         //convert given unit (usually "ex") to user-units
         $width = $pdf->getHTMLUnitToUnits(

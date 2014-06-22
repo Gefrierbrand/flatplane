@@ -77,7 +77,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     public function getSize()
     {
         $this->applyStyles();
-        $pdf = $this->toRoot()->getPdf();
+        $pdf = $this->toRoot()->getPDF();
 
         $pdf->startMeasurement();
         $this->generateOutput();
@@ -91,7 +91,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
 
     public function generateOutput()
     {
-        $pdf = $this->toRoot()->getPdf();
+        $pdf = $this->toRoot()->getPDF();
         $pdf->writeHTML(
             $this->getText(),
             false,

@@ -43,6 +43,8 @@ class PageLayout
     {
         $this->document = $document;
         $content = $document->getContent();
+        $pdf = $document->getPDF();
+        $pdf->addPage();
 
         //add a sequential page counter
         $this->addCounter(new Counter(1), 'linearPageNumberCounter');
@@ -87,6 +89,11 @@ class PageLayout
         return $this->getCurrentPageNumber($pageGroup);
     }
 
+    /**
+     * fixme: return numeric here and format in list display
+     * @param string $pageGroup
+     * @return string
+     */
     protected function getCurrentPageNumber($pageGroup = 'default')
     {
         $number = new Number($this->getCounter($pageGroup)->getValue());
@@ -105,7 +112,9 @@ class PageLayout
         //pagenumber and return (this can be used used to add entries to the
         //TOC without adding something visible in the document)
         if ($section->getShowInDocument() == false) {
-            $section->setPage($this->getCurrentPageNumber($section->getPageGroup()));
+            $section->setPage(
+                $this->getCurrentPageNumber($section->getPageGroup())
+            );
             return;
         }
 

@@ -133,7 +133,7 @@ class Image extends AbstractDocumentContentElement
     {
         $dim = $this->getImageDimensions();
         $this->applyStyles('title');
-        $pdf = $this->toRoot()->getPdf();
+        $pdf = $this->toRoot()->getPDF();
         //todo: implement title/caption position & placement
         $pdf->MultiCell(0, 0, $this->getCompleteTitle(), 0, 'C');
 
@@ -549,7 +549,7 @@ class Image extends AbstractDocumentContentElement
         $this->validateDimensions($dimensions, true);
         $resolution = $this->estimateImageResolution(); //result in dpi
 
-        $pdf = $this->toRoot()->getPdf();
+        $pdf = $this->toRoot()->getPDF();
 
         $oldImageScale = $pdf->getImageScale();
         //scale to the default TCPDF resolution of 72 dpi

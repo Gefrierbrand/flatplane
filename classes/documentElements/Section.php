@@ -136,7 +136,7 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
      */
     public function generateOutput()
     {
-        $pdf = $this->toRoot()->getPdf();
+        $pdf = $this->toRoot()->getPDF();
         //save old pagemargins
         $oldMargins = $pdf->getMargins();
         //adjust left and right margins according tho the elements settings

@@ -86,6 +86,7 @@ interface DocumentElementInterface
     //public function setSize(array $zize); ?
     public function setPage($page);
 
+    public function getHyphenate();
     public function hyphenateTitle();
     public function generateOutput();
     public function getPageMeasurements();

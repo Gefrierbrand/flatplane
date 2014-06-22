@@ -260,7 +260,7 @@ class Flatplane
     protected function generatePDFOutput()
     {
         //todo: filename, outputoptions (PDF/A, font subsetting, ovetwrite usw?)
-        $this->getDocument()->getPdf()->Output(
+        $this->getDocument()->getPDF()->Output(
             self::$outputDir.DIRECTORY_SEPARATOR.'output.pdf',
             'F'
         );

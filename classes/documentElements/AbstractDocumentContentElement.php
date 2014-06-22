@@ -281,7 +281,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
 
     public function applyStyles($key = null)
     {
-        $pdf = $this->toRoot()->getPdf();
+        $pdf = $this->toRoot()->getPDF();
         $pdf->SetFont(
             $this->getFontType($key),
             $this->getFontStyle($key),
@@ -608,16 +608,27 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
                 'textHeight' => $textHeight];
     }
 
+    /**
+     *
+     * @return bool
+     */
     public function getHyphenate()
     {
         return $this->hyphenate;
     }
 
+    /**
+     *
+     * @param bool $hyphenate
+     */
     protected function setHyphenate($hyphenate)
     {
         $this->hyphenate = $hyphenate;
     }
 
+    /**
+     * todo: doc
+     */
     public function hyphenateTitle()
     {
         if ($this->getHyphenate()) {
@@ -630,6 +641,11 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         }
     }
 
+    /**
+     * @todo: rename&getall
+     * @param string $key
+     * @return float
+     */
     public function getCellMargins($key = null)
     {
         if ($key !== null && isset($this->cellMargins[$key])) {
@@ -639,6 +655,11 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         }
     }
 
+    /**
+     * @todo: s.o.
+     * @param string $key
+     * @return float
+     */
     public function getCellPaddings($key = null)
     {
         if ($key !== null && isset($this->cellPaddings[$key])) {
@@ -648,30 +669,50 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         }
     }
 
+    /**
+     *
+     * @param array $cellMargins
+     */
     protected function setCellMargins(array $cellMargins)
     {
         $this->cellMargins = array_merge($this->cellMargins, $cellMargins);
     }
 
+    /**
+     *
+     * @param array $cellPaddings
+     */
     protected function setCellPaddings(array $cellPaddings)
     {
         $this->cellPaddings = array_merge($this->cellPaddings, $cellPaddings);
     }
 
+    /**
+     *
+     * @return float
+     */
     public function getLinePitch()
     {
         return $this->linePitch;
     }
 
+    /**
+     *
+     * @param float $linePitch
+     */
     protected function setLinePitch($linePitch)
     {
         $this->linePitch = $linePitch;
     }
 
+    /**
+     *
+     * @return array
+     */
     public function getSize()
     {
         //todo: return width?
-        $pdf = $this->toRoot()->getPdf();
+        $pdf = $this->toRoot()->getPDF();
         $pdf->startMeasurement(false);
         $this->generateOutput();
         return $pdf->endMeasurement(false);

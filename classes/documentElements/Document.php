@@ -121,11 +121,20 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         return $this;
     }
 
+    /**
+     *
+     * @param \de\flatplane\interfaces\DocumentElementInterface $instance
+     */
     public function addLabel(DocumentElementInterface $instance)
     {
         $this->labels[$instance->getLabel()] = $instance;
     }
 
+    /**
+     *
+     * @param \de\flatplane\interfaces\DocumentElementInterface $parent
+     * @throws RuntimeException
+     */
     public function setParent(DocumentElementInterface $parent)
     {
         throw new RuntimeException('You can\'t set a parent for the document');
@@ -139,46 +148,82 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         return null;
     }
 
+    /**
+     *
+     * @return string
+     */
     public function getType()
     {
         return $this->type;
     }
 
+    /**
+     *
+     * @return array
+     */
     public function getLabels()
     {
         return $this->labels;
     }
 
+    /**
+     *
+     * @return string
+     */
     public function getAuthor()
     {
         return $this->author;
     }
 
+    /**
+     *
+     * @return string
+     */
     public function getDocTitle()
     {
         return $this->docTitle;
     }
 
+    /**
+     *
+     * @return string
+     */
     public function getDescription()
     {
         return $this->description;
     }
 
+    /**
+     *
+     * @return string
+     */
     public function getSubject()
     {
         return $this->subject;
     }
 
+    /**
+     *
+     * @return string
+     */
     public function getKeywords()
     {
         return $this->keywords;
     }
 
+    /**
+     *
+     * @return string
+     */
     public function getUnit()
     {
         return $this->unit;
     }
 
+    /**
+     *
+     * @return array
+     */
     public function getPageSize()
     {
         if (empty($this->pageSize)) {
@@ -197,41 +242,70 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         //get the pagesize from predefined formats in points
         $val = StaticPDF::getPageSizeFromFormat($format);
         //convert points to user-units
-        $width = $this->getPdf()->getHTMLUnitToUnits($val[0], 1, 'pt');
-        $height = $this->getPdf()->getHTMLUnitToUnits($val[1], 1, 'pt');
+        $width = $this->getPDF()->getHTMLUnitToUnits($val[0], 1, 'pt');
+        $height = $this->getPDF()->getHTMLUnitToUnits($val[1], 1, 'pt');
         return ['width' => $width, 'height' => $height];
     }
 
+    /**
+     *
+     * @return string
+     */
     public function getOrientation()
     {
         return $this->orientation;
     }
 
+    /**
+     *
+     * @return int
+     */
     public function getNumPages()
     {
         return $this->numPages;
     }
 
+    /**
+     *
+     * @param string $author
+     */
     public function setAuthor($author)
     {
         $this->author = $author;
     }
 
+    /**
+     *
+     * @param string $description
+     */
     public function setDescription($description)
     {
         $this->description = $description;
     }
 
+    /**
+     *
+     * @param string $subject
+     */
     public function setSubject($subject)
     {
         $this->subject = $subject;
     }
 
+    /**
+     *
+     * @param string $keywords
+     */
     public function setKeywords($keywords)
     {
         $this->keywords = $keywords;
     }
 
+    /**
+     *
+     * @param string $type
+     * @return string
+     */
     public function getNumberingFormat($type = '')
     {
         if (empty($type) || !array_key_exists($type, $this->numberingFormat)) {
@@ -241,6 +315,11 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         }
     }
 
+    /**
+     *
+     * @param string $type
+     * @return int
+     */
     public function getNumberingLevel($type = '')
     {
         if (empty($type) || !array_key_exists($type, $this->numberingLevel)) {
@@ -250,6 +329,11 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         }
     }
 
+    /**
+     *
+     * @param string $type
+     * @return string
+     */
     public function getNumberingPostfix($type = '')
     {
         if (empty($type) || !array_key_exists($type, $this->numberingPostfix)) {
@@ -259,6 +343,11 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         }
     }
 
+    /**
+     *
+     * @param string $type
+     * @return string
+     */
     public function getNumberingPrefix($type = '')
     {
         if (empty($type) || !array_key_exists($type, $this->numberingPrefix)) {
@@ -268,6 +357,11 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         }
     }
 
+    /**
+     *
+     * @param string $type
+     * @return string
+     */
     public function getNumberingSeparator($type = '')
     {
         if (empty($type) || !array_key_exists($type, $this->numberingSeparator)) {
@@ -277,6 +371,11 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         }
     }
 
+    /**
+     *
+     * @param string $type
+     * @return int
+     */
     public function getStartIndex($type = '')
     {
         if (empty($type) || !array_key_exists($type, $this->startIndex)) {
@@ -286,6 +385,11 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         }
     }
 
+    /**
+     * @todo: rename and add function to get all margins
+     * @param string $dir
+     * @return float
+     */
     public function getPageMargins($dir = '')
     {
         if (empty($dir) || !array_key_exists($dir, $this->pageMargins)) {
@@ -295,6 +399,10 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         }
     }
 
+    /**
+     *
+     * @param array $margins
+     */
     protected function setPageMargins(array $margins)
     {
         //todo: sanity check: sum of margins must be <= pagedimensions
@@ -320,7 +428,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     /**
      * @return PDF
      */
-    public function getPdf()
+    public function getPDF()
     {
         if (empty($this->pdf)) {
             throw new RuntimeException('Trying to access PDF object before it is set');
@@ -336,71 +444,123 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         $this->pdf = $pdf;
     }
 
+    /**
+     *
+     * @param string $unit
+     */
     protected function setUnit($unit)
     {
         $this->unit = $unit;
     }
 
+    /**
+     *
+     * @param array $pageSize
+     */
     protected function setPageSize(array $pageSize)
     {
         $this->pageSize = $pageSize;
     }
 
+    /**
+     *
+     * @param string $orientation
+     */
     protected function setOrientation($orientation)
     {
         $this->orientation = $orientation;
     }
 
+    /**
+     *
+     * @param string $numberingFormat
+     */
     protected function setNumberingFormat($numberingFormat)
     {
         $this->numberingFormat = $numberingFormat;
     }
 
+    /**
+     *
+     * @param int $numberingLevel
+     */
     protected function setNumberingLevel($numberingLevel)
     {
         $this->numberingLevel = $numberingLevel;
     }
 
+    /**
+     *
+     * @param string $numberingPrefix
+     */
     protected function setNumberingPrefix($numberingPrefix)
     {
         $this->numberingPrefix = $numberingPrefix;
     }
 
+    /**
+     *
+     * @param string $numberingPostfix
+     */
     protected function setNumberingPostfix($numberingPostfix)
     {
         $this->numberingPostfix = $numberingPostfix;
     }
 
+    /**
+     *
+     * @param string $numberingSeparator
+     */
     protected function setNumberingSeparator($numberingSeparator)
     {
         $this->numberingSeparator = $numberingSeparator;
     }
 
+    /**
+     *
+     * @param int $startIndex
+     */
     protected function setStartIndex(array $startIndex)
     {
         $this->startIndex = array_merge($this->startIndex, $startIndex);
     }
 
+    /**
+     * todo: doc
+     */
     public function getSize()
     {
         //todo: implement me;
     }
 
+    /**
+     *
+     * @return string
+     */
     public function getPageFormat()
     {
         return $this->pageFormat;
     }
 
+    /**
+     *
+     * @param string $format
+     */
     protected function setPageFormat($format)
     {
         $this->pageFormat = $format;
     }
 
+    /**
+     *
+     * @param string $text
+     * @return string
+     */
     public function hypenateText($text)
     {
         $hyphenationOptions = $this->getHyphenationOptions();
 
-        return $this->getPdf()->hyphenateText(
+        return $this->getPDF()->hyphenateText(
             $text,
             $this->getHyphenationPatterns(),
             $hyphenationOptions['dictionary'],
@@ -411,6 +571,10 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         );
     }
 
+    /**
+     *
+     * @param array $hyphenation
+     */
     protected function setHyphenationOptions(array $hyphenation)
     {
         foreach ($hyphenation as $key => $option) {
@@ -423,19 +587,13 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         }
     }
 
+    /**
+     *
+     * @return array
+     */
     public function getHyphenationOptions()
     {
         return $this->hyphenationOptions;
-    }
-
-    public function getHyphenate()
-    {
-        return $this->hyphenate;
-    }
-
-    protected function setHyphenate($hyphenate)
-    {
-        $this->hyphenate = $hyphenate;
     }
 
     /**
@@ -446,6 +604,12 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         $this->docTitle = $docTitle;
     }
 
+    /**
+     * todo: doc
+     * @param type $source
+     * @param type $extras
+     * @return string
+     */
     public function cite($source, $extras = '')
     {
         if (array_key_exists($source, $this->getSources())) {
@@ -466,26 +630,48 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         return $cite;
     }
 
+    /**
+     *
+     * @return array
+     */
     public function getSources()
     {
         return $this->sources;
     }
 
+    /**
+     *
+     * @return string
+     */
     public function getCitationStyle()
     {
         return $this->citationStyle;
     }
 
+    /**
+     *
+     * @param array $sources
+     */
     protected function setSources(array $sources)
     {
         $this->sources = $sources;
     }
 
+    /**
+     *
+     * @param string $cite
+     */
     protected function setCitationStyle($cite)
     {
         $this->citationStyle = $cite;
     }
 
+    /**
+     *
+     * @param string $label
+     * @param array $settings
+     * @return Source
+     */
     public function addSource($label, array $settings = [])
     {
         $factory = $this->getElementFactory();
@@ -495,6 +681,11 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         return $source;
     }
 
+    /**
+     *
+     * @param string $bibfile
+     * @throws RuntimeException
+     */
     public function addBibTexSources($bibfile)
     {
         if (!is_readable($bibfile)) {
@@ -532,11 +723,19 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         }
     }
 
+    /**
+     * todo: doc
+     * @return void
+     */
     public function generateOutput()
     {
         return;
     }
 
+    /**
+     *
+     * @return array
+     */
     public function getHyphenationPatterns()
     {
         if (empty($this->hyphenationPatterns)
@@ -563,6 +762,10 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         }
     }
 
+    /**
+     *
+     * @param string $pageNumberStyle
+     */
     public function setPageNumberStyle($pageNumberStyle)
     {
         $this->pageNumberStyle = $pageNumberStyle;
@@ -582,6 +785,10 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         }
     }
 
+    /**
+     *
+     * @param int $pageNumberStartValue
+     */
     public function setPageNumberStartValue($pageNumberStartValue)
     {
         $this->pageNumberStartValue = $pageNumberStartValue;

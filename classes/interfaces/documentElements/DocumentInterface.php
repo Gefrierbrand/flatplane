@@ -25,7 +25,7 @@ use de\flatplane\documentElements\ElementFactory;
 use de\flatplane\interfaces\DocumentElementInterface;
 
 /**
- *
+ * todo: doc
  * @author Nikolai Neff <admin@flatplane.de>
  */
 interface DocumentInterface extends DocumentElementInterface
@@ -55,7 +55,10 @@ interface DocumentInterface extends DocumentElementInterface
     public function getOrientation();
     public function getPageMargins($dir = '');
 
-    //public function getPages();
+    /**
+     * @return PDF
+     */
+    public function getPDF();
 
     public function getElementFactory();
     public function setElementFactory(ElementFactory $elementFactory);
