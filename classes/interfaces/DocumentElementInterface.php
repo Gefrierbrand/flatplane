@@ -21,6 +21,8 @@
 
 namespace de\flatplane\interfaces;
 
+use de\flatplane\interfaces\documentElements\DocumentInterface;
+
 /**
  *
  * @author Nikolai Neff <admin@flatplane.de>
@@ -53,6 +55,9 @@ interface DocumentElementInterface
     public function getContent();
     public function getType();
     public function getSize();
+    /**
+     * @return mixed
+     */
     public function getPage();
     public function getNumbers();
     public function getFormattedNumbers();

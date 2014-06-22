@@ -36,7 +36,8 @@ class PageLayout
 {
     use \de\flatplane\documentElements\traits\NumberingFunctions;
 
-    protected $currentYPosition;
+    protected $currentYPosition; //fixme: usage?
+    protected $currentPageGroup;
     protected $document;
 
     public function __construct(DocumentInterface $document)
@@ -44,6 +45,8 @@ class PageLayout
         $this->document = $document;
         $content = $document->getContent();
         $pdf = $document->getPDF();
+        //todo: check for headers?
+        //add first page (still empty, but sets y position)
         $pdf->addPage();
 
         //add a sequential page counter
@@ -63,15 +66,12 @@ class PageLayout
 
     /**
      * Increments the pageCounter according to the current page group
-     * @param SectionInterface $section
-     * @return string
-     * todo: don't rely on section:
-     * -> properties: current section, current pagegroup, ggf current section of level(x)
+     * @return int
      */
-    protected function addPage(SectionInterface $section)
+    protected function addPage()
     {
         $document = $this->getDocument();
-        $pageGroup = $section->getPageGroup();
+        $pageGroup = $this->getCurrentPageGroup();
         $pageNumStartValue = $document->getPageNumberStartValue($pageGroup);
 
         //add a new counter for each new pagegroup or increment the already
@@ -83,6 +83,7 @@ class PageLayout
         }
 
         //increment the linar page Number
+        //fixme: add as property to avoid collisions with userCounters
         $this->getCounter('linearPageNumberCounter')->add();
 
         //return the Counters value as formatted Number
@@ -99,14 +100,17 @@ class PageLayout
         $number = new Number($this->getCounter($pageGroup)->getValue());
         $pageNumStyle = $this->getDocument()->getPageNumberStyle($pageGroup);
         return $number->getFormattedValue($pageNumStyle);
+        //return $this->getCounter($pageGroup)->getValue();
     }
 
+    /**
+     *
+     * @param SectionInterface $section
+     */
     protected function layoutSection(SectionInterface $section)
     {
-        //check if a page exists
-        //todo: move this in foreach loop
-        //todo: make it work
-        $this->checkForFirstPage();
+        //change the current pagegroup according to the sections settings
+        $this->setCurrentPageGroup($section->getPageGroup());
 
         //if the section is not shown in the document, only set the current
         //pagenumber and return (this can be used used to add entries to the
@@ -118,14 +122,15 @@ class PageLayout
             return;
         }
 
-        //check free space on current page
-        $pageSize = $this->getDocument()->getPageSize();
-        $pageMargins = $this->getDocument()->getPageMargins();
-        $textHeight = $this->getDocument()->getPageMeasurements()['textHeight'];
+        //check, if the section forces a new page
+        if ($section->getStartsNewPage('level'.$section->getLevel())) {
+            $this->addPage();
+            return;
+        }
 
-        $availableVerticalSpace = $pageSize['height']
-                                  - $pageMargins['bottom']
-                                  - $this->getCurrentYPosition();
+        //check free space on current page
+        $availableVerticalSpace = $this->getAvailableSpace();
+        $textHeight = $this->getDocument()->getPageMeasurements()['textHeight'];
 
         //calculate minimum space needed to start a section on the current page
         $percentage = $section->getMinFreePage('level'.$section->getLevel())/100;
@@ -133,17 +138,22 @@ class PageLayout
 
         //add a new page if needed
         if ($minSpace < $availableVerticalSpace) {
-            $this->addPage($section);
-        } else { //set the section on the current page
-            $section->setPage(
-                $this->getCurrentPageNumber($section->getPageGroup())
-            );
+            $this->addPage();
         }
+
+        //set the current page for the current section
+        $section->setPage($this->getCurrentPageNumber($section->getPageGroup()));
     }
 
-    protected function checkForFirstPage()
+    protected function getAvailableSpace()
     {
-        //todo: implement
+        $pageSize = $this->getDocument()->getPageSize();
+        $pageMargins = $this->getDocument()->getPageMargins();
+
+        $availableSpace = $pageSize['height']
+                        - $pageMargins['bottom']
+                        - $this->getCurrentYPosition();
+        return $availableSpace;
     }
 
     protected function layoutImage()
@@ -176,17 +186,21 @@ class PageLayout
 
     }
 
-    public function getLinearPageNumber()
+    protected function getLinearPageNumber()
     {
         return $this->getCounter('linearPageNumberCounter')->getValue();
     }
 
-    public function getCurrentYPosition()
+    /**
+     * todo: use direct value from pdf?
+     * @return type
+     */
+    protected function getCurrentYPosition()
     {
         return $this->currentYPosition;
     }
 
-    public function getDocument()
+    protected function getDocument()
     {
         return $this->document;
     }
@@ -194,5 +208,15 @@ class PageLayout
     protected function setCurrentYPosition($currentYPosition)
     {
         $this->currentYPosition = $currentYPosition;
+    }
+
+    protected function getCurrentPageGroup()
+    {
+        return $this->currentPageGroup;
+    }
+
+    protected function setCurrentPageGroup($currentPageGroup)
+    {
+        $this->currentPageGroup = $currentPageGroup;
     }
 }

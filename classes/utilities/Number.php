@@ -34,6 +34,7 @@ class Number
 
     public function __construct($value = 0)
     {
+        //todo: cast value?
         $this->value = $value;
     }
 
@@ -47,6 +48,14 @@ class Number
         return $this->value;
     }
 
+    /**
+     *
+     * @param string $format
+     * @param int $numDecimals
+     * @param string $dec_point
+     * @param string $thousands_sep
+     * @return string
+     */
     public function getFormattedValue(
         $format = null,
         $numDecimals = 2,
@@ -78,7 +87,7 @@ class Number
 
             case 'float':
                 $retVal = number_format(
-                    $this->value,
+                    (float) $this->value,
                     $numDecimals,
                     $dec_point,
                     $thousands_sep
@@ -89,7 +98,7 @@ class Number
             //case 'Int':
             //case 'INT':
             default:
-                $retVal = $this->value;
+                $retVal = (string) $this->value;
                 break;
         }
 

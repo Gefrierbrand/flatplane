@@ -328,6 +328,9 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         return $this->type;
     }
 
+    /**
+     * @return mixed
+     */
     public function getPage()
     {
         if (empty($this->page)) {
@@ -340,8 +343,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     }
 
     /**
-     * todo: maybe protected, interface?
-     * @param int $page
+     * @param mixed $page
      */
     public function setPage($page)
     {

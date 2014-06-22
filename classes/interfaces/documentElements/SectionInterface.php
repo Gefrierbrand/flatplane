@@ -30,9 +30,9 @@ use de\flatplane\interfaces\DocumentElementInterface;
 interface SectionInterface extends DocumentElementInterface
 {
     public function getShowInDocument();
-    public function getStartsNewLine($level = 0);
-    public function getStartsNewPage($level = 0);
-    public function getMinFreePage($level = 0);
+    public function getStartsNewLine($level = 'level0');
+    public function getStartsNewPage($level = 'level0');
+    public function getMinFreePage($level = 'level0');
     public function getPageGroup();
     public function setPageGroup($pageGroup);
 }

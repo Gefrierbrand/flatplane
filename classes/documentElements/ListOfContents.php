@@ -24,6 +24,7 @@ namespace de\flatplane\documentElements;
 use de\flatplane\interfaces\documentElements\ListInterface;
 use de\flatplane\iterators\RecursiveContentIterator;
 use de\flatplane\iterators\ShowInListFilterIterator;
+use de\flatplane\utilities\Number;
 use OutOfRangeException;
 use RecursiveIteratorIterator;
 

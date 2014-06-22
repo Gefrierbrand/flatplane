@@ -98,15 +98,19 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         }
     }
 
-    public function getStartsNewPage($level = 0)
+    public function getStartsNewPage($level = 'level0')
     {
         if (isset($this->startsNewPage[$level])) {
+            echo 'stmt1';
             return $this->startsNewPage[$level];
         } elseif (isset($this->startsNewPage['default'])) {
+            echo 'stmt2';
             return $this->startsNewPage['default'];
         } else {
+            echo 'stmt3';
+            var_dump($this);
             throw new RuntimeException(
-                'The required property minFreePage is not set.'
+                'The required property startsNewPage is not set.'
             );
         }
     }
@@ -121,14 +125,14 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         $this->minFreePage = array_merge($this->minFreePage, $minFreePage);
     }
 
-    protected function setStartsNewLine($startsNewLine)
+    protected function setStartsNewLine(array $startsNewLine)
     {
-        $this->startsNewLine = (bool) $startsNewLine;
+        $this->startsNewLine = array_merge($this->startsNewLine, $startsNewLine);
     }
 
-    protected function setStartsNewPage($startsNewPage)
+    protected function setStartsNewPage(array $startsNewPage)
     {
-        $this->startsNewPage = (bool) $startsNewPage;
+        $this->startsNewPage = array_merge($this->startsNewPage, $startsNewPage);
     }
 
     /**
