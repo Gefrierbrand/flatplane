@@ -160,18 +160,30 @@ class ElementFactory
         return new Formula($config->getSettings());
     }
 
+    /**
+     *
+     * @return Text
+     */
     protected function createText()
     {
         $config = new Config($this->textConfig);
         return new Text($config->getSettings());
     }
 
+    /**
+     *
+     * @return Image
+     */
     protected function createImage()
     {
         $config = new Config($this->imageConfig);
         return new Image($config->getSettings());
     }
 
+    /**
+     *
+     * @return Source
+     */
     protected function createSource()
     {
         $config = new Config($this->sourceConfig);

@@ -102,12 +102,12 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         );
     }
 
-    protected function setPath($path)
+    public function setPath($path)
     {
         $this->path = $path;
     }
 
-    protected function setParse($parse) //todo: rename parse
+    public function setParse($parse) //todo: rename parse
     {
         $this->parse = (bool) $parse;
     }
@@ -117,7 +117,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         return $this->textAlignment;
     }
 
-    protected function setTextAlignment($textAlignment)
+    public function setTextAlignment($textAlignment)
     {
         $this->textAlignment = $textAlignment;
     }
@@ -127,7 +127,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         return $this->lineHeight;
     }
 
-    protected function setLineHeight($lineHeight)
+    public function setLineHeight($lineHeight)
     {
         $this->lineHeight = $lineHeight;
     }

@@ -367,23 +367,38 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      */
     protected function setEnumerate($enumerate)
     {
+        if ($this->getParent() !== null) {
+            trigger_error(
+                'setEnumerate() should not be called after adding the element '
+                .'as content. Doing so might lead to erratic behavior regarding'
+                .'element numbering. Please use the $settings array in the '
+                .'constructor instead',
+                E_USER_NOTICE
+            ) ;
+        }
         $this->enumerate = (bool) $enumerate;
     }
 
     /**
      * @param bool $showInList
      */
-    protected function setShowInList($showInList)
+    public function setShowInList($showInList)
     {
         $this->showInList = (bool) $showInList;
     }
 
-    protected function setTitle($title)
+    public function setTitle($title)
     {
         $this->title = $title;
     }
 
-    protected function setMargins(array $margins)
+    /**
+     *
+     * @param array $margins
+     *  keys: 'top', 'bottom', 'left', 'right'
+     *  values: (numeric) margin amount (user units)
+     */
+    public function setMargins(array $margins)
     {
         $this->margins = array_merge($this->margins, $margins);
     }
@@ -393,27 +408,27 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
 //        $this->paddings = array_merge($this->paddings, $paddings);
 //    }
 
-    protected function setFontType(array $fontType)
+    public function setFontType(array $fontType)
     {
         $this->fontType = array_merge($this->fontType, $fontType);
     }
 
-    protected function setFontSize(array $fontSize)
+    public function setFontSize(array $fontSize)
     {
         $this->fontSize = array_merge($this->fontSize, $fontSize);
     }
 
-    protected function setFontStyle(array $fontStyle)
+    public function setFontStyle(array $fontStyle)
     {
         $this->fontStyle = array_merge($this->fontStyle, $fontStyle);
     }
 
-    protected function setFontColor(array $fontColor)
+    public function setFontColor(array $fontColor)
     {
         $this->fontColor = array_merge($this->fontColor, $fontColor);
     }
 
-    protected function setDrawColor(array $drawColor)
+    public function setDrawColor(array $drawColor)
     {
         $this->drawColor = array_merge($this->drawColor, $drawColor);
     }
@@ -436,12 +451,12 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         }
     }
 
-    protected function setFontSpacing(array $fontSpacing)
+    public function setFontSpacing(array $fontSpacing)
     {
         $this->fontSpacing = array_merge($this->fontSpacing, $fontSpacing);
     }
 
-    protected function setFontStretching(array $fontStretching)
+    public function setFontStretching(array $fontStretching)
     {
         $this->fontStretching = array_merge($this->fontStretching, $fontStretching);
     }
@@ -496,7 +511,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     }
 
 
-    protected function setFillColor(array $fillColor)
+    public function setFillColor(array $fillColor)
     {
         $this->fillColor = $fillColor;
     }
@@ -573,7 +588,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         }
     }
 
-    protected function setAltTitle($altTitle)
+    public function setAltTitle($altTitle)
     {
         $this->altTitle = $altTitle;
     }
@@ -623,7 +638,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      *
      * @param bool $hyphenate
      */
-    protected function setHyphenate($hyphenate)
+    public function setHyphenate($hyphenate)
     {
         $this->hyphenate = $hyphenate;
     }
@@ -674,8 +689,10 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     /**
      *
      * @param array $cellMargins
+     *  keys: 'top', 'bottom', 'left', 'right'
+     *  values: (numeric) margin amount (user units)
      */
-    protected function setCellMargins(array $cellMargins)
+    public function setCellMargins(array $cellMargins)
     {
         $this->cellMargins = array_merge($this->cellMargins, $cellMargins);
     }
@@ -683,8 +700,10 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     /**
      *
      * @param array $cellPaddings
+     *  keys: 'top', 'bottom', 'left', 'right'
+     *  values: (numeric) margin amount (user units)
      */
-    protected function setCellPaddings(array $cellPaddings)
+    public function setCellPaddings(array $cellPaddings)
     {
         $this->cellPaddings = array_merge($this->cellPaddings, $cellPaddings);
     }
@@ -702,21 +721,21 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      *
      * @param float $linePitch
      */
-    protected function setLinePitch($linePitch)
+    public function setLinePitch($linePitch)
     {
         $this->linePitch = $linePitch;
     }
 
     /**
-     *
+     * @todo: remove additional parameters
      * @return array
      */
-    public function getSize()
+    public function getSize($newPage = false, $rollback = false)
     {
         //todo: return width?
         $pdf = $this->toRoot()->getPDF();
-        $pdf->startMeasurement(false);
+        $pdf->startMeasurement($newPage);
         $this->generateOutput();
-        return $pdf->endMeasurement(false);
+        return $pdf->endMeasurement($rollback);
     }
 }

@@ -72,63 +72,6 @@ class Image extends AbstractDocumentContentElement
         return (string) 'Image: ('.$this->getImageType().') '.$this->getPath();
     }
 
-    /**
-     * This Methos returns the (estimated) size of the image in user units.
-     * The values include the space needed for Title and Caption (if set).
-     * @return array
-     *  associative array with keys 'width' & 'height' in user-units
-     * @throws RuntimeException
-     */
-//    public function getSize()
-//    {
-//        $filename = $this->getPath();
-//        if (!is_readable($filename)) {
-//            throw new RuntimeException('Image '.$filename.' is not readable');
-//        }
-//
-//        if (empty($this->getImageType())) {
-//            //if the imagetype is unset try to determine it by analyzing the file
-//            $this->setImageType($this->estimateImageType());
-//        }
-//        //get the raw image dimensions from the file or config
-//        $imageDimensions = $this->getImageDimensions();
-//        //get the size of title and caption (if present)
-//        $descriptionDimensions = $this->applyStyles();
-//
-//        //add the space needed for margins and descriptions. The order does not
-//        //matter as image and description can only be on top of each other and
-//        //not side by side. This might get changed in a future version
-//        $resultingDimensions = ['width' => $imageDimensions['width'],
-//                                'height' => $imageDimensions['height']
-//                                    + $descriptionDimensions['titleHeight']
-//                                    + $descriptionDimensions['captionHeight']
-//                                    + $this->getMargins('title')
-//                                    + $this->getMargins('caption')];
-//        return $resultingDimensions;
-//    }
-
-    /**
-     * This method applies the custom styles to the image descriptions and
-     * estimates their vertical dimensions
-     * @return array
-     *  vertical space needed for title and caption
-     */
-//    public function applyStyles()
-//    {
-//        //todo: use transactions
-//        $pdf = $this->toRoot()->getPdf();
-//        $this->setPDFFont('title');
-//
-//        $title = $this->getCompleteTitle();
-//        $titleHeight = $pdf->getStringHeight(0, $title);
-//
-//        $this->setPDFFont('caption');
-//        $caption = $this->getCompleteCaption();
-//        $captionHeight = $pdf->getStringHeight(0, $caption);
-//
-//        return ['titleHeight' => $titleHeight, 'captionHeight' => $captionHeight];
-//    }
-
     public function generateOutput()
     {
         $dim = $this->getImageDimensions();
@@ -152,37 +95,37 @@ class Image extends AbstractDocumentContentElement
         $pdf->MultiCell(0, 0, $this->getCompleteCaption(), 0, 'C');
     }
 
-    //todo: use?
-    protected function getResultingDimensions()
-    {
-        $filename = $this->getPath();
-        if (!is_readable($filename)) {
-            throw new RuntimeException('Image '.$filename.' is not readable');
-        }
-
-        if (empty($this->getImageType())) {
-            //if the imagetype is unset try to determine it by analyzing the file
-            $this->setImageType($this->estimateImageType());
-        }
-        //get the raw image dimensions from the file or config
-        $imageDimensions = $this->getImageDimensions();
-        //get the size of title and caption (if present)
-        $descriptionDimensions = $this->getDescriptionDimensions();
-
-        //add the space needed for margins and descriptions. The order does not
-        //matter as image and description can only be on top of each other and
-        //not side by side. This might get changed in a future version
-
-        //todo: return actual width including descriptions
-        $resultingDimensions = ['imageWidth' => $imageDimensions['width'],
-                                'imageHeight' => $imageDimensions['height'],
-                                'height' => $imageDimensions['height']
-                                    + $descriptionDimensions['titleHeight']
-                                    + $descriptionDimensions['captionHeight']
-                                    + $this->getMargins('title')
-                                    + $this->getMargins('caption')];
-        return $resultingDimensions;
-    }
+//    //todo: use?
+//    protected function getResultingDimensions()
+//    {
+//        $filename = $this->getPath();
+//        if (!is_readable($filename)) {
+//            throw new RuntimeException('Image '.$filename.' is not readable');
+//        }
+//
+//        if (empty($this->getImageType())) {
+//            //if the imagetype is unset try to determine it by analyzing the file
+//            $this->setImageType($this->estimateImageType());
+//        }
+//        //get the raw image dimensions from the file or config
+//        $imageDimensions = $this->getImageDimensions();
+//        //get the size of title and caption (if present)
+//        $descriptionDimensions = $this->getDescriptionDimensions();
+//
+//        //add the space needed for margins and descriptions. The order does not
+//        //matter as image and description can only be on top of each other and
+//        //not side by side. This might get changed in a future version
+//
+//        //todo: return actual width including descriptions
+//        $resultingDimensions = ['imageWidth' => $imageDimensions['width'],
+//                                'imageHeight' => $imageDimensions['height'],
+//                                'height' => $imageDimensions['height']
+//                                    + $descriptionDimensions['titleHeight']
+//                                    + $descriptionDimensions['captionHeight']
+//                                    + $this->getMargins('title')
+//                                    + $this->getMargins('caption')];
+//        return $resultingDimensions;
+//    }
 
     protected function getCompleteTitle()
     {
@@ -681,47 +624,47 @@ class Image extends AbstractDocumentContentElement
         return $this->placement;
     }
 
-    protected function setTitlePosition($titlePosition)
+    public function setTitlePosition($titlePosition)
     {
         $this->titlePosition = $titlePosition;
     }
 
-    protected function setPath($path)
+    public function setPath($path)
     {
         $this->path = $path;
     }
 
-    protected function setImageType($imageType)
+    public function setImageType($imageType)
     {
         $this->imageType = $imageType;
     }
 
-    protected function setCaption($caption)
+    public function setCaption($caption)
     {
         $this->caption = $caption;
     }
 
-    protected function setCaptionPosition($captionPosition)
+    public function setCaptionPosition($captionPosition)
     {
         $this->captionPosition = $captionPosition;
     }
 
-    protected function setRotation($rotation)
+    public function setRotation($rotation)
     {
         $this->rotation = $rotation;
     }
 
-    protected function setScale($scale)
+    public function setScale($scale)
     {
         $this->scale = $scale;
     }
 
-    protected function setResolution($resolution)
+    public function setResolution($resolution)
     {
         $this->resolution = $resolution;
     }
 
-    protected function setPlacement($placement)
+    public function setPlacement($placement)
     {
         $this->placement = $placement;
     }
@@ -736,12 +679,12 @@ class Image extends AbstractDocumentContentElement
         return $this->height;
     }
 
-    protected function setWidth($width)
+    public function setWidth($width)
     {
         $this->width = $width;
     }
 
-    protected function setHeight($height)
+    public function setHeight($height)
     {
         $this->height = $height;
     }
@@ -751,7 +694,7 @@ class Image extends AbstractDocumentContentElement
         return $this->keepAspectRatio;
     }
 
-    protected function setKeepAspectRatio($keepAspectRatio)
+    public function setKeepAspectRatio($keepAspectRatio)
     {
         $this->keepAspectRatio = $keepAspectRatio;
     }
@@ -766,12 +709,12 @@ class Image extends AbstractDocumentContentElement
         return $this->alignment;
     }
 
-    protected function setFitOnPage($fitOnPage)
+    public function setFitOnPage($fitOnPage)
     {
         $this->fitOnPage = $fitOnPage;
     }
 
-    protected function setAlignment($alignment)
+    public function setAlignment($alignment)
     {
         $this->alignment = $alignment;
     }
@@ -806,22 +749,22 @@ class Image extends AbstractDocumentContentElement
         return $this->numberingPosition;
     }
 
-    protected function setTitlePrefix($titlePrefix)
+    public function setTitlePrefix($titlePrefix)
     {
         $this->titlePrefix = $titlePrefix;
     }
 
-    protected function setCaptionPrefix($captionPrefix)
+    public function setCaptionPrefix($captionPrefix)
     {
         $this->captionPrefix = $captionPrefix;
     }
 
-    protected function setDescriptionSeparator($descriptionSeparator)
+    public function setDescriptionSeparator($descriptionSeparator)
     {
         $this->descriptionSeparator = $descriptionSeparator;
     }
 
-    protected function setNumberingPosition($numberingPosition)
+    public function setNumberingPosition($numberingPosition)
     {
         $this->numberingPosition = $numberingPosition;
     }

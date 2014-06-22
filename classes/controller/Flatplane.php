@@ -238,12 +238,12 @@ class Flatplane
 
         // layout pages
         $this->startTimer('layoutPages');
-        $pages = $this->layoutElements();
+        //$pages = $this->layoutElements();
         $this->stopTimer('layoutPages');
 
         // generating Pages
         $this->startTimer('generatingPages');
-        $this->generatePageContentOutput($pages);
+        //$this->generatePageContentOutput($pages);
         $this->stopTimer('generatingPages');
 
         // generatingPDF

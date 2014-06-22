@@ -403,7 +403,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
      *
      * @param array $margins
      */
-    protected function setPageMargins(array $margins)
+    public function setPageMargins(array $margins)
     {
         //todo: sanity check: sum of margins must be <= pagedimensions
         $this->pageMargins = array_merge($this->pageMargins, $margins);
@@ -448,7 +448,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
      *
      * @param string $unit
      */
-    protected function setUnit($unit)
+    public function setUnit($unit)
     {
         $this->unit = $unit;
     }
@@ -457,7 +457,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
      *
      * @param array $pageSize
      */
-    protected function setPageSize(array $pageSize)
+    public function setPageSize(array $pageSize)
     {
         $this->pageSize = $pageSize;
     }
@@ -466,7 +466,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
      *
      * @param string $orientation
      */
-    protected function setOrientation($orientation)
+    public function setOrientation($orientation)
     {
         $this->orientation = $orientation;
     }
@@ -475,7 +475,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
      *
      * @param string $numberingFormat
      */
-    protected function setNumberingFormat($numberingFormat)
+    public function setNumberingFormat($numberingFormat)
     {
         $this->numberingFormat = $numberingFormat;
     }
@@ -484,7 +484,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
      *
      * @param int $numberingLevel
      */
-    protected function setNumberingLevel($numberingLevel)
+    public function setNumberingLevel($numberingLevel)
     {
         $this->numberingLevel = $numberingLevel;
     }
@@ -493,7 +493,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
      *
      * @param string $numberingPrefix
      */
-    protected function setNumberingPrefix($numberingPrefix)
+    public function setNumberingPrefix($numberingPrefix)
     {
         $this->numberingPrefix = $numberingPrefix;
     }
@@ -502,7 +502,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
      *
      * @param string $numberingPostfix
      */
-    protected function setNumberingPostfix($numberingPostfix)
+    public function setNumberingPostfix($numberingPostfix)
     {
         $this->numberingPostfix = $numberingPostfix;
     }
@@ -511,7 +511,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
      *
      * @param string $numberingSeparator
      */
-    protected function setNumberingSeparator($numberingSeparator)
+    public function setNumberingSeparator($numberingSeparator)
     {
         $this->numberingSeparator = $numberingSeparator;
     }
@@ -520,7 +520,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
      *
      * @param int $startIndex
      */
-    protected function setStartIndex(array $startIndex)
+    public function setStartIndex(array $startIndex)
     {
         $this->startIndex = array_merge($this->startIndex, $startIndex);
     }
@@ -546,7 +546,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
      *
      * @param string $format
      */
-    protected function setPageFormat($format)
+    public function setPageFormat($format)
     {
         $this->pageFormat = $format;
     }
@@ -575,7 +575,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
      *
      * @param array $hyphenation
      */
-    protected function setHyphenationOptions(array $hyphenation)
+    public function setHyphenationOptions(array $hyphenation)
     {
         foreach ($hyphenation as $key => $option) {
             if (array_key_exists($key, $this->hyphenationOptions)) {
@@ -599,7 +599,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     /**
      * @param string $docTitle
      */
-    protected function setDocTitle($docTitle)
+    public function setDocTitle($docTitle)
     {
         $this->docTitle = $docTitle;
     }
@@ -652,7 +652,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
      *
      * @param array $sources
      */
-    protected function setSources(array $sources)
+    public function setSources(array $sources)
     {
         $this->sources = $sources;
     }
@@ -661,7 +661,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
      *
      * @param string $cite
      */
-    protected function setCitationStyle($cite)
+    public function setCitationStyle($cite)
     {
         $this->citationStyle = $cite;
     }

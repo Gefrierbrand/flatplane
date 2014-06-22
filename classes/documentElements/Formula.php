@@ -153,12 +153,12 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
         $this->path = $path;
     }
 
-    protected function setCode($code)
+    public function setCode($code)
     {
         $this->code = $code;
     }
 
-    protected function setFormulaFont($font)
+    public function setFormulaFont($font)
     {
         if (!in_array($font, $this->availableFonts, true)) {
             trigger_error(
@@ -170,7 +170,7 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
         $this->formulaFont = $font;
     }
 
-    protected function setCodeFormat($codeFormat)
+    public function setCodeFormat($codeFormat)
     {
         if (!in_array($codeFormat, $this->availableCodeFormats, true)) {
             trigger_error(
@@ -187,7 +187,7 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
         return $this->useCache;
     }
 
-    protected function setUseCache($useCache)
+    public function setUseCache($useCache)
     {
         $this->useCache = (bool) $useCache;
     }
@@ -197,7 +197,7 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
         return $this->formulaStyle;
     }
 
-    protected function setFormulaStyle($formulaStyle)
+    public function setFormulaStyle($formulaStyle)
     {
         $this->formulaStyle = $formulaStyle;
     }
@@ -229,7 +229,7 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
         return $this->scalingFactor;
     }
 
-    protected function setScalingFactor($scalingFactor)
+    public function setScalingFactor($scalingFactor)
     {
         $this->scalingFactor = $scalingFactor;
     }
@@ -239,7 +239,7 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
         return $this->numberPosition;
     }
 
-    protected function setNumberPosition($numberPosition)
+    public function setNumberPosition($numberPosition)
     {
         $this->numberPosition = $numberPosition;
     }

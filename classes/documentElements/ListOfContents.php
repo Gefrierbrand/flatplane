@@ -496,7 +496,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         return $this->maxDepth;
     }
 
-    protected function setMaxDepth($maxDepth)
+    public function setMaxDepth($maxDepth)
     {
         //cast to int as all settings from ini files are returned as strings
         $maxDepth = (int) $maxDepth;
@@ -545,12 +545,12 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         }
     }
 
-    protected function setShowPages($showPages)
+    public function setShowPages($showPages)
     {
         $this->showPages = $showPages;
     }
 
-    protected function setDrawLinesToPage(array $drawLinesToPage)
+    public function setDrawLinesToPage(array $drawLinesToPage)
     {
         $this->drawLinesToPage = array_merge(
             $this->drawLinesToPage,
@@ -558,7 +558,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         );
     }
 
-    protected function setLineStyle(array $lineStyle)
+    public function setLineStyle(array $lineStyle)
     {
         $this->lineStyle = array_merge($this->lineStyle, $lineStyle);
     }
@@ -568,7 +568,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         return $this->minPageNumDistance;
     }
 
-    protected function setMinPageNumDistance($minPageNumDistance)
+    public function setMinPageNumDistance($minPageNumDistance)
     {
         $this->minPageNumDistance = $minPageNumDistance;
     }
@@ -606,7 +606,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         return $this->numberSeparationWidth;
     }
 
-    protected function setNumberSeparationWidth($numberSeparationWidth)
+    public function setNumberSeparationWidth($numberSeparationWidth)
     {
         $this->numberSeparationWidth = $numberSeparationWidth;
     }

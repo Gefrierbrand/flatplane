@@ -53,6 +53,7 @@ class PageLayout
         $this->addCounter(new Counter(1), 'linearPageNumberCounter');
 
         //layout each element according to its type
+        //todo: actually get each content, not just level 1
         foreach ($content as $pageElement) {
             $type = $pageElement->getType();
             $methodName = 'layout'.ucfirst($type);
@@ -136,10 +137,14 @@ class PageLayout
         $percentage = $section->getMinFreePage('level'.$section->getLevel())/100;
         $minSpace = $percentage*$textHeight;
 
-        //add a new page if needed
+        //add a new page if needed (minspace includes the space needed for the
+        //section title itself)
         if ($minSpace < $availableVerticalSpace) {
             $this->addPage();
         }
+
+        //check if the section title fits on the page
+        $sectionSize = $section->getSize();
 
         //set the current page for the current section
         $section->setPage($this->getCurrentPageNumber($section->getPageGroup()));

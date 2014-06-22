@@ -65,24 +65,30 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         return $this->showInDocument;
     }
 
-    /**     *
+    /**
+     *
      * @param type $level
-     * @return float
+     * @return type
      *  minimum free percentage of textheight needed to start a section on
      *  the current page instead of a new one.
      * @throws RuntimeException
+     * @throws \OutOfBoundsException
      */
     public function getMinFreePage($level = 0)
     {
         if (isset($this->minFreePage[$level])) {
-            return $this->minFreePage[$level];
+            $minFree = $this->minFreePage[$level];
         } elseif (isset($this->minFreePage['default'])) {
-            return $this->minFreePage['default'];
+            $minFree = $this->minFreePage['default'];
         } else {
             throw new RuntimeException(
                 'The required property minFreePage is not set.'
             );
         }
+        if ($minFree <=0) {
+            throw new \OutOfBoundsException('MinFreePage must be greater than 0');
+        }
+        return $minFree;
     }
 
     public function getStartsNewLine($level = 0)
@@ -101,13 +107,10 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
     public function getStartsNewPage($level = 'level0')
     {
         if (isset($this->startsNewPage[$level])) {
-            echo 'stmt1';
             return $this->startsNewPage[$level];
         } elseif (isset($this->startsNewPage['default'])) {
-            echo 'stmt2';
             return $this->startsNewPage['default'];
         } else {
-            echo 'stmt3';
             var_dump($this);
             throw new RuntimeException(
                 'The required property startsNewPage is not set.'
@@ -115,22 +118,22 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         }
     }
 
-    protected function setShowInDocument($showInDocument)
+    public function setShowInDocument($showInDocument)
     {
         $this->showInDocument = (bool) $showInDocument;
     }
 
-    protected function setMinFreePage(array $minFreePage)
+    public function setMinFreePage(array $minFreePage)
     {
         $this->minFreePage = array_merge($this->minFreePage, $minFreePage);
     }
 
-    protected function setStartsNewLine(array $startsNewLine)
+    public function setStartsNewLine(array $startsNewLine)
     {
         $this->startsNewLine = array_merge($this->startsNewLine, $startsNewLine);
     }
 
-    protected function setStartsNewPage(array $startsNewPage)
+    public function setStartsNewPage(array $startsNewPage)
     {
         $this->startsNewPage = array_merge($this->startsNewPage, $startsNewPage);
     }
@@ -193,7 +196,7 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         return $this->numberSeparationWidth;
     }
 
-    protected function setNumberSeparationWidth($numberSeparationWidth)
+    public function setNumberSeparationWidth($numberSeparationWidth)
     {
         $this->numberSeparationWidth = $numberSeparationWidth;
     }

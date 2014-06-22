@@ -58,6 +58,7 @@ $pdf->Rect(
 
 
 $inhaltSec = $document->addSection('Inhaltsverzeichnis', ['enumerate' => false]);
+$inhaltSec->setShowInList(false);
 $inhaltList = $inhaltSec->addList(['section', 'list', 'formula'], ['showInList' => true]);
 $inhaltSec->addList(['image']);
 $inhaltSec->addList(['table']);
@@ -102,8 +103,11 @@ $bild = $inhaltSec->addImage('images/bild.png', ['caption' => 'HALLO WELT']);
 
 //$inhaltList->generateOutput();
 //$flist->generateOutput();
-//$size = $inhaltList->getSize();
-//var_dump($size);
+
+//$pdf->SetY(270);
+//$inhaltList->setMargins(['top' => 5, 'bottom' => 5]);
+$size = $inhaltList->getSize();
+var_dump($size);
 //$pdf->Line(5, $document->getPageMargins('top'), 5, $size['height'] + $document->getPageMargins('top'));
 
 $flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => false]);
