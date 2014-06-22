@@ -41,12 +41,18 @@ class PDF extends \TCPDF
         return $this->h;
     }
 
-    public function startMeasurement($addPage = true)
+    public function startMeasurement($startYPosition = null)
     {
         $this->startTransaction();
-        if ($addPage) {
-            $this->AddPage();
+
+        $this->AddPage();
+
+        //set the vertical position to a given starting value
+        //todo: margins?
+        if (is_numeric($startYPosition)) {
+            $this->SetY($startYPosition);
         }
+
         // store starting values
         $this->oldPageBreak = $this->getAutoPageBreak();
         $this->SetAutoPageBreak(true, $this->getMargins()['bottom']);
@@ -62,24 +68,24 @@ class PDF extends \TCPDF
      */
     public function endMeasurement($rollback = true)
     {
-        $end_y = $this->GetY();
-        $end_page = $this->getPage();
+        $endYPosition = $this->GetY();
+        $endPageNumber = $this->getPage();
         // calculate height
         $height = 0;
 
-        if ($end_page == $this->measureStartPage) {
-            $height = $end_y - $this->measureStartY;
+        if ($endPageNumber == $this->measureStartPage) {
+            $height = $endYPosition - $this->measureStartY;
         } else {
-            for ($page = $this->measureStartPage; $page <= $end_page; ++$page) {
+            for ($page = $this->measureStartPage; $page <= $endPageNumber; ++$page) {
                 $this->setPage($page);
                 if ($page == $this->measureStartPage) {
                     // first page
                     $height += $this->getH()
                         - $this->measureStartY
                         - $this->getMargins()['bottom'];
-                } elseif ($page == $end_page) {
+                } elseif ($page == $endPageNumber) {
                     // last page
-                    $height += $end_y - $this->getMargins()['top'];
+                    $height += $endYPosition - $this->getMargins()['top'];
                 } else {
                     // other pages
                     $height += $this->getH()
@@ -90,7 +96,7 @@ class PDF extends \TCPDF
         }
 
         //todo: use start transaction page
-        $numPages = ($end_page - $this->measureStartPage) + 1;
+        $numPages = ($endPageNumber - $this->measureStartPage) + 1;
 
         if ($rollback) {
             $this->rollbackTransaction(true);
@@ -98,7 +104,12 @@ class PDF extends \TCPDF
             $this->commitTransaction();
         }
 
-        $this->SetAutoPageBreak($this->oldPageBreak, $this->getMargins()['bottom']);
-        return ['height' => $height, 'numPages' => $numPages];
+        $this->SetAutoPageBreak(
+            $this->oldPageBreak,
+            $this->getMargins()['bottom']
+        );
+        return ['height' => $height,
+                'numPages' => $numPages,
+                'endYposition' => $endYPosition];
     }
 }

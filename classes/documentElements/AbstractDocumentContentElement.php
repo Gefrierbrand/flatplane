@@ -98,11 +98,13 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     protected $label = '';
 
     /**
-     * @var Number
+     * @var string
      *  Number of the page this element gets printed on. If the element spans
      *  multiple pages, then this number references the first occurrence.
      */
     protected $page;
+
+    protected $linearPage;
 
     /**
      * @var array
@@ -727,15 +729,24 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     }
 
     /**
-     * @todo: remove additional parameters
      * @return array
      */
-    public function getSize($newPage = false, $rollback = false)
+    public function getSize($startYposition = null)
     {
         //todo: return width?
         $pdf = $this->toRoot()->getPDF();
-        $pdf->startMeasurement($newPage);
+        $pdf->startMeasurement($startYposition);
         $this->generateOutput();
-        return $pdf->endMeasurement($rollback);
+        return $pdf->endMeasurement();
+    }
+
+    public function getLinearPage()
+    {
+        return $this->linearPage;
+    }
+
+    public function setLinearPage($linearPage)
+    {
+        $this->linearPage = $linearPage;
     }
 }

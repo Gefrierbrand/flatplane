@@ -528,9 +528,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     /**
      * todo: doc
      */
-    public function getSize()
+    public function getSize($startYposition = null)
     {
-        //todo: implement me;
+        //do nothing
     }
 
     /**

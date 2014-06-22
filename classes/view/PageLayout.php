@@ -23,8 +23,10 @@ namespace de\flatplane\view;
 
 use de\flatplane\interfaces\documentElements\DocumentInterface;
 use de\flatplane\interfaces\documentElements\SectionInterface;
+use de\flatplane\iterators\RecursiveContentIterator;
 use de\flatplane\utilities\Counter;
 use de\flatplane\utilities\Number;
+use RecursiveIteratorIterator;
 use RuntimeException;
 
 /**
@@ -36,25 +38,30 @@ class PageLayout
 {
     use \de\flatplane\documentElements\traits\NumberingFunctions;
 
-    protected $currentYPosition; //fixme: usage?
+    protected $linearPageNumberCounter;
+    protected $currentYPosition;
     protected $currentPageGroup;
     protected $document;
 
     public function __construct(DocumentInterface $document)
     {
+        //add a sequential page counter
+        $this->linearPageNumberCounter = new Counter(0);
+
         $this->document = $document;
         $content = $document->getContent();
         $pdf = $document->getPDF();
         //todo: check for headers?
         //add first page (still empty, but sets y position)
-        $pdf->addPage();
-
-        //add a sequential page counter
-        $this->addCounter(new Counter(1), 'linearPageNumberCounter');
+        $pdf->addPage(); //is this needed?
 
         //layout each element according to its type
-        //todo: actually get each content, not just level 1
-        foreach ($content as $pageElement) {
+        $recItIt = new RecursiveIteratorIterator(
+            new RecursiveContentIterator($content),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
+
+        foreach ($recItIt as $pageElement) {
             $type = $pageElement->getType();
             $methodName = 'layout'.ucfirst($type);
             if (method_exists($this, $methodName)) {
@@ -84,11 +91,16 @@ class PageLayout
         }
 
         //increment the linar page Number
-        //fixme: add as property to avoid collisions with userCounters
-        $this->getCounter('linearPageNumberCounter')->add();
+        //does not use the counter array to avoid collisions with user counters
+        $this->getLinearPageNumberCounter()->add();
 
         //return the Counters value as formatted Number
         return $this->getCurrentPageNumber($pageGroup);
+    }
+
+    protected function getLinearPageNumberCounter()
+    {
+        return $this->linearPageNumberCounter;
     }
 
     /**
@@ -144,10 +156,15 @@ class PageLayout
         }
 
         //check if the section title fits on the page
-        $sectionSize = $section->getSize();
+        $sectionSize = $section->getSize($this->getCurrentYPosition());
+        if ($sectionSize['numPages'] > 1) {
+            //automatic page break occured, so increment page counter
+            $this->addPage();
+        }
 
         //set the current page for the current section
         $section->setPage($this->getCurrentPageNumber($section->getPageGroup()));
+        $section->setLinearPage($this->getLinearPageNumber());
     }
 
     protected function getAvailableSpace()
@@ -191,14 +208,16 @@ class PageLayout
 
     }
 
+    /**
+     * @return int
+     */
     protected function getLinearPageNumber()
     {
-        return $this->getCounter('linearPageNumberCounter')->getValue();
+        return $this->getLinearPageNumberCounter()->getValue();
     }
 
     /**
-     * todo: use direct value from pdf?
-     * @return type
+     * @return float
      */
     protected function getCurrentYPosition()
     {

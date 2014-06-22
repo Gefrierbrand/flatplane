@@ -54,7 +54,13 @@ interface DocumentElementInterface
     public function getLevel();
     public function getContent();
     public function getType();
-    public function getSize();
+    /**
+     *
+     * @param numeric $startYPosition
+     * @return Array
+     *  keys: 'height', 'numPages', 'endYposition'
+     */
+    public function getSize($startYPosition = null);
     /**
      * @return mixed
      */

@@ -56,10 +56,10 @@ $pdf->Rect(
     ['all' => ['color' => [255, 0, 0]]]
 );
 
-
 $inhaltSec = $document->addSection('Inhaltsverzeichnis', ['enumerate' => false]);
 $inhaltSec->setShowInList(false);
 $inhaltList = $inhaltSec->addList(['section', 'list', 'formula'], ['showInList' => true]);
+
 $inhaltSec->addList(['image']);
 $inhaltSec->addList(['table']);
 $flist = $inhaltSec->addList(['formula']);
@@ -100,15 +100,5 @@ $anahngSec = $document->addSection('Anhang', ['enumerate' => false]);
 
 $bild = $inhaltSec->addImage('images/bild.png', ['caption' => 'HALLO WELT']);
 
-
-//$inhaltList->generateOutput();
-//$flist->generateOutput();
-
-//$pdf->SetY(270);
-//$inhaltList->setMargins(['top' => 5, 'bottom' => 5]);
-$size = $inhaltList->getSize();
-var_dump($size);
-//$pdf->Line(5, $document->getPageMargins('top'), 5, $size['height'] + $document->getPageMargins('top'));
-
-$flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => false]);
+$flatplane->generatePDF(['showDocumentTree' => true, 'clearFormulaCache' => false]);
 unset($flatplane);

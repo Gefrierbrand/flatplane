@@ -31,11 +31,6 @@ class Table extends AbstractDocumentContentElement
     protected $type = 'table';
     protected $title = 'Table';
 
-    public function getSize()
-    {
-        //todo: implement
-    }
-
     public function generateOutput()
     {
         //todo: implement me

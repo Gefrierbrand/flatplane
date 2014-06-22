@@ -74,7 +74,8 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         }
     }
 
-    public function getSize()
+    //FIXME: fix params/aufruf
+    public function getSize($startYposition = null)
     {
         $this->applyStyles();
         $pdf = $this->toRoot()->getPDF();

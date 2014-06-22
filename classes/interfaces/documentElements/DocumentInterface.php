@@ -23,6 +23,7 @@ namespace de\flatplane\interfaces\documentElements;
 
 use de\flatplane\documentElements\ElementFactory;
 use de\flatplane\interfaces\DocumentElementInterface;
+use de\flatplane\utilities\PDF;
 
 /**
  * todo: doc

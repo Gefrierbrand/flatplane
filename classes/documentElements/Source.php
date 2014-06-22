@@ -92,6 +92,7 @@ class Source extends AbstractDocumentContentElement
         $this->setAltTitle($titleString);
     }
 
+    //todo:  fix return values
     public function getSize()
     {
         return ['width' => 0, 'height' => 0];

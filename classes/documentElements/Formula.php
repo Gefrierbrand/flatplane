@@ -72,7 +72,8 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
         return $this->availableCodeFormats;
     }
 
-    public function getSize()
+    //todo: FIXME (use transactions to get actual size)
+    public function getSize($startYposition = null)
     {
         if (!empty($this->getPath())) {
             $size = $this->getSizeFromFile();

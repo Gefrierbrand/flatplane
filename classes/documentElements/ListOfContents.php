@@ -223,12 +223,12 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         return $this->data;
     }
 
-    public function getSize()
+    public function getSize($startYposition = null)
     {
         if (empty($this->getData())) {
             $this->generateStructure($this->toRoot()->getContent());
         }
-        return parent::getSize();
+        return parent::getSize($startYposition);
     }
 
     /**
