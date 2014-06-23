@@ -612,7 +612,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      */
     public function getPageMeasurements()
     {
-        //doto: footnotes
+        //todo: footnotes
         $doc = $this->toRoot();
         $pageWidth = $doc->getPageSize()['width'];
         $textWidth = $pageWidth - $doc->getPageMargins('left')

@@ -151,7 +151,9 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         $pdf->SetRightMargin($oldMargins['right']+$this->getMargins('right'));
 
         //add element top margins to current y-position
+        echo "current Y: {$pdf->GetY()} Adding: {$this->getMargins('top')}\n";
         $pdf->SetY($pdf->GetY()+$this->getMargins('top'));
+        echo "new Y: {$pdf->GetY()}\n";
 
         //set font size, color etc.
         $this->applyStyles('level'.$this->getLevel());

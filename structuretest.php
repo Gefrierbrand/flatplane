@@ -100,5 +100,12 @@ $anahngSec = $document->addSection('Anhang', ['enumerate' => false]);
 
 $bild = $inhaltSec->addImage('images/bild.png', ['caption' => 'HALLO WELT']);
 
-$flatplane->generatePDF(['showDocumentTree' => true, 'clearFormulaCache' => false]);
+$document->getPDF()->SetY(270);
+$inhaltSec->setMargins(['top' => 0]);
+$inhaltSec->generateOutput();
+var_dump($inhaltSec->getSize(270));
+
+$document->getPDF()->Output('output/output.pdf', 'F');
+
+//$flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => false]);
 unset($flatplane);

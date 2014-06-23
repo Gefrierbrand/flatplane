@@ -53,7 +53,7 @@ class PageLayout
         $pdf = $document->getPDF();
         //todo: check for headers?
         //add first page (still empty, but sets y position)
-        $pdf->addPage(); //is this needed?
+        //$pdf->addPage(); //is this needed?
 
         //layout each element according to its type
         $recItIt = new RecursiveIteratorIterator(
@@ -94,7 +94,7 @@ class PageLayout
         //does not use the counter array to avoid collisions with user counters
         $this->getLinearPageNumberCounter()->add();
 
-        //return the Counters value as formatted Number
+        //return the current grouped counter value as formatted number
         return $this->getCurrentPageNumber($pageGroup);
     }
 
