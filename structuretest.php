@@ -44,6 +44,7 @@ $settings = array(
 
 $document = $flatplane->createDocument($settings);
 $document->addSource('img:nn', ['sourceAuthor' => 'Nikolai Neff']);
+$document->setPageNumberStyle(['PG2' => 'Alpha']);
 $pdf = $document->getPDF();
 $pdf->setHeaderData('', 0, date('d.m.Y H:i:s'));
 
@@ -98,8 +99,13 @@ $fazit = $schlussSec->addSection('Fazit');
 for ($i=0; $i<20; $i++) {
     $fazit->addSection('RND'.$i.': '.mt_rand());
 }
+
 $schlussSec->addSection('Ausblick');
-$anahngSec = $document->addSection('Anhang', ['enumerate' => false]);
+$qvz = $document->addSection('Quellenverzeichnis', ['enumerate' => false]);
+$qvz->addList(['source']);
+
+$anhangSec = $document->addSection('Anhang', ['enumerate' => false]);
+$anhangSec->setPageGroup('PG2');
 
 $flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => false]);
 unset($flatplane);

@@ -613,6 +613,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         if (array_key_exists($source, $this->getSources())) {
             $citeStyle = $this->getCitationStyle();
             //$cite = $citeStyle['prefix'];
+            $cite = '';
             $cite .= $this->getSources()[$source]->getFormattedNumbers();
             if (!empty($extras)) {
                 $cite .= $citeStyle['separator'].' '.$extras;
@@ -761,12 +762,15 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * todo: pagegroup
      * @param string $pageNumberStyle
      */
-    public function setPageNumberStyle($pageNumberStyle)
+    public function setPageNumberStyle(array $pageNumberStyle)
     {
-        $this->pageNumberStyle = $pageNumberStyle;
+        $this->pageNumberStyle = array_merge(
+            $this->pageNumberStyle,
+            $pageNumberStyle
+        );
     }
 
     /**

@@ -90,7 +90,7 @@ interface DocumentInterface extends DocumentElementInterface
     public function getPageNumberStyle($pageGroup = 'default');
     public function getPageNumberStartValue($pageGroup = 'default');
 
-    public function setPageNumberStyle($pageNumberStyle);
+    public function setPageNumberStyle(array $pageNumberStyle);
     public function setPageNumberStartValue($pageNumberStartValue);
 
     public function getPageFormat();
