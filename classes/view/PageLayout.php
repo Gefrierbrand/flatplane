@@ -21,6 +21,7 @@
 
 namespace de\flatplane\view;
 
+use de\flatplane\controller\Flatplane;
 use de\flatplane\interfaces\documentElements\DocumentInterface;
 use de\flatplane\interfaces\documentElements\SectionInterface;
 use de\flatplane\iterators\RecursiveContentIterator;
@@ -48,10 +49,13 @@ class PageLayout
         //add a sequential page counter
         $this->linearPageNumberCounter = new Counter(0);
         $this->document = $document;
-
         $pdf = $document->getPDF();
 
+        //set default pageGroup (and initialise the page counter for that group)
+        $this->setCurrentPageGroup();
+
         //set first Page Y Position:
+        //todo: use Document / Page Margins
         $this->setCurrentYPosition($pdf->getMargins()['top']);
     }
 
@@ -84,14 +88,15 @@ class PageLayout
     {
         $document = $this->getDocument();
         $pageGroup = $this->getCurrentPageGroup();
-        $pageNumStartValue = $document->getPageNumberStartValue($pageGroup);
 
         //add a new counter for each new pagegroup or increment the already
         //existing counter for old pagegroups
-        if (!array_key_exists($pageGroup, $this->getCounter())) {
-            $this->addCounter(new Counter($pageNumStartValue), $pageGroup);
-        } else {
+        if (array_key_exists($pageGroup, $this->getCounter())) {
             $this->getCounter($pageGroup)->add();
+        } else {
+            throw new RuntimeException(
+                'Required counter '.$pageGroup.' does not exist'
+            );
         }
 
         //increment the linar page Number
@@ -124,7 +129,7 @@ class PageLayout
     }
 
     /**
-     *
+     * @todo: redundanz entfernen!
      * @param SectionInterface $section
      */
     protected function layoutSection(SectionInterface $section)
@@ -144,6 +149,7 @@ class PageLayout
 
         //check, if the section forces a new page
         if ($section->getStartsNewPage('level'.$section->getLevel())) {
+            Flatplane::log("Section: ($section) requires pagebreak [user]");
             $this->addPage();
             $section->setPage(
                 $this->getCurrentPageNumber(
@@ -151,6 +157,8 @@ class PageLayout
                 )
             );
             $section->setLinearPage($this->getLinearPageNumber());
+            $sectionSize = $section->getSize($this->getCurrentYPosition());
+            $this->setCurrentYPosition($sectionSize['endYposition']);
             return;
         }
 
@@ -165,15 +173,18 @@ class PageLayout
         //add a new page if needed (minspace includes the space needed for the
         //section title itself)
         if ($availableVerticalSpace < $minSpace) {
+            Flatplane::log("Section: ($section) requires pagebreak [MinSpace]");
             $this->addPage();
         }
 
         //check if the section title fits on the page
+        //echo "testingSize from {$this->getCurrentYPosition()} for $section".PHP_EOL;
         $sectionSize = $section->getSize($this->getCurrentYPosition());
         $this->setCurrentYPosition($sectionSize['endYposition']);
         if ($sectionSize['numPages'] > 1) {
             //automatic page break occured, so increment page counter
             //todo: add appropriate amount of pages instead of just one
+            Flatplane::log("section: ($section) requires pagebreak [size]");
             $this->addPage();
         }
 
@@ -254,10 +265,10 @@ class PageLayout
         return $this->currentPageGroup;
     }
 
-    protected function setCurrentPageGroup($currentPageGroup)
+    protected function setCurrentPageGroup($currentPageGroup = 'default')
     {
         $this->currentPageGroup = $currentPageGroup;
-        //add Counter for pagrgroup if not already existing
+        //add Counter for pagegroup if not already existing
         if (!array_key_exists($currentPageGroup, $this->getCounter())) {
             $startValue = $this->getDocument()->getPageNumberStartValue($currentPageGroup);
             $counter = new Counter($startValue);

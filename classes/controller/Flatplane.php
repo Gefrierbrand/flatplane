@@ -273,7 +273,8 @@ class Flatplane
 
     protected function generatePageContentOutput()
     {
-        new ElementOutput($this->getDocument());
+        $elementOut = new ElementOutput($this->getDocument());
+        $elementOut->generateOutput();
     }
 
     protected function layoutElements()
