@@ -225,6 +225,11 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      */
     protected $linePitch = 1.25;
 
+    //todo: use this?
+//    protected $keepMarginsAfterPageBreak = ['default' => false,
+//                                            'top' => false,
+//                                            'bottom' =>false];
+
     /**
      * This method is called on creating a new element.
      * @param array $config

@@ -52,8 +52,10 @@ class PageLayout
         $content = $document->getContent();
         $pdf = $document->getPDF();
         //todo: check for headers?
-        //add first page (still empty, but sets y position)
-        //$pdf->addPage(); //is this needed?
+
+        //set first Page Y Position:
+        $this->setCurrentYPosition($pdf->getMargins()['top']);
+
 
         //layout each element according to its type
         $recItIt = new RecursiveIteratorIterator(
@@ -137,7 +139,10 @@ class PageLayout
 
         //check, if the section forces a new page
         if ($section->getStartsNewPage('level'.$section->getLevel())) {
+            echo "section adds new Page\n";
             $this->addPage();
+            $section->setPage($this->getCurrentPageNumber($section->getPageGroup()));
+            $section->setLinearPage($this->getLinearPageNumber());
             return;
         }
 
@@ -151,7 +156,8 @@ class PageLayout
 
         //add a new page if needed (minspace includes the space needed for the
         //section title itself)
-        if ($minSpace < $availableVerticalSpace) {
+        if ($availableVerticalSpace < $minSpace) {
+            echo "section adds new page due to space: Min: $minSpace Avail: $availableVerticalSpace\n";
             $this->addPage();
         }
 
@@ -159,6 +165,7 @@ class PageLayout
         $sectionSize = $section->getSize($this->getCurrentYPosition());
         if ($sectionSize['numPages'] > 1) {
             //automatic page break occured, so increment page counter
+            //todo: add appropriate amount of pages instead of just one
             $this->addPage();
         }
 

@@ -140,10 +140,12 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
 
     /**
      * todo: doc
+     * @return int Number of pagebreaks
      */
     public function generateOutput()
     {
         $pdf = $this->toRoot()->getPDF();
+        $startPage = $pdf->getPage();
         //save old pagemargins
         $oldMargins = $pdf->getMargins();
         //adjust left and right margins according tho the elements settings
@@ -151,9 +153,7 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         $pdf->SetRightMargin($oldMargins['right']+$this->getMargins('right'));
 
         //add element top margins to current y-position
-        echo "current Y: {$pdf->GetY()} Adding: {$this->getMargins('top')}\n";
         $pdf->SetY($pdf->GetY()+$this->getMargins('top'));
-        echo "new Y: {$pdf->GetY()}\n";
 
         //set font size, color etc.
         $this->applyStyles('level'.$this->getLevel());
@@ -191,6 +191,8 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
 
         //add bottom margin to y-position
         $pdf->SetY($pdf->GetY()+$this->getMargins('bottom'));
+        $endPage = $pdf->getPage();
+        return $endPage-$startPage;
     }
 
     public function getNumberSeparationWidth()

@@ -29,6 +29,7 @@ use de\flatplane\iterators\RecursiveContentIterator;
 use de\flatplane\model\FormulaFilesGenerator;
 use de\flatplane\utilities\OSPaths;
 use de\flatplane\utilities\PDF;
+use de\flatplane\view\ElementOutput;
 use de\flatplane\view\PageLayout;
 use RecursiveIteratorIterator;
 use RecursiveTreeIterator;
@@ -218,10 +219,9 @@ class Flatplane
         // include and parse input: TBD
 
         // generate structure
-
-        $this->startTimer('generateLists');
+        $this->startTimer('generateLists1');
         $this->generateListStructures();
-        $this->stopTimer('generateLists');
+        $this->stopTimer('generateLists1');
 
         // validate / update cache: TBD
 
@@ -238,12 +238,17 @@ class Flatplane
 
         // layout pages
         $this->startTimer('layoutPages');
-        $pages = $this->layoutElements();
+        $this->layoutElements();
         $this->stopTimer('layoutPages');
+
+        //generate structure with page numbers
+        $this->startTimer('generateLists2');
+        $this->generateListStructures();
+        $this->stopTimer('generateLists2');
 
         // generating Pages
         $this->startTimer('generatingPages');
-        $this->generatePageContentOutput($pages);
+        $this->generatePageContentOutput();
         $this->stopTimer('generatingPages');
 
         // generatingPDF
@@ -266,16 +271,15 @@ class Flatplane
         );
     }
 
-    protected function generatePageContentOutput($pages)
+    protected function generatePageContentOutput()
     {
-        //todo: implement
+        new ElementOutput($this->getDocument());
     }
 
     protected function layoutElements()
     {
-        //$content = $this->getAllContent();
-        $pages = new PageLayout($this->getDocument());
-        return $pages;
+        //todo: make this nice (or work)
+        new PageLayout($this->getDocument());
     }
 
     protected function generateFormulas()

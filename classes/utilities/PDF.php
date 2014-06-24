@@ -48,12 +48,12 @@ class PDF extends \TCPDF
         $this->AddPage();
 
         //set the vertical position to a given starting value
-        //todo: margins?
         if (is_numeric($startYPosition)) {
             $this->SetY($startYPosition);
         }
 
         // store starting values
+        // todo: test if this is needed at all
         $this->oldPageBreak = $this->getAutoPageBreak();
         $this->SetAutoPageBreak(true, $this->getMargins()['bottom']);
 
@@ -95,7 +95,7 @@ class PDF extends \TCPDF
             }
         }
 
-        //todo: use start transaction page
+        //todo: use start transaction page?
         $numPages = ($endPageNumber - $this->measureStartPage) + 1;
 
         if ($rollback) {

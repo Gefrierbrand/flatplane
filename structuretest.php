@@ -46,23 +46,24 @@ $document = $flatplane->createDocument($settings);
 $pdf = $document->getPDF();
 $pdf->setHeaderData('', 0, date('d.m.Y H:i:s'));
 
-$pdf->AddPage();
-$pdf->Rect(
-    $document->getPageMargins('left'),
-    $document->getPageMargins('right'),
-    $document->getPageMeasurements()['textWidth'],
-    $document->getPageMeasurements()['textHeight'],
-    '',
-    ['all' => ['color' => [255, 0, 0]]]
-);
+//$pdf->AddPage();
+//$pdf->Rect(
+//    $document->getPageMargins('left'),
+//    $document->getPageMargins('top'),
+//    $document->getPageMeasurements()['textWidth'],
+//    $document->getPageMeasurements()['textHeight'],
+//    '',
+//    ['all' => ['color' => [255, 0, 0]]]
+//);
 
 $inhaltSec = $document->addSection('Inhaltsverzeichnis', ['enumerate' => false]);
 $inhaltSec->setShowInList(false);
-$inhaltList = $inhaltSec->addList(['section', 'list', 'formula'], ['showInList' => true]);
-
-$inhaltSec->addList(['image']);
-$inhaltSec->addList(['table']);
-$flist = $inhaltSec->addList(['formula']);
+$inhaltSec->setStartsNewPage(['level1' => false]);
+//$inhaltList = $inhaltSec->addList(['section', 'list', 'formula'], ['showInList' => true]);
+//
+//$inhaltSec->addList(['image']);
+//$inhaltSec->addList(['table']);
+//$flist = $inhaltSec->addList(['formula']);
 
 $einleitungSec = $document->addSection('Einleitung');
 $einleitungSec->addSection('Vorwort');
@@ -70,20 +71,20 @@ $einleitungSec->addSection('Danksagungen');
 $hauptteilSec = $document->addSection('Hauptteil');
 $problem = $hauptteilSec->addSection('Problemstellung');
 
-$problem->addFormula('1 \ 2');
-$problem->addFormula('1 \ 2');
-$problem->addFormula('1 \ 2');
-$problem->addFormula('1 \ 2');
-$problem->addFormula('1 \ 2');
-$problem->addFormula('1 \ 2');
+//$problem->addFormula('1 \ 2');
+//$problem->addFormula('1 \ 2');
+//$problem->addFormula('1 \ 2');
+//$problem->addFormula('1 \ 2');
+//$problem->addFormula('1 \ 2');
+//$problem->addFormula('1 \ 2');
 
 $versuch = $hauptteilSec->addSection('Versuchsaufbau');
 
-$versuch->addFormula('\pi + \varpi');
-$versuch->addFormula('\pi + \varpi');
-$versuch->addFormula('\pi + \varpi');
-$versuch->addFormula('\pi + \varpi');
-$versuch->addFormula('\pi + \varpi');
+//$versuch->addFormula('\pi + \varpi');
+//$versuch->addFormula('\pi + \varpi');
+//$versuch->addFormula('\pi + \varpi');
+//$versuch->addFormula('\pi + \varpi');
+//$versuch->addFormula('\pi + \varpi');
 
 $hauptteilSec->addSection('Versuchsdruchführung mit langen Informationen zum Umbrechen Langeswort Überschallflugzeug');
 $analyse = $hauptteilSec->addSection('Datenanalyse');
@@ -98,14 +99,7 @@ for ($i=0; $i<13; $i++) {
 $schlussSec->addSection('Ausblick');
 $anahngSec = $document->addSection('Anhang', ['enumerate' => false]);
 
-$bild = $inhaltSec->addImage('images/bild.png', ['caption' => 'HALLO WELT']);
+//$bild = $inhaltSec->addImage('images/bild.png', ['caption' => 'HALLO WELT']);
 
-$document->getPDF()->SetY(270);
-$inhaltSec->setMargins(['top' => 0]);
-$inhaltSec->generateOutput();
-var_dump($inhaltSec->getSize(270));
-
-$document->getPDF()->Output('output/output.pdf', 'F');
-
-//$flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => false]);
+$flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => false]);
 unset($flatplane);

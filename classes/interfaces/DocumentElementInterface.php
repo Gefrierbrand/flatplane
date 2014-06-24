@@ -65,6 +65,7 @@ interface DocumentElementInterface
      * @return mixed
      */
     public function getPage();
+    public function getLinearPage();
     public function getNumbers();
     public function getFormattedNumbers();
     public function getCounter($name);
@@ -99,6 +100,10 @@ interface DocumentElementInterface
 
     public function getHyphenate();
     public function hyphenateTitle();
+    /**
+     * @return int
+     *  number of pagebreaks
+     */
     public function generateOutput();
     public function getPageMeasurements();
 }
