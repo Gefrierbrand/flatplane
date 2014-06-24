@@ -96,6 +96,10 @@ class PageLayout
         //does not use the counter array to avoid collisions with user counters
         $this->getLinearPageNumberCounter()->add();
 
+        //reset Y position to top of page
+        echo "setting new y pos due to page add: {$document->getPageMargins('top')}";
+        $this->setCurrentYPosition($document->getPageMargins('top'));
+
         //return the current grouped counter value as formatted number
         return $this->getCurrentPageNumber($pageGroup);
     }
@@ -139,7 +143,7 @@ class PageLayout
 
         //check, if the section forces a new page
         if ($section->getStartsNewPage('level'.$section->getLevel())) {
-            echo "section adds new Page\n";
+            echo "section ($section) adds new Page\n";
             $this->addPage();
             $section->setPage($this->getCurrentPageNumber($section->getPageGroup()));
             $section->setLinearPage($this->getLinearPageNumber());
@@ -157,12 +161,15 @@ class PageLayout
         //add a new page if needed (minspace includes the space needed for the
         //section title itself)
         if ($availableVerticalSpace < $minSpace) {
-            echo "section adds new page due to space: Min: $minSpace Avail: $availableVerticalSpace\n";
+            echo "section ($section) adds new page due to space: Min: $minSpace Avail: $availableVerticalSpace\n";
             $this->addPage();
+        } else {
+            echo "section ($section) stays on page: space: Min: $minSpace Avail: $availableVerticalSpace\n";
         }
 
         //check if the section title fits on the page
         $sectionSize = $section->getSize($this->getCurrentYPosition());
+        $this->setCurrentYPosition($sectionSize['endYposition']);
         if ($sectionSize['numPages'] > 1) {
             //automatic page break occured, so increment page counter
             //todo: add appropriate amount of pages instead of just one
@@ -251,7 +258,7 @@ class PageLayout
         $this->currentPageGroup = $currentPageGroup;
         //add Counter for pagrgroup if not already existing
         if (!array_key_exists($currentPageGroup, $this->getCounter())) {
-            $startValue = $this->getDocument()->getStartIndex('page');
+            $startValue = $this->getDocument()->getPageNumberStartValue($currentPageGroup);
             $counter = new Counter($startValue);
             $this->addCounter($counter, $currentPageGroup);
         }

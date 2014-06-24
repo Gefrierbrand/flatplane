@@ -93,7 +93,7 @@ $analyse->addSection('Programm B');
 
 $schlussSec = $document->addSection('Schluss');
 $fazit = $schlussSec->addSection('Fazit');
-for ($i=0; $i<13; $i++) {
+for ($i=0; $i<20; $i++) {
     $fazit->addSection('RND'.$i.': '.mt_rand());
 }
 $schlussSec->addSection('Ausblick');
