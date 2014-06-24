@@ -43,12 +43,19 @@ interface DocumentInterface extends DocumentElementInterface
     public function getNumberingPostfix($type = '');
     public function getNumberingSeparator($type = '');
 
+    public function setNumberingLevel(array $numberingLevel);
+    public function setNumberingFormat(array $numberingFormat);
+    public function setStartIndex(array $startIndex);
+    public function setNumberingPrefix(array $numberingPrefix);
+    public function setNumberingPostfix(array $numberingPostfix);
+    public function setNumberingSeparator(array $numberingSeparator);
+
     public function getLabels();
     public function getReference($label, $type = 'number');
 
     public function getAuthor();
     public function getTitle();
-    public function getDescription();
+    public function getDocTitle();
     public function getSubject();
     public function getKeywords();
     public function getUnit();
@@ -56,19 +63,70 @@ interface DocumentInterface extends DocumentElementInterface
     public function getOrientation();
     public function getPageMargins($dir = '');
 
+    public function setAuthor($author);
+    public function setTitle($title);
+    public function setDocTitle($docTitle);
+    public function setSubject($subject);
+    public function setKeywords($keywords);
+    public function setUnit($unit);
+    public function setPageSize(array $pageSize);
+    public function setOrientation($orientation);
+    public function setPageMargins(array $margins);
+
+    public function getNumPages();
+
     /**
      * @return PDF
      */
     public function getPDF();
+    public function setPDF(PDF $pdf);
 
     public function getElementFactory();
     public function setElementFactory(ElementFactory $elementFactory);
 
     public function getHyphenationPatterns();
+    public function getHyphenationOptions();
 
     public function getPageNumberStyle($pageGroup = 'default');
     public function getPageNumberStartValue($pageGroup = 'default');
 
     public function setPageNumberStyle($pageNumberStyle);
     public function setPageNumberStartValue($pageNumberStartValue);
+
+    public function getPageFormat();
+
+    /**
+     *
+     * @param string $format
+     */
+    public function setPageFormat($format);
+
+    /**
+     *
+     * @param string $text
+     * @return string
+     */
+    public function hypenateText($text);
+    public function setHyphenationOptions(array $hyphenation);
+
+
+    public function getSources();
+
+    /**
+     *
+     * @return string
+     */
+    public function getCitationStyle();
+
+    /**
+     *
+     * @param array $sources
+     */
+    public function setSources(array $sources);
+
+    /**
+     *
+     * @param string $cite
+     */
+    public function setCitationStyle($style);
 }

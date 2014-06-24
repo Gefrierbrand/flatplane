@@ -50,7 +50,6 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
 
     protected $author =  '';
     protected $docTitle = '';
-    protected $description = '';
     protected $subject = '';
     protected $keywords = '';
     protected $unit = 'mm';
@@ -188,15 +187,6 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
      *
      * @return string
      */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     *
-     * @return string
-     */
     public function getSubject()
     {
         return $this->subject;
@@ -262,6 +252,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
      */
     public function getNumPages()
     {
+        //todo: implement total number of pages
         return $this->numPages;
     }
 
@@ -272,15 +263,6 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     public function setAuthor($author)
     {
         $this->author = $author;
-    }
-
-    /**
-     *
-     * @param string $description
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
     }
 
     /**
@@ -439,7 +421,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     /**
      * @param PDF $pdf
      */
-    public function setPdf(PDF $pdf)
+    public function setPDF(PDF $pdf)
     {
         $this->pdf = $pdf;
     }
@@ -475,45 +457,60 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
      *
      * @param string $numberingFormat
      */
-    public function setNumberingFormat($numberingFormat)
+    public function setNumberingFormat(array $numberingFormat)
     {
-        $this->numberingFormat = $numberingFormat;
+        $this->numberingFormat = array_merge(
+            $this->numberingFormat,
+            $numberingFormat
+        );
     }
 
     /**
      *
      * @param int $numberingLevel
      */
-    public function setNumberingLevel($numberingLevel)
+    public function setNumberingLevel(array $numberingLevel)
     {
-        $this->numberingLevel = $numberingLevel;
+        $this->numberingLevel = array_merge(
+            $this->numberingLevel,
+            $numberingLevel
+        );
     }
 
     /**
      *
      * @param string $numberingPrefix
      */
-    public function setNumberingPrefix($numberingPrefix)
+    public function setNumberingPrefix(array $numberingPrefix)
     {
-        $this->numberingPrefix = $numberingPrefix;
+        $this->numberingPrefix = array_merge(
+            $this->numberingPrefix,
+            $numberingPrefix
+        );
     }
 
     /**
      *
      * @param string $numberingPostfix
      */
-    public function setNumberingPostfix($numberingPostfix)
+    public function setNumberingPostfix(array $numberingPostfix)
     {
-        $this->numberingPostfix = $numberingPostfix;
+        $this->numberingPostfix = array_merge(
+            $this->numberingPostfix,
+            $numberingPostfix
+        );
     }
 
     /**
      *
      * @param string $numberingSeparator
      */
-    public function setNumberingSeparator($numberingSeparator)
+    public function setNumberingSeparator(array $numberingSeparator)
     {
-        $this->numberingSeparator = $numberingSeparator;
+        $this->numberingSeparator = array_merge(
+            $this->numberingSeparator,
+            $numberingSeparator
+        );
     }
 
     /**
@@ -659,11 +656,11 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
 
     /**
      *
-     * @param string $cite
+     * @param string $style
      */
-    public function setCitationStyle($cite)
+    public function setCitationStyle($style)
     {
-        $this->citationStyle = $cite;
+        $this->citationStyle = $style;
     }
 
     /**

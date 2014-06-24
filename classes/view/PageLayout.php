@@ -47,15 +47,17 @@ class PageLayout
     {
         //add a sequential page counter
         $this->linearPageNumberCounter = new Counter(0);
-
         $this->document = $document;
-        $content = $document->getContent();
+
         $pdf = $document->getPDF();
-        //todo: check for headers?
 
         //set first Page Y Position:
         $this->setCurrentYPosition($pdf->getMargins()['top']);
+    }
 
+    public function layout()
+    {
+        $content = $this->getDocument()->getContent();
 
         //layout each element according to its type
         $recItIt = new RecursiveIteratorIterator(
@@ -97,7 +99,6 @@ class PageLayout
         $this->getLinearPageNumberCounter()->add();
 
         //reset Y position to top of page
-        echo "setting new y pos due to page add: {$document->getPageMargins('top')}";
         $this->setCurrentYPosition($document->getPageMargins('top'));
 
         //return the current grouped counter value as formatted number
@@ -143,9 +144,12 @@ class PageLayout
 
         //check, if the section forces a new page
         if ($section->getStartsNewPage('level'.$section->getLevel())) {
-            echo "section ($section) adds new Page\n";
             $this->addPage();
-            $section->setPage($this->getCurrentPageNumber($section->getPageGroup()));
+            $section->setPage(
+                $this->getCurrentPageNumber(
+                    $section->getPageGroup()
+                )
+            );
             $section->setLinearPage($this->getLinearPageNumber());
             return;
         }
@@ -161,10 +165,7 @@ class PageLayout
         //add a new page if needed (minspace includes the space needed for the
         //section title itself)
         if ($availableVerticalSpace < $minSpace) {
-            echo "section ($section) adds new page due to space: Min: $minSpace Avail: $availableVerticalSpace\n";
             $this->addPage();
-        } else {
-            echo "section ($section) stays on page: space: Min: $minSpace Avail: $availableVerticalSpace\n";
         }
 
         //check if the section title fits on the page

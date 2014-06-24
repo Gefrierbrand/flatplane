@@ -23,8 +23,8 @@ namespace de\flatplane\view;
 
 use de\flatplane\interfaces\documentElements\DocumentInterface;
 use de\flatplane\iterators\RecursiveContentIterator;
-use Exception;
 use RecursiveIteratorIterator;
+use RuntimeException;
 
 /**
  * Description of ElementOutput
@@ -41,42 +41,82 @@ class ElementOutput
         $this->document = $document;
         //add first page
         $document->getPDF()->AddPage();
+    }
 
-        $content = $document->getContent();
+    /**
+     * @todo: doc
+     * @todo: return value?
+     * @throws RuntimeException
+     */
+    public function generateOutput()
+    {
+        $content = $this->getDocument()->getContent();
 
         $recItIt = new RecursiveIteratorIterator(
             new RecursiveContentIterator($content),
             RecursiveIteratorIterator::SELF_FIRST
         );
 
-//        foreach ($recItIt as $pageElement) {
-//            echo $pageElement->getTitle().' '.$pageElement->getLinearPage().' '.$pageElement->getStartsNewPage().PHP_EOL;
-//        }
-
         foreach ($recItIt as $pageElement) {
             $page = $pageElement->getLinearPage();
-            if ($page == $this->currentLinearPage) {
-                //display element
-                echo "writing on current page: ";
+            //if the current page is equal to the elements page property, display
+            //the element on the current page, otherwise add a new page and
+            //display the element there
+            if ($page == $this->getCurrentLinearPage()) {
+                //display element on current page
                 $numPageBreaks = $pageElement->generateOutput();
-                echo $numPageBreaks.' Pages'.PHP_EOL;
-            } elseif ($page == $this->currentLinearPage + 1) {
-                echo "writing on next page: ";
+            } elseif ($page == $this->getCurrentLinearPage() + 1) {
+                //add page and then display element
                 $this->addPage();
                 $numPageBreaks = $pageElement->generateOutput();
-                echo $numPageBreaks.' Pages'.PHP_EOL;
             } else {
-                throw new Exception('Invalid Page number: '.$page. 'expected: '.$this->currentLinearPage.' or '.($this->currentLinearPage+1));
+                throw new RuntimeException(
+                    'Invalid Page number: '.$page. 'expected: '
+                    .$this->getCurrentLinearPage().' or '
+                    .($this->getCurrentLinearPage()+1)
+                );
             }
-            $inc = $numPageBreaks;
-            echo "incrementing: $inc".PHP_EOL;
-            $this->currentLinearPage += $inc;
+            //increment the page number by the amount of pagebreaks caused by
+            //the displaying of the element
+            $this->setCurrentLinearPage(
+                $this->getCurrentLinearPage()+ $numPageBreaks
+            );
         }
     }
 
     protected function addPage()
     {
-        $this->document->getPDF()->AddPage();
+        //add page in PDF
+        $this->getDocument()->getPDF()->AddPage();
+        //increment page counter
+        //todo: use methods here
         $this->currentLinearPage ++;
+    }
+
+    /**
+     *
+     * @return DocumentInterface
+     */
+    public function getDocument()
+    {
+        return $this->document;
+    }
+
+    /**
+     *
+     * @return int
+     */
+    public function getCurrentLinearPage()
+    {
+        return $this->currentLinearPage;
+    }
+
+    /**
+     *
+     * @param int $currentLinearPage
+     */
+    public function setCurrentLinearPage($currentLinearPage)
+    {
+        $this->currentLinearPage = $currentLinearPage;
     }
 }

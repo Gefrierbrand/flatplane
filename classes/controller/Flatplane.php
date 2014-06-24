@@ -278,8 +278,9 @@ class Flatplane
 
     protected function layoutElements()
     {
-        //todo: make this nice (or work)
-        new PageLayout($this->getDocument());
+        //todo: return list of page objects?
+        $pageLayout = new PageLayout($this->getDocument());
+        $pageLayout->layout();
     }
 
     protected function generateFormulas()

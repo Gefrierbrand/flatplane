@@ -21,6 +21,7 @@
 
 namespace de\flatplane\documentElements;
 
+use de\flatplane\controller\Flatplane;
 use de\flatplane\interfaces\DocumentElementInterface;
 use de\flatplane\utilities\Config;
 use de\flatplane\utilities\PDF;
@@ -103,7 +104,12 @@ class ElementFactory
         $pdf->setHeaderMargin($headerMargin);
         $pdf->setFooterMargin($footerMargin);
 
-        $doc->setPdf($pdf);
+        $pdf->SetAuthor($doc->getAuthor());
+        $pdf->SetTitle($doc->getDocTitle());
+        $pdf->SetSubject($doc->getSubject());
+        $pdf->SetKeywords($doc->getKeywords());
+        $pdf->SetCreator('Flatplane ('.Flatplane::VERSION.')');
+        $doc->setPDF($pdf);
         return $doc;
     }
 
