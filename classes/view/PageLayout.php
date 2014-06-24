@@ -249,5 +249,11 @@ class PageLayout
     protected function setCurrentPageGroup($currentPageGroup)
     {
         $this->currentPageGroup = $currentPageGroup;
+        //add Counter for pagrgroup if not already existing
+        if (!array_key_exists($currentPageGroup, $this->getCounter())) {
+            $startValue = $this->getDocument()->getStartIndex('page');
+            $counter = new Counter($startValue);
+            $this->addCounter($counter, $currentPageGroup);
+        }
     }
 }
