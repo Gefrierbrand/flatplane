@@ -43,6 +43,7 @@ $settings = array(
 );
 
 $document = $flatplane->createDocument($settings);
+$document->addSource('img:nn', ['sourceAuthor' => 'Nikolai Neff']);
 $pdf = $document->getPDF();
 $pdf->setHeaderData('', 0, date('d.m.Y H:i:s'));
 
@@ -59,11 +60,9 @@ $pdf->setHeaderData('', 0, date('d.m.Y H:i:s'));
 $inhaltSec = $document->addSection('Inhaltsverzeichnis', ['enumerate' => false]);
 $inhaltSec->setShowInList(false);
 $inhaltSec->setStartsNewPage(['level1' => false]);
-//$inhaltList = $inhaltSec->addList(['section', 'list', 'formula'], ['showInList' => true]);
-//
-//$inhaltSec->addList(['image']);
-//$inhaltSec->addList(['table']);
-//$flist = $inhaltSec->addList(['formula']);
+$inhaltList = $inhaltSec->addList(['section'], ['showInList' => false]);
+$abbildungSec = $document->addSection('Abbildungsverzeichnis', ['enumerate' => false, 'showInList' => false]);
+$abbildingList = $abbildungSec->addList(['image'], ['showInList' => false]);
 
 $einleitungSec = $document->addSection('Einleitung');
 $einleitungSec->addSection('Vorwort');
@@ -89,7 +88,10 @@ $versuch = $hauptteilSec->addSection('Versuchsaufbau');
 $hauptteilSec->addSection('Versuchsdruchführung mit langen Informationen zum Umbrechen Langeswort Überschallflugzeug');
 $analyse = $hauptteilSec->addSection('Datenanalyse');
 $analyse->addSection('Programm A');
-$analyse->addSection('Programm B');
+$programmB = $analyse->addSection('Programm B');
+$bild = $programmB->addImage('images/bild.png', ['caption' => 'Tolle Spirale '.$document->cite('img:nn')]);
+$bild->setFontColor(['title' => [255, 0, 0]]);
+$bild->setTitle('Roter Titel!');
 
 $schlussSec = $document->addSection('Schluss');
 $fazit = $schlussSec->addSection('Fazit');
@@ -98,8 +100,6 @@ for ($i=0; $i<20; $i++) {
 }
 $schlussSec->addSection('Ausblick');
 $anahngSec = $document->addSection('Anhang', ['enumerate' => false]);
-
-//$bild = $inhaltSec->addImage('images/bild.png', ['caption' => 'HALLO WELT']);
 
 $flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => false]);
 unset($flatplane);

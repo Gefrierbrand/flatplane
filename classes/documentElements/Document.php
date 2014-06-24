@@ -609,14 +609,15 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
      */
     public function cite($source, $extras = '')
     {
+        //todo: remove cite prefix/postfix, own style for Cite!
         if (array_key_exists($source, $this->getSources())) {
             $citeStyle = $this->getCitationStyle();
-            $cite = $citeStyle['prefix'];
+            //$cite = $citeStyle['prefix'];
             $cite .= $this->getSources()[$source]->getFormattedNumbers();
             if (!empty($extras)) {
                 $cite .= $citeStyle['separator'].' '.$extras;
             }
-            $cite .= $citeStyle['postfix'];
+            //$cite .= $citeStyle['postfix'];
         } else {
             trigger_error(
                 'Source "'.$source.'" for citation not found',

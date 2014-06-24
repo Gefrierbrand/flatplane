@@ -23,6 +23,8 @@ namespace de\flatplane\view;
 
 use de\flatplane\controller\Flatplane;
 use de\flatplane\interfaces\documentElements\DocumentInterface;
+use de\flatplane\interfaces\documentElements\ImageInterface;
+use de\flatplane\interfaces\documentElements\ListInterface;
 use de\flatplane\interfaces\documentElements\SectionInterface;
 use de\flatplane\iterators\RecursiveContentIterator;
 use de\flatplane\utilities\Counter;
@@ -147,16 +149,20 @@ class PageLayout
             return;
         }
 
-        //check, if the section forces a new page
+        //check if the section forces a new page
         if ($section->getStartsNewPage('level'.$section->getLevel())) {
             Flatplane::log("Section: ($section) requires pagebreak [user]");
+            //add the page
             $this->addPage();
+            //set the sections page properties
             $section->setPage(
                 $this->getCurrentPageNumber(
                     $section->getPageGroup()
                 )
             );
             $section->setLinearPage($this->getLinearPageNumber());
+            //set the Y position on the new Page to the end of the Section
+            //this assumes a section title fits (comfortably) on one page
             $sectionSize = $section->getSize($this->getCurrentYPosition());
             $this->setCurrentYPosition($sectionSize['endYposition']);
             return;
@@ -204,9 +210,25 @@ class PageLayout
         return $availableSpace;
     }
 
-    protected function layoutImage()
+    protected function layoutImage(ImageInterface $image)
     {
+        //check free space on current page
+        $availableVerticalSpace = $this->getAvailableSpace();
 
+        //check if the image fits on the page
+        $imageSize = $image->getSize($this->getCurrentYPosition());
+        if ($imageSize['height'] > $availableVerticalSpace
+            || $imageSize['numPages'] > 1
+        ) {
+            Flatplane::log("Image: ($image) requires pagebreak [size]");
+            $this->addPage();
+        }
+
+        $this->setCurrentYPosition($imageSize['endYposition']);
+
+        //set the current page for the current section
+        $image->setPage($this->getCurrentPageNumber($this->getCurrentPageGroup()));
+        $image->setLinearPage($this->getLinearPageNumber());
     }
 
     protected function layoutFormula()
@@ -219,9 +241,25 @@ class PageLayout
 
     }
 
-    protected function layoutList()
+    protected function layoutList(ListInterface $list)
     {
+        //check free space on current page
+        $availableVerticalSpace = $this->getAvailableSpace();
 
+        //check if the image fits on the page
+        $listSize = $list->getSize($this->getCurrentYPosition());
+        if ($listSize['height'] > $availableVerticalSpace
+            || $listSize['numPages'] > 1
+        ) {
+            Flatplane::log("Image: ($list) requires pagebreak [size]");
+            $this->addPage();
+        }
+
+        $this->setCurrentYPosition($listSize['endYposition']);
+
+        //set the current page for the current section
+        $list->setPage($this->getCurrentPageNumber($this->getCurrentPageGroup()));
+        $list->setLinearPage($this->getLinearPageNumber());
     }
 
     protected function layoutTable()

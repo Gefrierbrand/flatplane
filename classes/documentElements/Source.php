@@ -93,7 +93,7 @@ class Source extends AbstractDocumentContentElement
     }
 
     //todo:  fix return values
-    public function getSize()
+    public function getSize($startYposition = null)
     {
         return ['width' => 0, 'height' => 0];
     }

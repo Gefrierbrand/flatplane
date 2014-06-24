@@ -21,6 +21,7 @@
 
 namespace de\flatplane\documentElements;
 
+use de\flatplane\interfaces\documentElements\ImageInterface;
 use de\flatplane\utilities\SVGSize;
 use Imagick;
 use RuntimeException;
@@ -33,7 +34,7 @@ use SplFileObject;
  * todo: cite!!!!!!!!!!!!
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Image extends AbstractDocumentContentElement
+class Image extends AbstractDocumentContentElement implements ImageInterface
 {
     protected $type = 'image';
     protected $allowSubContent = ['image'];
