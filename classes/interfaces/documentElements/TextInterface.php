@@ -21,11 +21,13 @@
 
 namespace de\flatplane\interfaces\documentElements;
 
+use de\flatplane\interfaces\DocumentElementInterface;
+
 /**
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-interface TextInterface
+interface TextInterface extends DocumentElementInterface
 {
     public function getHyphenate();
     public function getText();

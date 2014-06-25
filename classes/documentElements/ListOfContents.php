@@ -24,7 +24,6 @@ namespace de\flatplane\documentElements;
 use de\flatplane\interfaces\documentElements\ListInterface;
 use de\flatplane\iterators\RecursiveContentIterator;
 use de\flatplane\iterators\ShowInListFilterIterator;
-use de\flatplane\utilities\Number;
 use OutOfRangeException;
 use RecursiveIteratorIterator;
 
@@ -66,7 +65,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
      *  Use -1 for unlimited depth.
      */
     protected $maxDepth = -1;
-
+    
     /**
      * @var array
      *  Array containing the content-types to be included in the list.

@@ -48,15 +48,6 @@ $document->setPageNumberStyle(['PG2' => 'Alpha']);
 $pdf = $document->getPDF();
 $pdf->setHeaderData('', 0, date('d.m.Y H:i:s'));
 
-//$pdf->AddPage();
-//$pdf->Rect(
-//    $document->getPageMargins('left'),
-//    $document->getPageMargins('top'),
-//    $document->getPageMeasurements()['textWidth'],
-//    $document->getPageMeasurements()['textHeight'],
-//    '',
-//    ['all' => ['color' => [255, 0, 0]]]
-//);
 
 $inhaltSec = $document->addSection('Inhaltsverzeichnis', ['enumerate' => false]);
 $inhaltSec->setShowInList(false);
@@ -106,6 +97,8 @@ $qvz->addList(['source']);
 
 $anhangSec = $document->addSection('Anhang', ['enumerate' => false]);
 $anhangSec->setPageGroup('PG2');
+
+$anhangSec->addText('input/testKapitelMitRef.php');
 
 $flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => false]);
 unset($flatplane);

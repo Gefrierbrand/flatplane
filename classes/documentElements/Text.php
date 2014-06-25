@@ -74,33 +74,12 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         }
     }
 
-    //FIXME: fix params/aufruf
-    public function getSize($startYposition = null)
+    public function generateOutput()
     {
         $this->applyStyles();
         $pdf = $this->toRoot()->getPDF();
-
-        $pdf->startMeasurement();
-        $this->generateOutput();
-        $measurements = $pdf->endMeasurement();
-
-        $width = $pdf->getPageWidth()
-            - $pdf->getMargins()['left']
-            - $pdf->getMargins()['right'];
-        return ['height' => $measurements['height'], 'width' => $width];
-    }
-
-    public function generateOutput()
-    {
-        $pdf = $this->toRoot()->getPDF();
-        $pdf->writeHTML(
-            $this->getText(),
-            false,
-            false,
-            false,
-            false,
-            $this->getTextAlignment()
-        );
+        echo "Starting Text at: ".$pdf->GetY().PHP_EOL;
+        $pdf->writeHTMLCell(0, 0, '', '', $this->getText(), 0, 1, false, true, $this->getTextAlignment());
     }
 
     public function setPath($path)

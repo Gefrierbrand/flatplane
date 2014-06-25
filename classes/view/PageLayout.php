@@ -26,6 +26,7 @@ use de\flatplane\interfaces\documentElements\DocumentInterface;
 use de\flatplane\interfaces\documentElements\ImageInterface;
 use de\flatplane\interfaces\documentElements\ListInterface;
 use de\flatplane\interfaces\documentElements\SectionInterface;
+use de\flatplane\interfaces\documentElements\TextInterface;
 use de\flatplane\iterators\RecursiveContentIterator;
 use de\flatplane\utilities\Counter;
 use de\flatplane\utilities\Number;
@@ -236,9 +237,17 @@ class PageLayout
 
     }
 
-    protected function layoutText()
+    protected function layoutText(TextInterface $text)
     {
+        $textSize = $text->getSize($this->getCurrentYPosition());
+        $this->setCurrentYPosition($textSize['endYposition']);
 
+        //set the current page for the current section
+        $text->setPage($this->getCurrentPageNumber($this->getCurrentPageGroup()));
+        $text->setLinearPage($this->getLinearPageNumber());
+
+
+        $this->getLinearPageNumberCounter()->add($textSize['numPages']-1);
     }
 
     protected function layoutList(ListInterface $list)
