@@ -61,7 +61,7 @@ $einleitungSec->addSection('Vorwort');
 $einleitungSec->addSection('Danksagungen');
 $hauptteilSec = $document->addSection('Hauptteil');
 $problem = $hauptteilSec->addSection('Problemstellung');
-
+$text1 = $problem->addText('input/testKapitelohneRef.php');
 //$problem->addFormula('1 \ 2');
 //$problem->addFormula('1 \ 2');
 //$problem->addFormula('1 \ 2');
@@ -98,7 +98,7 @@ $qvz->addList(['source']);
 $anhangSec = $document->addSection('Anhang', ['enumerate' => false]);
 $anhangSec->setPageGroup('PG2');
 
-$anhangSec->addText('input/testKapitelMitRef.php');
+$text = $anhangSec->addText('input/testKapitelohneRef.php');
 
 $flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => false]);
 unset($flatplane);

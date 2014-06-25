@@ -78,8 +78,11 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     {
         $this->applyStyles();
         $pdf = $this->toRoot()->getPDF();
-        echo "Starting Text at: ".$pdf->GetY().PHP_EOL;
+        echo "pageBreakMargin: ".$pdf->getBreakMargin().PHP_EOL;
+        var_dump($pdf->getAutoPageBreak());
+        echo "Starting Text at: page {$pdf->getPage()}: {$pdf->GetY()}\n";
         $pdf->writeHTMLCell(0, 0, '', '', $this->getText(), 0, 1, false, true, $this->getTextAlignment());
+        echo "Ending Text at: page {$pdf->getPage()}: {$pdf->GetY()}\n";
     }
 
     public function setPath($path)
