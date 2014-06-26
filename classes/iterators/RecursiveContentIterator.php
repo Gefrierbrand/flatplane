@@ -59,7 +59,9 @@ class RecursiveContentIterator implements \RecursiveIterator
 
     public function getChildren()
     {
-        return new recursiveContentIterator($this->content[$this->position]->getContent());
+        return new recursiveContentIterator(
+            $this->content[$this->position]->getContent()
+        );
     }
 
     public function rewind()

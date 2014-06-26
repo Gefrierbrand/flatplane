@@ -87,7 +87,7 @@ class PageLayout
      * Increments the pageCounter according to the current page group
      * @return int
      */
-    protected function addPage()
+    protected function addPage($numberingReset = false)
     {
         $document = $this->getDocument();
         $pageGroup = $this->getCurrentPageGroup();
@@ -95,7 +95,9 @@ class PageLayout
         //add a new counter for each new pagegroup or increment the already
         //existing counter for old pagegroups
         if (array_key_exists($pageGroup, $this->getCounter())) {
-            $this->getCounter($pageGroup)->add();
+            if (!$numberingReset) {
+                $this->getCounter($pageGroup)->add();
+            }
         } else {
             throw new RuntimeException(
                 'Required counter '.$pageGroup.' does not exist'
@@ -138,7 +140,13 @@ class PageLayout
     protected function layoutSection(SectionInterface $section)
     {
         //change the current pagegroup according to the sections settings
-        $this->setCurrentPageGroup($section->getPageGroup());
+        $oldPageGroup = $this->getCurrentPageGroup();
+        $newPageGroup = $section->getPageGroup();
+        $numberingReset = false;
+        if ($newPageGroup !== $oldPageGroup) {
+            $this->setCurrentPageGroup($newPageGroup);
+            $numberingReset = true;
+        }
 
         //if the section is not shown in the document, only set the current
         //pagenumber and return (this can be used used to add entries to the
@@ -154,7 +162,7 @@ class PageLayout
         if ($section->getStartsNewPage('level'.$section->getLevel())) {
             Flatplane::log("Section: ($section) requires pagebreak [user]");
             //add the page
-            $this->addPage();
+            $this->addPage($numberingReset);
             //set the sections page properties
             $section->setPage(
                 $this->getCurrentPageNumber(

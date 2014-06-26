@@ -141,6 +141,11 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
      */
     public function getPath()
     {
+        if (empty($this->path)) {
+            $filename = Flatplane::getCacheDir().DIRECTORY_SEPARATOR.
+            'formulas'.DIRECTORY_SEPARATOR.$this->getHash().'.svg';
+            $this->setPath($filename);
+        }
         return $this->path;
     }
 
@@ -151,6 +156,7 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
 
     public function setPath($path)
     {
+        //todo: check permissions
         $this->path = $path;
     }
 

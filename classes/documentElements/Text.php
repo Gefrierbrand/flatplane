@@ -39,8 +39,11 @@ class Text extends AbstractDocumentContentElement implements TextInterface
 
     protected $text = '';
     protected $path = '';
-    protected $parse = true; //parse special content like eqn, etc?
+    protected $splitInParagraphs = true;
+    protected $splitAtStr = "<br>";
     protected $hyphenate = true;
+
+    protected $useCache = true;
 
     protected $textAlignment = 'J';
 
@@ -57,9 +60,14 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         return $this->text;
     }
 
+    public function getHash()
+    {
+        return sha1($this->getText().$this->getTextAlignment().$this->getHyphenate());
+    }
+
     public function getParse()
     {
-        return $this->parse;
+        return $this->parseText();
     }
 
     public function readText()
@@ -78,11 +86,22 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     {
         $this->applyStyles();
         $pdf = $this->toRoot()->getPDF();
-        echo "pageBreakMargin: ".$pdf->getBreakMargin().PHP_EOL;
-        var_dump($pdf->getAutoPageBreak());
-        echo "Starting Text at: page {$pdf->getPage()}: {$pdf->GetY()}\n";
-        $pdf->writeHTMLCell(0, 0, '', '', $this->getText(), 0, 1, false, true, $this->getTextAlignment());
-        echo "Ending Text at: page {$pdf->getPage()}: {$pdf->GetY()}\n";
+        $startPage = $pdf->getPage();
+
+        $splitText = explode('<br>', $this->getText());
+        foreach ($splitText as $line) {
+            $pdf->writeHTML(
+                $line,
+                true,
+                false,
+                false,
+                false,
+                $this->getTextAlignment()
+            );
+        }
+
+        //return number of pagebreaks
+        return $pdf->getPage()-$startPage;
     }
 
     public function setPath($path)

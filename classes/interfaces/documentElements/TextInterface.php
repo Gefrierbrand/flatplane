@@ -31,5 +31,4 @@ interface TextInterface extends DocumentElementInterface
 {
     public function getHyphenate();
     public function getText();
-    public function getParse();
 }

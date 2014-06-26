@@ -371,9 +371,10 @@ class Flatplane
             $duration = number_format($event->getDuration()/1000, 3, '.', '').' s';
 
             if ($showMem) {
-                $memory = '; Peak memory usage: ';
+                $memory = '; Memory usage: ';
                 $memory .= number_format($event->getMemory()/1024/1024, 3, '.', '');
-                $memory .= ' MiB';
+                $memory .= ' MiB'.PHP_EOL;
+                $memory .= 'Peak: '.number_format(memory_get_peak_usage(true)/1024/1024, 3, '.', '');
             } else {
                 $memory = '';
             }

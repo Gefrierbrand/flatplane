@@ -92,10 +92,8 @@ class FormulaFilesGenerator
 
     protected function isCached(FormulaInterface $formula)
     {
-        $filename = Flatplane::getCacheDir().DIRECTORY_SEPARATOR.
-            'formulas'.DIRECTORY_SEPARATOR.$formula->getHash().'.svg';
+        $filename = $formula->getPath();
         if (file_exists($filename) && is_readable($filename)) {
-            $formula->setPath($filename);
             return true;
         } else {
             return false;
@@ -213,6 +211,7 @@ class FormulaFilesGenerator
 
             $dir = Flatplane::getCacheDir().DIRECTORY_SEPARATOR.'formulas';
             if (!is_dir($dir)) {
+                //todo: test permissions
                 mkdir($dir);
             }
             $filename = $dir.DIRECTORY_SEPARATOR.$formula->getHash().'.svg';

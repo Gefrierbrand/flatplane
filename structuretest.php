@@ -60,6 +60,7 @@ $einleitungSec = $document->addSection('Einleitung');
 $einleitungSec->addSection('Vorwort');
 $einleitungSec->addSection('Danksagungen');
 $hauptteilSec = $document->addSection('Hauptteil');
+$hauptteilSec->setPageGroup('PG1');
 $problem = $hauptteilSec->addSection('Problemstellung');
 $text1 = $problem->addText('input/testKapitelohneRef.php');
 //$problem->addFormula('1 \ 2');
