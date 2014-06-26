@@ -44,7 +44,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     protected $hyphenate = true;
 
     protected $useCache = true;
-
+    protected $containsPageReference;
     protected $textAlignment = 'J';
 
     public function __toString()
@@ -54,7 +54,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
 
     public function getText()
     {
-        if (empty($this->text)) {
+        if (empty($this->text) || $this->getContainsPageReference()) {
             $this->readText();
         }
         return $this->text;
@@ -73,13 +73,21 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     public function readText()
     {
         //make document available to template
-        $document = $this->toRoot();
+        //$document = $this->toRoot();
         ob_start();
         include ($this->getPath());
         $this->text = ob_get_clean();
         if ($this->getHyphenate()) {
             $this->text = $this->toRoot()->hypenateText($this->text);
         }
+    }
+
+    public function getReference($label, $type = 'number')
+    {
+        if (strtolower($type) == 'page') {
+            $this->setContainsPageReference(true);
+        }
+        return $this->toRoot()->getReference($label, $type);
     }
 
     public function generateOutput()
@@ -137,5 +145,44 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     public function getPath()
     {
         return $this->path;
+    }
+    public function getSplitInParagraphs()
+    {
+        return $this->splitInParagraphs;
+    }
+
+    public function getSplitAtStr()
+    {
+        return $this->splitAtStr;
+    }
+
+    public function getUseCache()
+    {
+        return $this->useCache;
+    }
+
+    public function getContainsPageReference()
+    {
+        return $this->containsPageReference;
+    }
+
+    public function setSplitInParagraphs($splitInParagraphs)
+    {
+        $this->splitInParagraphs = $splitInParagraphs;
+    }
+
+    public function setSplitAtStr($splitAtStr)
+    {
+        $this->splitAtStr = $splitAtStr;
+    }
+
+    public function setUseCache($useCache)
+    {
+        $this->useCache = $useCache;
+    }
+
+    public function setContainsPageReference($containsPageReference)
+    {
+        $this->containsPageReference = $containsPageReference;
     }
 }

@@ -50,10 +50,13 @@ $pdf->setHeaderData('', 0, date('d.m.Y H:i:s'));
 
 
 $inhaltSec = $document->addSection('Inhaltsverzeichnis', ['enumerate' => false]);
-$inhaltSec->setShowInList(true);
+$inhaltSec->setShowInList(false);
 $inhaltSec->setStartsNewPage(['level1' => false]);
-$inhaltList = $inhaltSec->addList(['section', 'list'], ['showInList' => true]);
-$abbildungSec = $document->addSection('Abbildungsverzeichnis', ['enumerate' => false, 'showInList' => true]);
+$inhaltList = $inhaltSec->addList(['section'], ['showInList' => true]);
+$abbildungSec = $document->addSection(
+    'Abbildungsverzeichnis',
+    ['enumerate' => false, 'showInList' => false]
+);
 $abbildingList = $abbildungSec->addList(['image'], ['showInList' => false]);
 
 $einleitungSec = $document->addSection('Einleitung');
@@ -62,7 +65,8 @@ $einleitungSec->addSection('Danksagungen');
 $hauptteilSec = $document->addSection('Hauptteil');
 $hauptteilSec->setPageGroup('PG1');
 $problem = $hauptteilSec->addSection('Problemstellung');
-$text1 = $problem->addText('input/testKapitelohneRef.php');
+$problem->setLabel('sec:problem');
+$text1 = $problem->addText('input/testKapitelMitRef.php');
 //$problem->addFormula('1 \ 2');
 //$problem->addFormula('1 \ 2');
 //$problem->addFormula('1 \ 2');
@@ -82,13 +86,14 @@ $hauptteilSec->addSection('Versuchsdruchführung mit langen Informationen zum Um
 $analyse = $hauptteilSec->addSection('Datenanalyse');
 $analyse->addSection('Programm A');
 $programmB = $analyse->addSection('Programm B');
-$bild = $programmB->addImage('images/bild.png', ['caption' => 'Tolle Spirale '.$document->cite('img:nn')]);
+$bild = $programmB->addImage('images/bild.png');
+$bild->setCaption('TolleSpirale'.$bild->cite('img:nn'));
 $bild->setFontColor(['title' => [255, 0, 0]]);
 $bild->setTitle('Roter Titel!');
 
 $schlussSec = $document->addSection('Schluss');
 $fazit = $schlussSec->addSection('Fazit');
-for ($i=0; $i<30; $i++) {
+for ($i=0; $i<20; $i++) {
     $fazit->addSection('RND'.$i.': '.mt_rand());
 }
 

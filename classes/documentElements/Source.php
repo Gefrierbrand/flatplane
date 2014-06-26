@@ -340,4 +340,9 @@ class Source extends AbstractDocumentContentElement
     {
         return false;
     }
+
+    public function getPage()
+    {
+        return $this->getParent()->getPage();
+    }
 }

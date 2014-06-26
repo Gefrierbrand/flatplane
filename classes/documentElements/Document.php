@@ -600,35 +600,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     {
         $this->docTitle = $docTitle;
     }
-
-    /**
-     * todo: doc
-     * @param type $source
-     * @param type $extras
-     * @return string
-     */
-    public function cite($source, $extras = '')
-    {
-        //todo: remove cite prefix/postfix, own style for Cite!
-        if (array_key_exists($source, $this->getSources())) {
-            $citeStyle = $this->getCitationStyle();
-            //$cite = $citeStyle['prefix'];
-            $cite = '';
-            $cite .= $this->getSources()[$source]->getFormattedNumbers();
-            if (!empty($extras)) {
-                $cite .= $citeStyle['separator'].' '.$extras;
-            }
-            //$cite .= $citeStyle['postfix'];
-        } else {
-            trigger_error(
-                'Source "'.$source.'" for citation not found',
-                E_USER_NOTICE
-            );
-            $cite = '[??]'; //todo: use assumption settings
-        }
-        return $cite;
-    }
-
+    
     /**
      *
      * @return array
