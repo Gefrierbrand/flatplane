@@ -59,17 +59,22 @@ trait NumberingFunctions
      */
     public function getCounter($name = null)
     {
-        if ($name === null) {
-            return $this->counter;
+        if (array_key_exists($name, $this->counter)) {
+            return $this->counter[$name];
         } else {
-            if (array_key_exists($name, $this->counter)) {
-                return $this->counter[$name];
-            } else {
-                //todo: proper errors?
-                trigger_error('New Counter '.$name.' created', E_USER_WARNING);
-                return $this->addCounter(new Counter(), $name);
-            }
+            //todo: Exception instead of error here?
+            trigger_error('New Counter '.$name.' created', E_USER_WARNING);
+            return $this->addCounter(new Counter(), $name);
         }
+    }
+
+    /**
+     *
+     * @return array
+     */
+    public function getCounterArray()
+    {
+        return $this->counter;
     }
 
     /**
@@ -139,7 +144,7 @@ trait NumberingFunctions
     public function checkLocalCounter(DocumentElementInterface $content)
     {
         $type = $content->getType();
-        if (array_key_exists($type, $this->getCounter())) {
+        if (array_key_exists($type, $this->getCounterArray())) {
             $this->getCounter($type)->add();
         } else {
             $startIndex = $this->toRoot()->getStartIndex($type);

@@ -69,6 +69,7 @@ interface DocumentElementInterface
     public function getNumbers();
     public function getFormattedNumbers();
     public function getCounter($name);
+    public function getCounterArray();
     public function getLabel();
     public function getAllowSubContent();
     public function getEnumerate();

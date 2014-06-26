@@ -50,10 +50,10 @@ $pdf->setHeaderData('', 0, date('d.m.Y H:i:s'));
 
 
 $inhaltSec = $document->addSection('Inhaltsverzeichnis', ['enumerate' => false]);
-$inhaltSec->setShowInList(false);
+$inhaltSec->setShowInList(true);
 $inhaltSec->setStartsNewPage(['level1' => false]);
-$inhaltList = $inhaltSec->addList(['section'], ['showInList' => false]);
-$abbildungSec = $document->addSection('Abbildungsverzeichnis', ['enumerate' => false, 'showInList' => false]);
+$inhaltList = $inhaltSec->addList(['section', 'list'], ['showInList' => true]);
+$abbildungSec = $document->addSection('Abbildungsverzeichnis', ['enumerate' => false, 'showInList' => true]);
 $abbildingList = $abbildungSec->addList(['image'], ['showInList' => false]);
 
 $einleitungSec = $document->addSection('Einleitung');
@@ -88,7 +88,7 @@ $bild->setTitle('Roter Titel!');
 
 $schlussSec = $document->addSection('Schluss');
 $fazit = $schlussSec->addSection('Fazit');
-for ($i=0; $i<20; $i++) {
+for ($i=0; $i<30; $i++) {
     $fazit->addSection('RND'.$i.': '.mt_rand());
 }
 

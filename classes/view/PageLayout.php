@@ -44,18 +44,21 @@ class PageLayout
 
     protected $linearPageNumberCounter;
     protected $currentYPosition;
-    protected $currentPageGroup;
+    protected $currentPageGroup = 'default';
     protected $document;
 
     public function __construct(DocumentInterface $document)
     {
-        //add a sequential page counter
-        $this->linearPageNumberCounter = new Counter(0);
         $this->document = $document;
         $pdf = $document->getPDF();
 
-        //set default pageGroup (and initialise the page counter for that group)
-        $this->setCurrentPageGroup();
+        //add a sequential page counter
+        $this->linearPageNumberCounter = new Counter(0);
+
+        //initialise the page counter for the default page group
+        $startValue = $this->getDocument()->getPageNumberStartValue('default');
+        $counter = new Counter($startValue);
+        $this->addCounter($counter, 'default');
 
         //set first Page Y Position:
         //todo: use Document / Page Margins
@@ -87,15 +90,15 @@ class PageLayout
      * Increments the pageCounter according to the current page group
      * @return int
      */
-    protected function addPage($numberingReset = false)
+    protected function addPage($newPageGroup = false)
     {
         $document = $this->getDocument();
         $pageGroup = $this->getCurrentPageGroup();
 
         //add a new counter for each new pagegroup or increment the already
         //existing counter for old pagegroups
-        if (array_key_exists($pageGroup, $this->getCounter())) {
-            if (!$numberingReset) {
+        if (array_key_exists($pageGroup, $this->getCounterArray())) {
+            if (!$newPageGroup) {
                 $this->getCounter($pageGroup)->add();
             }
         } else {
@@ -140,12 +143,11 @@ class PageLayout
     protected function layoutSection(SectionInterface $section)
     {
         //change the current pagegroup according to the sections settings
-        $oldPageGroup = $this->getCurrentPageGroup();
-        $newPageGroup = $section->getPageGroup();
-        $numberingReset = false;
-        if ($newPageGroup !== $oldPageGroup) {
-            $this->setCurrentPageGroup($newPageGroup);
-            $numberingReset = true;
+
+        $newPagegroup = false;
+        if ($section->getPageGroup() !== 'default') {
+            $newPagegroup = true;
+            $this->setCurrentPageGroup($section->getPageGroup());
         }
 
         //if the section is not shown in the document, only set the current
@@ -162,7 +164,7 @@ class PageLayout
         if ($section->getStartsNewPage('level'.$section->getLevel())) {
             Flatplane::log("Section: ($section) requires pagebreak [user]");
             //add the page
-            $this->addPage($numberingReset);
+            $this->addPage($newPagegroup);
             //set the sections page properties
             $section->setPage(
                 $this->getCurrentPageNumber(
@@ -189,7 +191,7 @@ class PageLayout
         //section title itself)
         if ($availableVerticalSpace < $minSpace) {
             Flatplane::log("Section: ($section) requires pagebreak [MinSpace]");
-            $this->addPage();
+            $this->addPage($newPagegroup);
         }
 
         //check if the section title fits on the page
@@ -200,11 +202,15 @@ class PageLayout
             //automatic page break occured, so increment page counter
             //todo: add appropriate amount of pages instead of just one
             Flatplane::log("section: ($section) requires pagebreak [size]");
-            $this->addPage();
+            $this->addPage($newPagegroup);
         }
 
         //set the current page for the current section
-        $section->setPage($this->getCurrentPageNumber($section->getPageGroup()));
+        $section->setPage(
+            $this->getCurrentPageNumber(
+                $this->getCurrentPageGroup()
+            )
+        );
         $section->setLinearPage($this->getLinearPageNumber());
     }
 
@@ -320,14 +326,30 @@ class PageLayout
         return $this->currentPageGroup;
     }
 
-    protected function setCurrentPageGroup($currentPageGroup = 'default')
+    protected function setCurrentPageGroup($currentPageGroup)
     {
+//        echo "traying to set new pagegroup to: $currentPageGroup\n";
+//
+//        $this->oldPageGroup = $this->getCurrentPageGroup();
+//        if ($this->oldPageGroup !== $currentPageGroup
+//            && $currentPageGroup !== 'default'
+//        ) {
+//            $this->currentPageGroup = $currentPageGroup;
+//            echo "setting!\n";
+//        } else {
+//            $this->currentPageGroup = $this->oldPageGroup;
+//            echo "not setting, keeping at: {$this->oldPageGroup}\n";
+//        }
         $this->currentPageGroup = $currentPageGroup;
+
         //add Counter for pagegroup if not already existing
-        if (!array_key_exists($currentPageGroup, $this->getCounter())) {
-            $startValue = $this->getDocument()->getPageNumberStartValue($currentPageGroup);
+        if (!array_key_exists($this->currentPageGroup, $this->getCounterArray())) {
+            $startValue = $this->getDocument()->getPageNumberStartValue(
+                $this->currentPageGroup
+            );
             $counter = new Counter($startValue);
-            $this->addCounter($counter, $currentPageGroup);
+            $this->addCounter($counter, $this->currentPageGroup);
+            echo "adding counter for: {$this->currentPageGroup}\n";
         }
     }
 }
