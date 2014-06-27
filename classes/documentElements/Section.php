@@ -34,6 +34,7 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
 {
     protected $type = 'section';
     protected $title = 'section';
+    protected $nonHyphenTitle = 'section';
     protected $showInDocument = true;
     protected $minFreePage = ['default' => 25];
     protected $startsNewLine = ['default' => true]; //not implemented yet
@@ -213,5 +214,19 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
     public function setPageGroup($pageGroup)
     {
         $this->pageGroup = $pageGroup;
+    }
+
+    //TODO: reverse this: use non hyphen for normal and hyphenate other title
+    public function setNonHyphenTitle($title)
+    {
+        $this->nonHyphenTitle = $title;
+    }
+
+    public function getNonHyphenTitle()
+    {
+        if (empty($this->nonHyphenTitle)) {
+            $this->nonHyphenTitle = $this->getTitle();
+        }
+        return $this->nonHyphenTitle;
     }
 }

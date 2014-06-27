@@ -51,6 +51,8 @@ class PageLayout
     {
         $this->document = $document;
         $pdf = $document->getPDF();
+        //set bookmark for first page as dokument root
+        $pdf->Bookmark($document->getTitle(), 0, -1, 1);
 
         //add a sequential page counter
         $this->linearPageNumberCounter = new Counter(0);
@@ -157,6 +159,8 @@ class PageLayout
             $section->setPage(
                 $this->getCurrentPageNumber($section->getPageGroup())
             );
+            //todo: test this, also : linear page number?
+            //$this->getDocument()->getPDF()->Bookmark($section->getTitle(), $section->getLevel(), 0, $section->getLinearPage()+1);
             return;
         }
 
@@ -176,6 +180,8 @@ class PageLayout
             //this assumes a section title fits (comfortably) on one page
             $sectionSize = $section->getSize($this->getCurrentYPosition());
             $this->setCurrentYPosition($sectionSize['endYposition']);
+            //echo "1 adding bookmark for $section: {$section->getLevel()}\n";
+            $this->getDocument()->getPDF()->Bookmark($section->getNonHyphenTitle(), $section->getLevel(), 0, $section->getLinearPage()+1);
             return;
         }
 
@@ -212,6 +218,8 @@ class PageLayout
             )
         );
         $section->setLinearPage($this->getLinearPageNumber());
+        //echo "2 adding bookmark for $section: {$section->getLevel()}\n";
+        $this->getDocument()->getPDF()->Bookmark($section->getNonHyphenTitle(), $section->getLevel(), 0, $section->getLinearPage()+1);
     }
 
     protected function getAvailableSpace()
