@@ -35,4 +35,7 @@ interface SectionInterface extends DocumentElementInterface
     public function getMinFreePage($level = 'level0');
     public function getPageGroup();
     public function setPageGroup($pageGroup);
+    public function getNonHyphenTitle();
+    public function getShowInBookmarks();
+    public function setShowInBookmarks($showInBookmarks);
 }

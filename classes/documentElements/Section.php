@@ -38,7 +38,7 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
     protected $minFreePage = ['default' => 25];
     protected $startsNewLine = ['default' => true]; //not implemented yet
     protected $startsNewPage = ['default' => false];
-    protected $link;
+    protected $showInBookmarks = true;
 
     /**
      * @var string
@@ -224,5 +224,15 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         //replace UTF-8 shy char.
         //todo: check encoding and remove only "\xAD" if needed
         return str_replace("\xC2\xAD", '', $this->getTitle());
+    }
+
+    public function getShowInBookmarks()
+    {
+        return $this->showInBookmarks;
+    }
+
+    public function setShowInBookmarks($showInBookmarks)
+    {
+        $this->showInBookmarks = $showInBookmarks;
     }
 }

@@ -160,6 +160,14 @@ class PageLayout
                 $this->getCurrentPageNumber($section->getPageGroup())
             );
             $section->setLinearPage($this->getLinearPageNumber());
+            $pdf->Bookmark(
+                $section->getNonHyphenTitle(),
+                $section->getLevel(),
+                0,
+                $section->getLinearPage() + 1
+            );
+            $section->setLink($pdf->AddLink());
+            $pdf->SetLink($section->getLink(), 0, $section->getLinearPage() + 1);
             return;
         }
 

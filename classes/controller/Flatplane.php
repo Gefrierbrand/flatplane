@@ -77,7 +77,7 @@ class Flatplane
         return OSPaths::getPhantomJsPath();
     }
 
-    public static function log($msg, $extraNewLine = false)
+    public static function log($msg, $level = 0, $extraNewLine = false)
     {
         if (self::$firstmessage) {
             if (php_sapi_name() != 'cli') {
@@ -92,6 +92,9 @@ class Flatplane
             }
             if (php_sapi_name() != 'cli') {
                 $msg = nl2br($msg);
+                if ($level >0) {
+                    $msg = '<b>'.$msg.'</b>';
+                }
             }
             echo $msg;
         }
@@ -359,7 +362,7 @@ class Flatplane
 
     public function startTimer($name)
     {
-        self::log("Starting $name");
+        self::log("Starting $name", 1);
         $this->getStopwatch()->start($name);
     }
 
@@ -371,15 +374,14 @@ class Flatplane
             $duration = number_format($event->getDuration()/1000, 3, '.', '').' s';
 
             if ($showMem) {
-                $memory = '; Memory usage: ';
-                $memory .= number_format($event->getMemory()/1024/1024, 3, '.', '');
+                $memory = '; Peak memory usage: ';
+                $memory .= number_format(memory_get_peak_usage(true)/1024/1024, 3, '.', '');
                 $memory .= ' MiB'.PHP_EOL;
-                $memory .= 'Peak: '.number_format(memory_get_peak_usage(true)/1024/1024, 3, '.', '');
             } else {
                 $memory = '';
             }
 
-            self::log("Finished $name: {$duration}$memory", true);
+            self::log("Finished $name: {$duration}$memory", 1, true);
         }
         return $event;
     }
