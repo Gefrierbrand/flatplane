@@ -96,6 +96,7 @@ $fazit = $schlussSec->addSection('Fazit');
 for ($i=0; $i<20; $i++) {
     $fazit->addSection('RND'.$i.': '.mt_rand());
 }
+$schlussSec->addSection('ICH BIN NUR IM INHALTSVERZEICHNIS ABER NICHT IM DOKUMENT', ['showInDocument' => false]);
 
 $schlussSec->addSection('Ausblick');
 $qvz = $document->addSection('Quellenverzeichnis', ['enumerate' => false]);

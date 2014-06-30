@@ -34,11 +34,11 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
 {
     protected $type = 'section';
     protected $title = 'section';
-    protected $nonHyphenTitle = 'section';
     protected $showInDocument = true;
     protected $minFreePage = ['default' => 25];
     protected $startsNewLine = ['default' => true]; //not implemented yet
     protected $startsNewPage = ['default' => false];
+    protected $link;
 
     /**
      * @var string
@@ -145,6 +145,9 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
      */
     public function generateOutput()
     {
+        if (!$this->getShowInDocument()) {
+            return 0;
+        }
         $pdf = $this->toRoot()->getPDF();
         $startPage = $pdf->getPage();
         //save old pagemargins
@@ -216,17 +219,10 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         $this->pageGroup = $pageGroup;
     }
 
-    //TODO: reverse this: use non hyphen for normal and hyphenate other title
-    public function setNonHyphenTitle($title)
-    {
-        $this->nonHyphenTitle = $title;
-    }
-
     public function getNonHyphenTitle()
     {
-        if (empty($this->nonHyphenTitle)) {
-            $this->nonHyphenTitle = $this->getTitle();
-        }
-        return $this->nonHyphenTitle;
+        //replace UTF-8 shy char.
+        //todo: check encoding and remove only "\xAD" if needed
+        return str_replace("\xC2\xAD", '', $this->getTitle());
     }
 }

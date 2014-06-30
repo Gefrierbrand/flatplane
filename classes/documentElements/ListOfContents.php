@@ -65,7 +65,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
      *  Use -1 for unlimited depth.
      */
     protected $maxDepth = -1;
-    
+
     /**
      * @var array
      *  Array containing the content-types to be included in the list.
@@ -215,6 +215,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             //use the alternative title (if available) for list entries
             $this->data[$key]['text'] = $element->getAltTitle();
             $this->data[$key]['page'] = $element->getPage();
+            $this->data[$key]['link'] = $element->getLink();
             $key ++;
         }
 
@@ -323,7 +324,11 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
 
             //write line content
             $pdf->SetX($textXPos);
-            $pdf->Write(0, $line['text']);
+            if (isset($line['link'])) {
+                $pdf->Write(0, $line['text'], $line['link']);
+            } else {
+                $pdf->Write(0, $line['text']);
+            }
 
             //draw line or dots to pages, as the x-position is now behind the
             //last char of the title

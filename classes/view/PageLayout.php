@@ -144,8 +144,8 @@ class PageLayout
      */
     protected function layoutSection(SectionInterface $section)
     {
+        $pdf = $this->getDocument()->getPDF();
         //change the current pagegroup according to the sections settings
-
         $newPagegroup = false;
         if ($section->getPageGroup() !== 'default') {
             $newPagegroup = true;
@@ -159,8 +159,7 @@ class PageLayout
             $section->setPage(
                 $this->getCurrentPageNumber($section->getPageGroup())
             );
-            //todo: test this, also : linear page number?
-            //$this->getDocument()->getPDF()->Bookmark($section->getTitle(), $section->getLevel(), 0, $section->getLinearPage()+1);
+            $section->setLinearPage($this->getLinearPageNumber());
             return;
         }
 
@@ -175,13 +174,21 @@ class PageLayout
                     $section->getPageGroup()
                 )
             );
+            //set the pages Linear page number
             $section->setLinearPage($this->getLinearPageNumber());
+            //add a bookmark for the current section to the pdf
+            $pdf->Bookmark(
+                $section->getNonHyphenTitle(),
+                $section->getLevel(),
+                0,
+                $section->getLinearPage() + 1
+            );
+            $section->setLink($pdf->AddLink());
+            $pdf->SetLink($section->getLink(), 0, $section->getLinearPage() + 1);
             //set the Y position on the new Page to the end of the Section
             //this assumes a section title fits (comfortably) on one page
             $sectionSize = $section->getSize($this->getCurrentYPosition());
             $this->setCurrentYPosition($sectionSize['endYposition']);
-            //echo "1 adding bookmark for $section: {$section->getLevel()}\n";
-            $this->getDocument()->getPDF()->Bookmark($section->getNonHyphenTitle(), $section->getLevel(), 0, $section->getLinearPage()+1);
             return;
         }
 
@@ -202,8 +209,8 @@ class PageLayout
 
         //check if the section title fits on the page
         //echo "testingSize from {$this->getCurrentYPosition()} for $section".PHP_EOL;
+
         $sectionSize = $section->getSize($this->getCurrentYPosition());
-        $this->setCurrentYPosition($sectionSize['endYposition']);
         if ($sectionSize['numPages'] > 1) {
             //automatic page break occured, so increment page counter
             //todo: add appropriate amount of pages instead of just one
@@ -218,8 +225,18 @@ class PageLayout
             )
         );
         $section->setLinearPage($this->getLinearPageNumber());
-        //echo "2 adding bookmark for $section: {$section->getLevel()}\n";
-        $this->getDocument()->getPDF()->Bookmark($section->getNonHyphenTitle(), $section->getLevel(), 0, $section->getLinearPage()+1);
+        $cellHeight = $pdf->getCellHeight($pdf->getFontSize());
+        $pdf->Bookmark(
+            $section->getNonHyphenTitle(),
+            $section->getLevel(),
+            $this->getCurrentYPosition() - $cellHeight,
+            $section->getLinearPage() + 1
+        );
+        $section->setLink($pdf->AddLink());
+        $pdf->SetLink($section->getLink(), 0, $section->getLinearPage() + 1);
+
+        //set the y position to the end of the section
+        $this->setCurrentYPosition($sectionSize['endYposition']);
     }
 
     protected function getAvailableSpace()
@@ -235,6 +252,7 @@ class PageLayout
 
     protected function layoutImage(ImageInterface $image)
     {
+        $pdf = $this->getDocument()->getPDF();
         //check free space on current page
         $availableVerticalSpace = $this->getAvailableSpace();
 
@@ -252,6 +270,8 @@ class PageLayout
         //set the current page for the current section
         $image->setPage($this->getCurrentPageNumber($this->getCurrentPageGroup()));
         $image->setLinearPage($this->getLinearPageNumber());
+        $image->setLink($pdf->AddLink());
+        $pdf->SetLink($image->getLink(), 0, $image->getLinearPage() + 1);
     }
 
     protected function layoutFormula()
@@ -274,17 +294,7 @@ class PageLayout
 
     protected function layoutList(ListInterface $list)
     {
-        //check free space on current page
-        $availableVerticalSpace = $this->getAvailableSpace();
-
-        //check if the image fits on the page
         $listSize = $list->getSize($this->getCurrentYPosition());
-        if ($listSize['height'] > $availableVerticalSpace
-            || $listSize['numPages'] > 1
-        ) {
-            Flatplane::log("Image: ($list) requires pagebreak [size]");
-            $this->addPage();
-        }
 
         $this->setCurrentYPosition($listSize['endYposition']);
 

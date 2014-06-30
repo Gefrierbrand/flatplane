@@ -225,6 +225,14 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      */
     protected $linePitch = 1.25;
 
+    /**
+     * @var int
+     *  internal link identifier retured by TCPDF::AddLink()
+     * @see TCPDF::AddLink()
+     * @see TCPDF::SetLink()
+     */
+    protected $link;
+
     //todo: use this?
 //    protected $keepMarginsAfterPageBreak = ['default' => false,
 //                                            'top' => false,
@@ -786,5 +794,15 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
             $cite = '[??]'; //todo: use assumption settings
         }
         return $cite;
+    }
+
+    public function getLink()
+    {
+        return $this->link;
+    }
+
+    public function setLink($link)
+    {
+        $this->link = $link;
     }
 }

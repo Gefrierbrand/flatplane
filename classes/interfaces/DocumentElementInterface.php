@@ -101,10 +101,18 @@ interface DocumentElementInterface
 
     public function getHyphenate();
     public function hyphenateTitle();
+    
     /**
      * @return int
      *  number of pagebreaks
      */
     public function generateOutput();
     public function getPageMeasurements();
+
+    public function setLinearPage($linearPage);
+
+    public function cite($source, $extras = '');
+
+    public function getLink();
+    public function setLink($link);
 }
