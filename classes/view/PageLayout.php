@@ -23,6 +23,7 @@ namespace de\flatplane\view;
 
 use de\flatplane\controller\Flatplane;
 use de\flatplane\interfaces\documentElements\DocumentInterface;
+use de\flatplane\interfaces\documentElements\FormulaInterface;
 use de\flatplane\interfaces\documentElements\ImageInterface;
 use de\flatplane\interfaces\documentElements\ListInterface;
 use de\flatplane\interfaces\documentElements\SectionInterface;
@@ -51,7 +52,7 @@ class PageLayout
     {
         $this->document = $document;
         $pdf = $document->getPDF();
-        //set bookmark for first page as dokument root
+        //set bookmark for first page as document root
         $pdf->Bookmark($document->getTitle(), 0, -1, 1);
 
         //add a sequential page counter
@@ -63,15 +64,18 @@ class PageLayout
         $this->addCounter($counter, 'default');
 
         //set first Page Y Position:
-        //todo: use Document / Page Margins
+        //todo: use Document / Page Margins ?
         $this->setCurrentYPosition($pdf->getMargins()['top']);
     }
 
+    /**
+     * layout each DocumentElement according to its type
+     * @throws RuntimeException
+     */
     public function layout()
     {
         $content = $this->getDocument()->getContent();
 
-        //layout each element according to its type
         $recItIt = new RecursiveIteratorIterator(
             new RecursiveContentIterator($content),
             RecursiveIteratorIterator::SELF_FIRST
@@ -120,6 +124,10 @@ class PageLayout
         return $this->getCurrentPageNumber($pageGroup);
     }
 
+    /**
+     *
+     * @return Counter
+     */
     protected function getLinearPageNumberCounter()
     {
         return $this->linearPageNumberCounter;
@@ -135,11 +143,43 @@ class PageLayout
         $number = new Number($this->getCounter($pageGroup)->getValue());
         $pageNumStyle = $this->getDocument()->getPageNumberStyle($pageGroup);
         return $number->getFormattedValue($pageNumStyle);
-        //return $this->getCounter($pageGroup)->getValue();
     }
 
     /**
-     * @todo: redundanz entfernen!
+     * todo: doc
+     * @param SectionInterface $section
+     * @param type $useCurrentPagePosition
+     */
+    protected function setSectionPageAndLink(
+        SectionInterface $section,
+        $useCurrentPagePosition = false
+    ) {
+        $pdf = $this->getDocument()->getPDF();
+
+        if ($useCurrentPagePosition) {
+            $fontSize = $pdf->getFontSize();
+            $yPos = $this->getCurrentYPosition() - $pdf->getCellHeight($fontSize);
+        } else {
+            $yPos = 0;
+        }
+
+        $section->setPage(
+            $this->getCurrentPageNumber($section->getPageGroup())
+        );
+        $section->setLinearPage($this->getLinearPageNumber());
+        $pdfpageNum = $section->getLinearPage() + 1;
+        $pdf->Bookmark(
+            $section->getNonHyphenTitle(),
+            $section->getLevel(),
+            $yPos,
+            $pdfpageNum
+        );
+        $section->setLink($pdf->AddLink());
+        $pdf->SetLink($section->getLink(), $yPos, $pdfpageNum);
+    }
+
+    /**
+     * todo: doc
      * @param SectionInterface $section
      */
     protected function layoutSection(SectionInterface $section)
@@ -156,18 +196,7 @@ class PageLayout
         //pagenumber and return (this can be used used to add entries to the
         //TOC without adding something visible in the document)
         if ($section->getShowInDocument() == false) {
-            $section->setPage(
-                $this->getCurrentPageNumber($section->getPageGroup())
-            );
-            $section->setLinearPage($this->getLinearPageNumber());
-            $pdf->Bookmark(
-                $section->getNonHyphenTitle(),
-                $section->getLevel(),
-                0,
-                $section->getLinearPage() + 1
-            );
-            $section->setLink($pdf->AddLink());
-            $pdf->SetLink($section->getLink(), 0, $section->getLinearPage() + 1);
+            $this->setSectionPageAndLink($section);
             return;
         }
 
@@ -176,23 +205,9 @@ class PageLayout
             Flatplane::log("Section: ($section) requires pagebreak [user]");
             //add the page
             $this->addPage($newPagegroup);
-            //set the sections page properties
-            $section->setPage(
-                $this->getCurrentPageNumber(
-                    $section->getPageGroup()
-                )
-            );
-            //set the pages Linear page number
-            $section->setLinearPage($this->getLinearPageNumber());
-            //add a bookmark for the current section to the pdf
-            $pdf->Bookmark(
-                $section->getNonHyphenTitle(),
-                $section->getLevel(),
-                0,
-                $section->getLinearPage() + 1
-            );
-            $section->setLink($pdf->AddLink());
-            $pdf->SetLink($section->getLink(), 0, $section->getLinearPage() + 1);
+            //set the sections page properties and add links/bookmarks
+            $this->setSectionPageAndLink($section);
+
             //set the Y position on the new Page to the end of the Section
             //this assumes a section title fits (comfortably) on one page
             $sectionSize = $section->getSize($this->getCurrentYPosition());
@@ -216,8 +231,6 @@ class PageLayout
         }
 
         //check if the section title fits on the page
-        //echo "testingSize from {$this->getCurrentYPosition()} for $section".PHP_EOL;
-
         $sectionSize = $section->getSize($this->getCurrentYPosition());
         if ($sectionSize['numPages'] > 1) {
             //automatic page break occured, so increment page counter
@@ -227,26 +240,16 @@ class PageLayout
         }
 
         //set the current page for the current section
-        $section->setPage(
-            $this->getCurrentPageNumber(
-                $this->getCurrentPageGroup()
-            )
-        );
-        $section->setLinearPage($this->getLinearPageNumber());
-        $cellHeight = $pdf->getCellHeight($pdf->getFontSize());
-        $pdf->Bookmark(
-            $section->getNonHyphenTitle(),
-            $section->getLevel(),
-            $this->getCurrentYPosition() - $cellHeight,
-            $section->getLinearPage() + 1
-        );
-        $section->setLink($pdf->AddLink());
-        $pdf->SetLink($section->getLink(), 0, $section->getLinearPage() + 1);
+        $this->setSectionPageAndLink($section, true);
 
         //set the y position to the end of the section
         $this->setCurrentYPosition($sectionSize['endYposition']);
     }
 
+    /**
+     *
+     * @return float
+     */
     protected function getAvailableSpace()
     {
         $pageSize = $this->getDocument()->getPageSize();
@@ -258,6 +261,10 @@ class PageLayout
         return $availableSpace;
     }
 
+    /**
+     *
+     * @param ImageInterface $image
+     */
     protected function layoutImage(ImageInterface $image)
     {
         $pdf = $this->getDocument()->getPDF();
@@ -282,11 +289,19 @@ class PageLayout
         $pdf->SetLink($image->getLink(), 0, $image->getLinearPage() + 1);
     }
 
-    protected function layoutFormula()
+    /**
+     *
+     * @param \FormulaInterface$formula
+     */
+    protected function layoutFormula(FormulaInterface $formula)
     {
 
     }
 
+    /**
+     *
+     * @param TextInterface $text
+     */
     protected function layoutText(TextInterface $text)
     {
         $textSize = $text->getSize($this->getCurrentYPosition());
@@ -295,7 +310,6 @@ class PageLayout
         //set the current page for the current section
         $text->setPage($this->getCurrentPageNumber($this->getCurrentPageGroup()));
         $text->setLinearPage($this->getLinearPageNumber());
-
 
         $this->getLinearPageNumberCounter()->add($textSize['numPages']-1);
     }
@@ -354,18 +368,6 @@ class PageLayout
 
     protected function setCurrentPageGroup($currentPageGroup)
     {
-//        echo "traying to set new pagegroup to: $currentPageGroup\n";
-//
-//        $this->oldPageGroup = $this->getCurrentPageGroup();
-//        if ($this->oldPageGroup !== $currentPageGroup
-//            && $currentPageGroup !== 'default'
-//        ) {
-//            $this->currentPageGroup = $currentPageGroup;
-//            echo "setting!\n";
-//        } else {
-//            $this->currentPageGroup = $this->oldPageGroup;
-//            echo "not setting, keeping at: {$this->oldPageGroup}\n";
-//        }
         $this->currentPageGroup = $currentPageGroup;
 
         //add Counter for pagegroup if not already existing

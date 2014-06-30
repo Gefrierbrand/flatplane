@@ -92,8 +92,13 @@ class Flatplane
             }
             if (php_sapi_name() != 'cli') {
                 $msg = nl2br($msg);
-                if ($level >0) {
+                if ($level > 0) {
                     $msg = '<b>'.$msg.'</b>';
+                }
+            } else {
+                if (FLATPLANE_USE_CLI_COLORS && $level > 0) {
+                    //use blue text
+                    $msg = "\033[0;34m".$msg."\033[0m";
                 }
             }
             echo $msg;
