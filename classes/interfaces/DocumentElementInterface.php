@@ -101,7 +101,7 @@ interface DocumentElementInterface
 
     public function getHyphenate();
     public function hyphenateTitle();
-    
+
     /**
      * @return int
      *  number of pagebreaks
@@ -115,4 +115,7 @@ interface DocumentElementInterface
 
     public function getLink();
     public function setLink($link);
+
+    public function getPageGroup();
+    public function setPageGroup($pagegroup);
 }

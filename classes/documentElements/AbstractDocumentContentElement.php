@@ -104,7 +104,17 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      */
     protected $page;
 
+    /**
+     * @var int
+     *  todo: doc
+     */
     protected $linearPage;
+
+    /**
+     * @var string
+     *  identifier used to separate different pagegroups
+     */
+    protected $pageGroup = 'default';
 
     /**
      * @var array
@@ -804,5 +814,15 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     public function setLink($link)
     {
         $this->link = $link;
+    }
+
+    public function getPageGroup()
+    {
+        return $this->pageGroup;
+    }
+
+    public function setPageGroup($pageGroup)
+    {
+        $this->pageGroup = $pageGroup;
     }
 }

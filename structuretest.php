@@ -93,7 +93,7 @@ $bild->setTitle('Roter Titel!');
 
 $schlussSec = $document->addSection('Schluss');
 $fazit = $schlussSec->addSection('Fazit');
-for ($i=0; $i<20; $i++) {
+for ($i=0; $i<40; $i++) {
     $fazit->addSection('RND'.$i.': '.mt_rand());
 }
 $schlussSec->addSection('ICH BIN NUR IM INHALTSVERZEICHNIS ABER NICHT IM DOKUMENT', ['showInDocument' => false]);

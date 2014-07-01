@@ -24,6 +24,7 @@ namespace de\flatplane\documentElements;
 use de\flatplane\interfaces\documentElements\ListInterface;
 use de\flatplane\iterators\RecursiveContentIterator;
 use de\flatplane\iterators\ShowInListFilterIterator;
+use de\flatplane\utilities\Number;
 use OutOfRangeException;
 use RecursiveIteratorIterator;
 
@@ -214,7 +215,9 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             }
             //use the alternative title (if available) for list entries
             $this->data[$key]['text'] = $element->getAltTitle();
-            $this->data[$key]['page'] = $element->getPage();
+            $page = new Number($element->getPage());
+            $format = $this->toRoot()->getPageNumberStyle($element->getPageGroup());
+            $this->data[$key]['page'] = $page->getFormattedValue($format);
             $this->data[$key]['link'] = $element->getLink();
             $key ++;
         }

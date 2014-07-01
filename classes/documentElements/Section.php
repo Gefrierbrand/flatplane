@@ -41,12 +41,6 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
     protected $showInBookmarks = true;
     protected $ignoreTopMarginAtPageStart = ['default' => true];
 
-    /**
-     * @var string
-     *  identifier used to separate different pagegroups
-     */
-    protected $pageGroup = 'default';
-
     protected $numberSeparationWidth = 1.5;
 
     public function setConfig(array $config)
@@ -211,16 +205,6 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
     public function setNumberSeparationWidth($numberSeparationWidth)
     {
         $this->numberSeparationWidth = $numberSeparationWidth;
-    }
-
-    public function getPageGroup()
-    {
-        return $this->pageGroup;
-    }
-
-    public function setPageGroup($pageGroup)
-    {
-        $this->pageGroup = $pageGroup;
     }
 
     public function getNonHyphenTitle()

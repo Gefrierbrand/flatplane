@@ -33,8 +33,6 @@ interface SectionInterface extends DocumentElementInterface
     public function getStartsNewLine($level = 'level0');
     public function getStartsNewPage($level = 'level0');
     public function getMinFreePage($level = 'level0');
-    public function getPageGroup();
-    public function setPageGroup($pageGroup);
     public function getNonHyphenTitle();
     public function getShowInBookmarks();
     public function setShowInBookmarks($showInBookmarks);
