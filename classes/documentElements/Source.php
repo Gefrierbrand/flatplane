@@ -29,7 +29,7 @@ namespace de\flatplane\documentElements;
 class Source extends AbstractDocumentContentElement
 {
     protected $type='source';
-    protected $title = '';
+    protected $title = 'Source';
 
     protected $altTitle;
     protected $fieldsToShow = ['sourceAuthor',

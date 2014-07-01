@@ -336,7 +336,7 @@ class PageLayout
         $text->setLinearPage($this->getLinearPageNumber());
 
         $numPageBreaks = $textSize['numPages'] - 1;
-        echo "text ($text): adding $numPageBreaks\n";
+//        echo "text ($text): adding $numPageBreaks\n";
         $this->getCounter($this->getCurrentPageGroup())->add($numPageBreaks);
         $this->getLinearPageNumberCounter()->add($numPageBreaks);
     }
@@ -354,7 +354,7 @@ class PageLayout
         $list->setLinearPage($this->getLinearPageNumber());
 
         $numPageBreaks = $listSize['numPages'] - 1;
-        echo "list ($list): adding $numPageBreaks\n";
+//        echo "list ($list): adding $numPageBreaks\n";
         $this->getCounter($this->getCurrentPageGroup())->add($numPageBreaks);
         $this->getLinearPageNumberCounter()->add($numPageBreaks);
     }

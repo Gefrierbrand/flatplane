@@ -21,20 +21,22 @@
 
 namespace de\flatplane\utilities;
 
+use de\flatplane\interfaces\NumberInterface;
+
 /**
  * Description of Number
  * TODO: NumberInterface
  * todo: test formatting with floats
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Number
+class Number implements NumberInterface
 {
     protected $value;
     protected $format = 'int';
 
     public function __construct($value = 0)
     {
-        //todo: cast value?
+        //todo: validate value
         $this->value = $value;
     }
 
@@ -46,6 +48,12 @@ class Number
     public function getValue()
     {
         return $this->value;
+    }
+
+    public function setValue($value)
+    {
+        //todo: validate value
+        $this->value = $value;
     }
 
     /**

@@ -44,18 +44,19 @@ $settings = array(
 
 $document = $flatplane->createDocument($settings);
 $document->addSource('img:nn', ['sourceAuthor' => 'Nikolai Neff']);
+$document->setPageNumberStyle(['PG1' => 'roman']);
 $document->setPageNumberStyle(['PG2' => 'Alpha']);
 $pdf = $document->getPDF();
 $pdf->setHeaderData('', 0, date('d.m.Y H:i:s'));
 
 
 $inhaltSec = $document->addSection('Inhaltsverzeichnis', ['enumerate' => false]);
-$inhaltSec->setShowInList(false);
+$inhaltSec->setShowInList(true);
 $inhaltSec->setStartsNewPage(['level1' => false]);
 $inhaltList = $inhaltSec->addList(['section'], ['showInList' => true]);
 $abbildungSec = $document->addSection(
     'Abbildungsverzeichnis',
-    ['enumerate' => false, 'showInList' => false]
+    ['enumerate' => false, 'showInList' => true]
 );
 $abbildingList = $abbildungSec->addList(['image'], ['showInList' => false]);
 

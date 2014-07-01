@@ -21,12 +21,14 @@
 
 namespace de\flatplane\utilities;
 
+use TCPDF;
+
 /**
  * Description of myPDF
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class PDF extends \TCPDF
+class PDF extends TCPDF
 {
     protected $measureStartY;
     protected $measureStartPage;
@@ -36,7 +38,33 @@ class PDF extends \TCPDF
     protected $leftFooter;
     protected $rightFooter;
 
-    protected $formattedPageNumber;
+    protected $pageNumberStyle = 'int';
+    /**
+     *
+     * @var Number
+     */
+    protected $pageNumber;
+
+    public function __construct(
+        $orientation = 'P',
+        $unit = 'mm',
+        $format = 'A4',
+        $unicode = true,
+        $encoding = 'UTF-8',
+        $diskcache = false,
+        $pdfa = false
+    ) {
+        $this->pageNumber = new Number(0);
+        parent::__construct(
+            $orientation,
+            $unit,
+            $format,
+            $unicode,
+            $encoding,
+            $diskcache,
+            $pdfa
+        );
+    }
 
     /**
 	 * @return float
@@ -130,15 +158,15 @@ class PDF extends \TCPDF
         $this->rightHeader = $rightHeader;
     }
 
-    public function getFormattedPageNumber()
-    {
-        return $this->formattedPageNumber;
-    }
-
-    public function setFormattedPageNumber($formattedPageNumber)
-    {
-        $this->formattedPageNumber = $formattedPageNumber;
-    }
+//    public function getFormattedPageNumber()
+//    {
+//        return $this->formattedPageNumber;
+//    }
+//
+//    public function setFormattedPageNumber($formattedPageNumber)
+//    {
+//        $this->formattedPageNumber = $formattedPageNumber;
+//    }
 
     public function getLeftFooter()
     {
@@ -162,7 +190,10 @@ class PDF extends \TCPDF
 
     protected function incrementPageNumber()
     {
-        
+        $this->pageNumber->setValue($this->pageNumber->getValue() + 1);
+        $this->setRightFooter(
+            $this->pageNumber->getFormattedValue($this->getPageNumberStyle())
+        );
     }
 
     public function Header()
@@ -193,5 +224,25 @@ class PDF extends \TCPDF
     ) {
         $this->incrementPageNumber();
         parent::AddPage($orientation, $format, $keepmargins, $tocpage);
+    }
+
+    public function getPageNumberStyle()
+    {
+        return $this->pageNumberStyle;
+    }
+
+    public function setPageNumberStyle($pageNumberStyle)
+    {
+        $this->pageNumberStyle = $pageNumberStyle;
+    }
+
+    public function getPageNumber()
+    {
+        return $this->pageNumber;
+    }
+
+    public function setPageNumber(Number $pageNumber)
+    {
+        $this->pageNumber = $pageNumber;
     }
 }

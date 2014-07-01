@@ -23,6 +23,7 @@ namespace de\flatplane\view;
 
 use de\flatplane\interfaces\documentElements\DocumentInterface;
 use de\flatplane\iterators\RecursiveContentIterator;
+use de\flatplane\utilities\Number;
 use RecursiveIteratorIterator;
 use RuntimeException;
 
@@ -35,14 +36,14 @@ class ElementOutput
 {
     protected $currentLinearPage = 0;
     protected $document;
-    protected $currentSection;
-    protected $currentSubSection;
+    protected $oldPageGroup = 'default';
 
     public function __construct(DocumentInterface $document)
     {
         $this->document = $document;
         //add first page
         $document->getPDF()->AddPage();
+        $document->getPDF()->setPageNumber(new Number(0));
     }
 
     /**
@@ -59,7 +60,34 @@ class ElementOutput
             RecursiveIteratorIterator::SELF_FIRST
         );
 
+        $leftHeader = '';
+        $rightHeader = '';
+
         foreach ($recItIt as $pageElement) {
+            if ($pageElement->getType() == 'section') {
+                if ($pageElement->getLevel() == 2) {
+                    if (!empty($pageElement->getFormattedNumbers())) {
+                        $rightHeader = $pageElement->getFormattedNumbers()
+                            ."  ". $pageElement->getAltTitle();
+                    } else {
+                        $rightHeader = $pageElement->getAltTitle();
+                    }
+                }
+                if ($pageElement->getLevel() == 1) {
+                    $rightHeader = '';
+                    if (!empty($pageElement->getFormattedNumbers())) {
+                        $leftHeader = $pageElement->getFormattedNumbers()
+                            ."  ". mb_strtoupper($pageElement->getAltTitle());
+                    } else {
+                        $leftHeader = mb_strtoupper($pageElement->getAltTitle());
+                    }
+                }
+            }
+            $pdf = $this->getDocument()->getPDF();
+
+            $pdf->setLeftHeader($leftHeader);
+            $pdf->setRightHeader($rightHeader);
+
             $page = $pageElement->getLinearPage();
             //if the current page is equal to the elements page property, display
             //the element on the current page, otherwise add a new page and
@@ -84,17 +112,17 @@ class ElementOutput
                 $this->getCurrentLinearPage()+ $numPageBreaks
             );
 
-            if ($pageElement->getType() == 'section') {
-                if ($pageElement->getLevel() == 2) {
-                    $this->currentSubSection = $pageElement->getFormattedNumbers()
-                        ."  ". $pageElement->getAltTitle();
-                }
-                if ($pageElement->getLevel() == 1) {
-                    $this->currentSubSection = '';
-                    $this->currentSection = $pageElement->getFormattedNumbers()
-                        ."  ". mb_strtoupper($pageElement->getAltTitle());
-                }
+            $pdf->setPageNumberStyle(
+                $this->getDocument()->getPageNumberStyle(
+                    $pageElement->getPageGroup()
+                )
+            );
+
+            //todo: document me: resetting page counter
+            if ($this->oldPageGroup != $pageElement->getPageGroup()) {
+                $pdf->setPageNumber(new Number(0));
             }
+            $this->oldPageGroup = $pageElement->getPageGroup();
         }
     }
 
@@ -102,8 +130,6 @@ class ElementOutput
     {
         //add page in PDF
         $pdf = $this->getDocument()->getPDF();
-        //$pdf->setLeftHeader($this->currentSection);
-        //$pdf->setRightHeader($this->currentSubSection);
         $pdf->AddPage();
         //increment page counter
         //todo: use methods here
