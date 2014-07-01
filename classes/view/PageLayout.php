@@ -94,9 +94,9 @@ class PageLayout
 
     /**
      * Increments the pageCounter according to the current page group
-     * @return int
+     * @return string
      */
-    protected function addPage($newPageGroup = false)
+    protected function incrementPageNumber($newPageGroup = false)
     {
         $document = $this->getDocument();
         $pageGroup = $this->getCurrentPageGroup();
@@ -114,14 +114,15 @@ class PageLayout
         }
 
         //increment the linar page Number
-        //does not use the counter array to avoid collisions with user counters
+        //does not use the page-group-counter array to avoid collisions
+        //with user counters
         $this->getLinearPageNumberCounter()->add();
 
         //reset Y position to top of page
         $this->setCurrentYPosition($document->getPageMargins('top'));
 
         //return the current grouped counter value as formatted number
-        return $this->getCurrentPageNumber($pageGroup);
+        return $this->getCurrentFormattedPageNumber($pageGroup);
     }
 
     /**
@@ -138,7 +139,7 @@ class PageLayout
      * @param string $pageGroup
      * @return string
      */
-    protected function getCurrentPageNumber($pageGroup = 'default')
+    protected function getCurrentFormattedPageNumber($pageGroup = 'default')
     {
         $number = new Number($this->getCounter($pageGroup)->getValue());
         $pageNumStyle = $this->getDocument()->getPageNumberStyle($pageGroup);
@@ -164,7 +165,7 @@ class PageLayout
         }
 
         $section->setPage(
-            $this->getCurrentPageNumber($section->getPageGroup())
+            $this->getCurrentFormattedPageNumber($this->getCurrentPageGroup())
         );
         $section->setLinearPage($this->getLinearPageNumber());
         $pdfpageNum = $section->getLinearPage() + 1;
@@ -184,8 +185,9 @@ class PageLayout
      */
     protected function layoutSection(SectionInterface $section)
     {
-        $pdf = $this->getDocument()->getPDF();
         //change the current pagegroup according to the sections settings
+        //if the sections pagegroup is 'default', then it will adapt to the
+        //currently active pagegroup
         $newPagegroup = false;
         if ($section->getPageGroup() !== 'default') {
             $newPagegroup = true;
@@ -204,7 +206,7 @@ class PageLayout
         if ($section->getStartsNewPage('level'.$section->getLevel())) {
             Flatplane::log("Section: ($section) requires pagebreak [user]");
             //add the page
-            $this->addPage($newPagegroup);
+            $this->incrementPageNumber($newPagegroup);
             //set the sections page properties and add links/bookmarks
             $this->setSectionPageAndLink($section);
 
@@ -227,7 +229,7 @@ class PageLayout
         //section title itself)
         if ($availableVerticalSpace < $minSpace) {
             Flatplane::log("Section: ($section) requires pagebreak [MinSpace]");
-            $this->addPage($newPagegroup);
+            $this->incrementPageNumber($newPagegroup);
         }
 
         //check if the section title fits on the page
@@ -236,7 +238,7 @@ class PageLayout
             //automatic page break occured, so increment page counter
             //todo: add appropriate amount of pages instead of just one
             Flatplane::log("section: ($section) requires pagebreak [size]");
-            $this->addPage($newPagegroup);
+            $this->incrementPageNumber($newPagegroup);
         }
 
         //set the current page for the current section
@@ -244,6 +246,11 @@ class PageLayout
 
         //set the y position to the end of the section
         $this->setCurrentYPosition($sectionSize['endYposition']);
+
+        $numPageBreaks = $sectionSize['numPages'] - 1;
+        echo "section ($section): adding $numPageBreaks\n";
+        $this->getCounter($this->getCurrentPageGroup())->add($numPageBreaks);
+        $this->getLinearPageNumberCounter()->add($numPageBreaks);
     }
 
     /**
@@ -277,16 +284,27 @@ class PageLayout
             || $imageSize['numPages'] > 1
         ) {
             Flatplane::log("Image: ($image) requires pagebreak [size]");
-            $this->addPage();
+            $this->incrementPageNumber();
         }
 
         $this->setCurrentYPosition($imageSize['endYposition']);
 
         //set the current page for the current section
-        $image->setPage($this->getCurrentPageNumber($this->getCurrentPageGroup()));
+        $image->setPage(
+            $this->getCurrentFormattedPageNumber($this->getCurrentPageGroup())
+        );
         $image->setLinearPage($this->getLinearPageNumber());
+
+        //add linkt target for list of figures
         $image->setLink($pdf->AddLink());
         $pdf->SetLink($image->getLink(), 0, $image->getLinearPage() + 1);
+
+        //todo: test me and fix pagebreaks!
+        //fixme: numpagebreaks might be off by one due to automatic break!
+//        $numPageBreaks = $imageSize['numPages'] - 1;
+//        echo "image ($image): adding $numPageBreaks\n";
+//        $this->getCounter($this->getCurrentPageGroup())->add($numPageBreaks);
+//        $this->getLinearPageNumberCounter()->add($numPageBreaks);
     }
 
     /**
@@ -308,10 +326,15 @@ class PageLayout
         $this->setCurrentYPosition($textSize['endYposition']);
 
         //set the current page for the current section
-        $text->setPage($this->getCurrentPageNumber($this->getCurrentPageGroup()));
+        $text->setPage(
+            $this->getCurrentFormattedPageNumber($this->getCurrentPageGroup())
+        );
         $text->setLinearPage($this->getLinearPageNumber());
 
-        $this->getLinearPageNumberCounter()->add($textSize['numPages']-1);
+        $numPageBreaks = $textSize['numPages'] - 1;
+        echo "text ($text): adding $numPageBreaks\n";
+        $this->getCounter($this->getCurrentPageGroup())->add($numPageBreaks);
+        $this->getLinearPageNumberCounter()->add($numPageBreaks);
     }
 
     protected function layoutList(ListInterface $list)
@@ -321,8 +344,15 @@ class PageLayout
         $this->setCurrentYPosition($listSize['endYposition']);
 
         //set the current page for the current section
-        $list->setPage($this->getCurrentPageNumber($this->getCurrentPageGroup()));
+        $list->setPage(
+            $this->getCurrentFormattedPageNumber($this->getCurrentPageGroup())
+        );
         $list->setLinearPage($this->getLinearPageNumber());
+
+        $numPageBreaks = $listSize['numPages'] - 1;
+        echo "list ($list): adding $numPageBreaks\n";
+        $this->getCounter($this->getCurrentPageGroup())->add($numPageBreaks);
+        $this->getLinearPageNumberCounter()->add($numPageBreaks);
     }
 
     protected function layoutTable()
@@ -377,7 +407,7 @@ class PageLayout
             );
             $counter = new Counter($startValue);
             $this->addCounter($counter, $this->currentPageGroup);
-            echo "adding counter for: {$this->currentPageGroup}\n";
+            //echo "adding counter for: {$this->currentPageGroup}\n";
         }
     }
 }

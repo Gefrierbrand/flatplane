@@ -97,8 +97,8 @@ class Flatplane
                 }
             } else {
                 if (FLATPLANE_USE_CLI_COLORS && $level > 0) {
-                    //use blue text
-                    $msg = "\033[0;34m".$msg."\033[0m";
+                    //use purple text
+                    $msg = "\033[0;35m".$msg."\033[0m";
                 }
             }
             echo $msg;

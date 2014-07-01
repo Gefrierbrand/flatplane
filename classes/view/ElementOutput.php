@@ -71,8 +71,8 @@ class ElementOutput
                 $numPageBreaks = $pageElement->generateOutput();
             } else {
                 throw new RuntimeException(
-                    'Invalid Page number: '.var_export($page, true).' expected: '
-                    .$this->getCurrentLinearPage().' or '
+                    "($pageElement) Invalid Page number: ".var_export($page, true)
+                    .' expected: '.$this->getCurrentLinearPage().' or '
                     .($this->getCurrentLinearPage()+1)
                 );
             }

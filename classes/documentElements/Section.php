@@ -39,6 +39,7 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
     protected $startsNewLine = ['default' => true]; //not implemented yet
     protected $startsNewPage = ['default' => false];
     protected $showInBookmarks = true;
+    protected $ignoreTopMarginAtPageStart = ['default' => true];
 
     /**
      * @var string
@@ -157,7 +158,11 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         $pdf->SetRightMargin($oldMargins['right']+$this->getMargins('right'));
 
         //add element top margins to current y-position
-        $pdf->SetY($pdf->GetY()+$this->getMargins('top'));
+        if (!$this->getIgnoreTopMarginAtPageStart('level'.$this->getLevel())
+            || $pdf->GetY() > $this->toRoot()->getPageMargins('top')
+        ) {
+            $pdf->SetY($pdf->GetY()+$this->getMargins('top'));
+        }
 
         //set font size, color etc.
         $this->applyStyles('level'.$this->getLevel());
@@ -234,5 +239,22 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
     public function setShowInBookmarks($showInBookmarks)
     {
         $this->showInBookmarks = $showInBookmarks;
+    }
+
+    public function getIgnoreTopMarginAtPageStart($level = null)
+    {
+        if ($level !== null && isset($this->ignoreTopMarginAtPageStart[$level])) {
+            return $this->ignoreTopMarginAtPageStart[$level];
+        } else {
+            return $this->ignoreTopMarginAtPageStart['default'];
+        }
+    }
+
+    public function setIgnoreTopMarginAtPageStart(array $ignoreTopMarginAtPageStart)
+    {
+        $this->ignoreTopMarginAtPageStart = array_merge(
+            $this->ignoreTopMarginAtPageStart,
+            $ignoreTopMarginAtPageStart
+        );
     }
 }

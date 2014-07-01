@@ -30,7 +30,13 @@ class PDF extends \TCPDF
 {
     protected $measureStartY;
     protected $measureStartPage;
-    protected $oldPageBreak;
+
+    protected $leftHeader;
+    protected $rightHeader;
+    protected $leftFooter;
+    protected $rightFooter;
+
+    protected $formattedPageNumber;
 
     /**
 	 * @return float
@@ -91,6 +97,7 @@ class PDF extends \TCPDF
         }
 
         //todo: use start transaction page?
+        //todo: use num pagebreaks instead (don't add +1)
         $numPages = ($endPageNumber - $this->measureStartPage) + 1;
 
         if ($rollback) {
@@ -101,5 +108,85 @@ class PDF extends \TCPDF
         return ['height' => $height,
                 'numPages' => $numPages,
                 'endYposition' => $endYPosition];
+    }
+
+    public function getLeftHeader()
+    {
+        return $this->leftHeader;
+    }
+
+    public function getRightHeader()
+    {
+        return $this->rightHeader;
+    }
+
+    public function setLeftHeader($leftHeader)
+    {
+        $this->leftHeader = $leftHeader;
+    }
+
+    public function setRightHeader($rightHeader)
+    {
+        $this->rightHeader = $rightHeader;
+    }
+
+    public function getFormattedPageNumber()
+    {
+        return $this->formattedPageNumber;
+    }
+
+    public function setFormattedPageNumber($formattedPageNumber)
+    {
+        $this->formattedPageNumber = $formattedPageNumber;
+    }
+
+    public function getLeftFooter()
+    {
+        return $this->leftFooter;
+    }
+
+    public function getRightFooter()
+    {
+        return $this->rightFooter;
+    }
+
+    public function setLeftFooter($leftFooter)
+    {
+        $this->leftFooter = $leftFooter;
+    }
+
+    public function setRightFooter($rightFooter)
+    {
+        $this->rightFooter = $rightFooter;
+    }
+
+    public function Header()
+    {
+        //parent::Header();
+        $width = $this->getPageWidth()
+                 - $this->getMargins()['left']
+                 - $this->getMargins()['right'];
+        $this->Cell($width/2, 0, $this->getLeftHeader(), 'B');
+        $this->Cell($width/2, 0, $this->getRightHeader(), 'B', 0, 'R');
+    }
+
+    public function Footer()
+    {
+        //parent::Footer();
+        $width = $this->getPageWidth()
+                 - $this->getMargins()['left']
+                 - $this->getMargins()['right'];
+        $this->Cell($width/2, 0, $this->getLeftFooter(), 'T');
+        $this->Cell($width/2, 0, $this->getRightFooter(), 'T', 0, 'R');
+    }
+
+    public function AddPage(
+        $orientation = '',
+        $format = '',
+        $keepmargins = false,
+        $tocpage = false
+    ) {
+
+        parent::AddPage($orientation, $format, $keepmargins, $tocpage);
     }
 }

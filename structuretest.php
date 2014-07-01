@@ -87,7 +87,7 @@ $analyse = $hauptteilSec->addSection('Datenanalyse');
 $analyse->addSection('Programm A');
 $programmB = $analyse->addSection('Programm B');
 $bild = $programmB->addImage('images/bild.png');
-$bild->setCaption('TolleSpirale'.$bild->cite('img:nn'));
+$bild->setCaption('TolleSpirale '.$bild->cite('img:nn'));
 $bild->setFontColor(['title' => [255, 0, 0]]);
 $bild->setTitle('Roter Titel!');
 
@@ -106,6 +106,11 @@ $anhangSec = $document->addSection('Anhang', ['enumerate' => false]);
 $anhangSec->setPageGroup('PG2');
 
 $text = $anhangSec->addText('input/testKapitelohneRef.php');
+
+$pdf->setLeftHeader('LINKS oben');
+$pdf->setRightHeader('RECHTS oben');
+$pdf->setLeftFooter('LINKS unten');
+$pdf->setRightFooter('RECHTS unten');
 
 $flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => false]);
 unset($flatplane);

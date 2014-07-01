@@ -159,12 +159,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabberworm/PHP-CSS-Parser.git",
-                "reference": "4c4ab985e372113dbfd0a8192fbd8629bface9bb"
+                "reference": "2ed8f454b38ae8c26695b517f6033fb250ac59ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabberworm/PHP-CSS-Parser/zipball/4c4ab985e372113dbfd0a8192fbd8629bface9bb",
-                "reference": "4c4ab985e372113dbfd0a8192fbd8629bface9bb",
+                "url": "https://api.github.com/repos/sabberworm/PHP-CSS-Parser/zipball/2ed8f454b38ae8c26695b517f6033fb250ac59ef",
+                "reference": "2ed8f454b38ae8c26695b517f6033fb250ac59ef",
                 "shasum": ""
             },
             "require": {
@@ -192,7 +192,7 @@
                 "parser",
                 "stylesheet"
             ],
-            "time": "2014-04-24 18:00:51"
+            "time": "2014-06-30 20:13:05"
         },
         {
             "name": "symfony/process",
@@ -201,12 +201,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Process.git",
-                "reference": "66312573dde34dcfcbd6776719382affa06a629b"
+                "reference": "77f01fee8b4b166a613fdbd7d6e96d8fe5c9ad9a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Process/zipball/66312573dde34dcfcbd6776719382affa06a629b",
-                "reference": "66312573dde34dcfcbd6776719382affa06a629b",
+                "url": "https://api.github.com/repos/symfony/Process/zipball/77f01fee8b4b166a613fdbd7d6e96d8fe5c9ad9a",
+                "reference": "77f01fee8b4b166a613fdbd7d6e96d8fe5c9ad9a",
                 "shasum": ""
             },
             "require": {
@@ -241,7 +241,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "http://symfony.com",
-            "time": "2014-06-14 12:57:30"
+            "time": "2014-07-01 06:40:40"
         },
         {
             "name": "symfony/stopwatch",

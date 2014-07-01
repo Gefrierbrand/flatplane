@@ -81,6 +81,7 @@ class Image extends AbstractDocumentContentElement implements ImageInterface
         //todo: implement title/caption position & placement
         $pdf->MultiCell(0, 0, $this->getCompleteTitle(), 0, 'C');
 
+        //todo: center images
         if ($this->getImageType() == 'svg') {
             $pdf->ImageSVG($this->getPath(), '', '', $dim['width'], $dim['height']);
         } elseif ($this->getImageType() == 'eps' || $this->getImageType() == 'ai') {
@@ -90,43 +91,10 @@ class Image extends AbstractDocumentContentElement implements ImageInterface
         }
 
         //tcpdf does not set a new Y-position after inserting an image
-        //todo: internal margins
         $pdf->SetY($pdf->GetY()+$dim['height']);
         $this->applyStyles('caption');
         $pdf->MultiCell(0, 0, $this->getCompleteCaption(), 0, 'C');
     }
-
-//    //todo: use?
-//    protected function getResultingDimensions()
-//    {
-//        $filename = $this->getPath();
-//        if (!is_readable($filename)) {
-//            throw new RuntimeException('Image '.$filename.' is not readable');
-//        }
-//
-//        if (empty($this->getImageType())) {
-//            //if the imagetype is unset try to determine it by analyzing the file
-//            $this->setImageType($this->estimateImageType());
-//        }
-//        //get the raw image dimensions from the file or config
-//        $imageDimensions = $this->getImageDimensions();
-//        //get the size of title and caption (if present)
-//        $descriptionDimensions = $this->getDescriptionDimensions();
-//
-//        //add the space needed for margins and descriptions. The order does not
-//        //matter as image and description can only be on top of each other and
-//        //not side by side. This might get changed in a future version
-//
-//        //todo: return actual width including descriptions
-//        $resultingDimensions = ['imageWidth' => $imageDimensions['width'],
-//                                'imageHeight' => $imageDimensions['height'],
-//                                'height' => $imageDimensions['height']
-//                                    + $descriptionDimensions['titleHeight']
-//                                    + $descriptionDimensions['captionHeight']
-//                                    + $this->getMargins('title')
-//                                    + $this->getMargins('caption')];
-//        return $resultingDimensions;
-//    }
 
     protected function getCompleteTitle()
     {
