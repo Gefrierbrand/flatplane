@@ -301,10 +301,10 @@ class PageLayout
 
         //todo: test me and fix pagebreaks!
         //fixme: numpagebreaks might be off by one due to automatic break!
-//        $numPageBreaks = $imageSize['numPages'] - 1;
-//        echo "image ($image): adding $numPageBreaks\n";
-//        $this->getCounter($this->getCurrentPageGroup())->add($numPageBreaks);
-//        $this->getLinearPageNumberCounter()->add($numPageBreaks);
+        //$numPageBreaks = $imageSize['numPages'] - 1;
+        //echo "image ($image): adding $numPageBreaks\n";
+        //$this->getCounter($this->getCurrentPageGroup())->add($numPageBreaks);
+        //$this->getLinearPageNumberCounter()->add($numPageBreaks);
     }
 
     /**
@@ -313,7 +313,7 @@ class PageLayout
      */
     protected function layoutFormula(FormulaInterface $formula)
     {
-
+        //todo: implement me
     }
 
     /**

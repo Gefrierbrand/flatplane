@@ -109,7 +109,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         }
 
         //return number of pagebreaks
-        return $pdf->getPage()-$startPage;
+        return $pdf->getPage() - $startPage;
     }
 
     public function setPath($path)

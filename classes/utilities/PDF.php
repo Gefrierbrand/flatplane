@@ -160,6 +160,11 @@ class PDF extends \TCPDF
         $this->rightFooter = $rightFooter;
     }
 
+    protected function incrementPageNumber()
+    {
+        
+    }
+
     public function Header()
     {
         //parent::Header();
@@ -186,7 +191,7 @@ class PDF extends \TCPDF
         $keepmargins = false,
         $tocpage = false
     ) {
-
+        $this->incrementPageNumber();
         parent::AddPage($orientation, $format, $keepmargins, $tocpage);
     }
 }

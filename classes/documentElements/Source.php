@@ -338,7 +338,7 @@ class Source extends AbstractDocumentContentElement
 
     public function generateOutput()
     {
-        return false;
+        return 0;
     }
 
     public function getPage()

@@ -104,13 +104,11 @@ $qvz->addList(['source']);
 
 $anhangSec = $document->addSection('Anhang', ['enumerate' => false]);
 $anhangSec->setPageGroup('PG2');
+$document->addSection('Grundstücks­verkehrs­genehmigungs­zuständigkeits­übertragungs­verordnung (GrundVZÜV)');
 
 $text = $anhangSec->addText('input/testKapitelohneRef.php');
 
-$pdf->setLeftHeader('LINKS oben');
-$pdf->setRightHeader('RECHTS oben');
-$pdf->setLeftFooter('LINKS unten');
-$pdf->setRightFooter('RECHTS unten');
+$document->addSection('set');
 
 $flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => false]);
 unset($flatplane);

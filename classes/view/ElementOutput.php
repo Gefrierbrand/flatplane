@@ -35,6 +35,8 @@ class ElementOutput
 {
     protected $currentLinearPage = 0;
     protected $document;
+    protected $currentSection;
+    protected $currentSubSection;
 
     public function __construct(DocumentInterface $document)
     {
@@ -81,13 +83,28 @@ class ElementOutput
             $this->setCurrentLinearPage(
                 $this->getCurrentLinearPage()+ $numPageBreaks
             );
+
+            if ($pageElement->getType() == 'section') {
+                if ($pageElement->getLevel() == 2) {
+                    $this->currentSubSection = $pageElement->getFormattedNumbers()
+                        ."  ". $pageElement->getAltTitle();
+                }
+                if ($pageElement->getLevel() == 1) {
+                    $this->currentSubSection = '';
+                    $this->currentSection = $pageElement->getFormattedNumbers()
+                        ."  ". mb_strtoupper($pageElement->getAltTitle());
+                }
+            }
         }
     }
 
     protected function addPage()
     {
         //add page in PDF
-        $this->getDocument()->getPDF()->AddPage();
+        $pdf = $this->getDocument()->getPDF();
+        //$pdf->setLeftHeader($this->currentSection);
+        //$pdf->setRightHeader($this->currentSubSection);
+        $pdf->AddPage();
         //increment page counter
         //todo: use methods here
         $this->currentLinearPage ++;

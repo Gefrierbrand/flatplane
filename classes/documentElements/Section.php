@@ -200,8 +200,7 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
 
         //add bottom margin to y-position
         $pdf->SetY($pdf->GetY()+$this->getMargins('bottom'));
-        $endPage = $pdf->getPage();
-        return $endPage-$startPage;
+        return $pdf->getPage() - $startPage;
     }
 
     public function getNumberSeparationWidth()

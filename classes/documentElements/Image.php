@@ -75,9 +75,10 @@ class Image extends AbstractDocumentContentElement implements ImageInterface
 
     public function generateOutput()
     {
+        $pdf = $this->toRoot()->getPDF();
+        $startPage = $pdf->getPage();
         $dim = $this->getImageDimensions();
         $this->applyStyles('title');
-        $pdf = $this->toRoot()->getPDF();
         //todo: implement title/caption position & placement
         $pdf->MultiCell(0, 0, $this->getCompleteTitle(), 0, 'C');
 
@@ -94,6 +95,7 @@ class Image extends AbstractDocumentContentElement implements ImageInterface
         $pdf->SetY($pdf->GetY()+$dim['height']);
         $this->applyStyles('caption');
         $pdf->MultiCell(0, 0, $this->getCompleteCaption(), 0, 'C');
+        return $pdf->getPage() - $startPage;
     }
 
     protected function getCompleteTitle()

@@ -234,7 +234,6 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
     /**
      * todo: doc
      * todo: element-margins (left/right)
-     * @param array $indentAmounts
      */
     public function generateOutput()
     {
@@ -242,6 +241,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             $this->generateStructure();
         }
         $pdf = $this->toRoot()->getPDF();
+        $startPage = $pdf->getPage();
         $textWidth = $this->getPageMeasurements()['textWidth'];
 
         //save old pagemargins from before listoutput
@@ -386,6 +386,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
 
         //add bottom margin to y-position
         $pdf->SetY($pdf->GetY()+$this->getMargins('bottom'));
+        return $pdf->getPage() - $startPage;
     }
 
     protected function printLineToPages($textWidth, $oldMargins)

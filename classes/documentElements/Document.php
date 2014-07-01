@@ -600,7 +600,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     {
         $this->docTitle = $docTitle;
     }
-    
+
     /**
      *
      * @return array
@@ -696,11 +696,11 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
 
     /**
      * todo: doc
-     * @return void
+     * @return int
      */
     public function generateOutput()
     {
-        return;
+        return 0;
     }
 
     /**
