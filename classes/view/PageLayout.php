@@ -355,6 +355,11 @@ class PageLayout
         $this->getLinearPageNumberCounter()->add($numPageBreaks);
     }
 
+    protected function layoutCode(TextInterface $code)
+    {
+        $this->layoutText($code);
+    }
+
     protected function layoutList(ListInterface $list)
     {
         $listSize = $list->getSize($this->getCurrentYPosition());

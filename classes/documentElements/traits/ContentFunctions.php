@@ -193,6 +193,22 @@ trait ContentFunctions
     /**
      * @param string $path
      * @param array $settings
+     * @return Code
+     */
+    public function addCode($path, array $settings = [])
+    {
+        if (!is_readable($path)) {
+            throw new RuntimeException('File '.$path.' is not readable');
+        }
+        $factory = $this->toRoot()->getElementFactory();
+        $settings['path'] = $path;
+        $content = $factory->createElement('code', $settings);
+        return $this->addContent($content);
+    }
+
+    /**
+     * @param string $path
+     * @param array $settings
      * @return Image
      * @throws RuntimeException
      */

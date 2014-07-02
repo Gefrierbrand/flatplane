@@ -120,5 +120,7 @@ $set2->setPageGroup('PG3');
 
 //$pdf->Output('output/test.pdf', 'F');
 
+$document->addCode('classes/DocumentElements/AbstractDocumentContentElement.php');
+
 $flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => false]);
 unset($flatplane);

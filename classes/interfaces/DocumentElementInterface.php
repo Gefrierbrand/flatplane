@@ -48,7 +48,8 @@ interface DocumentElementInterface
     public function addFormula($code, array $settings);
     public function addImage($path, array $settings);
     public function addTable(array $data, array $settings);
-    public function addText($text, array $settings);
+    public function addText($path, array $settings);
+    public function addCode($path, array $settings);
 
     public function getParent();
     public function getLevel();

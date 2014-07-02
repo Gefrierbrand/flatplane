@@ -43,6 +43,7 @@ class ElementFactory
     protected $textConfig     = 'config/textSettings.ini';
     protected $imageConfig    = 'config/imageSettings.ini';
     protected $sourceConfig   = 'config/sourceSettings.ini';
+    protected $codeConfig     = 'config/codeSettings.ini';
 
     /**
      * @var array
@@ -174,6 +175,16 @@ class ElementFactory
     {
         $config = new Config($this->textConfig);
         return new Text($config->getSettings());
+    }
+
+    /**
+     *
+     * @return Text
+     */
+    protected function createCode()
+    {
+        $config = new Config($this->codeConfig);
+        return new Code($config->getSettings());
     }
 
     /**
