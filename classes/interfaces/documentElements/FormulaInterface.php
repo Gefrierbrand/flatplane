@@ -32,8 +32,8 @@ interface FormulaInterface extends DocumentElementInterface
     public function getCode();
     public function getCodeFormat();
     public function getFormulaFont(); //todo: rename?
-    public function getAvailableFonts();
-    public function getAvailableCodeFormats();
+    public static function getAvailableFonts();
+    public static function getAvailableCodeFormats();
     public function getHash();
     public function getPath();
     public function setPath($path);

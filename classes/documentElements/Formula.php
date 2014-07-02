@@ -41,9 +41,9 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
     protected $code;
     protected $formulaFont = 'TeX';
     protected $codeFormat = 'TeX';
-    protected $availableFonts = ['TeX', 'STIX-Web', 'Asana-Math', 'Neo-Euler',
+    protected static $availableFonts = ['TeX', 'STIX-Web', 'Asana-Math', 'Neo-Euler',
                                 'Gyre-Pagella', 'Gyre-Termes', 'Latin-Modern'];
-    protected $availableCodeFormats = ['TeX','MML'];
+    protected static $availableCodeFormats = ['TeX','MML'];
 
     protected $formulaStyle = 'display'; //options: display, inline
     protected $numberPosition = 'right'; //todo: implement
@@ -63,14 +63,14 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
         return $this->codeFormat;
     }
 
-    public function getAvailableFonts()
+    public static function getAvailableFonts()
     {
-        return $this->availableFonts;
+        return self::$availableFonts;
     }
 
-    public function getAvailableCodeFormats()
+    public static function getAvailableCodeFormats()
     {
-        return $this->availableCodeFormats;
+        return self::$availableCodeFormats;
     }
 
     /**
@@ -93,12 +93,12 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
                 'The path to the formula SVG file must be set before outputting it'
             );
         }
+        $this->applyStyles();
         $size = $this->applyScalingFactor($this->getSizeFromFile());
 
         $pdf = $this->toRoot()->getPDF();
         $startPage = $pdf->getPage();
 
-        $this->applyStyles();
         $pdf->SetY($pdf->GetY()+$this->getMargins('top'));
         $pdf->ImageSVG(
             $this->getPath(),
@@ -200,7 +200,7 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
 
     public function setFormulaFont($font)
     {
-        if (!in_array($font, $this->availableFonts, true)) {
+        if (!in_array($font, self::$availableFonts, true)) {
             trigger_error(
                 "Font $font not available, defaulting to TeX",
                 E_USER_NOTICE
@@ -212,7 +212,7 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
 
     public function setCodeFormat($codeFormat)
     {
-        if (!in_array($codeFormat, $this->availableCodeFormats, true)) {
+        if (!in_array($codeFormat, self::$availableCodeFormats, true)) {
             trigger_error(
                 "Format $codeFormat not available, defaulting to TeX",
                 E_USER_NOTICE

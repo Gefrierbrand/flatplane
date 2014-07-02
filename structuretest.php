@@ -49,9 +49,6 @@ $document->setPageNumberStyle(['PG2' => 'alpha']);
 $pdf = $document->getPDF();
 $pdf->setHeaderData('', 0, date('d.m.Y H:i:s'));
 
-$pdf->AddPage();
-
-
 $inhaltSec = $document->addSection('Inhaltsverzeichnis', ['enumerate' => false]);
 $inhaltSec->setShowInList(true);
 $inhaltSec->setStartsNewPage(['level1' => false]);
@@ -73,7 +70,23 @@ $text1 = $problem->addText('input/testKapitelMitRef.php');
 
 $versuch = $hauptteilSec->addSection('Versuchsaufbau');
 
-$formel = $versuch->addFormula('(\pi + \varpi) \cdot \sum_{1}^{2}{3}');
+$tex[] = '\mathcal{F}(f)(t) = \frac{1}{\left(2\pi\right)^{\frac{n}{2}}}~ \int\limits_{\mathbb{R}^n} f(x)\,e^{-\mathrm{i} t \cdot x} \,\mathrm{d} x';
+$tex[] = '\int_a^b(f(x)+c)\,\mathrm dx=\int_a^b f(x)\,\mathrm dx+(b-a)\cdot c';
+$tex[] = 'Z = \sum_{i=1}^{n} a_i~;~~~a_i = k_i \cdot b^i~;~~~b=2~;~~~k_i \in \{0,1\}~;~~~i\in \mathbb{N}';
+$tex[] = '\overline{\overline{\left(A\, \wedge\, B\right)}\, \wedge\, C} \neq\overline{ A\, \wedge\, \overline{\left(B\, \wedge\,C \right)}}';
+$tex[] = '\LaTeX ~ 2 \cdot 2 \\ 2\mathbin{\cdot}2 \\ 2 \times 2 \\ 2\mathbin{\times}2​';
+$tex[] = '(\pi + \varpi) \cdot \sum_{1}^{2}{3}';
+$tex[] = 'e = 2+\cfrac{1}{1+\cfrac{1}{2+\cfrac{1}{1+\cfrac{1}{1+\cfrac{1}{4+\cfrac{1}{1+\cfrac{1}{1+\cfrac{1}{6+\dotsb}}}}}}}}';
+
+foreach (de\flatplane\documentElements\Formula::getAvailableFonts() as $key => $formulafont) {
+    $versuch->addFormula($tex[$key])->setFormulaFont($formulafont);
+}
+
+foreach (de\flatplane\documentElements\Formula::getAvailableFonts() as $key => $formulafont) {
+    $versuch->addFormula($tex[0])->setFormulaFont($formulafont);
+}
+
+
 
 $hauptteilSec->addSection('Versuchsdruchführung mit langen Informationen zum Umbrechen Langeswort Überschallflugzeug');
 $analyse = $hauptteilSec->addSection('Datenanalyse');

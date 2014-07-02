@@ -319,7 +319,7 @@ class PageLayout
         if ($formulaSize['height'] > $availableVerticalSpace
             || $formulaSize['numPages'] > 1
         ) {
-            Flatplane::log("Formula: ($formulaSize) requires pagebreak [size]");
+            Flatplane::log("Formula: ($formula) requires pagebreak [size]");
             $this->incrementPageNumber();
         }
         $this->setCurrentYPosition($formulaSize['endYposition']);
