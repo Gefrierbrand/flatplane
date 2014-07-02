@@ -767,4 +767,13 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     {
         $this->pageNumberStartValue = $pageNumberStartValue;
     }
+
+    public function setPageGroup($pageGroup)
+    {
+        trigger_error(
+            'The PageGroup Property can only be set for content, not the document.',
+            E_USER_WARNING
+        );
+        parent::setPageGroup($pageGroup);
+    }
 }

@@ -64,11 +64,14 @@ class ElementOutput
         $rightHeader = '';
 
         foreach ($recItIt as $pageElement) {
+            //set headers: number (if set) and title of the currently active
+            //section (left) and subsection (right)
+            //todo: make this nice
             if ($pageElement->getType() == 'section') {
                 if ($pageElement->getLevel() == 2) {
                     if (!empty($pageElement->getFormattedNumbers())) {
                         $rightHeader = $pageElement->getFormattedNumbers()
-                            ."  ". $pageElement->getAltTitle();
+                            ."   ". $pageElement->getAltTitle();
                     } else {
                         $rightHeader = $pageElement->getAltTitle();
                     }
@@ -77,7 +80,7 @@ class ElementOutput
                     $rightHeader = '';
                     if (!empty($pageElement->getFormattedNumbers())) {
                         $leftHeader = $pageElement->getFormattedNumbers()
-                            ."  ". mb_strtoupper($pageElement->getAltTitle());
+                            ."   ". mb_strtoupper($pageElement->getAltTitle());
                     } else {
                         $leftHeader = mb_strtoupper($pageElement->getAltTitle());
                     }

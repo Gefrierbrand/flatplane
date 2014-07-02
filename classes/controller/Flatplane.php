@@ -27,6 +27,7 @@ use de\flatplane\interfaces\documentElements\DocumentInterface;
 use de\flatplane\iterators\ContentTypeFilterIterator;
 use de\flatplane\iterators\RecursiveContentIterator;
 use de\flatplane\model\FormulaFilesGenerator;
+use de\flatplane\utilities\Number;
 use de\flatplane\utilities\OSPaths;
 use de\flatplane\utilities\PDF;
 use de\flatplane\view\ElementOutput;
@@ -273,7 +274,10 @@ class Flatplane
     protected function generatePDFOutput()
     {
         //todo: filename, outputoptions (PDF/A, font subsetting, ovetwrite usw?)
-        $this->getDocument()->getPDF()->Output(
+        $pdf = $this->getDocument()->getPDF();
+        $pdf->setPageNumber(new Number($pdf->getPageNumber()->getValue() + 1));
+        $pdf->setRightFooter($pdf->getPageNumber()->getFormattedValue($pdf->getPageNumberStyle()));
+        $pdf->Output(
             self::$outputDir.DIRECTORY_SEPARATOR.'output.pdf',
             'F'
         );
