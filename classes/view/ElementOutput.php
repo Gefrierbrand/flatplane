@@ -108,6 +108,15 @@ class ElementOutput
                     .' expected: '.$this->getCurrentLinearPage().' or '
                     .($this->getCurrentLinearPage()+1)
                 );
+//                trigger_error(
+//                    "($pageElement) Invalid Page number: ".var_export($page, true)
+//                    .' expected: '.$this->getCurrentLinearPage().' or '
+//                    .($this->getCurrentLinearPage()+1),
+//                    E_USER_WARNING
+//                );
+
+                $this->addPage();
+                $numPageBreaks = $pageElement->generateOutput();
             }
             //increment the page number by the amount of pagebreaks caused by
             //the displaying of the element

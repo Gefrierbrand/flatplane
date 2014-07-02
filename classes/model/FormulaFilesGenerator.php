@@ -23,7 +23,7 @@ namespace de\flatplane\model;
 
 use de\flatplane\controller\Flatplane;
 use de\flatplane\interfaces\documentElements\FormulaInterface;
-use Symfony\Component\Process\Exception\RuntimeException;
+use RuntimeException;
 use Symfony\Component\Process\Process;
 
 /**

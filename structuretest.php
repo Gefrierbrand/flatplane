@@ -49,6 +49,8 @@ $document->setPageNumberStyle(['PG2' => 'alpha']);
 $pdf = $document->getPDF();
 $pdf->setHeaderData('', 0, date('d.m.Y H:i:s'));
 
+$pdf->AddPage();
+
 
 $inhaltSec = $document->addSection('Inhaltsverzeichnis', ['enumerate' => false]);
 $inhaltSec->setShowInList(true);
@@ -68,20 +70,10 @@ $hauptteilSec->setPageGroup('PG1');
 $problem = $hauptteilSec->addSection('Problemstellung');
 $problem->setLabel('sec:problem');
 $text1 = $problem->addText('input/testKapitelMitRef.php');
-//$problem->addFormula('1 \ 2');
-//$problem->addFormula('1 \ 2');
-//$problem->addFormula('1 \ 2');
-//$problem->addFormula('1 \ 2');
-//$problem->addFormula('1 \ 2');
-//$problem->addFormula('1 \ 2');
 
 $versuch = $hauptteilSec->addSection('Versuchsaufbau');
 
-//$versuch->addFormula('\pi + \varpi');
-//$versuch->addFormula('\pi + \varpi');
-//$versuch->addFormula('\pi + \varpi');
-//$versuch->addFormula('\pi + \varpi');
-//$versuch->addFormula('\pi + \varpi');
+$formel = $versuch->addFormula('(\pi + \varpi) \cdot \sum_{1}^{2}{3}');
 
 $hauptteilSec->addSection('Versuchsdruchführung mit langen Informationen zum Umbrechen Langeswort Überschallflugzeug');
 $analyse = $hauptteilSec->addSection('Datenanalyse');
@@ -113,6 +105,7 @@ $set2 = $document->addSection('set2');
 $set2->addSection('test');
 $set2->setPageGroup('PG3');
 
+//$pdf->Output('output/test.pdf', 'F');
 
 $flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => false]);
 unset($flatplane);

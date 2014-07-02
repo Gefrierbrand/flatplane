@@ -21,6 +21,7 @@
 
 namespace de\flatplane\documentElements;
 
+use de\flatplane\controller\Flatplane;
 use de\flatplane\interfaces\documentElements\FormulaInterface;
 use de\flatplane\utilities\SVGSize;
 use RuntimeException;
@@ -45,7 +46,7 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
     protected $availableCodeFormats = ['TeX','MML'];
 
     protected $formulaStyle = 'display'; //options: display, inline
-    protected $numberPosition = 'right';
+    protected $numberPosition = 'right'; //todo: implement
 
     protected $useCache = true;
     protected $path;
@@ -72,20 +73,52 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
         return $this->availableCodeFormats;
     }
 
-    //todo: FIXME (use transactions to get actual size)
+    /**
+     * @param float $startYposition
+     * @return array
+     * @throws RuntimeException
+     */
     public function getSize($startYposition = null)
     {
-        if (!empty($this->getPath())) {
-            $size = $this->getSizeFromFile();
-        } else {
+        if (empty($this->getPath())) {
             throw new RuntimeException('formula size requested before render');
         }
-        return $this->applyScalingFactor($size);
+        return parent::getSize($startYposition);
     }
 
     public function generateOutput()
     {
-        //todo: implement me;
+        if (empty($this->getPath()) || !is_readable($this->getPath())) {
+            throw new \RuntimeException(
+                'The path to the formula SVG file must be set before outputting it'
+            );
+        }
+        $size = $this->applyScalingFactor($this->getSizeFromFile());
+
+        $pdf = $this->toRoot()->getPDF();
+        $startPage = $pdf->getPage();
+
+        $this->applyStyles();
+        $pdf->SetY($pdf->GetY()+$this->getMargins('top'));
+        $pdf->ImageSVG(
+            $this->getPath(),
+            $this->getMargins('left') + $this->toRoot()->getPageMargins('left'),
+            $pdf->GetY(),
+            $size['width'],
+            $size['height']
+        );
+        $numberXPos = $this->toRoot()->getPageMeasurements()['textWidth']
+                        - $this->getMargins('right')
+                        - $pdf->GetStringWidth($this->getFormattedNumbers())
+                        + $this->toRoot()->getPageMargins('left');
+        $numberYPos = $pdf->GetY()
+                        + $size['height']/2
+                        - $pdf->getStringHeight(0, $this->getFormattedNumbers())/2;
+        $pdf->SetXY($numberXPos, $numberYPos);
+        $pdf->Cell(0, 0, $this->getFormattedNumbers());
+        $pdf->SetY($pdf->GetY() + $this->getMargins('bottom') + $size['height']);
+
+        return $pdf->getPage() - $startPage;
     }
 
 

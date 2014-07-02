@@ -73,6 +73,10 @@ class Image extends AbstractDocumentContentElement implements ImageInterface
         return (string) 'Image: ('.$this->getImageType().') '.$this->getPath();
     }
 
+    /**
+     * todo: margins: top/bottom
+     * @return int
+     */
     public function generateOutput()
     {
         $pdf = $this->toRoot()->getPDF();
@@ -137,24 +141,6 @@ class Image extends AbstractDocumentContentElement implements ImageInterface
             return $prefix.$separator.$this->getCaption();
         }
     }
-
-    /**
-     * This method sets the current pdf font-styles for the image descriptions
-     * @param string $param
-     *  type of the description to set font for (e.g. 'title'). If no settings
-     *  are present for that type, the defaults are used.
-     */
-//    protected function setPDFFont($param)
-//    {
-//        $pdf = $this->toRoot()->getPdf();
-//        $pdf->SetFont(
-//            $this->getFontType($param),
-//            $this->getFontStyle($param),
-//            $this->getFontSize($param)
-//        );
-//        $pdf->setFontSpacing($this->getFontSpacing($param));
-//        $pdf->setFontStretching($this->getFontStretching($param));
-//    }
 
     /**
      * estimates the type of the image

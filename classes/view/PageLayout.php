@@ -37,6 +37,7 @@ use RuntimeException;
 /**
  * Description of PageLayout
  * @todo: use abstract class and/or factory for layout?
+ * @todo: use general layout function for image/formula/etc
  * @author Nikolai Neff <admin@flatplane.de>
  */
 class PageLayout
@@ -107,7 +108,6 @@ class PageLayout
 
     /**
      * Increments the pageCounter according to the current page group
-     * @return string
      */
     protected function incrementPageNumber()
     {
@@ -135,7 +135,7 @@ class PageLayout
         $this->setCurrentYPosition($document->getPageMargins('top'));
 
         //return the current grouped counter value as formatted number
-        return $this->getCurrentFormattedPageNumber($pageGroup);
+        //return $this->getCurrentFormattedPageNumber($pageGroup);
     }
 
     /**
@@ -264,10 +264,10 @@ class PageLayout
     protected function getAvailableSpace()
     {
         $pageSize = $this->getDocument()->getPageSize();
-        $pageMargins = $this->getDocument()->getPageMargins();
+        $pageMarginBottom = $this->getDocument()->getPageMargins('bottom');
 
         $availableSpace = $pageSize['height']
-                        - $pageMargins['bottom']
+                        - $pageMarginBottom
                         - $this->getCurrentYPosition();
         return $availableSpace;
     }
@@ -302,13 +302,6 @@ class PageLayout
         //add linkt target for list of figures
         $image->setLink($pdf->AddLink());
         $pdf->SetLink($image->getLink(), 0, $image->getLinearPage() + 1);
-
-        //todo: test me and fix pagebreaks!
-        //fixme: numpagebreaks might be off by one due to automatic break!
-        //$numPageBreaks = $imageSize['numPages'] - 1;
-        //echo "image ($image): adding $numPageBreaks\n";
-        //$this->getCounter($this->getCurrentPageGroup())->add($numPageBreaks);
-        //$this->getLinearPageNumberCounter()->add($numPageBreaks);
     }
 
     /**
@@ -317,7 +310,29 @@ class PageLayout
      */
     protected function layoutFormula(FormulaInterface $formula)
     {
-        //todo: implement me
+        $pdf = $this->getDocument()->getPDF();
+        //check free space on current page
+        $availableVerticalSpace = $this->getAvailableSpace();
+
+        //check if the image fits on the page
+        $formulaSize = $formula->getSize($this->getCurrentYPosition());
+        if ($formulaSize['height'] > $availableVerticalSpace
+            || $formulaSize['numPages'] > 1
+        ) {
+            Flatplane::log("Formula: ($formulaSize) requires pagebreak [size]");
+            $this->incrementPageNumber();
+        }
+        $this->setCurrentYPosition($formulaSize['endYposition']);
+
+        //set the current page for the current section
+        $formula->setPage(
+            $this->getCounter($this->getCurrentPageGroup())->getValue()
+        );
+        $formula->setLinearPage($this->getLinearPageNumber());
+
+        //add linkt target for list of figures
+        $formula->setLink($pdf->AddLink());
+        $pdf->SetLink($formula->getLink(), 0, $formula->getLinearPage() + 1);
     }
 
     /**
@@ -336,7 +351,6 @@ class PageLayout
         $text->setLinearPage($this->getLinearPageNumber());
 
         $numPageBreaks = $textSize['numPages'] - 1;
-//        echo "text ($text): adding $numPageBreaks\n";
         $this->getCounter($this->getCurrentPageGroup())->add($numPageBreaks);
         $this->getLinearPageNumberCounter()->add($numPageBreaks);
     }
@@ -354,7 +368,6 @@ class PageLayout
         $list->setLinearPage($this->getLinearPageNumber());
 
         $numPageBreaks = $listSize['numPages'] - 1;
-//        echo "list ($list): adding $numPageBreaks\n";
         $this->getCounter($this->getCurrentPageGroup())->add($numPageBreaks);
         $this->getLinearPageNumberCounter()->add($numPageBreaks);
     }

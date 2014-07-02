@@ -47,7 +47,6 @@ trait NumberingFunctions
     protected $counter = array();
 
     /**
-     * todo: fixme (getAllCounters usw?)
      * Returns an existing Counter for the given type or creates a new one if
      * a counter for that type is not already present. This might create
      * unwanted side effects like wrong element-numbering and therefore also

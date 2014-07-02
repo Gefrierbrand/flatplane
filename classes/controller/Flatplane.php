@@ -275,8 +275,10 @@ class Flatplane
     {
         //todo: filename, outputoptions (PDF/A, font subsetting, ovetwrite usw?)
         $pdf = $this->getDocument()->getPDF();
+        //set the pagenumber and right footer for the last page
         $pdf->setPageNumber(new Number($pdf->getPageNumber()->getValue() + 1));
         $pdf->setRightFooter($pdf->getPageNumber()->getFormattedValue($pdf->getPageNumberStyle()));
+        //output the document
         $pdf->Output(
             self::$outputDir.DIRECTORY_SEPARATOR.'output.pdf',
             'F'
