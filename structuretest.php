@@ -112,7 +112,7 @@ $anhangSec->setPageGroup('PG2');
 $document->addSection('Grundstücks­verkehrs­genehmigungs­zuständigkeits­übertragungs­verordnung (GrundVZÜV)', ['altTitle' => 'GrundVZÜV']);
 $text = $anhangSec->addTextFile('input/testKapitelohneRef.php');
 
-$document->addCodeFile('classes/documentElements/AbstractDocumentContentElement.php', ['splitInParagraphs' => false]);
+$document->addCodeFile('classes/documentElements/AbstractDocumentContentElement.php', ['splitInParagraphs' => true]);
 
 $document->addSection('Formelverzeichnis', ['enumerate' => false]);
 $document->addList(['formula']);
