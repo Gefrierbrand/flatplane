@@ -219,6 +219,12 @@ class FormulaFilesGenerator
                 //todo: test permissions
                 mkdir($dir);
             }
+            if (!is_writable($dir)) {
+                trigger_error(
+                    'Formula cache directory is not writable',
+                    E_USER_WARNING
+                );
+            }
             $filename = $dir.DIRECTORY_SEPARATOR.$formula->getHash().'.svg';
             Flatplane::log("\t SVGTex: writing ".$filename);
             file_put_contents($filename, $result);
