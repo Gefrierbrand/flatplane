@@ -45,6 +45,7 @@ class ElementFactory
     protected $sourceConfig    = 'config/sourceSettings.ini';
     protected $codeConfig      = 'config/codeSettings.ini';
     protected $titlePageConfig = 'config/titlePageSettings.ini';
+    protected $tableConfig     = 'config/tableSettings.ini';
 
     /**
      * @var array
@@ -216,5 +217,15 @@ class ElementFactory
     {
         $config = new Config($this->titlePageConfig);
         return new TitlePage($config->getSettings());
+    }
+
+    /**
+     *
+     * @return Table
+     */
+    protected function createTable()
+    {
+        $config = new Config($this->tableConfig);
+        return new Table($config->getSettings());
     }
 }

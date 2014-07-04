@@ -27,33 +27,7 @@ use de\flatplane\interfaces\DocumentElementInterface;
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-interface TextInterface extends DocumentElementInterface
+interface TableInterface extends DocumentElementInterface
 {
-    public function getHyphenate();
-    public function getText();
-   
-    public function readText();
-
-    public function getHash($startYposition);
-    public function getParse();
-
-    public function getReference($label, $type = 'number');
-    public function getTextAlignment();
-    public function setPath($path);
-    public function setParse($parse);
-
-    public function setTextAlignment($textAlignment);
-
-    public function getPath();
-    public function getSplitInParagraphs();
-    public function getSplitAtStr();
-
-    public function getUseCache();
-    public function getContainsPageReference();
-
-    public function setSplitInParagraphs($splitInParagraphs);
-    public function setSplitAtStr($splitAtStr);
-    public function setUseCache($useCache);
-    public function setContainsPageReference($containsPageReference);
-    public function setText($text);
+    //todo: implement
 }

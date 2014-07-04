@@ -28,6 +28,7 @@ use de\flatplane\interfaces\documentElements\FormulaInterface;
 use de\flatplane\interfaces\documentElements\ImageInterface;
 use de\flatplane\interfaces\documentElements\ListInterface;
 use de\flatplane\interfaces\documentElements\SectionInterface;
+use de\flatplane\interfaces\documentElements\TableInterface;
 use de\flatplane\interfaces\documentElements\TextInterface;
 use de\flatplane\iterators\RecursiveContentIterator;
 use de\flatplane\utilities\Counter;
@@ -378,9 +379,9 @@ class PageLayout
         $this->getLinearPageNumberCounter()->add($numPageBreaks);
     }
 
-    protected function layoutTable()
+    protected function layoutTable(TableInterface $code)
     {
-
+        $this->layoutText($code);
     }
 
     protected function layoutSource()

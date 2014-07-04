@@ -47,7 +47,7 @@ interface DocumentElementInterface
     public function addSection($title, array $settings);
     public function addFormula($code, array $settings);
     public function addImage($path, array $settings);
-    public function addTable(array $data, array $settings);
+    public function addTable($code, array $settings);
     public function addTextFile($path, array $settings);
     public function addCodeFile($path, array $settings);
 

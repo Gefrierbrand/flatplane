@@ -21,6 +21,7 @@
 
 namespace de\flatplane\documentElements\traits;
 
+use de\flatplane\documentElements\Code;
 use de\flatplane\documentElements\Document;
 use de\flatplane\documentElements\Formula;
 use de\flatplane\documentElements\Image;
@@ -162,19 +163,6 @@ trait ContentFunctions
     }
 
     /**
-     * @param array $data
-     * @param array $settings
-     * @return Table
-     */
-    public function addTable(array $data, array $settings = [])
-    {
-        $factory = $this->toRoot()->getElementFactory();
-        $settings['data'] = $data;
-        $content = $factory->createElement('table', $settings);
-        return $this->addContent($content);
-    }
-
-    /**
      * @param string $path
      * @param array $settings
      * @return Text
@@ -187,6 +175,20 @@ trait ContentFunctions
         $factory = $this->toRoot()->getElementFactory();
         $settings['path'] = $path;
         $content = $factory->createElement('text', $settings);
+        return $this->addContent($content);
+    }
+
+    /**
+     *
+     * @param string $code
+     * @param array $settings
+     * @return Table
+     */
+    public function addTable($code, array $settings = [])
+    {
+        $factory = $this->toRoot()->getElementFactory();
+        $settings['text'] = $code;
+        $content = $factory->createElement('table', $settings);
         return $this->addContent($content);
     }
 

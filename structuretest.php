@@ -44,7 +44,7 @@ $settings = array(
 
 $document = $flatplane->createDocument($settings);
 
-//$document->addTitlePage();
+$document->addTitlePage();
 
 $document->addSource('img:nn', ['sourceAuthor' => 'Nikolai Neff']);
 $document->setPageNumberStyle(['PG1' => 'roman']);
@@ -119,6 +119,10 @@ $document->addCodeFile('classes/documentElements/AbstractDocumentContentElement.
 
 $document->addSection('Formelverzeichnis', ['enumerate' => false]);
 $document->addList(['formula']);
+
+$code = '<style> td,th{border: 1px solid #000000}</style><table><tr><th>Spalte 1</th><th>Spalte 2</th></tr><tr><td>INHALT</td><td>ASDF</td></tr></table>';
+
+$document->addTable($code);
 
 $flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => false, 'clearTextCache' => false]);
 unset($flatplane);

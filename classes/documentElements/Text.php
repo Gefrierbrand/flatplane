@@ -173,6 +173,8 @@ class Text extends AbstractDocumentContentElement implements TextInterface
 
         $this->applyStyles();
 
+        $pdf->SetY($pdf->GetY()+$this->getMargins('top'));
+
         if ($this->getSplitInParagraphs()) {
             $splitText = explode($this->getSplitAtStr(), $this->getText());
         } else {
@@ -189,6 +191,8 @@ class Text extends AbstractDocumentContentElement implements TextInterface
                 $this->getTextAlignment()
             );
         }
+
+        $pdf->SetY($pdf->GetY() + $this->getMargins('bottom'));
 
         //return number of pagebreaks
         return $pdf->getPage() - $startPage;
@@ -256,5 +260,10 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     public function setContainsPageReference($containsPageReference)
     {
         $this->containsPageReference = $containsPageReference;
+    }
+
+    public function setText($text)
+    {
+        $this->text = $text;
     }
 }

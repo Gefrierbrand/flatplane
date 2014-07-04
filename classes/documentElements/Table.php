@@ -21,18 +21,90 @@
 
 namespace de\flatplane\documentElements;
 
+use de\flatplane\interfaces\documentElements\TableInterface;
+
 /**
  * Description of Table
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class Table extends AbstractDocumentContentElement
+class Table extends Text implements TableInterface
 {
     protected $type = 'table';
     protected $title = 'Table';
+    protected $containsPageReference = false;
+    protected $splitInParagraphs = false;
+
+    protected $titlePosition = ['top', 'center'];
+
+    protected $caption;
+    protected $captionPosition = ['bottom', 'center'];
+
+    protected $hyphenate = false;
+
+    public function __toString()
+    {
+        return (string) "Table: ".$this->getTitle();
+    }
 
     public function generateOutput()
     {
-        //todo: implement me
+        $pdf = $this->toRoot()->getPDF();
+        $startPage = $pdf->getPage();
+
+        $pdf->SetY($pdf->GetY()+$this->getMargins('top'));
+
+        $this->applyStyles('title');
+        //todo: implement title/caption position & placement
+        $pdf->MultiCell(0, 0, $this->getTitle(), 0, 'C');
+
+        $this->applyStyles('default');
+
+        $pdf->writeHTML(
+            $this->getText(),
+            true,
+            false,
+            false,
+            false,
+            $this->getTextAlignment()
+        );
+
+        $this->applyStyles('caption');
+        $pdf->MultiCell(0, 0, $this->getCaption(), 0, 'C');
+
+        $pdf->SetY($pdf->GetY() + $this->getMargins('bottom'));
+
+        //return number of pagebreaks
+        return $pdf->getPage() - $startPage;
+    }
+
+    public function getTitlePosition()
+    {
+        return $this->titlePosition;
+    }
+
+    public function getCaption()
+    {
+        return $this->caption;
+    }
+
+    public function getCaptionPosition()
+    {
+        return $this->captionPosition;
+    }
+
+    public function setTitlePosition($titlePosition)
+    {
+        $this->titlePosition = $titlePosition;
+    }
+
+    public function setCaption($caption)
+    {
+        $this->caption = $caption;
+    }
+
+    public function setCaptionPosition($captionPosition)
+    {
+        $this->captionPosition = $captionPosition;
     }
 }
