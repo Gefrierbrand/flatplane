@@ -12,4 +12,5 @@
 /formulas/*
 /images/*
 /input/*
-/cache/
+/cache/formulas/
+/cache/text/

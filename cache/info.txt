@@ -1,0 +1,2 @@
+This is the default cache directory for Flatplane.
+Please make sure it is read- and writable for your PHP installation
