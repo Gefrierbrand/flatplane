@@ -41,9 +41,6 @@ class ElementOutput
     public function __construct(DocumentInterface $document)
     {
         $this->document = $document;
-        //add first page
-        $document->getPDF()->AddPage();
-        $document->getPDF()->setPageNumber(new Number(0));
     }
 
     /**
@@ -60,36 +57,54 @@ class ElementOutput
             RecursiveIteratorIterator::SELF_FIRST
         );
 
-        $leftHeader = '';
-        $rightHeader = '';
+        $header = ['leftHeader' => '', 'rightHeader' => ''];
+        $firstpage = true;
+        $secondpage = false;
 
         foreach ($recItIt as $pageElement) {
             //set headers: number (if set) and title of the currently active
             //section (left) and subsection (right)
             //todo: make this nice
             if ($pageElement->getType() == 'section') {
-                if ($pageElement->getLevel() == 2) {
-                    if (!empty($pageElement->getFormattedNumbers())) {
-                        $rightHeader = $pageElement->getFormattedNumbers()
-                            ."   ". $pageElement->getAltTitle();
-                    } else {
-                        $rightHeader = $pageElement->getAltTitle();
-                    }
-                }
-                if ($pageElement->getLevel() == 1) {
-                    $rightHeader = '';
-                    if (!empty($pageElement->getFormattedNumbers())) {
-                        $leftHeader = $pageElement->getFormattedNumbers()
-                            ."   ". mb_strtoupper($pageElement->getAltTitle());
-                    } else {
-                        $leftHeader = mb_strtoupper($pageElement->getAltTitle());
-                    }
-                }
+                $header = $this->getSectionHeaders($pageElement);
             }
             $pdf = $this->getDocument()->getPDF();
 
-            $pdf->setLeftHeader($leftHeader);
-            $pdf->setRightHeader($rightHeader);
+            $pdf->setLeftHeader($header['leftHeader']);
+            $pdf->setRightHeader($header['rightHeader']);
+
+            if ($pageElement->getType() == 'titlepage') {
+                if (!$pageElement->getShowHeader()) {
+                    $pdf->setPrintHeader(false);
+                }
+                if (!$pageElement->getShowFooter()) {
+                    $pdf->setPrintFooter(false);
+                }
+            } else {
+                $pdf->setPrintHeader(true);
+                $pdf->setPrintFooter(true);
+            }
+
+            //add first page
+            //todo: make this nice!
+            if ($firstpage) {
+                $pdf->AddPage();
+                if ($pageElement->getType() == 'titlepage') {
+                    $pdf->setPageNumber(new Number(-1));
+                } else {
+                    $pdf->setPageNumber(new Number(0));
+                }
+                $firstpage = false;
+                $secondpage = true;
+            }
+
+            if ($secondpage
+                && $pageElement->getType() != 'source'
+                && $pageElement->getType() != 'titlepage'
+            ) {
+                $pdf->setPrintFooter(false);
+                $secondpage = false;
+            }
 
             $page = $pageElement->getLinearPage();
             //if the current page is equal to the elements page property, display
@@ -127,6 +142,32 @@ class ElementOutput
             }
             $this->oldPageGroup = $pageElement->getPageGroup();
         }
+    }
+
+    protected function getSectionHeaders(\de\flatplane\interfaces\documentElements\SectionInterface $section)
+    {
+        $leftHeader = '';
+        $rightHeader = '';
+
+        if ($section->getLevel() == 2) {
+            if (!empty($section->getFormattedNumbers())) {
+                $rightHeader = $section->getFormattedNumbers()
+                    ."   ". $section->getAltTitle();
+            } else {
+                $rightHeader = $section->getAltTitle();
+            }
+        }
+        if ($section->getLevel() == 1) {
+            $rightHeader = '';
+            if (!empty($section->getFormattedNumbers())) {
+                $leftHeader = $section->getFormattedNumbers()
+                    ."   ". mb_strtoupper($section->getAltTitle());
+            } else {
+                $leftHeader = mb_strtoupper($section->getAltTitle());
+            }
+        }
+
+        return ['leftHeader' => $leftHeader, 'rightHeader' => $rightHeader];
     }
 
     protected function addPage()

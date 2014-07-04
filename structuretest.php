@@ -43,6 +43,9 @@ $settings = array(
 );
 
 $document = $flatplane->createDocument($settings);
+
+//$document->addTitlePage();
+
 $document->addSource('img:nn', ['sourceAuthor' => 'Nikolai Neff']);
 $document->setPageNumberStyle(['PG1' => 'roman']);
 $document->setPageNumberStyle(['PG2' => 'alpha']);

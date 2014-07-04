@@ -31,8 +31,51 @@ class TitlePage extends AbstractDocumentContentElement
     protected $type = 'titlepage';
     protected $title = 'TitlePage';
 
+    protected $enumerate = false;
+    protected $showInList = false;
+
+    protected $showHeader = false;
+    protected $showFooter = false;
+
+    protected $enumeratePage = false;
+
     public function generateOutput()
     {
-        //todo: implement me
+        //Overwrite this method in your own implementation
+        $pdf = $this->toRoot()->getPDF();
+
+        $pdf->SetFontSize(64);
+        $pdf->Write(0, 'TITELSEITE');
+        return 0;
+    }
+
+    public function getShowHeader()
+    {
+        return $this->showHeader;
+    }
+
+    public function getShowFooter()
+    {
+        return $this->showFooter;
+    }
+
+    public function getEnumeratePage()
+    {
+        return $this->enumeratePage;
+    }
+
+    public function setShowHeader($showHeader)
+    {
+        $this->showHeader = $showHeader;
+    }
+
+    public function setShowFooter($showFooter)
+    {
+        $this->showFooter = $showFooter;
+    }
+
+    public function setEnumeratePage($enumeratePage)
+    {
+        $this->enumeratePage = $enumeratePage;
     }
 }

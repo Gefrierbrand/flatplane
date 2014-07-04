@@ -36,14 +36,15 @@ class ElementFactory
 {
     //todo: doc!
 
-    protected $documentConfig = 'config/documentSettings.ini';
-    protected $sectionConfig  = 'config/sectionSettings.ini';
-    protected $listConfig     = 'config/listSettings.ini';
-    protected $formulaConfig  = 'config/formulaSettings.ini';
-    protected $textConfig     = 'config/textSettings.ini';
-    protected $imageConfig    = 'config/imageSettings.ini';
-    protected $sourceConfig   = 'config/sourceSettings.ini';
-    protected $codeConfig     = 'config/codeSettings.ini';
+    protected $documentConfig  = 'config/documentSettings.ini';
+    protected $sectionConfig   = 'config/sectionSettings.ini';
+    protected $listConfig      = 'config/listSettings.ini';
+    protected $formulaConfig   = 'config/formulaSettings.ini';
+    protected $textConfig      = 'config/textSettings.ini';
+    protected $imageConfig     = 'config/imageSettings.ini';
+    protected $sourceConfig    = 'config/sourceSettings.ini';
+    protected $codeConfig      = 'config/codeSettings.ini';
+    protected $titlePageConfig = 'config/titlePageSettings.ini';
 
     /**
      * @var array
@@ -205,5 +206,15 @@ class ElementFactory
     {
         $config = new Config($this->sourceConfig);
         return new Source($config->getSettings());
+    }
+
+    /**
+     *
+     * @return TitlePage
+     */
+    protected function createTitlePage()
+    {
+        $config = new Config($this->titlePageConfig);
+        return new TitlePage($config->getSettings());
     }
 }

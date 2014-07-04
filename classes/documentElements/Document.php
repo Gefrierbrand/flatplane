@@ -776,4 +776,11 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         );
         parent::setPageGroup($pageGroup);
     }
+
+    public function addTitlePage(array $settings = [])
+    {
+        $factory = $this->getElementFactory();
+        $content = $factory->createElement('titlePage', $settings);
+        return $this->addContent($content);
+    }
 }

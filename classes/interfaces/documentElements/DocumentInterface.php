@@ -22,6 +22,7 @@
 namespace de\flatplane\interfaces\documentElements;
 
 use de\flatplane\documentElements\ElementFactory;
+use de\flatplane\documentElements\TitlePage;
 use de\flatplane\interfaces\DocumentElementInterface;
 use de\flatplane\utilities\PDF;
 
@@ -126,7 +127,14 @@ interface DocumentInterface extends DocumentElementInterface
 
     /**
      *
-     * @param string $cite
+     * @param string $style
      */
     public function setCitationStyle($style);
+
+    /**
+     *
+     * @param array $settings
+     * @return TitlePage
+     */
+    public function addTitlePage(array $settings = []);
 }

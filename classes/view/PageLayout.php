@@ -22,6 +22,7 @@
 namespace de\flatplane\view;
 
 use de\flatplane\controller\Flatplane;
+use de\flatplane\documentElements\TitlePage;
 use de\flatplane\interfaces\documentElements\DocumentInterface;
 use de\flatplane\interfaces\documentElements\FormulaInterface;
 use de\flatplane\interfaces\documentElements\ImageInterface;
@@ -385,6 +386,21 @@ class PageLayout
     protected function layoutSource()
     {
 
+    }
+
+    protected function layoutTitlePage(TitlePage $titlePage)
+    {
+        //currently, the dimensions of titlepage are as the name suggests
+        //exactly the size of one page
+
+        //todo: use pagenumberingproperty
+
+        //todo: header/footer
+
+        $titlePage->setLinearPage($this->getLinearPageNumber());
+        $this->getLinearPageNumberCounter()->add(1);
+
+        //todo: set next pagenumber
     }
 
     /**
