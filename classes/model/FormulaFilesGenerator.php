@@ -55,7 +55,9 @@ class FormulaFilesGenerator
                 );
             }
             $formula->applyStyles();
-            if ($formula->getUseCache() == false || $this->isCached($formula) == false) {
+            if ($formula->getUseCache() == false
+                || $this->isCached($formula) == false
+            ) {
                 $font = $formula->getFormulaFont();
                 $this->formulas[$font][] = $formula;
                 $renderNum ++;
@@ -180,7 +182,7 @@ class FormulaFilesGenerator
         $this->curlHandles = array();
         foreach ($this->formulas[$font] as $key => $formula) {
             $format = strtolower($formula->getCodeFormat());
-            $url = 'http://localhost:16000/';
+            $url = 'http://localhost:'.$this->getSvgTexPort().'/';
             $request = 'type='.$format.'&q='.urlencode($formula->getCode());
 
             $this->curlHandles[$key] = curl_init();
@@ -190,7 +192,10 @@ class FormulaFilesGenerator
             curl_setopt($this->curlHandles[$key], CURLOPT_RETURNTRANSFER, true);
             curl_setopt($this->curlHandles[$key], CURLOPT_POST, true);
             curl_setopt($this->curlHandles[$key], CURLOPT_POSTFIELDS, $request);
-            curl_multi_add_handle($this->masterCurlHandle, $this->curlHandles[$key]);
+            curl_multi_add_handle(
+                $this->masterCurlHandle,
+                $this->curlHandles[$key]
+            );
         }
     }
 

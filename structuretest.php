@@ -66,7 +66,7 @@ $hauptteilSec = $document->addSection('Hauptteil');
 $hauptteilSec->setPageGroup('PG1');
 $problem = $hauptteilSec->addSection('Problemstellung');
 $problem->setLabel('sec:problem');
-$text1 = $problem->addText('input/testKapitelMitRef.php');
+$text1 = $problem->addTextFile('input/testKapitelMitRef.php');
 
 $versuch = $hauptteilSec->addSection('Versuchsaufbau');
 
@@ -85,7 +85,6 @@ foreach (de\flatplane\documentElements\Formula::getAvailableFonts() as $key => $
 foreach (de\flatplane\documentElements\Formula::getAvailableFonts() as $key => $formulafont) {
     $versuch->addFormula($tex[0])->setFormulaFont($formulafont);
 }
-
 
 
 $hauptteilSec->addSection('Versuchsdruchführung mit langen Informationen zum Umbrechen Langeswort Überschallflugzeug');
@@ -111,16 +110,12 @@ $qvz->addList(['source']);
 $anhangSec = $document->addSection('Anhang', ['enumerate' => false]);
 $anhangSec->setPageGroup('PG2');
 $document->addSection('Grundstücks­verkehrs­genehmigungs­zuständigkeits­übertragungs­verordnung (GrundVZÜV)');
-$text = $anhangSec->addText('input/testKapitelohneRef.php');
+$text = $anhangSec->addTextFile('input/testKapitelohneRef.php');
 
-$set = $document->addSection('set');
-$set2 = $document->addSection('set2');
-$set2->addSection('test');
-$set2->setPageGroup('PG3');
+$document->addCodeFile('input/file.php');
 
-//$pdf->Output('output/test.pdf', 'F');
-
-$document->addCode('classes/DocumentElements/AbstractDocumentContentElement.php');
+$document->addSection('Formelverzeichnis', ['enumerate' => false]);
+$document->addList(['formula']);
 
 $flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => false]);
 unset($flatplane);

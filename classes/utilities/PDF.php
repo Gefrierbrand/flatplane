@@ -64,6 +64,7 @@ class PDF extends TCPDF
             $diskcache,
             $pdfa
         );
+        $this->tcpdflink = false;
     }
 
     /**

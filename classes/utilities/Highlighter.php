@@ -76,27 +76,44 @@ class Highlighter
         //Calc pad length
         $padLength = strlen($lineCount);
         //Re-Print the code and span again
-        $highlightedCode =
-            '<span style="color: #000000; font-family: monospace; font-size: 9pt;">';
+        $highlightedCode = '';
 
         //Loop lines
         foreach ($lines as $i => $line) {
             //Create line number
             $lineNumber = str_pad($i + 1, $padLength, '0', STR_PAD_LEFT);
             //Print line
+            if (empty(trim($line))) {
+                $eol = PHP_EOL;
+            } else {
+                $eol = '';
+            }
+
             $highlightedCode .= sprintf(
-                '<br><span style="color: #999999">%s | </span>%s'.PHP_EOL,
+                '<span style="color: #999999">%s | </span>%s<br>%s',
                 $lineNumber,
-                $line
+                $line,
+                $eol
             );
         }
 
-        //Close span
-        $highlightedCode .= '</span>';
-
         return str_replace(
-            ['@see','@return','@param','@author','@var','@throws','@todo'],
-            ['<i>@see</i>','<i>@return</i>','<i>@param</i>','<i>@author</i>','<i>@var</i>','<i>@throws</i>','<i>@todo</i>'],
+            ['@see',
+             '@return',
+             '@param',
+             '@author',
+             '@var',
+             '@throws',
+             '@todo',
+             '@ignore'],
+            ['<i>@see</i>',
+             '<i>@return</i>',
+             '<i>@param</i>',
+             '<i>@author</i>',
+             '<i>@var</i>',
+             '<i>@throws</i>',
+             '<i>@todo</i>',
+             '<i>@ignore</i>'],
             $highlightedCode
         );
     }

@@ -179,7 +179,7 @@ trait ContentFunctions
      * @param array $settings
      * @return Text
      */
-    public function addText($path, array $settings = [])
+    public function addTextFile($path, array $settings = [])
     {
         if (!is_readable($path)) {
             throw new RuntimeException('File '.$path.' is not readable');
@@ -195,7 +195,7 @@ trait ContentFunctions
      * @param array $settings
      * @return Code
      */
-    public function addCode($path, array $settings = [])
+    public function addCodeFile($path, array $settings = [])
     {
         if (!is_readable($path)) {
             throw new RuntimeException('File '.$path.' is not readable');

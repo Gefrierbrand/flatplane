@@ -483,7 +483,10 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
 
     public function setFontStretching(array $fontStretching)
     {
-        $this->fontStretching = array_merge($this->fontStretching, $fontStretching);
+        $this->fontStretching = array_merge(
+            $this->fontStretching,
+            $fontStretching
+        );
     }
 
     /**

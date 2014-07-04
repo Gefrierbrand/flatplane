@@ -21,7 +21,9 @@
 
 namespace de\flatplane\documentElements;
 
+use de\flatplane\controller\Flatplane;
 use de\flatplane\interfaces\documentElements\TextInterface;
+use RuntimeException;
 
 /**
  * Description of Text
@@ -60,9 +62,9 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         return $this->text;
     }
 
-    public function getHash()
+    public function getHash($startYposition)
     {
-        return sha1($this->getText().$this->getTextAlignment().$this->getHyphenate());
+        return sha1($this->getText().$this->getTextAlignment().$startYposition);
     }
 
     public function getParse()
@@ -90,13 +92,74 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         return $this->toRoot()->getReference($label, $type);
     }
 
+    public function getSize($startYposition = null)
+    {
+        if ($this->isCached($startYposition)) {
+            return $this->getCachedSize($startYposition);
+        } else {
+            $size = parent::getSize($startYposition);
+            $this->writeCache($startYposition, $size);
+            return $size;
+        }
+    }
+
+    protected function getCachedSize($startYposition)
+    {
+        $filename = $this->getCacheFileName($startYposition);
+        if (!is_readable($filename)) {
+            throw new RuntimeException("cache for $this is not readable");
+        }
+        $size = unserialize(file_get_contents($filename));
+        return $size;
+    }
+
+    protected function writeCache($startYposition, array $size)
+    {
+        $filename = $this->getCacheFileName($startYposition);
+        $dir = dirname($filename);
+        if (!is_dir($dir)) {
+            mkdir($dir);
+        }
+        if (!is_writable($dir)) {
+            trigger_error('Text cache directory is not writable', E_USER_WARNING);
+        }
+
+        file_put_contents($filename, serialize($size));
+    }
+
+    protected function getCacheFileName($startYposition)
+    {
+        $filename = Flatplane::getCacheDir().DIRECTORY_SEPARATOR.
+        'text'.DIRECTORY_SEPARATOR.$this->getHash($startYposition).'.txt';
+        return $filename;
+    }
+
+    protected function isCached($startYposition)
+    {
+        $filename = $this->getCacheFileName($startYposition);
+        if ($this->getUseCache()
+            && file_exists($filename)
+            && is_readable($filename)
+        ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function generateOutput()
     {
-        $this->applyStyles();
         $pdf = $this->toRoot()->getPDF();
         $startPage = $pdf->getPage();
 
-        $splitText = explode('<br>', $this->getText());
+        $this->applyStyles();
+
+        if ($this->getSplitInParagraphs()) {
+            $splitText = explode($this->getSplitAtStr(), $this->getText());
+        } else {
+            $splitText = [$this->getText()];
+        }
+
         foreach ($splitText as $line) {
             $pdf->writeHTML(
                 $line,
@@ -130,16 +193,6 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     public function setTextAlignment($textAlignment)
     {
         $this->textAlignment = $textAlignment;
-    }
-
-    public function getLineHeight()
-    {
-        return $this->lineHeight;
-    }
-
-    public function setLineHeight($lineHeight)
-    {
-        $this->lineHeight = $lineHeight;
     }
 
     public function getPath()

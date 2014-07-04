@@ -48,7 +48,7 @@ class Flatplane
 
     protected static $inputDir = '.';
     protected static $outputDir = '.';
-    protected static $cacheDir = '.';
+    protected static $cacheDir = 'cache';
     protected static $verboseOutput = true;
     protected static $firstmessage = true;
 

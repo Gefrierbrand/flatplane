@@ -38,8 +38,8 @@ class Code extends Text
 
     protected $text = '';
     protected $path = '';
-    protected $splitInParagraphs = false;
-    protected $splitAtStr = "";
+    protected $splitInParagraphs = true;
+    protected $splitAtStr = "\n";
     protected $hyphenate = false;
 
     protected $useCache = true;
@@ -57,7 +57,32 @@ class Code extends Text
         $pdf = $this->toRoot()->getPDF();
         $startPage = $pdf->getPage();
 
-        $pdf->writeHTML($this->getText(), true, false, true, false, '');
+        $this->applyStyles();
+
+        //temporal fix for TCPDF BUG #944
+        $pdf->Write(0, '');
+        $pdf->SetX($this->toRoot()->getPageMargins('left'));
+
+        if ($this->getSplitInParagraphs()) {
+            $splitText = explode($this->getSplitAtStr(), $this->getText());
+        } else {
+            $splitText = [$this->getText()];
+        }
+
+        $splitText = explode($this->getSplitAtStr(), $this->getText());
+
+        foreach ($splitText as $line) {
+            $pdf->writeHTML(
+                $line,
+                false,
+                false,
+                false,
+                false,
+                $this->getTextAlignment()
+            );
+        }
+        //$pdf->writeHTMLCell(0, 0, $pdf->GetX(), $pdf->GetY(), $this->getText(), 1, true);
+        //$pdf->writeHTML($this->getText(), true, false, true, false, '');
 
         //return number of pagebreaks
         return $pdf->getPage() - $startPage;
