@@ -73,6 +73,10 @@ class Text extends AbstractDocumentContentElement implements TextInterface
             .$this->getFontStyle()
             .$this->getFontSpacing()
             .$this->getFontStretching()
+            .$this->getMargins('top')
+            .$this->getMargins('bottom')
+            .$this->getMargins('left')
+            .$this->getMargins('right')
         );
     }
 
