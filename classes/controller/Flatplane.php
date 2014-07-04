@@ -236,8 +236,14 @@ class Flatplane
 
         if (!empty($settings['clearFormulaCache'])) {
             $this->startTimer('clearFormulaCache');
-            $this->clearFormulaCache();
+            $this->clearCache('formula');
             $this->stopTimer('clearFormulaCache');
+        }
+
+        if (!empty($settings['clearTextCache'])) {
+            $this->startTimer('clearTextCache');
+            $this->clearCache('text');
+            $this->stopTimer('clearTextCache');
         }
 
         // generate dynamic content
@@ -266,9 +272,19 @@ class Flatplane
         $this->stopTimer('generatingPDFOutput');
     }
 
-    protected function clearFormulaCache()
+    protected function clearCache($type)
     {
-        FormulaFilesGenerator::cleanUp();
+        if (strtolower($type) == 'formula') {
+            FormulaFilesGenerator::cleanUp();
+        }
+
+        if (strtolower($type) == 'text') {
+            $dir = Flatplane::getCacheDir().DIRECTORY_SEPARATOR.'text';
+            $files = glob($dir.DIRECTORY_SEPARATOR.'*.txt');
+            foreach ($files as $file) {
+                unlink($file);
+            }
+        }
     }
 
     protected function generatePDFOutput()

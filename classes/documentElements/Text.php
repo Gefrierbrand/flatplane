@@ -64,7 +64,16 @@ class Text extends AbstractDocumentContentElement implements TextInterface
 
     public function getHash($startYposition)
     {
-        return sha1($this->getText().$this->getTextAlignment().$startYposition);
+        return sha1(
+            $this->getText()
+            .$this->getTextAlignment()
+            .$startYposition
+            .$this->getFontSize()
+            .$this->getFontType()
+            .$this->getFontStyle()
+            .$this->getFontSpacing()
+            .$this->getFontStretching()
+        );
     }
 
     public function getParse()

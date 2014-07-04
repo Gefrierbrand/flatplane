@@ -81,8 +81,6 @@ class Code extends Text
                 $this->getTextAlignment()
             );
         }
-        //$pdf->writeHTMLCell(0, 0, $pdf->GetX(), $pdf->GetY(), $this->getText(), 1, true);
-        //$pdf->writeHTML($this->getText(), true, false, true, false, '');
 
         //return number of pagebreaks
         return $pdf->getPage() - $startPage;
