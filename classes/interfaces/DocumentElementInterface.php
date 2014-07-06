@@ -31,11 +31,11 @@ interface DocumentElementInterface
 {
     public function __construct(array $config);
     public function __toString();
-    public function __clone();
 
     public function addCounter(CounterInterface $counter, $name);
     public function checkLocalCounter(DocumentElementInterface $content);
     public function hasContent();
+
     /**
      * @return DocumentInterface
      */

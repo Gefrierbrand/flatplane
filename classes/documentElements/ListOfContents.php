@@ -29,7 +29,8 @@ use OutOfRangeException;
 use RecursiveIteratorIterator;
 
 /**
- * Description of ListOfContent
+ * ListOfContent generates a new list of arbitrary content elements.
+ * Used to create a Table of Contents (TOC) or List of Figures (LOF) and so on.
  * todo: generate lists for individual sections, not just the whole document
  * todo: entry-margins
  * @author Nikolai Neff <admin@flatplane.de>
@@ -155,16 +156,6 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
      */
     protected $data = [];
 
-    /**
-     * Generates a new list of arbitrary content elements. Used to create a
-     * Table of Contents (TOC) or List of Figures (LOF) and so on.
-     * @param array $config
-     *  Array containing key=>value pairs of configuration and style options
-     */
-    public function __construct(array $config)
-    {
-        parent::__construct($config);
-    }
 
     public function __toString()
     {
