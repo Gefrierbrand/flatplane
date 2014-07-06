@@ -159,12 +159,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabberworm/PHP-CSS-Parser.git",
-                "reference": "2ed8f454b38ae8c26695b517f6033fb250ac59ef"
+                "reference": "ef95a38fe0c0f093f46a25029a4dd2d57ebe847e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabberworm/PHP-CSS-Parser/zipball/2ed8f454b38ae8c26695b517f6033fb250ac59ef",
-                "reference": "2ed8f454b38ae8c26695b517f6033fb250ac59ef",
+                "url": "https://api.github.com/repos/sabberworm/PHP-CSS-Parser/zipball/ef95a38fe0c0f093f46a25029a4dd2d57ebe847e",
+                "reference": "ef95a38fe0c0f093f46a25029a4dd2d57ebe847e",
                 "shasum": ""
             },
             "require": {
@@ -192,7 +192,7 @@
                 "parser",
                 "stylesheet"
             ],
-            "time": "2014-06-30 20:13:05"
+            "time": "2014-07-03 21:45:17"
         },
         {
             "name": "symfony/process",

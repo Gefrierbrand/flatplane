@@ -21,7 +21,9 @@
 
 namespace de\flatplane\view;
 
+use de\flatplane\documentElements\TitlePage;
 use de\flatplane\interfaces\documentElements\DocumentInterface;
+use de\flatplane\interfaces\documentElements\SectionInterface;
 use de\flatplane\iterators\RecursiveContentIterator;
 use de\flatplane\utilities\Number;
 use RecursiveIteratorIterator;
@@ -51,13 +53,13 @@ class ElementOutput
     public function generateOutput()
     {
         $content = $this->getDocument()->getContent();
+        $pdf = $this->getDocument()->getPDF();
 
         $recItIt = new RecursiveIteratorIterator(
             new RecursiveContentIterator($content),
             RecursiveIteratorIterator::SELF_FIRST
         );
 
-        $header = ['leftHeader' => '', 'rightHeader' => ''];
         $firstpage = true;
         $secondpage = false;
 
@@ -65,24 +67,11 @@ class ElementOutput
             //set headers: number (if set) and title of the currently active
             //section (left) and subsection (right)
             //todo: make this nice
-            if ($pageElement->getType() == 'section') {
-                $header = $this->getSectionHeaders($pageElement);
-            }
-            $pdf = $this->getDocument()->getPDF();
 
-            $pdf->setLeftHeader($header['leftHeader']);
-            $pdf->setRightHeader($header['rightHeader']);
-
-            if ($pageElement->getType() == 'titlepage') {
-                if (!$pageElement->getShowHeader()) {
-                    $pdf->setPrintHeader(false);
-                }
-                if (!$pageElement->getShowFooter()) {
-                    $pdf->setPrintFooter(false);
-                }
-            } else {
-                $pdf->setPrintHeader(true);
-                $pdf->setPrintFooter(true);
+            //call methods before output for special cases
+            $methodName = 'before'.ucfirst($pageElement->getType()).'Output';
+            if (method_exists($this, $methodName)) {
+                $this->$methodName($pageElement);
             }
 
             //add first page
@@ -106,37 +95,13 @@ class ElementOutput
                 $secondpage = false;
             }
 
-            $page = $pageElement->getLinearPage();
-            //if the current page is equal to the elements page property, display
-            //the element on the current page, otherwise add a new page and
-            //display the element there
-            if ($page == $this->getCurrentLinearPage()) {
-                //display element on current page
-                $numPageBreaks = $pageElement->generateOutput();
-            } elseif ($page == $this->getCurrentLinearPage() + 1) {
-                //add page and then display element
-                $this->addPage();
-                $numPageBreaks = $pageElement->generateOutput();
-            } else {
-                throw new RuntimeException(
-                    "($pageElement) Invalid Page number: ".var_export($page, true)
-                    .' expected: '.$this->getCurrentLinearPage().' or '
-                    .($this->getCurrentLinearPage()+1)
-                );
+            if ($pageElement->getType() != 'source'
+                && $pageElement->getType() != 'footnote'
+            ) {
+                $this->generateElementOutput($pageElement);
             }
-            //increment the page number by the amount of pagebreaks caused by
-            //the displaying of the element
-            $this->setCurrentLinearPage(
-                $this->getCurrentLinearPage()+ $numPageBreaks
-            );
 
-            $pdf->setPageNumberStyle(
-                $this->getDocument()->getPageNumberStyle(
-                    $pageElement->getPageGroup()
-                )
-            );
-
-            //todo: document me: resetting page counter
+            //resetting page counter
             if ($this->oldPageGroup != $pageElement->getPageGroup()) {
                 $pdf->setPageNumber(new Number(0));
             }
@@ -144,7 +109,66 @@ class ElementOutput
         }
     }
 
-    protected function getSectionHeaders(\de\flatplane\interfaces\documentElements\SectionInterface $section)
+    protected function generateElementOutput($pageElement)
+    {
+        $pdf = $this->getDocument()->getPDF();
+        $page = $pageElement->getLinearPage();
+        //if the current page is equal to the elements page property, display
+        //the element on the current page, otherwise add a new page and
+        //display the element there
+        if ($page == $this->getCurrentLinearPage()) {
+            //display element on current page
+            $numPageBreaks = $pageElement->generateOutput();
+        } elseif ($page == $this->getCurrentLinearPage() + 1) {
+            //add page and then display element
+            $this->addPage();
+            $numPageBreaks = $pageElement->generateOutput();
+        } else {
+            throw new RuntimeException(
+                "($pageElement) Invalid Page number: ".var_export($page, true)
+                .' expected: '.$this->getCurrentLinearPage().' or '
+                .($this->getCurrentLinearPage()+1)
+            );
+        }
+
+        //increment the page number by the amount of pagebreaks caused by
+        //the displaying of the element
+        $this->setCurrentLinearPage(
+            $this->getCurrentLinearPage()+ $numPageBreaks
+        );
+
+        $pdf->setPageNumberStyle(
+            $this->getDocument()->getPageNumberStyle(
+                $pageElement->getPageGroup()
+            )
+        );
+    }
+
+    protected function beforeTitlepageOutput(TitlePage $titlePage)
+    {
+        $pdf = $this->getDocument()->getPDF();
+        if (!$titlePage->getShowHeader()) {
+            $pdf->setPrintHeader(false);
+        }
+        if (!$titlePage->getShowFooter()) {
+            $pdf->setPrintFooter(false);
+        } else {
+            $pdf->setPrintHeader(true);
+            $pdf->setPrintFooter(true);
+        }
+    }
+
+    protected function beforeSectionOutput(SectionInterface $section)
+    {
+        $header = $this->getSectionHeaders($section);
+
+        $pdf = $this->getDocument()->getPDF();
+
+        $pdf->setLeftHeader($header['leftHeader']);
+        $pdf->setRightHeader($header['rightHeader']);
+    }
+
+    protected function getSectionHeaders(SectionInterface $section)
     {
         $leftHeader = '';
         $rightHeader = '';

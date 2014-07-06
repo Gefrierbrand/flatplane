@@ -622,20 +622,21 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
 
     /**
      * todo: doc
-     * todo: change back to protected or add to interface
      * @return array
      *  Keys: pageWidth, textWidth, pageHeight, textHeight
      */
     public function getPageMeasurements()
     {
-        //todo: footnotes
-        $doc = $this->toRoot();
-        $pageWidth = $doc->getPageSize()['width'];
-        $textWidth = $pageWidth - $doc->getPageMargins('left')
-                                - $doc->getPageMargins('right');
-        $pageHeight = $doc->getPageSize()['height'];
-        $textHeight = $pageHeight - $doc->getPageMargins('top')
-                                  - $doc->getPageMargins('bottom');
+        $pdf = $this->toRoot()->getPDF();
+
+        $pageWidth = $pdf->getPageWidth();
+        $textWidth = $pageWidth - $pdf->getMargins()['left']
+                                - $pdf->getMargins()['right'];
+
+        $pageHeight = $pdf->getPageHeight();
+        //margin bottom includes footnotes margin
+        $textHeight = $pageHeight - $pdf->getMargins()['top']
+                                  - $pdf->getMargins()['bottom'];
 
         return ['pageWidth' => $pageWidth,
                 'textWidth' => $textWidth,

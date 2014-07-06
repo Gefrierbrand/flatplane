@@ -107,7 +107,7 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
             $size['width'],
             $size['height']
         );
-        $numberXPos = $this->toRoot()->getPageMeasurements()['textWidth']
+        $numberXPos = $this->getPageMeasurements()['textWidth']
                         - $this->getMargins('right')
                         - $pdf->GetStringWidth($this->getFormattedNumbers())
                         + $this->toRoot()->getPageMargins('left');

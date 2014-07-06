@@ -36,7 +36,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     protected $type = 'text';
     protected $enumerate = false;
     protected $showInList = false;
-    protected $allowSubContent = false;
+    protected $allowSubContent = ['footnote'];
     protected $isSplitable = true;
 
     protected $text = '';
@@ -180,6 +180,10 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         } else {
             $splitText = [$this->getText()];
         }
+
+        //workaround for TCPDF BUG #944:
+        $pdf->Write(0, '');
+        $pdf->SetX($pdf->getMargins()['left']);
 
         foreach ($splitText as $line) {
             $pdf->writeHTML(

@@ -30,10 +30,55 @@ namespace de\flatplane\documentElements;
 class Footnote extends AbstractDocumentContentElement
 {
     protected $type='footnote';
+    protected $title = 'Footnote';
     protected $text;
+
+    protected $separatorLineWidth = 30;
+    protected $numberSeparationWidth = 0.8;
+    protected $textAlignment = 'L';
 
     public function generateOutput()
     {
         //todo: implement
+    }
+
+    public function getText()
+    {
+        return $this->text;
+    }
+
+    public function getSeparatorLineWidth()
+    {
+        return $this->separatorLineWidth;
+    }
+
+    public function getNumberSeparationWidth()
+    {
+        return $this->numberSeparationWidth;
+    }
+
+    public function getTextAlignment()
+    {
+        return $this->textAlignment;
+    }
+
+    public function setText($text)
+    {
+        $this->text = $text;
+    }
+
+    public function setSeparatorLineWidth($separatorLineWidth)
+    {
+        $this->separatorLineWidth = $separatorLineWidth;
+    }
+
+    public function setNumberSeparationWidth($numberSeparationWidth)
+    {
+        $this->numberSeparationWidth = $numberSeparationWidth;
+    }
+
+    public function setTextAlignment($textAlignment)
+    {
+        $this->textAlignment = $textAlignment;
     }
 }

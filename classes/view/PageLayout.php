@@ -386,7 +386,8 @@ class PageLayout
 
     protected function layoutSource()
     {
-
+        //do nothing, sources can't be displayed directly and therefore require
+        //no space. Use ListOfContent to display a list of references
     }
 
     protected function layoutTitlePage(TitlePage $titlePage)

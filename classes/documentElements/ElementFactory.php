@@ -46,6 +46,7 @@ class ElementFactory
     protected $codeConfig      = 'config/codeSettings.ini';
     protected $titlePageConfig = 'config/titlePageSettings.ini';
     protected $tableConfig     = 'config/tableSettings.ini';
+    protected $footnoteConfig  = 'config/footnoteSettings.ini';
 
     /**
      * @var array
@@ -227,5 +228,11 @@ class ElementFactory
     {
         $config = new Config($this->tableConfig);
         return new Table($config->getSettings());
+    }
+    
+    protected function createFootnote()
+    {
+        $config = new Config($this->footnoteConfig);
+        return new Footnote($config->getSettings());
     }
 }

@@ -39,11 +39,14 @@ class PDF extends TCPDF
     protected $rightFooter;
 
     protected $pageNumberStyle = 'int';
+
     /**
      *
      * @var Number
      */
     protected $pageNumber;
+    protected $footnotes;
+    protected $footnoteCounter;
 
     public function __construct(
         $orientation = 'P',
@@ -54,7 +57,9 @@ class PDF extends TCPDF
         $diskcache = false,
         $pdfa = false
     ) {
+        //todo: use page-number start-index /off by -1
         $this->pageNumber = new Number(0);
+        $this->footnoteCounter = new Counter();
         parent::__construct(
             $orientation,
             $unit,
@@ -245,5 +250,19 @@ class PDF extends TCPDF
     public function setPageNumber(Number $pageNumber)
     {
         $this->pageNumber = $pageNumber;
+    }
+
+    public function addFootnote($text, $number = null)
+    {
+        //todo: use footnote object (no child of pageelements?)
+        //init counter(s) here with options from footnoteobject
+        //use hyphenationsettings etc from footnotesobj.
+
+        if ($number === null) {
+            $number = $this->footnoteCounter->add();
+        }
+        $this->footnotes[$this->getPage()][] = ['number' => $number, 'text' => $text];
+
+        return '<sup>'.$number.'</sup>';
     }
 }
