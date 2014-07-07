@@ -96,7 +96,7 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
         $this->applyStyles();
         $size = $this->applyScalingFactor($this->getSizeFromFile());
 
-        $pdf = $this->toRoot()->getPDF();
+        $pdf = $this->getPDF();
         $startPage = $pdf->getPage();
 
         $pdf->SetY($pdf->GetY()+$this->getMargins('top'));
@@ -138,7 +138,7 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
         $svgSize = new SVGSize($this->getPath());
         $dimensions = $svgSize->getDimensions();
 
-        $pdf = $this->toRoot()->getPDF();
+        $pdf = $this->getPDF();
 
         //convert given unit (usually "ex") to user-units
         $width = $pdf->getHTMLUnitToUnits(

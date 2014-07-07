@@ -79,7 +79,7 @@ class Image extends AbstractDocumentContentElement implements ImageInterface
      */
     public function generateOutput()
     {
-        $pdf = $this->toRoot()->getPDF();
+        $pdf = $this->getPDF();
         $startPage = $pdf->getPage();
         $dim = $this->getImageDimensions();
         $this->applyStyles('title');
@@ -449,7 +449,7 @@ class Image extends AbstractDocumentContentElement implements ImageInterface
         $this->validateDimensions($dimensions, true);
         $resolution = $this->estimateImageResolution(); //result in dpi
 
-        $pdf = $this->toRoot()->getPDF();
+        $pdf = $this->getPDF();
 
         $oldImageScale = $pdf->getImageScale();
         //scale to the default TCPDF resolution of 72 dpi

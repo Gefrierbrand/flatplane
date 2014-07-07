@@ -168,7 +168,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
 
     public function generateOutput()
     {
-        $pdf = $this->toRoot()->getPDF();
+        $pdf = $this->getPDF();
         $startPage = $pdf->getPage();
 
         $this->applyStyles();
@@ -181,16 +181,12 @@ class Text extends AbstractDocumentContentElement implements TextInterface
             $splitText = [$this->getText()];
         }
 
-        //workaround for TCPDF BUG #944:
-        $pdf->Write(0, '');
-        $pdf->SetX($pdf->getMargins()['left']);
-
         foreach ($splitText as $line) {
             $pdf->writeHTML(
                 $line,
                 true,
                 false,
-                false,
+                true,
                 false,
                 $this->getTextAlignment()
             );
@@ -269,5 +265,10 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     public function setText($text)
     {
         $this->text = $text;
+    }
+
+    public function addFootnote($text)
+    {
+        return $this->getPDF()->addFootnote($text, $this->toRoot());
     }
 }

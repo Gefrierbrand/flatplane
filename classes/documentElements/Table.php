@@ -49,7 +49,7 @@ class Table extends Text implements TableInterface
 
     public function generateOutput()
     {
-        $pdf = $this->toRoot()->getPDF();
+        $pdf = $this->getPDF();
         $startPage = $pdf->getPage();
 
         $pdf->SetY($pdf->GetY()+$this->getMargins('top'));

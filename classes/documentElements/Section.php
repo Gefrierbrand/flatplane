@@ -143,7 +143,7 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         if (!$this->getShowInDocument()) {
             return 0;
         }
-        $pdf = $this->toRoot()->getPDF();
+        $pdf = $this->getPDF();
         $startPage = $pdf->getPage();
         //save old pagemargins
         $oldMargins = $pdf->getMargins();

@@ -234,7 +234,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         if (empty($this->getData())) {
             $this->generateStructure();
         }
-        $pdf = $this->toRoot()->getPDF();
+        $pdf = $this->getPDF();
         $startPage = $pdf->getPage();
         $textWidth = $this->getPageMeasurements()['textWidth'];
 
@@ -385,7 +385,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
 
     protected function printLineToPages($textWidth, $oldMargins)
     {
-        $pdf = $this->toRoot()->getPDF();
+        $pdf = $this->getPDF();
         //calculate space left for dots to pagenumber
         $dotsXStartPos = $pdf->GetX();
         $dotsXEndPos = $textWidth
@@ -416,7 +416,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
     protected function calculateIndentAmounts()
     {
         $data = $this->getData();
-        $pdf = $this->toRoot()->getPDF();
+        $pdf = $this->getPDF();
         $maxItDepth = 0;
         $longestNumberWidth = [];
         $indentAmounts = [];

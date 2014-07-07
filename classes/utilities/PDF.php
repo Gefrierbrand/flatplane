@@ -21,6 +21,8 @@
 
 namespace de\flatplane\utilities;
 
+use de\flatplane\documentElements\Footnote;
+use de\flatplane\interfaces\documentElements\DocumentInterface;
 use TCPDF;
 
 /**
@@ -45,8 +47,10 @@ class PDF extends TCPDF
      * @var Number
      */
     protected $pageNumber;
-    protected $footnotes;
-    protected $footnoteCounter;
+    protected $footnoteTexts = array();
+    protected $footnoteObjects = array();
+
+    protected $defaultBottomMargin = 20;
 
     public function __construct(
         $orientation = 'P',
@@ -214,12 +218,52 @@ class PDF extends TCPDF
 
     public function Footer()
     {
-        //parent::Footer();
+        if (!empty($this->footnoteObjects[0])) {
+            $this->displayFootnotes();
+        }
+
         $width = $this->getPageWidth()
                  - $this->getMargins()['left']
                  - $this->getMargins()['right'];
         $this->Cell($width/2, 0, $this->getLeftFooter(), 'T');
         $this->Cell($width/2, 0, $this->getRightFooter(), 'T', 0, 'R');
+    }
+
+    protected function displayFootnotes()
+    {
+        echo "footnoteOUTPUT\n";
+
+        $oldX = $this->GetX();
+        $oldY = $this->GetY();
+
+        $x = $this->getMargins()['left'];
+        $y = $this->getMargins()['bottom'];
+
+        //reset page margins
+        $this->SetAutoPageBreak(
+            $this->getAutoPageBreak(),
+            $this->defaultBottomMargin
+        );
+
+        //set xy
+        $this->SetXY($x, $y);
+
+        //calculate separation line width (given in percentage of textwidth)
+        $textwidth = $this->getPageWidth() - $x - $this->getMargins()['right'];
+        $separationLineWidth =
+            ($this->footnoteObjects[0]->getSeparatorLineWidth()/100)
+            * $textwidth;
+
+        //display footnotes
+        $this->Line($this->getMargins()['left'], $y, $x + $separationLineWidth, $y);
+
+        foreach ($this->footnoteObjects as $key => $footnote) {
+            $footnote->generateOutput();
+            unset($this->footnoteObjects[$key]);
+        }
+
+        //reset xy
+        $this->SetXY($oldX, $oldY);
     }
 
     public function AddPage(
@@ -230,6 +274,7 @@ class PDF extends TCPDF
     ) {
         $this->incrementPageNumber();
         parent::AddPage($orientation, $format, $keepmargins, $tocpage);
+        //$this->footnotes[$this->getPage()] = [];
     }
 
     public function getPageNumberStyle()
@@ -252,16 +297,40 @@ class PDF extends TCPDF
         $this->pageNumber = $pageNumber;
     }
 
-    public function addFootnote($text, $number = null)
+    public function addFootnote($text, DocumentInterface $document)
     {
         //todo: use footnote object (no child of pageelements?)
         //init counter(s) here with options from footnoteobject
         //use hyphenationsettings etc from footnotesobj.
 
-        if ($number === null) {
-            $number = $this->footnoteCounter->add();
+        if (!in_array($text, $this->footnoteTexts)) {
+            $this->footnoteTexts[] = $text;
+            $number = key($this->footnoteTexts) + 1;
+
+            //create new FootnoteObject
+            $footnote = $document->getElementFactory()->createFootnote(
+                $text,
+                $number,
+                $this,
+                $document
+            );
+
+            $this->footnoteObjects[] = $footnote;
+
+            $footnoteHeight = $footnote->getSize()['height'];
+            $bottomMargin = $this->getMargins()['bottom'];
+
+            //save default bottom margin
+            $this->defaultBottomMargin = $document->getPageMargins('bottom');
+
+            //set new bottom margin
+            $this->SetAutoPageBreak(
+                $this->getAutoPageBreak(),
+                $bottomMargin + $footnoteHeight
+            );
+        } else {
+            $number = array_search($text, $this->footnoteTexts) + 1;
         }
-        $this->footnotes[$this->getPage()][] = ['number' => $number, 'text' => $text];
 
         return '<sup>'.$number.'</sup>';
     }

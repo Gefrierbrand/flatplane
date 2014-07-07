@@ -82,6 +82,9 @@ interface DocumentInterface extends DocumentElementInterface
     public function getPDF();
     public function setPDF(PDF $pdf);
 
+    /**
+     * return ElementFactory
+     */
     public function getElementFactory();
     public function setElementFactory(ElementFactory $elementFactory);
 

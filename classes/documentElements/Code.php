@@ -54,14 +54,10 @@ class Code extends Text
 
     public function generateOutput()
     {
-        $pdf = $this->toRoot()->getPDF();
+        $pdf = $this->getPDF();
         $startPage = $pdf->getPage();
 
         $this->applyStyles();
-
-        //temporal fix for TCPDF BUG #944
-        $pdf->Write(0, '');
-        $pdf->SetX($this->toRoot()->getPageMargins('left'));
 
         if ($this->getSplitInParagraphs()) {
             $splitText = explode($this->getSplitAtStr(), $this->getText());
@@ -76,7 +72,7 @@ class Code extends Text
                 $line,
                 false,
                 false,
-                false,
+                true,
                 false,
                 $this->getTextAlignment()
             );

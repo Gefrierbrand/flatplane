@@ -23,6 +23,7 @@ namespace de\flatplane\documentElements;
 
 use de\flatplane\controller\Flatplane;
 use de\flatplane\interfaces\DocumentElementInterface;
+use de\flatplane\interfaces\documentElements\DocumentInterface;
 use de\flatplane\utilities\Config;
 use de\flatplane\utilities\PDF;
 use InvalidArgumentException;
@@ -229,10 +230,16 @@ class ElementFactory
         $config = new Config($this->tableConfig);
         return new Table($config->getSettings());
     }
-    
-    protected function createFootnote()
+
+    /**
+     * @param string $text
+     * @param string $number
+     * @param DocumentInterface $document
+     * @return Footnote
+     */
+    public function createFootnote($text, $number, PDF $pdf, DocumentInterface $document)
     {
         $config = new Config($this->footnoteConfig);
-        return new Footnote($config->getSettings());
+        return new Footnote($text, $number, $pdf, $document, $config->getSettings());
     }
 }

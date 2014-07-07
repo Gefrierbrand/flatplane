@@ -42,7 +42,7 @@ class TitlePage extends AbstractDocumentContentElement
     public function generateOutput()
     {
         //Overwrite this method in your own implementation
-        $pdf = $this->toRoot()->getPDF();
+        $pdf = $this->getPDF();
 
         $pdf->SetFontSize(64);
         $pdf->Write(0, 'TITELSEITE');
