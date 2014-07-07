@@ -218,7 +218,7 @@ class PDF extends TCPDF
 
     public function Footer()
     {
-        if (!empty($this->footnoteObjects[0])) {
+        if (!empty($this->footnoteObjects)) {
             $this->displayFootnotes();
         }
 
