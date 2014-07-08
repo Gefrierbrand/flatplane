@@ -55,6 +55,9 @@ class ElementOutput
         $content = $this->getDocument()->getContent();
         $pdf = $this->getDocument()->getPDF();
 
+        //reset bottom margin to default
+        $pdf->SetAutoPageBreak($pdf->getAutoPageBreak(), $pdf->getDefaultBottomMargin());
+
         $recItIt = new RecursiveIteratorIterator(
             new RecursiveContentIterator($content),
             RecursiveIteratorIterator::SELF_FIRST
@@ -95,9 +98,7 @@ class ElementOutput
                 $secondpage = false;
             }
 
-            if ($pageElement->getType() != 'source'
-                && $pageElement->getType() != 'footnote'
-            ) {
+            if ($pageElement->getType() != 'source') {
                 $this->generateElementOutput($pageElement);
             }
 
@@ -175,8 +176,8 @@ class ElementOutput
 
     protected function getSectionHeaders(SectionInterface $section)
     {
-        $leftHeader = '';
-        $rightHeader = '';
+        $leftHeader = $this->getDocument()->getPDF()->getLeftHeader();
+        $rightHeader = $this->getDocument()->getPDF()->getRightHeader();
 
         if ($section->getLevel() == 2) {
             if (!empty($section->getFormattedNumbers())) {

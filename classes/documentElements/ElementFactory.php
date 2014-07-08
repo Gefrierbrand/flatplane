@@ -114,6 +114,7 @@ class ElementFactory
         $pdf->SetSubject($doc->getSubject());
         $pdf->SetKeywords($doc->getKeywords());
         $pdf->SetCreator('Flatplane ('.Flatplane::VERSION.')');
+        $pdf->setDefaultBottomMargin($marginBot);
         $doc->setPDF($pdf);
         return $doc;
     }

@@ -49,6 +49,12 @@ $document->addTitlePage();
 //$kapitel1 = $document->addSection('KAPITEL 1');
 //$kapitel1->setStartsNewPage(['level1' => false]);
 //$kapitel1->addTextFile('input/testKapitelMitRef.php');
+//
+//$kapitel2 = $document->addSection('KAPITEL 2');
+//$kapitel2->addTextFile('input/testKapitelMitRef.php');
+//
+//$sub = $kapitel2->addSection('Subsection');
+//$sub->addTextFile('input/testKapitelMitRef.php');
 
 $document->addSource('img:nn', ['sourceAuthor' => 'Nikolai Neff']);
 $document->setPageNumberStyle(['PG1' => 'roman']);
@@ -126,6 +132,7 @@ $code = '<style> td,th{border: 1px solid #000000}</style><table><tr><th>Spalte 1
 
 $document->addTable($code);
 
-$flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => false, 'clearTextCache' => false]);
 
+
+$flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => false, 'clearTextCache' => false]);
 unset($flatplane);

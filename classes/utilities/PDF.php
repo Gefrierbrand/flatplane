@@ -90,6 +90,11 @@ class PDF extends TCPDF
         $this->defaultBottomMargin = $margin;
     }
 
+    public function getDefaultBottomMargin()
+    {
+        return $this->defaultBottomMargin;
+    }
+
     public function startMeasurement($startYPosition = null)
     {
         $this->startTransaction();
@@ -208,8 +213,8 @@ class PDF extends TCPDF
         $width = $this->getPageWidth()
                  - $this->getMargins()['left']
                  - $this->getMargins()['right'];
-        $this->Cell($width/2, 0, $this->getLeftHeader(), 'B');
-        $this->Cell($width/2, 0, $this->getRightHeader(), 'B', 0, 'R');
+        $this->Cell($width/2, 0, $this->getLeftHeader(), 'B', 0, 'L', false, '', 1);
+        $this->Cell($width/2, 0, $this->getRightHeader(), 'B', 0, 'R', false, '', 1);
     }
 
     public function Footer()
@@ -227,7 +232,7 @@ class PDF extends TCPDF
 
     protected function displayFootnotes()
     {
-        echo "footnoteOUTPUT\n";
+        //echo "footnoteOUTPUT\n";
 
         $oldX = $this->GetX();
         $oldY = $this->GetY();
@@ -246,13 +251,14 @@ class PDF extends TCPDF
 
         //calculate separation line width (given in percentage of textwidth)
         $textwidth = $this->getPageWidth() - $x - $this->getMargins()['right'];
+        $key = key($this->footnoteObjects);
         $separationLineWidth =
-            ($this->footnoteObjects[0]->getSeparatorLineWidth()/100)
+            ($this->footnoteObjects[$key]->getSeparatorLineWidth()/100)
             * $textwidth;
 
         //display footnotes
         $this->Line($this->getMargins()['left'], $y, $x + $separationLineWidth, $y);
-        $this->SetY($y + $this->footnoteObjects[0]->getSeparatorLineVerticalmargin());
+        $this->SetY($y + $this->footnoteObjects[$key]->getSeparatorLineVerticalmargin());
 
         foreach ($this->footnoteObjects as $key => $footnote) {
             $footnote->generateOutput();

@@ -124,7 +124,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
             $size = parent::getSize($startYposition);
             $this->writeCache($startYposition, $size);
         }
-        
+
         $this->inGetSize = false;
         return $size;
     }
