@@ -233,13 +233,12 @@ class ElementFactory
 
     /**
      * @param string $text
-     * @param string $number
      * @param DocumentInterface $document
      * @return Footnote
      */
-    public function createFootnote($text, $number, PDF $pdf, DocumentInterface $document)
+    public function createFootnote($text, DocumentInterface $document)
     {
         $config = new Config($this->footnoteConfig);
-        return new Footnote($text, $number, $pdf, $document, $config->getSettings());
+        return new Footnote($text, $document, $config->getSettings());
     }
 }

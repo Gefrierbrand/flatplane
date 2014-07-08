@@ -47,7 +47,10 @@ class Text extends AbstractDocumentContentElement implements TextInterface
 
     protected $useCache = true;
     protected $containsPageReference;
+    protected $containsFootnotes;
     protected $textAlignment = 'J';
+
+    protected $inGetSize = false;
 
     public function __toString()
     {
@@ -56,7 +59,10 @@ class Text extends AbstractDocumentContentElement implements TextInterface
 
     public function getText()
     {
-        if (empty($this->text) || $this->getContainsPageReference()) {
+        if (empty($this->text)
+            || $this->getContainsPageReference()
+            || $this->getContainsFootnotes()
+        ) {
             $this->readText();
         }
         return $this->text;
@@ -91,10 +97,8 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         return $this->parseText();
     }
 
-    public function readText()
+    protected function readText()
     {
-        //make document available to template
-        //$document = $this->toRoot();
         ob_start();
         include ($this->getPath());
         $this->text = ob_get_clean();
@@ -113,13 +117,16 @@ class Text extends AbstractDocumentContentElement implements TextInterface
 
     public function getSize($startYposition = null)
     {
+        $this->inGetSize = true;
         if ($this->isCached($startYposition)) {
-            return $this->getCachedSize($startYposition);
+            $size = $this->getCachedSize($startYposition);
         } else {
             $size = parent::getSize($startYposition);
             $this->writeCache($startYposition, $size);
-            return $size;
         }
+        
+        $this->inGetSize = false;
+        return $size;
     }
 
     protected function getCachedSize($startYposition)
@@ -176,7 +183,10 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         $pdf->SetY($pdf->GetY()+$this->getMargins('top'));
 
         if ($this->getSplitInParagraphs()) {
-            $splitText = explode($this->getSplitAtStr(), $this->getText());
+            $splitText = explode(
+                $this->getSplitAtStr(),
+                $this->getText()
+            );
         } else {
             $splitText = [$this->getText()];
         }
@@ -269,6 +279,32 @@ class Text extends AbstractDocumentContentElement implements TextInterface
 
     public function addFootnote($text)
     {
-        return $this->getPDF()->addFootnote($text, $this->toRoot());
+        $footnote = $this->toRoot()->getElementFactory()->createFootnote(
+            $text,
+            $this->toRoot()
+        );
+
+        if ($this->inGetSize) {
+            $this->getPDF()->increaseBottomMargin($footnote->getHeight());
+            $number = str_repeat(
+                $this->toRoot()->getUnresolvedReferenceMarker(),
+                $this->toRoot()->getAssumedFootnoteNumberWidth()
+            );
+            return '<sup>'.$number.'</sup>';
+        } else {
+            $number = $this->getPDF()->addFootnote($footnote);
+            return '<sup>'.$number.'</sup>';
+        }
+
+    }
+
+    public function getContainsFootnotes()
+    {
+        return $this->containsFootnotes;
+    }
+
+    public function setContainsFootnotes($containsFootnotes)
+    {
+        $this->containsFootnotes = $containsFootnotes;
     }
 }

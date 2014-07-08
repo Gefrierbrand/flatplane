@@ -47,8 +47,8 @@ class PDF extends TCPDF
      * @var Number
      */
     protected $pageNumber;
-    protected $footnoteTexts = array();
     protected $footnoteObjects = array();
+    protected $footnoteCounter;
 
     protected $defaultBottomMargin = 20;
 
@@ -85,6 +85,11 @@ class PDF extends TCPDF
         return $this->h;
     }
 
+    public function setDefaultBottomMargin($margin)
+    {
+        $this->defaultBottomMargin = $margin;
+    }
+
     public function startMeasurement($startYPosition = null)
     {
         $this->startTransaction();
@@ -108,21 +113,21 @@ class PDF extends TCPDF
     public function endMeasurement($rollback = true)
     {
         $endYPosition = $this->GetY();
-        $endPageNumber = $this->getPage();
+        $endPageNum = $this->getPage();
         // calculate height
         $height = 0;
 
-        if ($endPageNumber == $this->measureStartPage) {
+        if ($endPageNum == $this->measureStartPage) {
             $height = $endYPosition - $this->measureStartY;
         } else {
-            for ($page = $this->measureStartPage; $page <= $endPageNumber; ++$page) {
+            for ($page = $this->measureStartPage; $page <= $endPageNum; ++$page) {
                 $this->setPage($page);
                 if ($page == $this->measureStartPage) {
                     // first page
                     $height += $this->getH()
                         - $this->measureStartY
                         - $this->getMargins()['bottom'];
-                } elseif ($page == $endPageNumber) {
+                } elseif ($page == $endPageNum) {
                     // last page
                     $height += $endYPosition - $this->getMargins()['top'];
                 } else {
@@ -136,13 +141,14 @@ class PDF extends TCPDF
 
         //todo: use start transaction page?
         //todo: use num pagebreaks instead (don't add +1)
-        $numPages = ($endPageNumber - $this->measureStartPage) + 1;
+        $numPages = ($endPageNum - $this->measureStartPage) + 1;
 
         if ($rollback) {
             $this->rollbackTransaction(true);
         } else {
             $this->commitTransaction();
         }
+
         return ['height' => $height,
                 'numPages' => $numPages,
                 'endYposition' => $endYPosition];
@@ -167,16 +173,6 @@ class PDF extends TCPDF
     {
         $this->rightHeader = $rightHeader;
     }
-
-//    public function getFormattedPageNumber()
-//    {
-//        return $this->formattedPageNumber;
-//    }
-//
-//    public function setFormattedPageNumber($formattedPageNumber)
-//    {
-//        $this->formattedPageNumber = $formattedPageNumber;
-//    }
 
     public function getLeftFooter()
     {
@@ -225,8 +221,8 @@ class PDF extends TCPDF
         $width = $this->getPageWidth()
                  - $this->getMargins()['left']
                  - $this->getMargins()['right'];
-        $this->Cell($width/2, 0, $this->getLeftFooter(), 'T');
-        $this->Cell($width/2, 0, $this->getRightFooter(), 'T', 0, 'R');
+        $this->Cell($width/2, 0, $this->getLeftFooter(), 'T', 0, 'L', false, '', 1);
+        $this->Cell($width/2, 0, $this->getRightFooter(), 'T', 0, 'R', false, '', 1);
     }
 
     protected function displayFootnotes()
@@ -237,7 +233,7 @@ class PDF extends TCPDF
         $oldY = $this->GetY();
 
         $x = $this->getMargins()['left'];
-        $y = $this->getMargins()['bottom'];
+        $y = $this->getPageHeight() - $this->getMargins()['bottom'];
 
         //reset page margins
         $this->SetAutoPageBreak(
@@ -256,6 +252,7 @@ class PDF extends TCPDF
 
         //display footnotes
         $this->Line($this->getMargins()['left'], $y, $x + $separationLineWidth, $y);
+        $this->SetY($y + $this->footnoteObjects[0]->getSeparatorLineVerticalmargin());
 
         foreach ($this->footnoteObjects as $key => $footnote) {
             $footnote->generateOutput();
@@ -274,7 +271,6 @@ class PDF extends TCPDF
     ) {
         $this->incrementPageNumber();
         parent::AddPage($orientation, $format, $keepmargins, $tocpage);
-        //$this->footnotes[$this->getPage()] = [];
     }
 
     public function getPageNumberStyle()
@@ -297,41 +293,24 @@ class PDF extends TCPDF
         $this->pageNumber = $pageNumber;
     }
 
-    public function addFootnote($text, DocumentInterface $document)
+    public function addFootnote(Footnote $footnote)
     {
-        //todo: use footnote object (no child of pageelements?)
-        //init counter(s) here with options from footnoteobject
-        //use hyphenationsettings etc from footnotesobj.
+        $number = $this->footnoteCounter->add();
+        $footnote->setNumber($number);
+        $this->footnoteObjects[] = $footnote;
 
-        if (!in_array($text, $this->footnoteTexts)) {
-            $this->footnoteTexts[] = $text;
-            $number = key($this->footnoteTexts) + 1;
+        $this->increaseBottomMargin($footnote->getHeight());
+        return $number;
+    }
 
-            //create new FootnoteObject
-            $footnote = $document->getElementFactory()->createFootnote(
-                $text,
-                $number,
-                $this,
-                $document
-            );
+    public function increaseBottomMargin($amount)
+    {
+        $bottomMargin = $this->getMargins()['bottom'];
 
-            $this->footnoteObjects[] = $footnote;
-
-            $footnoteHeight = $footnote->getSize()['height'];
-            $bottomMargin = $this->getMargins()['bottom'];
-
-            //save default bottom margin
-            $this->defaultBottomMargin = $document->getPageMargins('bottom');
-
-            //set new bottom margin
-            $this->SetAutoPageBreak(
-                $this->getAutoPageBreak(),
-                $bottomMargin + $footnoteHeight
-            );
-        } else {
-            $number = array_search($text, $this->footnoteTexts) + 1;
-        }
-
-        return '<sup>'.$number.'</sup>';
+        //set new bottom margin
+        $this->SetAutoPageBreak(
+            $this->getAutoPageBreak(),
+            $bottomMargin + $amount
+        );
     }
 }

@@ -106,6 +106,11 @@ class ElementOutput
                 $pdf->setPageNumber(new Number(0));
             }
             $this->oldPageGroup = $pageElement->getPageGroup();
+
+            //todo: wrap in method
+            //reset header/footer output
+            $pdf->setPrintHeader(true);
+            $pdf->setPrintFooter(true);
         }
     }
 

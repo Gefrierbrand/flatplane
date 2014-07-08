@@ -33,6 +33,7 @@ trait DocumentReferences
     protected $validLabelTypes = ['page', 'title', 'number', 'source'];
     protected $unresolvedReferenceMarker = '?';
     protected $assumedPageNumberWidth = 3;
+    protected $assumedFootnoteNumberWidth = 2;
     protected $assumedStructureNumberWidth = 4;
     protected $assumedTitleWidth = 20;
 
@@ -92,6 +93,9 @@ trait DocumentReferences
             case 'page':
                 $width = $this->getAssumedPageNumberWidth();
                 return str_repeat($this->getUnresolvedReferenceMarker(), $width);
+            case 'footnote':
+                $width = $this->getAssumedFootnoteNumberWidth();
+                return str_repeat($this->getUnresolvedReferenceMarker(), $width);
             default:
                 trigger_error(
                     'Invalid reference type, defaulting to number',
@@ -142,5 +146,15 @@ trait DocumentReferences
     protected function setAssumedTitleWidth($assumedTitleWidth)
     {
         $this->assumedTitleWidth = (int) $assumedTitleWidth;
+    }
+
+    public function getAssumedFootnoteNumberWidth()
+    {
+        return $this->assumedFootnoteNumberWidth;
+    }
+
+    public function setAssumedFootnoteNumberWidth($assumedFootnoteNumberWidth)
+    {
+        $this->assumedFootnoteNumberWidth = $assumedFootnoteNumberWidth;
     }
 }

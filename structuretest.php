@@ -50,7 +50,6 @@ $document->addTitlePage();
 //$kapitel1->setStartsNewPage(['level1' => false]);
 //$kapitel1->addTextFile('input/testKapitelMitRef.php');
 
-
 $document->addSource('img:nn', ['sourceAuthor' => 'Nikolai Neff']);
 $document->setPageNumberStyle(['PG1' => 'roman']);
 $document->setPageNumberStyle(['PG2' => 'alpha']);

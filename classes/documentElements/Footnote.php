@@ -40,22 +40,19 @@ class Footnote
     protected $hyphenate = true;
 
     protected $separatorLineWidth = 30;
-    protected $numberSeparationWidth = 0.8;
+    protected $separatorLineVerticalmargin = 3;
+    protected $numberSeparationWidth = 4; //in user-units
     protected $textAlignment = 'L';
 
-    protected $pdf;
     protected $document;
 
     public function __construct(
         $text,
-        $number,
-        PDF $pdf,
         DocumentInterface $document,
         array $settings = []
     ) {
         $this->setText($text);
         $this->setDocument($document);
-        $this->setNumber($number);
 
         foreach ($settings as $key => $setting) {
             $name = 'set'.ucfirst($key);
@@ -77,26 +74,16 @@ class Footnote
 
     public function generateOutput()
     {
-        if (!($this->getPdf() instanceof PDF)) {
-            throw new RuntimeException(
-                'The PDF Object must be set before generating footnote-output'
-            );
-        }
         $pdf = $this->getPdf();
 
         $this->applyStyles();
-        $separationWidth = $pdf->getHTMLUnitToUnits(
-            $this->getNumberSeparationWidth().'em',
-            $pdf->getFontSize()
-        );
 
         $html = '<sup>'.$this->getNumber().'</sup>';
-
         $pdf->writeHTML($html, false, false, true);
-        $pdf->SetX($pdf->getMargins()['left'] + $separationWidth);
+
+        $pdf->SetX($pdf->getMargins()['left'] + $this->getNumberSeparationWidth());
 
         $text = $this->getText();
-
         $pdf->MultiCell(0, 0, $text, 0, $this->getTextAlignment(), false, 1);
     }
 
@@ -137,20 +124,25 @@ class Footnote
 
     public function getNumber()
     {
+        if (empty($this->number)) {
+            $this->number = $this->getDocument();
+        }
         return $this->number;
     }
 
     /**
      *
-     * @return array
-     *  keys: 'height', 'numPages', 'endYposition';
+     * @return float
      */
-    public function getSize()
+    public function getHeight()
     {
         $pdf = $this->getPDF();
-        $pdf->startMeasurement();
-        $this->generateOutput();
-        return $pdf->endMeasurement();
+        $this->applyStyles();
+
+        $textwidth = $this->getDocument()->getPageMeasurements()['textWidth']
+                      - $this->getNumberSeparationWidth();
+
+        return $pdf->getStringHeight($textwidth, $this->getText());
     }
 
     public function getHyphenate()
@@ -213,5 +205,25 @@ class Footnote
     public function setDocument(DocumentInterface $document)
     {
         $this->document = $document;
+    }
+
+    public function getSeparatorLineVerticalmargin()
+    {
+        return $this->separatorLineVerticalmargin;
+    }
+
+    public function setSeparatorLineVerticalmargin($separatorLineVerticalmargin)
+    {
+        $this->separatorLineVerticalmargin = $separatorLineVerticalmargin;
+    }
+
+    public function getPage()
+    {
+        return $this->page;
+    }
+
+    public function setPage($page)
+    {
+        $this->page = $page;
     }
 }

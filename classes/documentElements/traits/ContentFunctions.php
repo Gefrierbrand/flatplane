@@ -266,7 +266,7 @@ trait ContentFunctions
      */
     public function toRoot()
     {
-        if ($this->getParent() !==null) {
+        if ($this->getParent() !== null) {
             $root = $this->getParent()->toRoot();
         } else {
             $root = $this;

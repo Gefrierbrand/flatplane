@@ -31,8 +31,8 @@ interface TextInterface extends DocumentElementInterface
 {
     public function getHyphenate();
     public function getText();
-   
-    public function readText();
+
+    //public function readText();
 
     public function getHash($startYposition);
     public function getParse();
