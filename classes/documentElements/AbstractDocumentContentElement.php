@@ -450,7 +450,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         //todo: return width?
         $pdf = $this->getPDF();
         $pdf->startMeasurement($startYposition);
-        $this->generateOutput(true);
+        $this->generateOutput();
         return $pdf->endMeasurement();
     }
 

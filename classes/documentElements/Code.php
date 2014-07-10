@@ -65,8 +65,6 @@ class Code extends Text
             $splitText = [$this->getText()];
         }
 
-        $splitText = explode($this->getSplitAtStr(), $this->getText());
-
         foreach ($splitText as $line) {
             $pdf->writeHTML(
                 $line,
