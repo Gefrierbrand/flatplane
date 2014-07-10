@@ -38,8 +38,8 @@ class Code extends Text
 
     protected $text = '';
     protected $path = '';
-    protected $splitInParagraphs = true;
-    protected $splitAtStr = "\n";
+    protected $splitInParagraphs = false;
+    protected $splitAtStr = PHP_EOL;
     protected $hyphenate = false;
 
     protected $useCache = true;
@@ -58,6 +58,8 @@ class Code extends Text
         $startPage = $pdf->getPage();
 
         $this->applyStyles();
+
+        //file_put_contents('grVars'.microtime().'.txt', serialize($pdf->getGraphicVars()));
 
         if ($this->getSplitInParagraphs()) {
             $splitText = explode($this->getSplitAtStr(), $this->getText());

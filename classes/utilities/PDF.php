@@ -221,6 +221,12 @@ class PDF extends TCPDF
     {
         if (!empty($this->footnoteObjects)) {
             $this->displayFootnotes();
+        } else {
+            //reset page margins
+            $this->SetAutoPageBreak(
+                $this->getAutoPageBreak(),
+                $this->defaultBottomMargin
+            );
         }
 
         $width = $this->getPageWidth()

@@ -140,7 +140,7 @@ class ElementOutput
         //increment the page number by the amount of pagebreaks caused by
         //the displaying of the element
         $this->setCurrentLinearPage(
-            $this->getCurrentLinearPage()+ $numPageBreaks
+            $this->getCurrentLinearPage() + $numPageBreaks
         );
 
         $pdf->setPageNumberStyle(
