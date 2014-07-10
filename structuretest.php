@@ -23,6 +23,8 @@
 require 'flatplane.inc.php';
 
 use de\flatplane\controller\Flatplane;
+use de\flatplane\documentElements\Formula;
+use de\flatplane\utilities\PDF;
 
 $flatplane = new Flatplane();
 
@@ -43,8 +45,20 @@ $settings = array(
 );
 
 $document = $flatplane->createDocument($settings);
+$titlepage = $document->addTitlePage();
+$outputCallback = function (PDF $pdf) {
+    $pdf->SetFont('times', '', 64);
+    $pdf->Write(0, 'TITLEPAGE 1');
+};
+$titlepage->setOutputCallback($outputCallback);
 
-$document->addTitlePage();
+$titlepage2 = $document->addTitlePage();
+$outputCallback2 = function (PDF $pdf) {
+    $pdf->SetFont('times', '', 64);
+    $pdf->Write(0, 'TITLEPAGE 2');
+};
+$titlepage2->setOutputCallback($outputCallback2);
+
 
 //$kapitel1 = $document->addSection('KAPITEL 1');
 //$kapitel1->setStartsNewPage(['level1' => false]);
@@ -77,7 +91,7 @@ $hauptteilSec = $document->addSection('Hauptteil');
 $hauptteilSec->setPageGroup('PG1');
 $problem = $hauptteilSec->addSection('Problemstellung');
 $problem->setLabel('sec:problem');
-$text1 = $problem->addTextFile('input/testKapitelMitRef.php');
+$text1 = $problem->addTextFile('input/testKapitelMitRef_LP.php');
 
 $versuch = $hauptteilSec->addSection('Versuchsaufbau');
 
@@ -89,11 +103,11 @@ $tex[] = '\LaTeX ~ 2 \cdot 2 \\ 2\mathbin{\cdot}2 \\ 2 \times 2 \\ 2\mathbin{\ti
 $tex[] = '(\pi + \varpi) \cdot \sum_{1}^{2}{3}';
 $tex[] = 'e = 2+\cfrac{1}{1+\cfrac{1}{2+\cfrac{1}{1+\cfrac{1}{1+\cfrac{1}{4+\cfrac{1}{1+\cfrac{1}{1+\cfrac{1}{6+\dotsb}}}}}}}}';
 
-foreach (de\flatplane\documentElements\Formula::getAvailableFonts() as $key => $formulafont) {
+foreach (Formula::getAvailableFonts() as $key => $formulafont) {
     $versuch->addFormula($tex[$key])->setFormulaFont($formulafont);
 }
 
-foreach (de\flatplane\documentElements\Formula::getAvailableFonts() as $key => $formulafont) {
+foreach (Formula::getAvailableFonts() as $key => $formulafont) {
     $versuch->addFormula($tex[0])->setFormulaFont($formulafont);
 }
 

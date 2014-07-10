@@ -252,11 +252,6 @@ class PageLayout
 
         //set the y position to the end of the section
         $this->setCurrentYPosition($sectionSize['endYposition']);
-
-//        $numPageBreaks = $sectionSize['numPages'] - 1;
-//        echo "section ($section): adding $numPageBreaks\n";
-//        $this->getCounter($this->getCurrentPageGroup())->add($numPageBreaks);
-//        $this->getLinearPageNumberCounter()->add($numPageBreaks);
     }
 
     /**
@@ -447,7 +442,6 @@ class PageLayout
             );
             $counter = new Counter($startValue);
             $this->addCounter($counter, $this->currentPageGroup);
-            //echo "adding counter for: {$this->currentPageGroup}\n";
         }
     }
 }

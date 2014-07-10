@@ -50,6 +50,8 @@ class Code extends Text
     {
         $highlighter = new Highlighter();
         $this->text = $highlighter->highlightFile($this->getPath());
+
+        file_put_contents('code.html', $this->text);
     }
 
     public function generateOutput()

@@ -38,15 +38,16 @@ class TitlePage extends AbstractDocumentContentElement
     protected $showFooter = false;
 
     protected $enumeratePage = false;
+    protected $outputCallback;
+
 
     public function generateOutput()
     {
-        //Overwrite this method in your own implementation
-        $pdf = $this->getPDF();
-
-        $pdf->SetFontSize(64);
-        $pdf->Write(0, 'TITELSEITE');
-        return 0;
+        if (is_callable($this->outputCallback)) {
+            return $this->outputCallback->__invoke($this->toRoot()->getPDF());
+        } else {
+            return 0;
+        }
     }
 
     public function getShowHeader()
@@ -77,5 +78,15 @@ class TitlePage extends AbstractDocumentContentElement
     public function setEnumeratePage($enumeratePage)
     {
         $this->enumeratePage = $enumeratePage;
+    }
+
+    public function getOutputCallback()
+    {
+        return $this->outputCallback;
+    }
+
+    public function setOutputCallback(callable $outputCallback)
+    {
+        $this->outputCallback = $outputCallback;
     }
 }

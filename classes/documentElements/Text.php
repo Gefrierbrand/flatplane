@@ -70,8 +70,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
 
     public function getHash($startYposition)
     {
-        return sha1(
-            $this->getText()
+        $hashInput = $this->getText()
             .$this->getTextAlignment()
             .$startYposition
             .$this->getFontSize()
@@ -88,8 +87,9 @@ class Text extends AbstractDocumentContentElement implements TextInterface
             .$this->toRoot()->getPageMargins('top')
             .$this->toRoot()->getPageMargins('bottom')
             .$this->toRoot()->getPageMargins('left')
-            .$this->toRoot()->getPageMargins('right')
-        );
+            .$this->toRoot()->getPageMargins('right');
+
+        return sha1($hashInput);
     }
 
     public function getParse()

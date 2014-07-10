@@ -69,6 +69,8 @@ class Highlighter
     {
         //Strip code and first span
         $code = substr(highlight_file($path, true), 36, -15);
+        //todo: remove last span
+
         //Split lines
         $lines = explode('<br />', $code);
         //Count

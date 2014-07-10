@@ -232,8 +232,6 @@ class PDF extends TCPDF
 
     protected function displayFootnotes()
     {
-        //echo "footnoteOUTPUT\n";
-
         $oldX = $this->GetX();
         $oldY = $this->GetY();
 
