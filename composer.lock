@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "42b26989f3d7967e73023b2bc2f267b6",
+    "hash": "49d5caa8a83e235f79cb4697cd2b246e",
     "packages": [
         {
             "name": "flatplane/bibtexparser",
@@ -196,17 +196,17 @@
         },
         {
             "name": "symfony/process",
-            "version": "2.5.x-dev",
+            "version": "v2.5.1",
             "target-dir": "Symfony/Component/Process",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Process.git",
-                "reference": "5e53efbf61a7fbf73c79e3e08feea50f64c20bfa"
+                "reference": "d923d86617000711813572795e0f8b276739ecb0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Process/zipball/5e53efbf61a7fbf73c79e3e08feea50f64c20bfa",
-                "reference": "5e53efbf61a7fbf73c79e3e08feea50f64c20bfa",
+                "url": "https://api.github.com/repos/symfony/Process/zipball/d923d86617000711813572795e0f8b276739ecb0",
+                "reference": "d923d86617000711813572795e0f8b276739ecb0",
                 "shasum": ""
             },
             "require": {
@@ -241,21 +241,21 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "http://symfony.com",
-            "time": "2014-07-09 09:05:48"
+            "time": "2014-07-08 12:21:33"
         },
         {
             "name": "symfony/stopwatch",
-            "version": "dev-master",
+            "version": "v2.5.1",
             "target-dir": "Symfony/Component/Stopwatch",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Stopwatch.git",
-                "reference": "6edce0f46dc42ad9f6926ef17c678cb23a158768"
+                "reference": "b27c569a6eda5e8e91b8c6dead700fdac9aa8ee3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Stopwatch/zipball/6edce0f46dc42ad9f6926ef17c678cb23a158768",
-                "reference": "6edce0f46dc42ad9f6926ef17c678cb23a158768",
+                "url": "https://api.github.com/repos/symfony/Stopwatch/zipball/b27c569a6eda5e8e91b8c6dead700fdac9aa8ee3",
+                "reference": "b27c569a6eda5e8e91b8c6dead700fdac9aa8ee3",
                 "shasum": ""
             },
             "require": {
@@ -264,7 +264,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.6-dev"
+                    "dev-master": "2.5-dev"
                 }
             },
             "autoload": {
@@ -290,7 +290,7 @@
             ],
             "description": "Symfony Stopwatch Component",
             "homepage": "http://symfony.com",
-            "time": "2014-07-08 12:21:41"
+            "time": "2014-07-08 12:21:33"
         },
         {
             "name": "tecnick.com/tcpdf",
@@ -354,8 +354,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "symfony/process": 20,
-        "symfony/stopwatch": 20,
         "sabberworm/php-css-parser": 20,
         "flatplane/bibtexparser": 20,
         "flatplane/svgtex": 20
