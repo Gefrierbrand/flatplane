@@ -88,7 +88,7 @@ class ElementFactory
     {
         $configFile = Flatplane::getConfigDir()
                         .DIRECTORY_SEPARATOR.$this->documentConfigFile;
-        $config = new Config($configFile);
+        $config = new Config($configFile, $settings);
         $doc = new Document($config->getSettings());
         $doc->setElementFactory($this);
 

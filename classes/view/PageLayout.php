@@ -57,7 +57,7 @@ class PageLayout
         $this->document = $document;
         $pdf = $document->getPDF();
         //set bookmark for first page as document root
-        $pdf->Bookmark($document->getTitle(), 0, -1, 1);
+        $pdf->Bookmark($document->getDocTitle(), 0, -1, 1);
 
         //add a sequential page counter
         $this->linearPageNumberCounter = new Counter(0);

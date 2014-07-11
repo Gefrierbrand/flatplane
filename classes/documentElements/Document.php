@@ -599,6 +599,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     public function setDocTitle($docTitle)
     {
         $this->docTitle = $docTitle;
+        if ($this->pdf instanceof PDF) {
+            $this->getPDF()->SetTitle($docTitle);
+        }
     }
 
     /**
