@@ -257,7 +257,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     /**
      * @param bool $enumerate
      */
-    protected function setEnumerate($enumerate)
+    public function setEnumerate($enumerate)
     {
         if ($this->getParent() !== null) {
             trigger_error(
