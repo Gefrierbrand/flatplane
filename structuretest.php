@@ -29,7 +29,7 @@ use de\flatplane\utilities\PDF;
 $flatplane = new Flatplane();
 
 $flatplane::setOutputDir('output');
-$flatplane::setVerboseOutput(false);
+$flatplane::setVerboseOutput(true);
 
 
 /*
@@ -38,7 +38,7 @@ $flatplane::setVerboseOutput(false);
 //Vom Standard abweichende dokumentweite Einstellungen setzen
 $settings = array(
     'author' => 'Max Mustermann',
-    'title' => 'Ganz wichtiges Dokument',
+    'docTitle' => 'Ganz wichtiges Dokument',
     'keywords' => 'super, toll, top, gigantisch, superlative!',
     'numberingLevel' => ['list' => -1, 'formula' => -1, 'section' => -1],
     'numberingPrefix' => ['list' => '#']
