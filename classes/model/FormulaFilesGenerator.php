@@ -152,9 +152,11 @@ class FormulaFilesGenerator
             if (strpos($out, 'Server started')!==false) {
                 //exit loop
                 break;
-            } elseif (strpos($out, 'error')!==false) {
+            } elseif (strpos(strtolower($out), 'error')!==false) {
                 Flatplane::log("\t SVGTex: Error:", $this->process->getOutput());
                 $this->process->clearOutput();
+                $this->process->stop();
+                die('SVGTEX-INIT-Failed');
             } else {
                 $this->process->clearOutput();
             }
