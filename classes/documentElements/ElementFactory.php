@@ -86,7 +86,9 @@ class ElementFactory
      */
     public function createDocument(array $settings = [], PDF $pdf = null)
     {
-        $config = new Config($this->documentConfigFile, $settings);
+        $configFile = Flatplane::getConfigDir()
+                        .DIRECTORY_SEPARATOR.$this->documentConfigFile;
+        $config = new Config($configFile);
         $doc = new Document($config->getSettings());
         $doc->setElementFactory($this);
 

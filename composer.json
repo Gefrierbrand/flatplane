@@ -3,6 +3,7 @@
     "type": "library",
     "description": "Flatplane is a frontend to TCPDF to create scientific reports with automatic text-formatting and support for TeX and MathML equations",
     "keywords": ["Flatplane", "PDF", "typesetting", "typography", "report", "article", "LaTeX", "TeX", "MathJax", "Equation", "Formula", "MathML"],
+    "homepage": "https://flatplane.de",
     "repositories": [
         {
             "type": "vcs",

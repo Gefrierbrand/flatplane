@@ -29,7 +29,7 @@ use de\flatplane\utilities\PDF;
 $flatplane = new Flatplane();
 
 $flatplane::setOutputDir('output');
-$flatplane::setVerboseOutput(true);
+$flatplane::setVerboseOutput(false);
 
 
 /*

@@ -50,7 +50,7 @@ class Flatplane
     protected static $outputDir = '.';
     protected static $cacheDir = 'cache';
     protected static $configDir = 'config';
-    protected static $verboseOutput = true;
+    protected static $verboseOutput = false;
     protected static $firstmessage = true;
 
     /**
