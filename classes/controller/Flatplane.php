@@ -49,6 +49,7 @@ class Flatplane
     protected static $inputDir = '.';
     protected static $outputDir = '.';
     protected static $cacheDir = 'cache';
+    protected static $configDir = 'config';
     protected static $verboseOutput = true;
     protected static $firstmessage = true;
 
@@ -421,5 +422,15 @@ class Flatplane
     protected function getStopwatch()
     {
         return $this->stopwatch;
+    }
+
+    public static function getConfigDir()
+    {
+        return self::$configDir;
+    }
+
+    public static function setConfigDir($configDir)
+    {
+        self::$configDir = $configDir;
     }
 }

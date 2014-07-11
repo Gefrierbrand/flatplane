@@ -37,17 +37,17 @@ class ElementFactory
 {
     //todo: doc!
 
-    protected $documentConfig  = 'config/documentSettings.ini';
-    protected $sectionConfig   = 'config/sectionSettings.ini';
-    protected $listConfig      = 'config/listSettings.ini';
-    protected $formulaConfig   = 'config/formulaSettings.ini';
-    protected $textConfig      = 'config/textSettings.ini';
-    protected $imageConfig     = 'config/imageSettings.ini';
-    protected $sourceConfig    = 'config/sourceSettings.ini';
-    protected $codeConfig      = 'config/codeSettings.ini';
-    protected $titlePageConfig = 'config/titlePageSettings.ini';
-    protected $tableConfig     = 'config/tableSettings.ini';
-    protected $footnoteConfig  = 'config/footnoteSettings.ini';
+    protected $documentConfigFile  = 'documentSettings.ini';
+    protected $sectionConfigFile   = 'sectionSettings.ini';
+    protected $listConfigFile      = 'listSettings.ini';
+    protected $formulaConfigFile   = 'formulaSettings.ini';
+    protected $textConfigFile      = 'textSettings.ini';
+    protected $imageConfigFile     = 'imageSettings.ini';
+    protected $sourceConfigFile    = 'sourceSettings.ini';
+    protected $codeConfigFile      = 'codeSettings.ini';
+    protected $titlePageConfigFile = 'titlePageSettings.ini';
+    protected $tableConfigFile     = 'tableSettings.ini';
+    protected $footnoteConfigFile  = 'footnoteSettings.ini';
 
     /**
      * @var array
@@ -86,7 +86,7 @@ class ElementFactory
      */
     public function createDocument(array $settings = [], PDF $pdf = null)
     {
-        $config = new Config($this->documentConfig, $settings);
+        $config = new Config($this->documentConfigFile, $settings);
         $doc = new Document($config->getSettings());
         $doc->setElementFactory($this);
 
@@ -150,7 +150,9 @@ class ElementFactory
      */
     protected function createSection()
     {
-        $config = new Config($this->sectionConfig);
+        $configFile = Flatplane::getConfigDir()
+                        .DIRECTORY_SEPARATOR.$this->sectionConfigFile;
+        $config = new Config($configFile);
         return new Section($config->getSettings());
     }
 
@@ -159,7 +161,9 @@ class ElementFactory
      */
     protected function createList()
     {
-        $config = new Config($this->listConfig);
+        $configFile = Flatplane::getConfigDir()
+                        .DIRECTORY_SEPARATOR.$this->listConfigFile;
+        $config = new Config($configFile);
         return new ListOfContents($config->getSettings());
     }
 
@@ -168,7 +172,9 @@ class ElementFactory
      */
     protected function createFormula()
     {
-        $config = new Config($this->formulaConfig);
+        $configFile = Flatplane::getConfigDir()
+                        .DIRECTORY_SEPARATOR.$this->formulaConfigFile;
+        $config = new Config($configFile);
         return new Formula($config->getSettings());
     }
 
@@ -178,7 +184,9 @@ class ElementFactory
      */
     protected function createText()
     {
-        $config = new Config($this->textConfig);
+        $configFile = Flatplane::getConfigDir()
+                        .DIRECTORY_SEPARATOR.$this->textConfigFile;
+        $config = new Config($configFile);
         return new Text($config->getSettings());
     }
 
@@ -188,7 +196,9 @@ class ElementFactory
      */
     protected function createCode()
     {
-        $config = new Config($this->codeConfig);
+        $configFile = Flatplane::getConfigDir()
+                        .DIRECTORY_SEPARATOR.$this->codeConfigFile;
+        $config = new Config($configFile);
         return new Code($config->getSettings());
     }
 
@@ -198,7 +208,9 @@ class ElementFactory
      */
     protected function createImage()
     {
-        $config = new Config($this->imageConfig);
+        $configFile = Flatplane::getConfigDir()
+                        .DIRECTORY_SEPARATOR.$this->imageConfigFile;
+        $config = new Config($configFile);
         return new Image($config->getSettings());
     }
 
@@ -208,7 +220,9 @@ class ElementFactory
      */
     protected function createSource()
     {
-        $config = new Config($this->sourceConfig);
+        $configFile = Flatplane::getConfigDir()
+                        .DIRECTORY_SEPARATOR.$this->sourceConfigFile;
+        $config = new Config($configFile);
         return new Source($config->getSettings());
     }
 
@@ -218,7 +232,9 @@ class ElementFactory
      */
     protected function createTitlePage()
     {
-        $config = new Config($this->titlePageConfig);
+        $configFile = Flatplane::getConfigDir()
+                        .DIRECTORY_SEPARATOR.$this->titlePageConfigFile;
+        $config = new Config($configFile);
         return new TitlePage($config->getSettings());
     }
 
@@ -228,7 +244,9 @@ class ElementFactory
      */
     protected function createTable()
     {
-        $config = new Config($this->tableConfig);
+        $configFile = Flatplane::getConfigDir()
+                        .DIRECTORY_SEPARATOR.$this->tableConfigFile;
+        $config = new Config($configFile);
         return new Table($config->getSettings());
     }
 
@@ -239,7 +257,9 @@ class ElementFactory
      */
     public function createFootnote($text, DocumentInterface $document)
     {
-        $config = new Config($this->footnoteConfig);
+        $configFile = Flatplane::getConfigDir()
+                        .DIRECTORY_SEPARATOR.$this->footnoteConfigFile;
+        $config = new Config($configFile);
         return new Footnote($text, $document, $config->getSettings());
     }
 }
