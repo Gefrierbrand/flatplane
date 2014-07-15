@@ -132,8 +132,11 @@ trait StyleFunctions
     protected $linePitch = 1.25;
 
     /**
-     *
-     * @param string $key
+     * This method sets the current graphic state in the PDF. This includes
+     * fonts, cell-margins and -paddings and colors.
+     * @param string $key (optional)
+     *  name of a specific configuration directive to use if multiple styles are
+     *  defined for the object. e.g. 'level1'
      */
     public function applyStyles($key = null)
     {
@@ -222,6 +225,12 @@ trait StyleFunctions
         );
     }
 
+    /**
+     * Get the font name for the given key (like 'level1'). If the key is omitted
+     * or not defined in the elements configuration, a default value is returned.
+     * @param string $key
+     * @return string
+     */
     public function getFontType($key = null)
     {
         if ($key !== null && isset($this->fontType[$key])) {
@@ -231,6 +240,14 @@ trait StyleFunctions
         }
     }
 
+    /**
+     * Get the fontsize (in pt) for the given key (like 'level1'). If the key is
+     * omitted or not defined in the elements configuration, a default value is
+     * returned.
+     * @param string $key
+     * @return string|int
+     *  Fontsize (in pt)
+     */
     public function getFontSize($key = null)
     {
         if ($key !== null && isset($this->fontSize[$key])) {
@@ -240,6 +257,14 @@ trait StyleFunctions
         }
     }
 
+    /**
+     * Get the font style (bold, italic, etc.) for the given key (like 'level1').
+     * If the key is omitted or not defined in the elements configuration, a
+     * default value is returned. The 'normal' font style is represented by an
+     * empty string
+     * @param string $key
+     * @return string
+     */
     public function getFontStyle($key = null)
     {
         if ($key !== null && isset($this->fontStyle[$key])) {
@@ -249,6 +274,16 @@ trait StyleFunctions
         }
     }
 
+    /**
+     * Get the font color for the given key (like 'level1').
+     * If the key is omitted or not defined in the elements configuration, a
+     * default value is returned.
+     * @param string $key
+     * @return array
+     *  Array containig 1, 3 or 4 numbers to represent a color in grayscale, RGB
+     *  or CMYK
+     * @see TCPDF::setColor()
+     */
     public function getFontColor($key = null)
     {
         if ($key !== null && isset($this->fontColor[$key])) {
@@ -258,6 +293,17 @@ trait StyleFunctions
         }
     }
 
+    /**
+     * Get the draw color for the given key (like 'level1'). This color is used
+     * for borders, under- or overline and other non-text elements in the PDF.
+     * If the key is omitted or not defined in the elements configuration, a
+     * default value is returned.
+     * @param string $key
+     * @return array
+     *  Array containig 1, 3 or 4 numbers to represent a color in grayscale, RGB
+     *  or CMYK
+     * @see TCPDF::setColor()
+     */
     public function getDrawColor($key = null)
     {
         if ($key !== null && isset($this->drawColor[$key])) {
@@ -267,6 +313,17 @@ trait StyleFunctions
         }
     }
 
+    /**
+     * Get the fill color for the given key (like 'level1'). This color is used
+     * to fill cells in the PDF.
+     * If the key is omitted or not defined in the elements configuration, a
+     * default value is returned.
+     * @param string $key
+     * @return array
+     *  Array containig 1, 3 or 4 numbers to represent a color in grayscale, RGB
+     *  or CMYK
+     * @see TCPDF::setColor()
+     */
     public function getFillColor($key = null)
     {
         if ($key !== null && isset($this->fillColor[$key])) {

@@ -27,7 +27,25 @@ namespace de\flatplane\interfaces;
  */
 interface ConfigInterface
 {
+    /**
+     * Class Constructor
+     * @param string $configFile (optional)
+     *  Path to configuration file
+     * @param array $settings (optional)
+     *  Key=>Value pairs of settings wich extend or overwrite the settings loaded
+     *  from the configuration file
+     */
     public function __construct($configFile = '', array $settings = []);
+
+    /**
+     * Overrides or extends the default options with the given settings array
+     * @param array $settings
+     */
     public function setSettings(array $settings);
+
+    /**
+     * @return array
+     *  Associative array containint the configuration options
+     */
     public function getSettings();
 }

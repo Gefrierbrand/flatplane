@@ -34,8 +34,7 @@ use RuntimeException;
 class Config implements ConfigInterface
 {
     /**
-     * @var mixed
-     *  Holds Settings as array or null if unitialized
+     * @var array
      */
     protected $settings = [];
 
@@ -60,6 +59,7 @@ class Config implements ConfigInterface
 
     /**
      * @return array
+     *  Associative array containint the configuration options
      */
     public function getSettings()
     {

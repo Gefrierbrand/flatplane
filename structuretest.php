@@ -74,7 +74,6 @@ $document->addSource('img:nn', ['sourceAuthor' => 'Nikolai Neff']);
 $document->addSource('img:nn2', ['sourceAuthor' => 'Max Mustermann ganz langer autor der bestimmt umbrechen muss weil er überaus adipös ist gliedermessstab heftlocher']);
 $document->addSource('img:nn3', ['sourceAuthor' => 'Max Mustermann2']);
 $document->addSource('img:nn4', ['sourceAuthor' => 'Max Mustermann2']);
-$document->addBibTexSources('quellen.bib');
 
 $document->setPageNumberStyle(['PG1' => 'roman']);
 $document->setPageNumberStyle(['PG2' => 'alpha']);

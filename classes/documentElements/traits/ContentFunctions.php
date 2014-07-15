@@ -22,15 +22,13 @@
 namespace de\flatplane\documentElements\traits;
 
 use de\flatplane\documentElements\Code;
-use de\flatplane\documentElements\Document;
-use de\flatplane\documentElements\Formula;
-use de\flatplane\documentElements\Image;
 use de\flatplane\documentElements\ListOfContents;
-use de\flatplane\documentElements\Section;
-use de\flatplane\documentElements\Table;
-use de\flatplane\documentElements\Text;
 use de\flatplane\interfaces\DocumentElementInterface;
 use de\flatplane\interfaces\documentElements\DocumentInterface;
+use de\flatplane\interfaces\documentElements\FormulaInterface;
+use de\flatplane\interfaces\documentElements\ImageInterface;
+use de\flatplane\interfaces\documentElements\TableInterface;
+use de\flatplane\interfaces\documentElements\TextInterface;
 use RuntimeException;
 
 /**
@@ -65,8 +63,6 @@ trait ContentFunctions
      * It checks if the given, to-be-added, content-type is allowed for the
      * current object and returns false on failure or a reference to the
      * added content.
-     *
-     * TODO: doc
      *
      * @param DocumentElementInterface $content
      * @param string $position (optional)
@@ -116,6 +112,14 @@ trait ContentFunctions
         }
     }
 
+    /**
+     * Adds an arbitrary element of type $type to the current content
+     * @param string $type
+     * @param array $settings
+     * @return DocumentElementInterface
+     *  Content object implementing DocumentElementInterface with its parent set
+     *  to the current object
+     */
     public function addElement($type, array $settings)
     {
         $factory = $this->toRoot()->getElementFactory();
@@ -124,9 +128,11 @@ trait ContentFunctions
     }
 
     /**
+     * Adds a new Section to the current element
      * @param string $title
      * @param array $settings
-     * @return Section
+     * @return SectionInterface
+     *  Content object implementing SectionInterface
      */
     public function addSection($title, array $settings = [])
     {
@@ -150,9 +156,11 @@ trait ContentFunctions
     }
 
     /**
+     * Adds a new formula to the current element
      * @param string $code
+     *  TeX or MathMl description of the formula
      * @param array $settings
-     * @return Formula
+     * @return FormulaInterface
      */
     public function addFormula($code, array $settings = [])
     {
@@ -163,9 +171,10 @@ trait ContentFunctions
     }
 
     /**
+     * Adds Text (including references or footnotes) from a file
      * @param string $path
      * @param array $settings
-     * @return Text
+     * @return TextInterface
      */
     public function addTextFile($path, array $settings = [])
     {
@@ -179,10 +188,11 @@ trait ContentFunctions
     }
 
     /**
-     *
+     * Adds a new Table to the current element
      * @param string $code
+     *  HTML representation of the table
      * @param array $settings
-     * @return Table
+     * @return TableInterface
      */
     public function addTable($code, array $settings = [])
     {
@@ -193,6 +203,7 @@ trait ContentFunctions
     }
 
     /**
+     * Adds highlighted PHP Code as text from a file
      * @param string $path
      * @param array $settings
      * @return Code
@@ -209,9 +220,10 @@ trait ContentFunctions
     }
 
     /**
+     * Adds an image to the current element
      * @param string $path
      * @param array $settings
-     * @return Image
+     * @return ImageInterface
      * @throws RuntimeException
      */
     public function addImage($path, array $settings = [])
@@ -244,7 +256,7 @@ trait ContentFunctions
 
     /**
     * @return array
-    *  Returns a (multilevel) Array containing references to
+    *  Returns a multilevel array containing references to
     *  DocumentContentElement instances
     */
     public function getContent()
@@ -253,6 +265,7 @@ trait ContentFunctions
     }
 
     /**
+     * Indicates whether the current object cointains other content objects
      * @return bool
      */
     public function hasContent()
@@ -261,8 +274,9 @@ trait ContentFunctions
     }
 
     /**
-     * This method calls itself recursively until the root Document is reached
-     * @return Document
+     * This method calls itself recursively until the root node (Document)
+     * is reached
+     * @return DocumentInterface
      */
     public function toRoot()
     {
@@ -284,7 +298,7 @@ trait ContentFunctions
      * given depth from $level is reached an returns a reference to the reached
      * object
      * @param int $level
-     * @return DocumentContentStructureInterface
+     * @return DocumentElementInterface
      */
     public function toParentAtLevel($level)
     {
@@ -331,6 +345,7 @@ trait ContentFunctions
 //    }
 
     /**
+     * Gets the level (=depth) of the current element inside the document tree
      * @return int
      */
     public function getLevel()

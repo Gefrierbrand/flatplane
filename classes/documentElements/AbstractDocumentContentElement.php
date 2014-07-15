@@ -180,6 +180,10 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         }
     }
 
+    /**
+     * get a string representation of the current object
+     * @return string
+     */
     public function __toString()
     {
         return (string) $this->getTitle();
@@ -195,6 +199,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     }
 
     /**
+     * Get the Parent of the current element
      * @return DocumentElementInterface
      */
     public function getParent()
@@ -210,18 +215,28 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         return $this->toRoot()->getPDF();
     }
 
+    /**
+     * Get the title of the current element
+     * @return type
+     */
     public function getTitle()
     {
         return $this->title;
     }
 
+    /**
+     * Get the elements type
+     * @return string
+     */
     public function getType()
     {
         return $this->type;
     }
 
     /**
-     * @return mixed
+     * Get the number of the page this element gets printed on. If the element
+     * spans multiple pages, this number references the first occurrence.
+     * @return int
      */
     public function getPage()
     {
@@ -235,10 +250,12 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     }
 
     /**
-     * @param mixed $page
+     * Set the pagenumber (start) of the current element
+     * @param int $page
      */
     public function setPage($page)
     {
+        //todo: use number here
         $this->page = $page;
     }
 
@@ -297,6 +314,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
 
     /**
      * @return bool
+     *  Indicates whether the element will recieve a number
      */
     public function getEnumerate()
     {
@@ -305,6 +323,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
 
     /**
      * @return bool
+     *  Indicates whether the element will be shown in lists for the elements type
      */
     public function getShowInList()
     {
@@ -313,6 +332,8 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
 
     /**
      * @return mixed
+     *  Eiter returns a bool to enable or disable all subcontent or an array
+     *  containing the names of allowed types
      */
     public function getAllowSubContent()
     {
@@ -320,6 +341,8 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     }
 
     /**
+     * determines whether an element can be split accross multiple pages
+     * (Currently not implemented)
      * @return bool
      */
     public function getIsSplitable()
@@ -328,6 +351,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     }
 
     /**
+     * Get the label of the current Element. (used as reference Identifier)
      * @return string
      */
     public function getLabel()
@@ -353,6 +377,14 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         $this->fillColor = $fillColor;
     }
 
+    /**
+     * Get the minimum clearance (=margins) around the element for the specified
+     * direction (e.g. 'top'). If no key is provides or the key does not exist,
+     * a default value is returned.
+     * @param string $key
+     * @return mixed
+     *  String or numeric margin amount
+     */
     public function getMargins($key = null)
     {
         if ($key !== null && isset($this->margins[$key])) {
@@ -362,6 +394,13 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         }
     }
 
+    /**
+     * Get the minimum inside clearane (=paddings) of the element. (Currently not
+     * used)
+     *
+     * @param string $key
+     * @return mixed
+     */
     public function getPaddings($key = null)
     {
         if ($key !== null && isset($this->paddings[$key])) {
@@ -376,6 +415,11 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         $this->altTitle = $altTitle;
     }
 
+    /**
+     * Get an alternate version of the title (used in lists and the header).
+     * If no alternate title is defined, the standard title is used.
+     * @return string
+     */
     public function getAltTitle()
     {
         if (empty($this->altTitle)) {
@@ -386,7 +430,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     }
 
     /**
-     * todo: doc
+     * Get often needed page dimensions for the current page inside the PDF
      * @return array
      *  Keys: pageWidth, textWidth, pageHeight, textHeight
      */
@@ -410,7 +454,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     }
 
     /**
-     *
+     * Get Hyphenation settings (on/off)
      * @return bool
      */
     public function getHyphenate()
@@ -428,7 +472,8 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     }
 
     /**
-     * todo: doc
+     * Hyphenate the title and (if present) the altTitle of the element using the
+     * documents hyphenation options if the hyphenate property is set to true.
      */
     public function hyphenateTitle()
     {
@@ -443,7 +488,11 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     }
 
     /**
-     * @return array
+     * Get the vertical dimensions and the number of pages needed to display the
+     * current element.
+     * @param float $startYposition
+     * @return Array
+     *  keys: 'height', 'numPages', 'endYposition'
      */
     public function getSize($startYposition = null)
     {
@@ -454,24 +503,35 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         return $pdf->endMeasurement();
     }
 
+    /**
+     * Get the linear (starting) page number of the current element
+     * @return int
+     */
     public function getLinearPage()
     {
         return $this->linearPage;
     }
 
+    /**
+     * Set the linear (starting) page number of the current element
+     * @param int $linearPage
+     */
     public function setLinearPage($linearPage)
     {
         $this->linearPage = $linearPage;
     }
 
     /**
-     * todo: doc
+     * Creates a reference to a source
      * @param string $source
      * @param string $extras
+     *  additional text (e.g. Pages 2-7) to be displayed in the text
      * @return string
+     *  Formatted number and $extras to indicate the referenced source
      */
     public function cite($source, $extras = '')
     {
+        //todo: doc
         //todo: own style for Cite!
         $root = $this->toRoot();
         $sourceList = $root->getSources();
@@ -513,21 +573,41 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         return $cite;
     }
 
+    /**
+     * Get the link identifier for the current element
+     * @return ressource
+     * @see TCPDF:addLink
+     */
     public function getLink()
     {
         return $this->link;
     }
 
+    /**
+     * Set the link identifier for the current element
+     * @param ressource $link
+     * @see TCPDF::AddLink
+     */
     public function setLink($link)
     {
         $this->link = $link;
     }
 
+    /**
+     * Get the pagegroup of the current element
+     * @return string
+     */
     public function getPageGroup()
     {
         return $this->pageGroup;
     }
 
+    /**
+     * Set the pagegroup for the current element.
+     * This group is maintained by all following elements unless they specify a
+     * new pagegroup
+     * @param string $pageGroup
+     */
     public function setPageGroup($pageGroup)
     {
         $this->pageGroup = $pageGroup;

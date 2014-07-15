@@ -50,13 +50,14 @@ class Counter implements CounterInterface
      * Add the provided amount to the current value or increment by the standard
      * increment value for this counter, which defaults to 1. Negative values
      * are possible to decrease the counters value.
-     * @param int|float $increment
+     * @param int|float $increment (optional)
      * @return int|float
+     *  the counters current value
      */
     public function add($increment = 1)
     {
         $this->validate();
-        if (func_num_args() == 0) {
+        if (func_num_args() == 0 || !is_numeric($increment)) {
             $this->value += $this->increment;
         } else {
             $this->value += $increment;
@@ -65,15 +66,8 @@ class Counter implements CounterInterface
     }
 
     /**
-     * increment the current value by the default amount
-     */
-    public function increment()
-    {
-        $this->add();
-    }
-
-    /**
      * @return int|float
+     *  the counters current value
      */
     public function getValue()
     {
@@ -100,9 +94,10 @@ class Counter implements CounterInterface
     }
 
     /**
-     * set the current default increment value which will be used if add gets
-     * called without parameters
+     * Set the current default increment value which will be used if add gets
+     * called without (or with invalid) parameters
      * @param int|float $inc
+     *  new increment value
      */
     public function setIncrement($inc)
     {

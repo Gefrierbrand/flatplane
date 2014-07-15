@@ -47,16 +47,14 @@ trait NumberingFunctions
     protected $counter = array();
 
     /**
-     * Returns an existing Counter for the given type or creates a new one if
-     * a counter for that type is not already present. This might create
+     * Returns an existing Counter for the given name or creates a new one if
+     * a counter with that name is not already present. This might create
      * unwanted side effects like wrong element-numbering and therefore also
      * triggers an error in that case.
-     * If no parameter is provided, the whole array of all existing counters
-     * for the current level is returned.
      * @param string $name
-     * @return Counter|array
+     * @return CounterInterface
      */
-    public function getCounter($name = null)
+    public function getCounter($name)
     {
         if (array_key_exists($name, $this->counter)) {
             return $this->counter[$name];
@@ -68,7 +66,7 @@ trait NumberingFunctions
     }
 
     /**
-     *
+     * Returns all defined Counters for the current level as array
      * @return array
      */
     public function getCounterArray()
@@ -77,7 +75,8 @@ trait NumberingFunctions
     }
 
     /**
-     * Adds a new Counter for the given type to the current object
+     * Adds a new Counter with the given name to the current object. If a counter
+     * with that name already exists it will be overwritten with the new counter.
      * @param CounterInterface $counter
      * @param string $name
      * @return Counter
@@ -133,9 +132,9 @@ trait NumberingFunctions
         $content->setNumbers($parentnum);
     }
 
-    /**
-     * Checks if a counter for the content-type already exists and increments
-     * its value, or creates a new one for that type
+     /**
+     * Checks if a counter for the content-type already exists on the current
+     * level and increments its value, or creates a new one for that content-type
      * @param DocumentElementInterface $content
      * @return Counter
      *  Counter for the given content-type
@@ -170,13 +169,21 @@ trait NumberingFunctions
     }
 
     /**
+     * Get all numbers for the current element and its parents up to the root
      * @return array
+     *  Array containing objects implementing NumberInterface
      */
     public function getNumbers()
     {
         return $this->numbers;
     }
 
+    /**
+     * Set the numbers of the current element
+     * @param array $numbers
+     *  Array containing values of the numbers or objects implementing the
+     *  NumberInterface
+     */
     public function setNumbers(array $numbers)
     {
         foreach ($numbers as $key => $number) {
@@ -188,7 +195,8 @@ trait NumberingFunctions
     }
 
     /**
-     *
+     * Get the numbers of the current object formatted as string according to
+     * the elements settings
      * @return string
      */
     public function getFormattedNumbers()
