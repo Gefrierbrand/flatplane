@@ -34,22 +34,38 @@ class Number implements NumberInterface
     protected $value;
     protected $format = 'int';
 
+    /**
+     * Create a new number object
+     * @param int|float $value (optional)
+     */
     public function __construct($value = 0)
     {
         //todo: validate value
         $this->value = $value;
     }
 
+    /**
+     * Get a string representation of the current object
+     * @return string
+     */
     public function __toString()
     {
         return (string) $this->getFormattedValue();
     }
 
+    /**
+     * Get the current value of the number
+     * @return int|float
+     */
     public function getValue()
     {
         return $this->value;
     }
 
+    /**
+     * Set the current value of the number
+     * @param int|float $value
+     */
     public function setValue($value)
     {
         //todo: validate value
@@ -57,12 +73,21 @@ class Number implements NumberInterface
     }
 
     /**
-     *
-     * @param string $format
+     * Get a formatted representation of the Numbers value as string.
+     * @param string $format (optional)
+     *  valid options: 'alpha', 'roman', 'float', 'int'
+     *  The casing determines the appearance of the numbers for 'alpha' and 'roman'
+     *  If omitted, the Numbers default format will be used
      * @param int $numDecimals
+     *  number of decimals to display in 'float' mode
      * @param string $dec_point
+     *  decimal separation character
      * @param string $thousands_sep
+     *  thouseds separation character
      * @return string
+     *  formatted number
+     * @see Number::roman()
+     * @see Number::alpha()
      */
     public function getFormattedValue(
         $format = null,
@@ -113,7 +138,12 @@ class Number implements NumberInterface
         return $retVal;
     }
 
-    //todo: arbitrary number via param?
+    /**
+     * Get the Numbers current value repesented as roman numerals
+     * @param string $case (optional)
+     *  set to 'upper' to use uppercase roman numbers.
+     * @return string
+     */
     public function roman($case = 'upper')
     {
         if ($this->value == 0) {
@@ -155,6 +185,12 @@ class Number implements NumberInterface
         return $result;
     }
 
+    /**
+     * Get the Numbers current value repesented as charactes [a-z]
+     * @param string $mode
+     *  set to 'upper' to use uppercase letters
+     * @return string
+     */
     public function alpha($mode = 'upper')
     {
         if ($this->value == 0) {
@@ -184,11 +220,19 @@ class Number implements NumberInterface
         return $result;
     }
 
+    /**
+     * Get the default number formatting format
+     * @return string
+     */
     public function getFormat()
     {
         return $this->format;
     }
 
+    /**
+     * Set the default number formatting format
+     * @param string $format
+     */
     public function setFormat($format)
     {
         $this->format = $format;

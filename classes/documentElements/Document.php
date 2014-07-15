@@ -24,9 +24,12 @@ namespace de\flatplane\documentElements;
 use de\flatplane\BibtexParser\BibtexParser;
 use de\flatplane\interfaces\DocumentElementInterface;
 use de\flatplane\interfaces\documentElements\DocumentInterface;
+use de\flatplane\utilities\Number;
 use de\flatplane\utilities\PDF;
 use de\flatplane\utilities\StaticPDF;
-use RuntimeException;
+use Symfony\Component\Process\Exception\RuntimeException;
+use TCPDF;
+use TCPDF_STATIC;
 
 //todo: count unresolved references
 /**
@@ -106,12 +109,15 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
      */
     protected $pageNumberStartValue = ['default' => 1];
 
-
+    /**
+     * Return a string representation of the document
+     * @return type
+     */
     public function __toString()
     {
-        return (string) $this->getSettings('title');
+        return (string) $this->getDocTitle();
     }
-
+    
     /**
      * @return Document
      */
@@ -121,8 +127,8 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
-     * @param \de\flatplane\interfaces\DocumentElementInterface $instance
+     * Add an instance of DocumentElementInterface to the internal lable list
+     * @param DocumentElementInterface $instance
      */
     public function addLabel(DocumentElementInterface $instance)
     {
@@ -130,8 +136,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
-     * @param \de\flatplane\interfaces\DocumentElementInterface $parent
+     * Throws an exeption as the Document is already the root object and
+     * therefore can't have a parent
+     * @param DocumentElementInterface $parent
      * @throws RuntimeException
      */
     public function setParent(DocumentElementInterface $parent)
@@ -157,8 +164,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Get all defined labels
      * @return array
+     *  Array containing references to implementations of DocumentElementInterface
      */
     public function getLabels()
     {
@@ -166,7 +174,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Get the documents author
      * @return string
      */
     public function getAuthor()
@@ -175,7 +183,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Get the documents title
      * @return string
      */
     public function getDocTitle()
@@ -184,7 +192,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Get the documents subject or short summary
      * @return string
      */
     public function getSubject()
@@ -193,7 +201,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Get a comma-separated string of document keywords
      * @return string
      */
     public function getKeywords()
@@ -202,7 +210,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Get the user-defined unit of measurement for the document
      * @return string
      */
     public function getUnit()
@@ -211,8 +219,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Get the default page size in user-units
      * @return array
+     *  keys: 'width', 'height'
      */
     public function getPageSize()
     {
@@ -238,7 +247,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Get the default page orientation
      * @return string
      */
     public function getOrientation()
@@ -247,7 +256,8 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Get the total number of pages for the document
+     * (not implemented)
      * @return int
      */
     public function getNumPages()
@@ -257,7 +267,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Set the documents author. Use a comma-separated string for multiple authos
      * @param string $author
      */
     public function setAuthor($author)
@@ -266,7 +276,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Set the documents subject (or a shor summary)
      * @param string $subject
      */
     public function setSubject($subject)
@@ -275,7 +285,8 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Set the documents keywords. Use a comma-separated string for multiple
+     * keywords
      * @param string $keywords
      */
     public function setKeywords($keywords)
@@ -284,8 +295,8 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
-     * @param string $type
+     * Get the numbering format for the given element type
+     * @param string $type (optional)
      * @return string
      */
     public function getNumberingFormat($type = '')
@@ -298,8 +309,8 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
-     * @param string $type
+     * Get the numbering level for the given element type
+     * @param string $type (optional)
      * @return int
      */
     public function getNumberingLevel($type = '')
@@ -312,8 +323,8 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
-     * @param string $type
+     * Get the enumeration postfix for the given element type
+     * @param string $type (optional)
      * @return string
      */
     public function getNumberingPostfix($type = '')
@@ -326,8 +337,8 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
-     * @param string $type
+     * Get the enumeration prefix for the given element type
+     * @param string $type (optional)
      * @return string
      */
     public function getNumberingPrefix($type = '')
@@ -340,8 +351,8 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
-     * @param string $type
+     * Get the numbering separator for the given element type
+     * @param string $type (optional)
      * @return string
      */
     public function getNumberingSeparator($type = '')
@@ -354,8 +365,8 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
-     * @param string $type
+     * Get the starting index for the given element type
+     * @param string $type (optional)
      * @return int
      */
     public function getStartIndex($type = '')
@@ -368,8 +379,10 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     * @todo: rename and add function to get all margins
-     * @param string $dir
+     * Get the default page margins in user-units for the specified direction.
+     * If the direction is omitted or not found, a default value is returned.
+     * @param string $dir (optional)
+     *  page margin direction, usual keys: 'top', 'bottom', 'left', 'right'
      * @return float
      */
     public function getPageMargins($dir = '')
@@ -382,8 +395,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Set the default page margins for each given direction in user-units
      * @param array $margins
+     *  array containg direction=>margin pairs
      */
     public function setPageMargins(array $margins)
     {
@@ -392,6 +406,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
+     * Get the documents ElementFactory instance
      * @return ElementFactory
      */
     public function getElementFactory()
@@ -400,6 +415,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
+     * Set the documents ElementFactory instalce
      * @param ElementFactory $elementFactory
      */
     public function setElementFactory(ElementFactory $elementFactory)
@@ -408,6 +424,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
+     * Get the documents instance of the PDF object
      * @return PDF
      */
     public function getPDF()
@@ -419,6 +436,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
+     * Set the documents PDF instance
      * @param PDF $pdf
      */
     public function setPDF(PDF $pdf)
@@ -427,7 +445,15 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Set the documents default unit of measurement.
+     * Possible values are:
+     *  <ul>
+     *  <li>'pt': point</li>
+     *  <li>'mm': millimeter (default)</li>
+     *  <li>'cm': centimeter</li>
+     *  <li>'in': inch</li>
+     * </ul>
+     * The 'postscript-point' is defined as 1/72 inch.
      * @param string $unit
      */
     public function setUnit($unit)
@@ -436,8 +462,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Set the default page size (in user-units)
      * @param array $pageSize
+     *  keys: 'width', 'height'
      */
     public function setPageSize(array $pageSize)
     {
@@ -445,8 +472,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Set the pages orientation
      * @param string $orientation
+     *  values: 'P' for portrait mode (default) or 'L' for landscape mode
      */
     public function setOrientation($orientation)
     {
@@ -454,8 +482,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
-     * @param string $numberingFormat
+     * Set the numbering format for the given element types
+     * @param array $numberingFormat
+     *  Array containig elementtype=>numberingformat pairs for each element-type
      */
     public function setNumberingFormat(array $numberingFormat)
     {
@@ -466,8 +495,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
-     * @param int $numberingLevel
+     * Set the numbering level for the given element types
+     * @param array $numberingLevel
+     *  Array containig elementtype=>numberinglevel pairs for each element-type
      */
     public function setNumberingLevel(array $numberingLevel)
     {
@@ -478,8 +508,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Set the numbering prefix for the given element types
      * @param string $numberingPrefix
+     *  Array containig elementtype=>numberingprefix pairs for each element-type
      */
     public function setNumberingPrefix(array $numberingPrefix)
     {
@@ -490,8 +521,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
-     * @param string $numberingPostfix
+     * Set the numbering postfix for the given element types
+     * @param array $numberingPostfix
+     *  Array containig elementtype=>numberingpostfix pairs for each element-type
      */
     public function setNumberingPostfix(array $numberingPostfix)
     {
@@ -502,8 +534,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
-     * @param string $numberingSeparator
+     * Set the numbering separator for the given element types
+     * @param array $numberingSeparator
+     *  Array containig elementtype=>numberingseparator pairs for each element-type
      */
     public function setNumberingSeparator(array $numberingSeparator)
     {
@@ -514,8 +547,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
-     * @param int $startIndex
+     * Set the start index for the given element types
+     * @param array $startIndex
+     *  Array containig elementtype=>startindex pairs for each element-type
      */
     public function setStartIndex(array $startIndex)
     {
@@ -531,7 +565,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Get the default page format as string (e.g. A4)
      * @return string
      */
     public function getPageFormat()
@@ -540,8 +574,11 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Set the documents default page format.
+     * for available formats see the TCPDF getPageSizeFromFormat() documentation
+     * @see TCPDF_STATIC::getPageSizeFromFormat()
      * @param string $format
+     *  page format (e.g. 'A4')
      */
     public function setPageFormat($format)
     {
@@ -549,9 +586,12 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Add soft-hyphens (&shy;) to the words of the provided text according to
+     * the defined hyphenation patterns.
      * @param string $text
      * @return string
+     *  hyphenated version of the input string. HTML tags will remain unhyphenated
+     * @see TCPDF::hyphenateText()
      */
     public function hypenateText($text)
     {
@@ -569,8 +609,17 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Set the options for the hyphenation process
      * @param array $hyphenation
+     *  Arraykeys:
+     *  'dictionary' (array): blacklist of words to ignore
+	 *  'leftMin' (int): Minimum number of character to leave on the left of the
+     *   word without applying the hyphens.
+	 *  'rightMin' (int): Minimum number of character to leave on the right of
+     *   the word without applying the hyphens.
+	 *  'charMin' (int): Minimum word length to apply the hyphenation algoritm.
+	 *  'charMax' (int): Maximum length of broken piece of word.
+     * @see TCPDF::hyphenateText()
      */
     public function setHyphenationOptions(array $hyphenation)
     {
@@ -585,7 +634,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Get the documents hyphenation settings
      * @return array
      */
     public function getHyphenationOptions()
@@ -594,6 +643,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
+     * Set the documents title
      * @param string $docTitle
      */
     public function setDocTitle($docTitle)
@@ -605,8 +655,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Get a list of all defined sources for the document
      * @return array
+     *  Array containing references to Source objects
      */
     public function getSources()
     {
@@ -614,7 +665,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Get the documents citation style (not implemented)
      * @return string
      */
     public function getCitationStyle()
@@ -623,11 +674,12 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Set the documents sources
      * @param array $sources
      */
     public function setSources(array $sources)
     {
+        //todo: validate array elements
         $this->sources = $sources;
     }
 
@@ -641,8 +693,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Add a soucre to the documents sources list
      * @param string $label
+     *  reference identifier
      * @param array $settings
      * @return Source
      */
@@ -656,8 +709,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Add sources to the documents sources list from a BibTex file
      * @param string $bibfile
+     *  path to the BibTeX file
      * @throws RuntimeException
      */
     public function addBibTexSources($bibfile)
@@ -707,7 +761,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
+     * Get the hyphenation patterns for the document
      * @return array
      */
     public function getHyphenationPatterns()
@@ -715,7 +769,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         if (empty($this->hyphenationPatterns)
             || !is_array($this->hyphenationPatterns)
         ) {
-            $this->hyphenationPatterns = \TCPDF_STATIC::getHyphenPatternsFromTEX(
+            $this->hyphenationPatterns = TCPDF_STATIC::getHyphenPatternsFromTEX(
                 $this->getHyphenationOptions()['file']
             );
         }
@@ -723,8 +777,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     * todo: doc, error handling
-     * @param string $pageGroup
+     * Get the pagenumber style for the given pagegroup
+     * @param string $pageGroup (optional)
+     *  pagegroup identifier. if it is unset or not found, a default will be used
      * @return string
      */
     public function getPageNumberStyle($pageGroup = 'default')
@@ -737,8 +792,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     * todo: pagegroup
-     * @param string $pageNumberStyle
+     * Set the pagenumber style for the given pagegroups
+     * @param array $pageNumberStyle
+     *  Array containing pagegroup=>style pairs
      */
     public function setPageNumberStyle(array $pageNumberStyle)
     {
@@ -749,9 +805,9 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     * todo: doc, error handling
-     * @param string $pageGroup
-     * @return int|float
+     * Get the start index for page numbers for the given pagegroup
+     * @param string $pageGroup (optional)
+     * @return int
      */
     public function getPageNumberStartValue($pageGroup = 'default')
     {
@@ -763,14 +819,24 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     }
 
     /**
-     *
-     * @param int $pageNumberStartValue
+     * Set the start index for the given pagegroups
+     * @param array $pageNumberStartValue
+     *  array containing pagegroup=>startindex pairs
      */
-    public function setPageNumberStartValue($pageNumberStartValue)
+    public function setPageNumberStartValue(array $pageNumberStartValue)
     {
-        $this->pageNumberStartValue = $pageNumberStartValue;
+        $this->pageNumberStartValue = array_merge (
+            $this->pageNumberStartValue,
+            $pageNumberStartValue
+        );
     }
 
+    /**
+     * Set the pagegroup for the current element.
+     * This group is maintained by all following elements unless they specify a
+     * new pagegroup
+     * @param string $pageGroup
+     */
     public function setPageGroup($pageGroup)
     {
         trigger_error(
@@ -780,6 +846,11 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
         parent::setPageGroup($pageGroup);
     }
 
+    /**
+     * Add a titlepage to de document
+     * @param array $settings
+     * @return TitlePage
+     */
     public function addTitlePage(array $settings = [])
     {
         $factory = $this->getElementFactory();

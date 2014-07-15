@@ -21,7 +21,14 @@
 
 namespace de\flatplane\interfaces;
 
+use de\flatplane\documentElements\Code;
 use de\flatplane\interfaces\documentElements\DocumentInterface;
+use de\flatplane\interfaces\documentElements\FormulaInterface;
+use de\flatplane\interfaces\documentElements\ImageInterface;
+use de\flatplane\interfaces\documentElements\TableInterface;
+use de\flatplane\interfaces\documentElements\TextInterface;
+use Symfony\Component\Process\Exception\RuntimeException;
+use TCPDF;
 
 /**
  *

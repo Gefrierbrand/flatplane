@@ -22,7 +22,7 @@
 namespace de\flatplane\interfaces;
 
 /**
- *
+ * THIS IS NOT USED AT THE MOMENT
  * @author Nikolai Neff <admin@flatplane.de>
  */
 interface PageInterface

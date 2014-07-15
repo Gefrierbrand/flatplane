@@ -27,16 +27,41 @@ namespace de\flatplane\interfaces;
  */
 interface NumberInterface
 {
+    /**
+     * Create a new number object
+     * @param int|float $value (optional)
+     */
+    public function __construct($value = 0);
+
+    /**
+     * get a string representation of the current object
+     * @return string
+     */
     public function __toString();
+
+    /**
+     * Get the current value of the number
+     * @return int|float
+     */
     public function getValue();
+
     public function setValue($value);
 
     /**
-     * @param string $format
+     * Get a formatted representation of the Numbers value as string.
+     * @param string $format (optional)
+     *  valid options: 'alpha', 'roman', 'float', 'int' (any casing)
+     *  If omitted, the Numbers default format will be used
      * @param int $numDecimals
+     *  number of decimals to display in 'float' mode
      * @param string $dec_point
+     *  decimal separation character
      * @param string $thousands_sep
+     *  thouseds separation character
      * @return string
+     *  formatted number
+     * @see Number::roman()
+     * @see Number::alpha()
      */
     public function getFormattedValue(
         $format = null,
@@ -45,9 +70,31 @@ interface NumberInterface
         $thousands_sep = ''
     );
 
+    /**
+     * Get the default number formatting format
+     * @return string
+     */
     public function getFormat();
+
+    /**
+     * Set the default number formatting format
+     * @param string $format
+     */
     public function setFormat($format);
 
+    /**
+     * Get the Numbers current value repesented as roman numerals
+     * @param string $case (optional)
+     *  set to 'upper' to use uppercase roman numbers.
+     * @return string
+     */
     public function roman($case = 'upper');
+
+    /**
+     * Get the Numbers current value repesented as charactes [a-z]
+     * @param string $mode
+     *  set to 'upper' to use uppercase letters
+     * @return string
+     */
     public function alpha($mode = 'upper');
 }

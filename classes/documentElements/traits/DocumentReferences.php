@@ -37,6 +37,16 @@ trait DocumentReferences
     protected $assumedStructureNumberWidth = 4;
     protected $assumedTitleWidth = 20;
 
+    /**
+     * Get a reference to another element.
+     * @param string $label
+     *  element identifier as defined by setLabel() for the element in question
+     * @param string $type (optional)
+     *  Type of reference to use. Valid keys are: 'number', 'title', 'page'
+     * @return string
+     *  Returns the requested property of the referenced element or a default
+     *  string with approximately the correct width if the reference is not found
+     */
     public function getReference($label, $type = 'number')
     {
         if (!in_array($type, $this->validLabelTypes)) {
