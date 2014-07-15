@@ -414,7 +414,7 @@ class Flatplane
         return $event;
     }
 
-    protected function getDocument() //todo: make this public?
+    public function getDocument()
     {
         return $this->document;
     }

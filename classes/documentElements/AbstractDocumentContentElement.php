@@ -472,24 +472,43 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      */
     public function cite($source, $extras = '')
     {
-        //todo: remove cite prefix/postfix, own style for Cite!
-        $sourceList = $this->toRoot()->getSources();
+        //todo: own style for Cite!
+        $root = $this->toRoot();
+        $sourceList = $root->getSources();
         if (array_key_exists($source, $sourceList)) {
-            $citeStyle = $this->toRoot()->getCitationStyle();
-            //$cite = $citeStyle['prefix'];
-            $cite = '';
-            $cite .= $sourceList[$source]->getFormattedNumbers();
-            $sourceList[$source]->setParent($this);
+            $citeStyle = $root->getCitationStyle();
+
+            $prefix = $root->getNumberingPrefix('source');
+            $separator = $root->getNumberingSeparator('source');
+            $postfix = $root->getNumberingPostfix('source');
+
+            $cite = $prefix;
+
+            foreach ($sourceList[$source]->getNumbers() as $number) {
+                $cite .= $number->getFormattedValue();
+                $cite .= $separator;
+            }
+
+            $cite = rtrim($cite, $separator); //remove last number separator
+
             if (!empty($extras)) {
                 $cite .= $citeStyle['separator'].' '.$extras;
             }
-            //$cite .= $citeStyle['postfix'];
+
+            $cite .= $postfix;
+
+            $sourceList[$source]->setParent($this);
         } else {
             trigger_error(
                 'Source "'.$source.'" for citation not found',
                 E_USER_NOTICE
             );
-            $cite = '[??]'; //todo: use assumption settings
+
+            //todo: use unresolvedrefmarker setting & styles for prefix/postfix
+            $cite = '[???]';
+            if (!empty($extras)) {
+                $cite .= $citeStyle['separator'].' '.$extras;
+            }
         }
         return $cite;
     }

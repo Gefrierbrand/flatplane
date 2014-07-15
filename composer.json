@@ -14,15 +14,8 @@
             "url": "https://github.com/Gefrierbrand/bibtexparser"
         },
         {
-            "type": "package",
-            "package": {
-                "name": "mathjax/mathjax",
-                "version": "2.4",
-                "dist": {
-                    "type": "zip",
-                    "url": "https://github.com/mathjax/MathJax/archive/master.zip"
-                }
-            }
+            "type": "git",
+            "url": "git@github.com:Gefrierbrand/MathJax.git"
         },
         {
             "type": "package",
@@ -78,7 +71,7 @@
         "sabberworm/php-css-parser": "dev-master",
         "flatplane/bibtexparser": "dev-master",
         "flatplane/svgtex": "dev-master",
-        "mathjax/mathjax": "2.4",
+        "mathjax/mathjax": "dev-master",
         "phantomjs/phantomjs_win": "1.9",
         "phantomjs/phantomjs_osx": "1.9",
         "phantomjs/phantomjs_linux32": "1.9",

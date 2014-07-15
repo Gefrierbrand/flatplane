@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "49d5caa8a83e235f79cb4697cd2b246e",
+    "hash": "8e5481d8e0121319c7778722301e0457",
     "packages": [
         {
             "name": "flatplane/bibtexparser",
@@ -100,14 +100,40 @@
         },
         {
             "name": "mathjax/mathjax",
-            "version": "2.4",
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/mathjax/MathJax/archive/master.zip",
-                "reference": null,
-                "shasum": null
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:Gefrierbrand/MathJax.git",
+                "reference": "2551fd2487fb60ccd017255b89437aa29671d95c"
             },
-            "type": "library"
+            "type": "library",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Davide Cervone",
+                    "homepage": "https://github.com/dpvc"
+                },
+                {
+                    "name": "Christian Perfect",
+                    "homepage": "https://github.com/christianp"
+                },
+                {
+                    "name": "Peter Krautzberger",
+                    "homepage": "https://github.com/pkra"
+                }
+            ],
+            "description": "MathJax is an open-source JavaScript display engine for LaTeX, MathML, and AsciiMath notation that works in all modern browsers.",
+            "homepage": "http://www.mathjax.org/",
+            "keywords": [
+                "AsciiMath",
+                "LaTeX",
+                "MathML",
+                "js",
+                "math"
+            ],
+            "time": "2014-07-14 18:29:29"
         },
         {
             "name": "phantomjs/phantomjs_linux32",
@@ -356,7 +382,8 @@
     "stability-flags": {
         "sabberworm/php-css-parser": 20,
         "flatplane/bibtexparser": 20,
-        "flatplane/svgtex": 20
+        "flatplane/svgtex": 20,
+        "mathjax/mathjax": 20
     },
     "platform": {
         "php": ">=5.5",
