@@ -34,9 +34,9 @@ class Source extends AbstractDocumentContentElement
     protected $altTitle;
     protected $fieldsToShow = ['sourceAuthor',
                                'sourceTitle',
-                                'sourcePublisher',
-                                'sourceEdition',
-                                'sourceYear'];
+                               'sourcePublisher',
+                               'sourceEdition',
+                               'sourceYear'];
 
     protected $fieldSeparator = ';';
 

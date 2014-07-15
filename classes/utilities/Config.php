@@ -124,6 +124,13 @@ class Config implements ConfigInterface
             $value = explode(',', trim($value, '[]'));
         }
 
+        //remove additional space from array entries
+        if (is_array($value)) {
+            foreach ($value as $key => $entry) {
+                $value[$key] = trim($entry);
+            }
+        }
+
         if (is_numeric($value)) {
             if (intval($value) == floatval($value)) {
                 $value = (int) $value;
