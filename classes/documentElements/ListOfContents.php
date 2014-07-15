@@ -292,17 +292,14 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
 
             //add a margin of about one line before each entry on level 0 for
             //better visual chapter differentiation
+            //todo: make this optional
             if ($line['iteratorDepth'] == 0 && $i != 0) {
-                $topMargin = $pdf->getCellHeight($pdf->getFontSize());
-            } else {
-                $topMargin = 0;
+                $pdf->setY($pdf->GetY() + $pdf->getCellHeight($pdf->getFontSize()));
             }
 
-            //set left/right cellmargins to zero and set topmargin for level0
-            $pdf->setCellMargins(0, $topMargin, 0);
-
             //display number for the entry
-            $pdf->Text($numXPos, $pdf->GetY(), $line['numbers']);
+            $pdf->SetX($numXPos);
+            $pdf->Cell(0, 0, $line['numbers']);
 
             //calculate and set new margins to use correct text-wrapping
             //for entries longer than one line
@@ -362,6 +359,14 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
 
             $i++; //increment element counter
         }
+
+        //reset page margins
+        $pdf->SetMargins(
+            $oldMargins['left'],
+            $oldMargins['top'],
+            $oldMargins['right']
+        );
+
         //reset cell-margins: (keys are set this way by TCPDF and therefore
         //differ from the usual keys), splat operator (php 5.6) can't be used
         //either as it only works with numeric indices
@@ -398,6 +403,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         //generate string of dots and spaces
         $s = '';
         //approximate space to leave at right end of title before dots start
+        //todo: calculate nuber instead of measuring it (if faster)
         $spaceCorrection = $pdf->GetStringWidth('  ');
         do {
             $s .= ' .';

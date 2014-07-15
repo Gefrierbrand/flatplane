@@ -71,6 +71,10 @@ $titlepage2->setOutputCallback($outputCallback2);
 //$sub->addTextFile('input/testKapitelMitRef.php');
 
 $document->addSource('img:nn', ['sourceAuthor' => 'Nikolai Neff']);
+$document->addSource('img:nn2', ['sourceAuthor' => 'Max Mustermann ganz langer autor der bestimmt umbrechen muss weil er überaus adipös ist gliedermessstab heftlocher']);
+$document->addSource('img:nn3', ['sourceAuthor' => 'Max Mustermann2']);
+$document->addSource('img:nn4', ['sourceAuthor' => 'Max Mustermann2']);
+
 $document->setPageNumberStyle(['PG1' => 'roman']);
 $document->setPageNumberStyle(['PG2' => 'alpha']);
 
@@ -130,7 +134,8 @@ $schlussSec->addSection('ICH BIN NUR IM INHALTSVERZEICHNIS ABER NICHT IM DOKUMEN
 
 $schlussSec->addSection('Ausblick');
 $qvz = $document->addSection('Quellenverzeichnis', ['enumerate' => false]);
-$qvz->addList(['source']);
+$qvz->addList(['source'])->setShowPages(false);
+
 
 $anhangSec = $document->addSection('Anhang', ['enumerate' => false]);
 $anhangSec->setPageGroup('PG2');

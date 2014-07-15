@@ -66,6 +66,11 @@ class Source extends AbstractDocumentContentElement
 
     //protected $quotingStyle = 'Chicago'; //alt: harvard
 
+    public function __toString()
+    {
+        return (string) $this->getAltTitle();
+    }
+
     protected function generateTitleString()
     {
         $titleString = '';
@@ -98,12 +103,16 @@ class Source extends AbstractDocumentContentElement
         return ['width' => 0, 'height' => 0];
     }
 
-    public function getTitle()
+    public function getAltTitle()
     {
-        if (empty($this->title)) {
+        if (empty($this->altTitle)) {
             $this->generateTitleString();
         }
-        return $this->title;
+
+        if (empty($this->altTitle)) {
+            $this->altTitle = $this->getTitle();
+        }
+        return $this->altTitle;
     }
 
     public function getFieldsToShow()
