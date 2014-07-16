@@ -140,7 +140,7 @@ $qvz->addList(['source'])->setShowPages(false);
 $anhangSec = $document->addSection('Anhang', ['enumerate' => false]);
 $anhangSec->setPageGroup('PG2');
 $document->addSection('Grundstücks­verkehrs­genehmigungs­zuständigkeits­übertragungs­verordnung (GrundVZÜV)', ['altTitle' => 'GrundVZÜV']);
-$text = $anhangSec->addTextFile('input/testKapitelohneRef.php', ['parse' => false]);
+$text = $anhangSec->addTextFile('input/testKapitelohneRef.php', ['parse' => false, 'splitAtStr' => PHP_EOL]);
 
 $document->addCodeFile('classes/documentElements/AbstractDocumentContentElement.php', ['splitInParagraphs' => true]);
 

@@ -44,6 +44,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     protected $splitInParagraphs = true;
     protected $splitAtStr = "<br>";
     protected $hyphenate = true;
+    protected $isHyphenated = false;
 
     protected $useCache = true;
     protected $containsPageReference;
@@ -66,12 +67,19 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         ) {
             $this->readText();
         }
+
+        if ($this->getHyphenate() && !$this->isHyphenated) {
+            $this->text = $this->toRoot()->hypenateText($this->text);
+            $this->isHyphenated = true;
+        }
         return $this->text;
     }
 
     public function getHash($startYposition)
     {
         $hashInput = $this->getText()
+            .$this->getParse()
+            .$this->getHyphenate()
             .$this->getTextAlignment()
             .$startYposition
             .$this->getFontSize()
@@ -98,9 +106,6 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         ob_start();
         include ($this->getPath());
         $this->text = ob_get_clean();
-        if ($this->getHyphenate()) {
-            $this->text = $this->toRoot()->hypenateText($this->text);
-        }
     }
 
     public function getReference($label, $type = 'number')
