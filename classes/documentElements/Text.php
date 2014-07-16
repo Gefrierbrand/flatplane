@@ -51,6 +51,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     protected $textAlignment = 'J';
 
     protected $inGetSize = false;
+    protected $parse = true;
 
     public function __toString()
     {
@@ -90,11 +91,6 @@ class Text extends AbstractDocumentContentElement implements TextInterface
             .$this->toRoot()->getPageMargins('right');
 
         return sha1($hashInput);
-    }
-
-    public function getParse()
-    {
-        return $this->parseText();
     }
 
     protected function readText()
@@ -192,14 +188,18 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         }
 
         foreach ($splitText as $line) {
-            $pdf->writeHTML(
-                $line,
-                true,
-                false,
-                true,
-                false,
-                $this->getTextAlignment()
-            );
+            if ($this->getParse()) {
+                $pdf->writeHTML(
+                    $line,
+                    true,
+                    false,
+                    true,
+                    false,
+                    $this->getTextAlignment()
+                );
+            } else {
+                $pdf->MultiCell(0, 0, $line, 0, $this->getTextAlignment(), false, 1);
+            }
         }
 
         $pdf->SetY($pdf->GetY() + $this->getMargins('bottom'));
@@ -216,6 +216,11 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     public function setParse($parse) //todo: rename parse
     {
         $this->parse = (bool) $parse;
+    }
+
+    public function getParse()
+    {
+        return $this->parse;
     }
 
     public function getTextAlignment()

@@ -121,7 +121,7 @@ trait ContentFunctions
      *  Content object implementing DocumentElementInterface with its parent set
      *  to the current object
      */
-    public function addElement($type, array $settings)
+    public function addElement($type, array $settings = [])
     {
         $factory = $this->toRoot()->getElementFactory();
         $content = $factory->createElement($type, $settings);
@@ -184,6 +184,21 @@ trait ContentFunctions
         }
         $factory = $this->toRoot()->getElementFactory();
         $settings['path'] = $path;
+        $content = $factory->createElement('text', $settings);
+        return $this->addContent($content);
+    }
+
+    /**
+     * Adds Text (without references or footnotes) from a string
+     * @param string $text
+     * @param array $settings
+     * @return TextInterface
+     */
+    public function addText($text, array $settings = [])
+    {
+        $factory = $this->toRoot()->getElementFactory();
+        $settings['text'] = $text;
+        $settings['parse'] = false;
         $content = $factory->createElement('text', $settings);
         return $this->addContent($content);
     }

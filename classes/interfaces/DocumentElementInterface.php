@@ -104,64 +104,72 @@ interface DocumentElementInterface
     /**
      * Adds an arbitrary element of type $type to the current content
      * @param string $type
-     * @param array $settings
+     * @param array $settings (optional)
      * @return DocumentElementInterface
      *  Content object implementing DocumentElementInterface with its parent set
      *  to the current object
      */
-    public function addElement($type, array $settings);
+    public function addElement($type, array $settings = []);
 
     /**
      * Adds a new Section to the current element
      * @param string $title
-     * @param array $settings
+     * @param array $settings (optional)
      * @return SectionInterface
      *  Content object implementing SectionInterface
      */
-    public function addSection($title, array $settings);
+    public function addSection($title, array $settings = []);
 
     /**
      * Adds a new formula to the current element
      * @param string $code
      *  TeX or MathMl description of the formula
-     * @param array $settings
+     * @param array $settings (optional)
      * @return FormulaInterface
      */
-    public function addFormula($code, array $settings);
+    public function addFormula($code, array $settings = []);
 
     /**
      * Adds a new Image to the current element
      * @param string $path
-     * @param array $settings
+     * @param array $settings (optional)
      * @return ImageInterface
      * @throws RuntimeException
      */
-    public function addImage($path, array $settings);
+    public function addImage($path, array $settings = []);
 
     /**
      * Adds a new Table to the current element
      * @param string $code
      *  HTML representation of the table
-     * @param array $settings
+     * @param array $settings (optional)
      * @return TableInterface
      */
-    public function addTable($code, array $settings);
+    public function addTable($code, array $settings = []);
 
     /**
      * Adds Text (including references or footnotes) from a file
      * @param string $path
-     * @param array $settings
+     * @param array $settings (optional)
      * @return TextInterface
      */
-    public function addTextFile($path, array $settings);
+    public function addTextFile($path, array $settings = []);
+
+    /**
+     * Adds Text (without references or footnotes) from a string
+     * @param string $text
+     * @param array $settings (optional)
+     * @return TextInterface
+     */
+    public function addText($text, array $settings = []);
 
     /**
      * Adds highlighted PHP Code as text from a file
      * @param string $path
-     * @param array $settings
+     * @param array $settings (optional)
      * @return Code
      */
-    public function addCodeFile($path, array $settings);
+    public function addCodeFile($path, array $settings = []);
 
     /**
      * Get the Parent of the current element
@@ -288,7 +296,7 @@ interface DocumentElementInterface
     /**
      * Get the font name for the given key (like 'level1'). If the key is omitted
      * or not defined in the elements configuration, a default value is returned.
-     * @param string $key
+     * @param string $key (optional)
      * @return string
      */
     public function getFontType($key = null);

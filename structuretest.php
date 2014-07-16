@@ -140,7 +140,7 @@ $qvz->addList(['source'])->setShowPages(false);
 $anhangSec = $document->addSection('Anhang', ['enumerate' => false]);
 $anhangSec->setPageGroup('PG2');
 $document->addSection('Grundstücks­verkehrs­genehmigungs­zuständigkeits­übertragungs­verordnung (GrundVZÜV)', ['altTitle' => 'GrundVZÜV']);
-$text = $anhangSec->addTextFile('input/testKapitelohneRef.php');
+$text = $anhangSec->addTextFile('input/testKapitelohneRef.php', ['parse' => false]);
 
 $document->addCodeFile('classes/documentElements/AbstractDocumentContentElement.php', ['splitInParagraphs' => true]);
 
@@ -150,6 +150,8 @@ $document->addList(['formula']);
 $code = '<style> td,th{border: 1px solid #000000}</style><table><tr><th>Spalte 1</th><th>Spalte 2</th></tr><tr><td>INHALT</td><td>ASDF</td></tr></table>';
 
 $document->addTable($code);
+$document->addText('HALLO WELT!'.PHP_EOL);
+$document->addText('HALLO WELT2!');
 
 $flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => false, 'clearTextCache' => false]);
 unset($flatplane);
