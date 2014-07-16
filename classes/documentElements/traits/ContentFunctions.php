@@ -29,6 +29,7 @@ use de\flatplane\interfaces\documentElements\FormulaInterface;
 use de\flatplane\interfaces\documentElements\ImageInterface;
 use de\flatplane\interfaces\documentElements\TableInterface;
 use de\flatplane\interfaces\documentElements\TextInterface;
+use de\flatplane\interfaces\documentElements\SectionInterface;
 use RuntimeException;
 
 /**

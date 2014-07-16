@@ -99,6 +99,10 @@ class Flatplane
                 }
             } else {
                 if (FLATPLANE_USE_CLI_COLORS && $level > 0) {
+//                    $osTpye = php_uname('s');
+//                    'winnt'
+//                    'windows'
+//                    'windows nt'
                     //use purple text
                     $msg = "\033[0;35m".$msg."\033[0m";
                 }

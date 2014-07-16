@@ -27,6 +27,7 @@ use de\flatplane\interfaces\documentElements\FormulaInterface;
 use de\flatplane\interfaces\documentElements\ImageInterface;
 use de\flatplane\interfaces\documentElements\TableInterface;
 use de\flatplane\interfaces\documentElements\TextInterface;
+use de\flatplane\interfaces\documentElements\SectionInterface;
 use Symfony\Component\Process\Exception\RuntimeException;
 use TCPDF;
 
@@ -190,7 +191,7 @@ interface DocumentElementInterface
     /**
      * Get the vertical dimensions and the number of pages needed to display the
      * current element.
-     * @param float $startYposition
+     * @param float $startYPosition (optional)
      * @return Array
      *  keys: 'height', 'numPages', 'endYposition'
      */
@@ -295,7 +296,7 @@ interface DocumentElementInterface
      * Get the fontsize (in pt) for the given key (like 'level1'). If the key is
      * omitted or not defined in the elements configuration, a default value is
      * returned.
-     * @param string $key
+     * @param string $key (optional)
      * @return string|int
      *  Fontsize (in pt)
      */
@@ -306,7 +307,7 @@ interface DocumentElementInterface
      * If the key is omitted or not defined in the elements configuration, a
      * default value is returned. The 'normal' font style is represented by an
      * empty string
-     * @param string $key
+     * @param string $key (optional)
      * @return string
      */
     public function getFontStyle($key = null);
@@ -315,7 +316,7 @@ interface DocumentElementInterface
      * Get the font color for the given key (like 'level1').
      * If the key is omitted or not defined in the elements configuration, a
      * default value is returned.
-     * @param string $key
+     * @param string $key (optional)
      * @return array
      *  Array containig 1, 3 or 4 numbers to represent a color in grayscale, RGB
      *  or CMYK
@@ -328,7 +329,7 @@ interface DocumentElementInterface
      * for borders, under- or overline and other non-text elements in the PDF.
      * If the key is omitted or not defined in the elements configuration, a
      * default value is returned.
-     * @param string $key
+     * @param string $key (optional)
      * @return array
      *  Array containig 1, 3 or 4 numbers to represent a color in grayscale, RGB
      *  or CMYK
@@ -340,7 +341,7 @@ interface DocumentElementInterface
      * to fill cells in the PDF.
      * If the key is omitted or not defined in the elements configuration, a
      * default value is returned.
-     * @param string $key
+     * @param string $key (optional)
      * @return array
      *  Array containig 1, 3 or 4 numbers to represent a color in grayscale, RGB
      *  or CMYK
@@ -352,7 +353,7 @@ interface DocumentElementInterface
      * Get the minimum clearance (=margin) around the element for the specified
      * direction (e.g. 'top'). If no key is provides or the key does not exist,
      * a default value is returned.
-     * @param string $key
+     * @param string $key (optional)
      * @return mixed
      *  String or numeric margin amount
      */
@@ -362,7 +363,7 @@ interface DocumentElementInterface
      * Get the minimum inside clearane (=paddings) of the element. (Currently not
      * used)
      *
-     * @param string $key
+     * @param string $key (optional)
      * @return mixed
      */
     public function getPaddings($key = null);
@@ -428,7 +429,7 @@ interface DocumentElementInterface
     /**
      * Creates a reference to a source
      * @param string $source
-     * @param string $extras
+     * @param string $extras (optional)
      *  additional text (e.g. Pages 2-7) to be displayed in the text
      * @return string
      *  Formatted number and $extras to indicate the referenced source
@@ -459,7 +460,7 @@ interface DocumentElementInterface
      * Set the pagegroup for the current element.
      * This group is maintained by all following elements unless they specify a
      * new pagegroup
-     * @param string $pageGroup
+     * @param string $pagegroup
      */
     public function setPageGroup($pagegroup);
 }
