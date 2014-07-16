@@ -11,11 +11,11 @@
         },
         {
             "type": "vcs",
-            "url": "https://github.com/Gefrierbrand/bibtexparser"
+            "url": "https://github.com/Gefrierbrand/bibtexparser.git"
         },
         {
-            "type": "git",
-            "url": "git@github.com:Gefrierbrand/MathJax.git"
+            "type": "vcs",
+            "url": "https://github.com/Gefrierbrand/MathJax.git"
         },
         {
             "type": "package",

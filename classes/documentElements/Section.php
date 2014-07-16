@@ -148,14 +148,18 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         //save old pagemargins
         $oldMargins = $pdf->getMargins();
         //adjust left and right margins according tho the elements settings
-        $pdf->SetLeftMargin($oldMargins['left']+$this->getMargins('left'));
-        $pdf->SetRightMargin($oldMargins['right']+$this->getMargins('right'));
+        $pdf->SetLeftMargin(
+            $oldMargins['left'] + $this->getMargins('left'.$this->getLevel())
+        );
+        $pdf->SetRightMargin(
+            $oldMargins['right'] + $this->getMargins('right'.$this->getLevel())
+        );
 
         //add element top margins to current y-position
         if (!$this->getIgnoreTopMarginAtPageStart('level'.$this->getLevel())
             || $pdf->GetY() > $this->toRoot()->getPageMargins('top')
         ) {
-            $pdf->SetY($pdf->GetY()+$this->getMargins('top'));
+            $pdf->SetY($pdf->GetY()+$this->getMargins('top'.$this->getLevel()));
         }
 
         //set font size, color etc.
@@ -193,7 +197,7 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         $pdf->SetRightMargin($oldMargins['right']);
 
         //add bottom margin to y-position
-        $pdf->SetY($pdf->GetY()+$this->getMargins('bottom'));
+        $pdf->SetY($pdf->GetY()+$this->getMargins('bottom'.$this->getLevel()));
         return $pdf->getPage() - $startPage;
     }
 
