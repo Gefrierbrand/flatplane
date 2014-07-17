@@ -106,6 +106,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         ob_start();
         include ($this->getPath());
         $this->text = ob_get_clean();
+        $this->isHyphenated = false;
     }
 
     public function getReference($label, $type = 'number')

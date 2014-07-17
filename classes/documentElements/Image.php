@@ -31,7 +31,6 @@ use SplFileObject;
 /**
  * Description of Image
  * todo: title/desc/numbering
- * todo: cite!!!!!!!!!!!!
  * @author Nikolai Neff <admin@flatplane.de>
  */
 class Image extends AbstractDocumentContentElement implements ImageInterface
@@ -52,9 +51,8 @@ class Image extends AbstractDocumentContentElement implements ImageInterface
     protected $resolution; //dpi
     protected $width;
     protected $height;
-    protected $fitOnPage = true;
+    protected $fitOnPage = true; //not used atm
 
-    protected $placement = 'here'; //other options: (?) section[level]/top/bot/page
     protected $alignment = 'center';
 
     protected $titlePrefix = 'Figure';
@@ -82,23 +80,60 @@ class Image extends AbstractDocumentContentElement implements ImageInterface
         $pdf = $this->getPDF();
         $startPage = $pdf->getPage();
         $dim = $this->getImageDimensions();
-        $this->applyStyles('title');
-        //todo: implement title/caption position & placement
-        $pdf->MultiCell(0, 0, $this->getCompleteTitle(), 0, 'C');
 
-        //todo: center images
-        if ($this->getImageType() == 'svg') {
-            $pdf->ImageSVG($this->getPath(), '', '', $dim['width'], $dim['height']);
-        } elseif ($this->getImageType() == 'eps' || $this->getImageType() == 'ai') {
-            $pdf->ImageEps($this->getPath(), '', '', $dim['width'], $dim['height']);
+        if ($dim['width'] < $this->getPageMeasurements()['textWidth']) {
+            //todo: use textwidth and margins, only center if required
+            $xCenterPos = ($this->getPageMeasurements()['pageWidth'] - $dim['width'])/2;
         } else {
-            $pdf->Image($this->getPath(), '', '', $dim['width'], $dim['height']);
+            $xCenterPos = '';
         }
 
-        //tcpdf does not set a new Y-position after inserting an image
-        $pdf->SetY($pdf->GetY()+$dim['height']);
-        $this->applyStyles('caption');
-        $pdf->MultiCell(0, 0, $this->getCompleteCaption(), 0, 'C');
+        $pdf->SetY($pdf->GetY() + $this->getMargins('top'));
+        //todo: center images
+        if ($this->getImageType() == 'svg') {
+            $pdf->ImageSVG(
+                $this->getPath(),
+                $xCenterPos,
+                '',
+                $dim['width'],
+                $dim['height'],
+                '',
+                'N'
+            );
+        } elseif ($this->getImageType() == 'eps' || $this->getImageType() == 'ai') {
+            $pdf->ImageEps(
+                $this->getPath(),
+                $xCenterPos,
+                '',
+                $dim['width'],
+                $dim['height'],
+                '',
+                true,
+                'N'
+            );
+        } else {
+            $pdf->Image(
+                $this->getPath(),
+                $xCenterPos,
+                '',
+                $dim['width'],
+                $dim['height'],
+                '',
+                '',
+                'N'
+            );
+        }
+        $pdf->SetY($pdf->GetY() + $this->getMargins('caption'));
+        $this->applyStyles();
+        //todo: implement title/caption position & placement
+        $html = '<b>'.$this->getTitlePrefix().' '.$this->getFormattedNumbers().':</b>  '.$this->getTitle();
+        $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 0, false, true, 'C');
+        //$pdf->MultiCell(0, 0, $this->getCompleteTitle(), 0, 'C', false, 0);
+
+        //$this->applyStyles('caption');
+        //$pdf->MultiCell(0, 0, $this->getCompleteCaption(), 0, 'C');
+
+        $pdf->SetY($pdf->GetY() + $this->getMargins('top'));
         return $pdf->getPage() - $startPage;
     }
 
@@ -268,7 +303,7 @@ class Image extends AbstractDocumentContentElement implements ImageInterface
         $componets['height'] = explode('*', strtolower($this->getHeight()));
 
         //check if the results are valid reference-sizes
-        if (!$this->checkComponets($componets)) {
+        if (!$this->checkComponents($componets)) {
             trigger_error(
                 'Invalid Width/Height arguments supplied,'
                 .' trying to read dimensions from file instead.',
@@ -312,11 +347,12 @@ class Image extends AbstractDocumentContentElement implements ImageInterface
      * todo: doc
      * @param array $components
      * @return boolean
+     * FIXME: allow secend direction to be empty -> autocalc using aspect ratio (if available)
      */
     protected function checkComponents(array $components)
     {
         //todo: set this as property?
-        $allowedReferenceValues = ['textWidth','pageWidth','pageHeight'];
+        $allowedReferenceValues = ['textwidth', 'pagewidth', 'pageheight'];
         foreach ($components as $direction) {
             if (!is_array($direction)) {
                 return false;

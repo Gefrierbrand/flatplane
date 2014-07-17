@@ -103,8 +103,14 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "git@github.com:Gefrierbrand/MathJax.git",
-                "reference": "2551fd2487fb60ccd017255b89437aa29671d95c"
+                "url": "https://github.com/Gefrierbrand/MathJax.git",
+                "reference": "bbb70cd2cdd4da37965330d15408b77bcb4750e2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Gefrierbrand/MathJax/zipball/bbb70cd2cdd4da37965330d15408b77bcb4750e2",
+                "reference": "bbb70cd2cdd4da37965330d15408b77bcb4750e2",
+                "shasum": ""
             },
             "type": "library",
             "license": [
@@ -133,7 +139,10 @@
                 "js",
                 "math"
             ],
-            "time": "2014-07-14 18:29:29"
+            "support": {
+                "source": "https://github.com/Gefrierbrand/MathJax/tree/master"
+            },
+            "time": "2014-07-16 17:25:45"
         },
         {
             "name": "phantomjs/phantomjs_linux32",
