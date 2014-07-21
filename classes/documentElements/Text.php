@@ -299,7 +299,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         );
 
         if ($this->inGetSize) {
-            $this->getPDF()->increaseBottomMargin($footnote->getHeight());
+            $this->getPDF()->increaseBottomMargin($footnote);
             $number = str_repeat(
                 $this->toRoot()->getUnresolvedReferenceMarker(),
                 $this->toRoot()->getAssumedFootnoteNumberWidth()

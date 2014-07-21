@@ -49,6 +49,7 @@ class PDF extends TCPDF
     protected $pageNumber;
     protected $footnoteObjects = array();
     protected $footnoteCounter;
+    protected $firstFootnoteOnPage = true;
 
     protected $defaultBottomMargin = 20;
 
@@ -234,6 +235,8 @@ class PDF extends TCPDF
                  - $this->getMargins()['right'];
         $this->Cell($width/2, 0, $this->getLeftFooter(), 'T', 0, 'L', false, '', 1);
         $this->Cell($width/2, 0, $this->getRightFooter(), 'T', 0, 'R', false, '', 1);
+        
+        $this->firstFootnoteOnPage = true;
     }
 
     protected function displayFootnotes()
@@ -264,6 +267,7 @@ class PDF extends TCPDF
         $this->Line($this->getMargins()['left'], $y, $x + $separationLineWidth, $y);
         $this->SetY($y + $this->footnoteObjects[$key]->getSeparatorLineVerticalmargin());
 
+        //remove already displayed footnotes from footnote-array
         foreach ($this->footnoteObjects as $key => $footnote) {
             $footnote->generateOutput();
             unset($this->footnoteObjects[$key]);
@@ -309,13 +313,20 @@ class PDF extends TCPDF
         $footnote->setNumber($number);
         $this->footnoteObjects[] = $footnote;
 
-        $this->increaseBottomMargin($footnote->getHeight());
+        $this->increaseBottomMargin($footnote);
         return $number;
     }
 
-    public function increaseBottomMargin($amount)
+    public function increaseBottomMargin(Footnote $footnote)
     {
         $bottomMargin = $this->getMargins()['bottom'];
+        $amount = $footnote->getHeight();
+        $lineDistance = $footnote->getSeparatorLineVerticalmargin();
+
+        if ($this->firstFootnoteOnPage) {
+            $amount += $lineDistance;
+            $this->firstFootnoteOnPage = false;
+        }
 
         //set new bottom margin
         $this->SetAutoPageBreak(
