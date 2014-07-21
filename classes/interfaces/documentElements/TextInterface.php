@@ -56,4 +56,5 @@ interface TextInterface extends DocumentElementInterface
     public function setUseCache($useCache);
     public function setContainsPageReference($containsPageReference);
     public function setText($text);
+    public function addFootnote($text);
 }

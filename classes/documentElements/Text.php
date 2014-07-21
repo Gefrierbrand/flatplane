@@ -81,6 +81,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
             .$this->getParse()
             .$this->getHyphenate()
             .$this->getTextAlignment()
+            .$this->getContainsFootnotes()
             .$startYposition
             .$this->getFontSize()
             .$this->getFontType()
@@ -180,8 +181,6 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         $pdf = $this->getPDF();
         $startPage = $pdf->getPage();
 
-        $this->applyStyles();
-
         $pdf->SetY($pdf->GetY()+$this->getMargins('top'));
 
         if ($this->getSplitInParagraphs()) {
@@ -192,6 +191,10 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         } else {
             $splitText = [$this->getText()];
         }
+
+        //styles must be applied after changing the y position in order to
+        //work properly with TCPDF
+        $this->applyStyles();
 
         foreach ($splitText as $line) {
             if ($this->getParse()) {
@@ -301,12 +304,11 @@ class Text extends AbstractDocumentContentElement implements TextInterface
                 $this->toRoot()->getUnresolvedReferenceMarker(),
                 $this->toRoot()->getAssumedFootnoteNumberWidth()
             );
-            return '<sup>'.$number.'</sup>';
         } else {
             $number = $this->getPDF()->addFootnote($footnote);
-            return '<sup>'.$number.'</sup>';
         }
-
+        $this->setContainsFootnotes(true);
+        return '<sup>'.$number.'</sup>';
     }
 
     public function getContainsFootnotes()

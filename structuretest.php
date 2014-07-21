@@ -96,6 +96,9 @@ $hauptteilSec->setPageGroup('PG1');
 $problem = $hauptteilSec->addSection('Problemstellung');
 $problem->setLabel('sec:problem');
 $text1 = $problem->addTextFile('input/testKapitelMitRef_LP.php');
+$text2 = $problem->addText('TEST GRÖßE USW:'.$text1->getFontSize().PHP_EOL);
+$text3 = $problem->addText($text2->getFontSize().PHP_EOL);
+
 
 $versuch = $hauptteilSec->addSection('Versuchsaufbau');
 
