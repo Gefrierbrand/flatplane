@@ -184,12 +184,14 @@ class PageLayout
         );
         $section->setLinearPage($this->getLinearPageNumber());
         $pdfpageNum = $section->getLinearPage() + 1;
-        $pdf->Bookmark(
-            $section->getNonHyphenTitle(),
-            $section->getLevel(),
-            $yPos,
-            $pdfpageNum
-        );
+        if ($section->getShowInBookmarks()) {
+            $pdf->Bookmark(
+                $section->getNonHyphenTitle(),
+                $section->getLevel(),
+                $yPos,
+                $pdfpageNum
+            );
+        }
         $section->setLink($pdf->AddLink());
         $pdf->SetLink($section->getLink(), $yPos, $pdfpageNum);
     }

@@ -133,7 +133,7 @@ class Image extends AbstractDocumentContentElement implements ImageInterface
         //$this->applyStyles('caption');
         //$pdf->MultiCell(0, 0, $this->getCompleteCaption(), 0, 'C');
 
-        $pdf->SetY($pdf->GetY() + $this->getMargins('top'));
+        $pdf->SetY($pdf->GetY() + $this->getMargins('bottom'));
         return $pdf->getPage() - $startPage;
     }
 

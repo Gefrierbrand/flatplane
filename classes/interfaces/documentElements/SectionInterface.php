@@ -36,4 +36,20 @@ interface SectionInterface extends DocumentElementInterface
     public function getNonHyphenTitle();
     public function getShowInBookmarks();
     public function setShowInBookmarks($showInBookmarks);
+
+    public function setShowInDocument($showInDocument);
+
+    public function setMinFreePage(array $minFreePage);
+
+    public function setStartsNewLine(array $startsNewLine);
+
+    public function setStartsNewPage(array $startsNewPage);
+
+    public function getNumberSeparationWidth();
+
+    public function setNumberSeparationWidth($numberSeparationWidth);
+
+    public function getIgnoreTopMarginAtPageStart($level = null);
+
+    public function setIgnoreTopMarginAtPageStart(array $ignoreTopMarginAtPageStart);
 }

@@ -156,5 +156,8 @@ $document->addTable($code);
 $document->addText('HALLO WELT!'.PHP_EOL);
 $document->addText('HALLO WELT2!');
 
+$fn = $document->addSection('fußnoten');
+$fn ->addTextFile('input/footnotes.php');
+
 $flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => false, 'clearTextCache' => false]);
 unset($flatplane);

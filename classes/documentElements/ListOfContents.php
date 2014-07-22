@@ -265,8 +265,18 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         //display each individual item as line(s) with indent
         foreach ($this->getData() as $line) {
             //get all indent amounts for the current level
-            $textIndent = $indentAmounts[$line['iteratorDepth']]['text'];
-            $numberIndent = $indentAmounts[$line['iteratorDepth']]['number'];
+
+            //FIXME: use proper indentamounts for maxDepthLevel
+            if (isset($indentAmounts[$line['iteratorDepth']]['text'])) {
+                $textIndent = $indentAmounts[$line['iteratorDepth']]['text'];
+            } else {
+                $textIndent = 6; //todo: use proper value here
+            }
+            if (isset($indentAmounts[$line['iteratorDepth']]['number'])) {
+                $numberIndent = $indentAmounts[$line['iteratorDepth']]['number'];
+            } else {
+                $numberIndent = 0;
+            }
 
             //calculate the maximum available space for the title-display
             $maxTitleWidth = $textWidth
@@ -418,6 +428,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
      * number könnte mehrstellig sein, daher nötig alle zu testen und dies vor
      * der ausgabe zu messen
      * @return array(float)
+     * @fixme: indent levels
      */
     protected function calculateIndentAmounts()
     {

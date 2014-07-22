@@ -84,7 +84,8 @@ class Footnote
         $pdf->SetX($pdf->getMargins()['left'] + $this->getNumberSeparationWidth());
 
         $text = $this->getText();
-        $pdf->MultiCell(0, 0, $text, 0, $this->getTextAlignment(), false, 1);
+        $pdf->writeHTMLCell(0, 0, '', '', $text, 0, 1, false, true, $this->getTextAlignment());
+        //$pdf->MultiCell(0, 0, $text, 0, $this->getTextAlignment(), false, 1);
     }
 
     /**
