@@ -54,9 +54,12 @@ class Table extends Text implements TableInterface
 
         $pdf->SetY($pdf->GetY()+$this->getMargins('top'));
 
-        $this->applyStyles('title');
+        $this->applyStyles();
         //todo: implement title/caption position & placement
-        $pdf->MultiCell(0, 0, $this->getTitle(), 0, 'C');
+        $html = '<b>Tabelle '.$this->getFormattedNumbers().':</b>  '.$this->getTitle();
+        $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, false, true, 'C');
+
+        $pdf->SetY($pdf->GetY()+$this->getMargins('title'));
 
         $this->applyStyles('default');
 
