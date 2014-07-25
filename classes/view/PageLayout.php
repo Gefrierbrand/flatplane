@@ -203,6 +203,7 @@ class PageLayout
      */
     protected function layoutSection(SectionInterface $section)
     {
+        $section->setStartYpos($this->getCurrentYPosition());
         //check if the section forces a new page
         if ($section->getStartsNewPage('level'.$section->getLevel())) {
             Flatplane::log("Section: ($section) requires pagebreak [user]");
@@ -278,6 +279,7 @@ class PageLayout
     protected function layoutImage(ImageInterface $image)
     {
         $pdf = $this->getDocument()->getPDF();
+        $image->setStartYpos($this->getCurrentYPosition());
         //check free space on current page
         $availableVerticalSpace = $this->getAvailableSpace();
 
@@ -310,6 +312,7 @@ class PageLayout
     protected function layoutFormula(FormulaInterface $formula)
     {
         $pdf = $this->getDocument()->getPDF();
+        $formula->setStartYpos($this->getCurrentYPosition());
         //check free space on current page
         $availableVerticalSpace = $this->getAvailableSpace();
 
@@ -340,6 +343,7 @@ class PageLayout
      */
     protected function layoutText(TextInterface $text)
     {
+        $text->setStartYpos($this->getCurrentYPosition());
         $textSize = $text->getSize($this->getCurrentYPosition());
         $this->setCurrentYPosition($textSize['endYposition']);
 
@@ -350,6 +354,11 @@ class PageLayout
         $text->setLinearPage($this->getLinearPageNumber());
 
         $numPageBreaks = $textSize['numPages'] - 1;
+        if ($numPageBreaks > 0) {
+            Flatplane::log(
+                "$text automatically added $numPageBreaks pagebreaks".PHP_EOL
+            );
+        }
         $this->getCounter($this->getCurrentPageGroup())->add($numPageBreaks);
         $this->getLinearPageNumberCounter()->add($numPageBreaks);
     }
@@ -361,6 +370,7 @@ class PageLayout
 
     protected function layoutList(ListInterface $list)
     {
+        $list->setStartYpos($this->getCurrentYPosition());
         $listSize = $list->getSize($this->getCurrentYPosition());
 
         $this->setCurrentYPosition($listSize['endYposition']);
@@ -415,7 +425,7 @@ class PageLayout
     {
         //just add a new page by incrementing the linear pagenumber counter
         //this might break and needs testing
-        Flatplane::log('Adding user.requested PageBreak'.PHP_EOL);
+        Flatplane::log('Adding user-requested PageBreak'.PHP_EOL);
         $pagebreak->setLinearPage($this->getLinearPageNumber());
         $this->getLinearPageNumberCounter()->add(1);
         $this->setCurrentYPosition($this->getDocument()->getPageMargins('top'));

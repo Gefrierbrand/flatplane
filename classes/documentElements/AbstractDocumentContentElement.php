@@ -50,6 +50,8 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
      */
     protected $parent = null;
 
+    protected $startYpos;
+
     /**
      * @var int
      *  type of the element
@@ -611,5 +613,15 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     public function setPageGroup($pageGroup)
     {
         $this->pageGroup = $pageGroup;
+    }
+
+    public function getStartYpos()
+    {
+        return $this->startYpos;
+    }
+
+    public function setStartYpos($startYpos)
+    {
+        $this->startYpos = $startYpos;
     }
 }

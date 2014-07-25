@@ -81,6 +81,7 @@ class Image extends AbstractDocumentContentElement implements ImageInterface
         $startPage = $pdf->getPage();
         $dim = $this->getImageDimensions();
 
+        //calculate x position to center image; todo: use positioning options
         if ($dim['width'] < $this->getPageMeasurements()['textWidth']) {
             //todo: use textwidth and margins, only center if required
             $xCenterPos = ($this->getPageMeasurements()['pageWidth'] - $dim['width'])/2;
@@ -126,7 +127,8 @@ class Image extends AbstractDocumentContentElement implements ImageInterface
         $pdf->SetY($pdf->GetY() + $this->getMargins('caption'));
         $this->applyStyles();
         //todo: implement title/caption position & placement
-        $html = '<b>'.$this->getTitlePrefix().' '.$this->getFormattedNumbers().':</b>  '.$this->getTitle();
+        $html = '<b>'.$this->getTitlePrefix().' '.$this->getFormattedNumbers()
+                .':</b>  '.$this->getTitle();
         $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 0, false, true, 'C');
         //$pdf->MultiCell(0, 0, $this->getCompleteTitle(), 0, 'C', false, 0);
 

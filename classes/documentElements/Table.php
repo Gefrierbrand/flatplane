@@ -65,15 +65,12 @@ class Table extends Text implements TableInterface
 
         $pdf->writeHTML(
             $this->getText(),
+            false,
+            false,
             true,
-            false,
-            false,
             false,
             $this->getTextAlignment()
         );
-
-        $this->applyStyles('caption');
-        $pdf->MultiCell(0, 0, $this->getCaption(), 0, 'C');
 
         $pdf->SetY($pdf->GetY() + $this->getMargins('bottom'));
 

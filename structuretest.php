@@ -59,106 +59,37 @@ $outputCallback2 = function (PDF $pdf) {
 };
 $titlepage2->setOutputCallback($outputCallback2);
 
+$inhaltsec = $document->addSection('Inhaltsverzeichnis', ['startsNewPage' => ['level1' => false]]);
+$inhaltsec->addList(['section']);
+$code = <<<'EOL'
+<style>
+    th {
+        font-weight: bold;
+    }
+    td {
+        text-align: left;
+    }
+</style>
+<table cellspacing="0" cellpadding="2" border="0.3">
+    <tr>
+        <th width="20%">Größe</th><th width="80%">Definition</th>
+    </tr>
+    <tr><td>Akzenthöhe</td><td>vertikaler Abstand von Versalzeichen (Großbuchstaben) mit Akzent von der Grundlinie (Versallinie)</td></tr>
+    <tr><td>Versalhöhe</td><td>vertikaler Abstand von Versalzeichen von der Grundlinie</td></tr>
+    <tr><td>Oberlänge</td><td>vertikaler Abstand von gemeinen Zeichen (Kleinbuchstaben) mit Oberlänge von der Grundlinie</td></tr>
+    <tr><td>Mittellänge</td><td>vertikaler Abstand von gemeinen Zeichen ohne Oberlänge von der Grundlinie, auch x- oder n-Höhe genannt</td></tr>
+    <tr><td>Unterlänge</td><td>vertikaler Abstand von gemeinen Zeichen mit Unterlänge zur Grundlinie</td></tr>
+</table>
+EOL;
 
-//$kapitel1 = $document->addSection('KAPITEL 1');
-//$kapitel1->setStartsNewPage(['level1' => false]);
-//$kapitel1->addTextFile('input/testKapitelMitRef.php');
-//
-//$kapitel2 = $document->addSection('KAPITEL 2');
-//$kapitel2->addTextFile('input/testKapitelMitRef.php');
-//
-//$sub = $kapitel2->addSection('Subsection');
-//$sub->addTextFile('input/testKapitelMitRef.php');
+$typodeftab = $inhaltsec->addTable($code);
+$typodeftab->setLabel('tab:typodefs');
+$typodeftab->setTitle('Begriffsdefinition nach DIN 16507-2');
+$typodeftab->setMargins(['top' => 5, 'bottom' => 0, 'caption' => 0]);
 
-$document->addSource('img:nn', ['sourceAuthor' => 'Nikolai Neff']);
-$document->addSource('img:nn2', ['sourceAuthor' => 'Max Mustermann ganz langer autor der bestimmt umbrechen muss weil er überaus adipös ist gliedermessstab heftlocher']);
-$document->addSource('img:nn3', ['sourceAuthor' => 'Max Mustermann2']);
-$document->addSource('img:nn4', ['sourceAuthor' => 'Max Mustermann2']);
+$inhaltsec->addText('TEST');
+$inhaltsec->addText('TEST2');
+$inhaltsec->addText('TEST3');
 
-$document->setPageNumberStyle(['PG1' => 'roman']);
-$document->setPageNumberStyle(['PG2' => 'alpha']);
-
-$inhaltSec = $document->addSection('Inhaltsverzeichnis', ['enumerate' => false]);
-$inhaltSec->setShowInList(true);
-$inhaltSec->setStartsNewPage(['level1' => false]);
-$inhaltList = $inhaltSec->addList(['section'], ['showInList' => true]);
-$abbildungSec = $document->addSection(
-    'Abbildungsverzeichnis',
-    ['enumerate' => false, 'showInList' => true]
-);
-$abbildingList = $abbildungSec->addList(['image'], ['showInList' => false]);
-
-$einleitungSec = $document->addSection('Einleitung');
-$einleitungSec->addSection('Vorwort');
-$einleitungSec->addSection('Danksagungen');
-$hauptteilSec = $document->addSection('Hauptteil');
-$hauptteilSec->setPageGroup('PG1');
-$problem = $hauptteilSec->addSection('Problemstellung');
-$problem->setLabel('sec:problem');
-$text1 = $problem->addTextFile('input/testKapitelMitRef_LP.php');
-//$text2 = $problem->addText('test Größe:'.$text1->getFontSize().PHP_EOL);
-//$text3 = $problem->addText($text2->getFontSize().PHP_EOL);
-
-
-$versuch = $hauptteilSec->addSection('Versuchsaufbau');
-
-$tex[] = '\mathcal{F}(f)(t) = \frac{1}{\left(2\pi\right)^{\frac{n}{2}}}~ \int\limits_{\mathbb{R}^n} f(x)\,e^{-\mathrm{i} t \cdot x} \,\mathrm{d} x';
-$tex[] = '\int_a^b(f(x)+c)\,\mathrm dx=\int_a^b f(x)\,\mathrm dx+(b-a)\cdot c';
-$tex[] = 'Z = \sum_{i=1}^{n} a_i~;~~~a_i = k_i \cdot b^i~;~~~b=2~;~~~k_i \in \{0,1\}~;~~~i\in \mathbb{N}';
-$tex[] = '\overline{\overline{\left(A\, \wedge\, B\right)}\, \wedge\, C} \neq\overline{ A\, \wedge\, \overline{\left(B\, \wedge\,C \right)}}';
-$tex[] = '\LaTeX ~ 2 \cdot 2 \\ 2\mathbin{\cdot}2 \\ 2 \times 2 \\ 2\mathbin{\times}2​';
-$tex[] = '(\pi + \varpi) \cdot \sum_{1}^{2}{3}';
-$tex[] = 'e = 2+\cfrac{1}{1+\cfrac{1}{2+\cfrac{1}{1+\cfrac{1}{1+\cfrac{1}{4+\cfrac{1}{1+\cfrac{1}{1+\cfrac{1}{6+\dotsb}}}}}}}}';
-
-foreach ($tex as $key => $value) {
-    $versuch->addFormula($tex[$key]);
-    $versuch->addPageBreak();
-}
-
-foreach (Formula::getAvailableFonts() as $key => $formulafont) {
-    $versuch->addFormula($tex[0])->setFormulaFont($formulafont);
-}
-
-
-$hauptteilSec->addSection('Versuchsdruchführung mit langen Informationen zum Umbrechen Langeswort Überschallflugzeug');
-$analyse = $hauptteilSec->addSection('Datenanalyse');
-$analyse->addSection('Programm A');
-$programmB = $analyse->addSection('Programm B');
-$bild = $programmB->addImage('images/bild.png');
-$bild->setCaption('TolleSpirale '.$bild->cite('img:nn', 'Seite 5'));
-$bild->setFontColor(['title' => [255, 0, 0]]);
-$bild->setTitle('Roter Titel!');
-
-$schlussSec = $document->addSection('Schluss');
-$fazit = $schlussSec->addSection('Fazit');
-for ($i=0; $i<10; $i++) {
-    $fazit->addSection('RND'.$i.': '.mt_rand());
-}
-$schlussSec->addSection('ICH BIN NUR IM INHALTSVERZEICHNIS ABER NICHT IM DOKUMENT', ['showInDocument' => false]);
-
-$schlussSec->addSection('Ausblick');
-$qvz = $document->addSection('Quellenverzeichnis', ['enumerate' => false]);
-$qvz->addList(['source'])->setShowPages(false);
-
-
-$anhangSec = $document->addSection('Anhang', ['enumerate' => false]);
-$anhangSec->setPageGroup('PG2');
-$document->addSection('Grundstücks­verkehrs­genehmigungs­zuständigkeits­übertragungs­verordnung (GrundVZÜV)', ['altTitle' => 'GrundVZÜV']);
-$text = $anhangSec->addTextFile('input/testKapitelohneRef.php', ['parse' => false, 'splitAtStr' => PHP_EOL]);
-
-$document->addCodeFile('classes/documentElements/AbstractDocumentContentElement.php', ['splitInParagraphs' => true]);
-
-$document->addSection('Formelverzeichnis', ['enumerate' => false]);
-$document->addList(['formula']);
-
-$code = '<style> td,th{border: 1px solid #000000}</style><table><tr><th>Spalte 1</th><th>Spalte 2</th></tr><tr><td>INHALT</td><td>ASDF</td></tr></table>';
-
-$document->addTable($code);
-$document->addText('HALLO WELT!'.PHP_EOL);
-$document->addText('HALLO WELT2!');
-
-$fn = $document->addSection('fußnoten');
-$fn ->addTextFile('input/footnotes.php');
-
-$flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => false, 'clearTextCache' => false]);
+$flatplane->generatePDF(['showDocumentTree' => true, 'clearFormulaCache' => true, 'clearTextCache' => true]);
 unset($flatplane);
