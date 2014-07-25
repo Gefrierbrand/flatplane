@@ -110,8 +110,9 @@ $tex[] = '\LaTeX ~ 2 \cdot 2 \\ 2\mathbin{\cdot}2 \\ 2 \times 2 \\ 2\mathbin{\ti
 $tex[] = '(\pi + \varpi) \cdot \sum_{1}^{2}{3}';
 $tex[] = 'e = 2+\cfrac{1}{1+\cfrac{1}{2+\cfrac{1}{1+\cfrac{1}{1+\cfrac{1}{4+\cfrac{1}{1+\cfrac{1}{1+\cfrac{1}{6+\dotsb}}}}}}}}';
 
-foreach (Formula::getAvailableFonts() as $key => $formulafont) {
-    $versuch->addFormula($tex[$key])->setFormulaFont($formulafont);
+foreach ($tex as $key => $value) {
+    $versuch->addFormula($tex[$key]);
+    $versuch->addPageBreak();
 }
 
 foreach (Formula::getAvailableFonts() as $key => $formulafont) {

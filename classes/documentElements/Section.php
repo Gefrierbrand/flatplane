@@ -244,4 +244,11 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
             $ignoreTopMarginAtPageStart
         );
     }
+
+    public function addPageBreak()
+    {
+        $content = new PageBreak([]);
+        $content->setParent($this);
+        $this->addContent($content);
+    }
 }

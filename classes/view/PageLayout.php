@@ -22,6 +22,7 @@
 namespace de\flatplane\view;
 
 use de\flatplane\controller\Flatplane;
+use de\flatplane\documentElements\PageBreak;
 use de\flatplane\documentElements\TitlePage;
 use de\flatplane\interfaces\documentElements\DocumentInterface;
 use de\flatplane\interfaces\documentElements\FormulaInterface;
@@ -202,14 +203,6 @@ class PageLayout
      */
     protected function layoutSection(SectionInterface $section)
     {
-        //if the section is not shown in the document, only set the current
-        //pagenumber and return (this can be used used to add entries to the
-        //TOC without adding something visible in the document)
-        if ($section->getShowInDocument() == false) {
-            $this->setSectionPageAndLink($section);
-            return;
-        }
-
         //check if the section forces a new page
         if ($section->getStartsNewPage('level'.$section->getLevel())) {
             Flatplane::log("Section: ($section) requires pagebreak [user]");
@@ -217,6 +210,13 @@ class PageLayout
             $this->incrementPageNumber();
             //set the sections page properties and add links/bookmarks
             $this->setSectionPageAndLink($section);
+
+            //if the section is not shown in the document, only set the current
+            //pagenumber and return (this can be used used to add entries to the
+            //TOC without adding something visible in the document)
+            if ($section->getShowInDocument() == false) {
+                return;
+            }
 
             //set the Y position on the new Page to the end of the Section
             //this assumes a section title fits (comfortably) on one page
@@ -387,6 +387,10 @@ class PageLayout
         //no space. Use ListOfContent to display a list of references
     }
 
+    /**
+     *
+     * @param TitlePage $titlePage
+     */
     protected function layoutTitlePage(TitlePage $titlePage)
     {
         //currently, the dimensions of titlepage are as the name suggests
@@ -398,8 +402,23 @@ class PageLayout
 
         $titlePage->setLinearPage($this->getLinearPageNumber());
         $this->getLinearPageNumberCounter()->add(1);
+        $this->setCurrentYPosition($this->getDocument()->getPageMargins('top'));
 
         //todo: set next pagenumber
+    }
+
+    /**
+     *
+     * @param PageBreak $pagebreak
+     */
+    protected function layoutPageBreak(PageBreak $pagebreak)
+    {
+        //just add a new page by incrementing the linear pagenumber counter
+        //this might break and needs testing
+        Flatplane::log('Adding user.requested PageBreak'.PHP_EOL);
+        $pagebreak->setLinearPage($this->getLinearPageNumber());
+        $this->getLinearPageNumberCounter()->add(1);
+        $this->setCurrentYPosition($this->getDocument()->getPageMargins('top'));
     }
 
     /**
