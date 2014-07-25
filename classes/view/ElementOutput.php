@@ -99,7 +99,8 @@ class ElementOutput
             }
 
             if ($pageElement->getType() != 'source') {
-                echo "element: $pageElement; PDF-Y:{$pdf->GetY()} ElementY: {$pageElement->getStartYpos()}\n";
+                //echo "element: $pageElement; PDF-Y:{$pdf->GetY()}"
+                //. " ElementY: {$pageElement->getStartYpos()}\n";
                 $this->generateElementOutput($pageElement);
             }
 

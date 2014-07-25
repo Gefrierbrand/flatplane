@@ -426,8 +426,8 @@ class PageLayout
         //just add a new page by incrementing the linear pagenumber counter
         //this might break and needs testing
         Flatplane::log('Adding user-requested PageBreak'.PHP_EOL);
-        $pagebreak->setLinearPage($this->getLinearPageNumber());
         $this->getLinearPageNumberCounter()->add(1);
+        $pagebreak->setLinearPage($this->getLinearPageNumber());
         $this->setCurrentYPosition($this->getDocument()->getPageMargins('top'));
     }
 
