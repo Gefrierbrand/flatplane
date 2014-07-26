@@ -270,7 +270,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             if (isset($indentAmounts[$line['iteratorDepth']]['text'])) {
                 $textIndent = $indentAmounts[$line['iteratorDepth']]['text'];
             } else {
-                $textIndent = 6; //todo: use proper value here
+                $textIndent = 8.5; //todo: use proper value here
             }
             if (isset($indentAmounts[$line['iteratorDepth']]['number'])) {
                 $numberIndent = $indentAmounts[$line['iteratorDepth']]['number'];
