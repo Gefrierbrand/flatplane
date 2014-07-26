@@ -427,6 +427,7 @@ class PageLayout
         //this might break and needs testing
         Flatplane::log('Adding user-requested PageBreak'.PHP_EOL);
         $this->getLinearPageNumberCounter()->add(1);
+        $this->getCounter($this->getCurrentPageGroup())->add(1);
         $pagebreak->setLinearPage($this->getLinearPageNumber());
         $this->setCurrentYPosition($this->getDocument()->getPageMargins('top'));
     }

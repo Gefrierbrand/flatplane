@@ -107,7 +107,6 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         } elseif (isset($this->startsNewPage['default'])) {
             return $this->startsNewPage['default'];
         } else {
-            var_dump($this);
             throw new RuntimeException(
                 'The required property startsNewPage is not set.'
             );

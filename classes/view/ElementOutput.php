@@ -99,8 +99,13 @@ class ElementOutput
             }
 
             if ($pageElement->getType() != 'source') {
-                //echo "element: $pageElement; PDF-Y:{$pdf->GetY()}"
-                //. " ElementY: {$pageElement->getStartYpos()}\n";
+                if (FLATPLANE_DEBUG) {
+                    $msg = "PDF-Y:{$pdf->GetY()} \t ElementY: {$pageElement->getStartYpos()}\t $pageElement;\n";
+                    if ($pdf->GetY() != $pageElement->getStartYpos()) {
+                        $msg = "\033[0;31m".$msg."\033[0m";
+                    }
+                    echo $msg;
+                }
                 $this->generateElementOutput($pageElement);
             }
 
