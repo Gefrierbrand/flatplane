@@ -56,7 +56,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
 
     public function __toString()
     {
-        return 'Text ('.$this->getPath().')'.substr($this->getText(), 0, 15).'...';
+        return 'Text ('.$this->getPath().')';
     }
 
     public function getText()
