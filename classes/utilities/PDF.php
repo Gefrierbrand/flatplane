@@ -224,10 +224,7 @@ class PDF extends TCPDF
             $this->displayFootnotes();
         } else {
             //reset page margins
-            $this->SetAutoPageBreak(
-                $this->getAutoPageBreak(),
-                $this->defaultBottomMargin
-            );
+            $this->resetBottomMargin();
         }
 
         $width = $this->getPageWidth()
@@ -235,8 +232,16 @@ class PDF extends TCPDF
                  - $this->getMargins()['right'];
         $this->Cell($width/2, 0, $this->getLeftFooter(), 'T', 0, 'L', false, '', 1);
         $this->Cell($width/2, 0, $this->getRightFooter(), 'T', 0, 'R', false, '', 1);
-        
+
         $this->firstFootnoteOnPage = true;
+    }
+
+    public function resetBottomMargin()
+    {
+        $this->SetAutoPageBreak(
+            $this->getAutoPageBreak(),
+            $this->defaultBottomMargin
+        );
     }
 
     protected function displayFootnotes()

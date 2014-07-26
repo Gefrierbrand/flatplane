@@ -264,7 +264,7 @@ class PageLayout
     protected function getAvailableSpace()
     {
         $pageSize = $this->getDocument()->getPageSize();
-        $pageMarginBottom = $this->getDocument()->getPageMargins('bottom');
+        $pageMarginBottom = $this->getDocument()->getPDF()->getMargins()['bottom'];
 
         $availableSpace = $pageSize['height']
                         - $pageMarginBottom
@@ -434,6 +434,7 @@ class PageLayout
         $this->getCounter($this->getCurrentPageGroup())->add(1);
         $pagebreak->setLinearPage($this->getLinearPageNumber());
         $this->setCurrentYPosition($this->getDocument()->getPageMargins('top'));
+        $this->getDocument()->getPDF()->resetBottomMargin();
     }
 
     /**
