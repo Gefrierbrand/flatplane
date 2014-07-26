@@ -302,7 +302,11 @@ class PageLayout
 
         //add linkt target for list of figures
         $image->setLink($pdf->AddLink());
-        $pdf->SetLink($image->getLink(), 0, $image->getLinearPage() + 1);
+        $pdf->SetLink(
+            $image->getLink(),
+            $image->getStartYpos(),
+            $image->getLinearPage() + 1
+        );
     }
 
     /**
