@@ -137,6 +137,9 @@ class PageLayout
         //reset Y position to top of page
         $this->setCurrentYPosition($document->getPageMargins('top'));
 
+        //reset footnote margins
+        $document->getPDF()->resetBottomMargin();
+
         //return the current grouped counter value as formatted number
         //return $this->getCurrentFormattedPageNumber($pageGroup);
     }
