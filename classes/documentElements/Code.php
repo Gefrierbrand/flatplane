@@ -30,9 +30,10 @@ use de\flatplane\utilities\Highlighter;
  */
 class Code extends Text
 {
-    protected $type = 'Code';
-    protected $enumerate = false;
-    protected $showInList = false;
+    protected $type = 'code';
+    protected $title = 'Code';
+    protected $enumerate = true;
+    protected $showInList = true;
     protected $allowSubContent = false;
     protected $isSplitable = true;
 
@@ -57,26 +58,27 @@ class Code extends Text
         $pdf = $this->getPDF();
         $startPage = $pdf->getPage();
 
-        $this->applyStyles();
+        $pdf->SetY($pdf->GetY()+$this->getMargins('top'));
 
-        //file_put_contents('grVars'.microtime().'.txt', serialize($pdf->getGraphicVars()));
+        $this->applyStyles('title');
+        //todo: implement title/caption position & placement
+        $html = '<b>Quelltext '.$this->getFormattedNumbers().':</b>  '.$this->getTitle();
+        $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, false, true, 'C');
 
-        if ($this->getSplitInParagraphs()) {
-            $splitText = explode($this->getSplitAtStr(), $this->getText());
-        } else {
-            $splitText = [$this->getText()];
-        }
+        $pdf->SetY($pdf->GetY()+$this->getMargins('title'));
 
-        foreach ($splitText as $line) {
-            $pdf->writeHTML(
-                $line,
-                false,
-                false,
-                true,
-                false,
-                $this->getTextAlignment()
-            );
-        }
+        $this->applyStyles('default');
+
+        $pdf->writeHTML(
+            $this->getText(),
+            false,
+            false,
+            true,
+            false,
+            $this->getTextAlignment()
+        );
+
+        $pdf->SetY($pdf->GetY() + $this->getMargins('bottom'));
 
         //return number of pagebreaks
         return $pdf->getPage() - $startPage;

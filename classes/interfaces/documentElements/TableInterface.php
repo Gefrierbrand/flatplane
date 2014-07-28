@@ -21,13 +21,11 @@
 
 namespace de\flatplane\interfaces\documentElements;
 
-use de\flatplane\interfaces\DocumentElementInterface;
-
 /**
  *
  * @author Nikolai Neff <admin@flatplane.de>
  */
-interface TableInterface extends DocumentElementInterface
+interface TableInterface extends TextInterface
 {
     //todo: implement
 }
