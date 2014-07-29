@@ -293,6 +293,7 @@ class PageLayout
         ) {
             Flatplane::log("Image: ($image) requires pagebreak [size]");
             $this->incrementPageNumber();
+            $image->setStartYpos($this->getCurrentYPosition());
         }
 
         $this->setCurrentYPosition($imageSize['endYposition']);
@@ -307,7 +308,7 @@ class PageLayout
         $image->setLink($pdf->AddLink());
         $pdf->SetLink(
             $image->getLink(),
-            $this->getCurrentYPosition(),
+            $image->getStartYpos(),
             $image->getLinearPage() + 1
         );
     }
