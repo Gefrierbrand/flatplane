@@ -47,6 +47,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
     protected $isHyphenated = false;
 
     protected $useCache = true;
+    protected $inGetHash = false;
     protected $containsPageReference;
     protected $containsFootnotes;
     protected $textAlignment = 'J';
@@ -77,6 +78,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
 
     public function getHash($startYposition)
     {
+        $this->inGetHash = true;
         $hashInput = $this->getText()
             .$this->getParse()
             .$this->getHyphenate()
@@ -99,6 +101,7 @@ class Text extends AbstractDocumentContentElement implements TextInterface
             .$this->toRoot()->getPageMargins('left')
             .$this->toRoot()->getPageMargins('right');
 
+        $this->inGetHash = false;
         return sha1($hashInput);
     }
 
@@ -299,11 +302,13 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         );
 
         if ($this->inGetSize) {
-            $this->getPDF()->increaseBottomMargin($footnote);
-            $number = str_repeat(
-                $this->toRoot()->getUnresolvedReferenceMarker(),
-                $this->toRoot()->getAssumedFootnoteNumberWidth()
-            );
+            if (!$this->inGetHash) {
+                $this->getPDF()->increaseBottomMargin($footnote);
+                $number = str_repeat(
+                    $this->toRoot()->getUnresolvedReferenceMarker(),
+                    $this->toRoot()->getAssumedFootnoteNumberWidth()
+                );
+            }
         } else {
             $number = $this->getPDF()->addFootnote($footnote);
         }

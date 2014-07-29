@@ -242,6 +242,7 @@ class PDF extends TCPDF
             $this->getAutoPageBreak(),
             $this->defaultBottomMargin
         );
+        $this->firstFootnoteOnPage = true;
     }
 
     protected function displayFootnotes()
