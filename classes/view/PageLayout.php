@@ -307,7 +307,7 @@ class PageLayout
         $image->setLink($pdf->AddLink());
         $pdf->SetLink(
             $image->getLink(),
-            $image->getStartYpos(),
+            $this->getCurrentYPosition(),
             $image->getLinearPage() + 1
         );
     }
