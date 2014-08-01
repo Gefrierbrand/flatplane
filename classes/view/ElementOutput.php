@@ -199,9 +199,9 @@ class ElementOutput
             $rightHeader = '';
             if (!empty($section->getFormattedNumbers())) {
                 $leftHeader = $section->getFormattedNumbers()
-                    ."   ". mb_strtoupper($section->getAltTitle());
+                    ."   ". $section->getAltTitle();
             } else {
-                $leftHeader = mb_strtoupper($section->getAltTitle());
+                $leftHeader = $section->getAltTitle();
             }
         }
 

@@ -302,12 +302,13 @@ class Text extends AbstractDocumentContentElement implements TextInterface
         );
 
         if ($this->inGetSize) {
+            $number = str_repeat(
+                $this->toRoot()->getUnresolvedReferenceMarker(),
+                $this->toRoot()->getAssumedFootnoteNumberWidth()
+            );
             if (!$this->inGetHash) {
                 $this->getPDF()->increaseBottomMargin($footnote);
-                $number = str_repeat(
-                    $this->toRoot()->getUnresolvedReferenceMarker(),
-                    $this->toRoot()->getAssumedFootnoteNumberWidth()
-                );
+
             }
         } else {
             $number = $this->getPDF()->addFootnote($footnote);

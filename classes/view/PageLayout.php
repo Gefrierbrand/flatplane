@@ -296,8 +296,6 @@ class PageLayout
             $image->setStartYpos($this->getCurrentYPosition());
         }
 
-        $this->setCurrentYPosition($imageSize['endYposition']);
-
         //set the current page for the current section
         $image->setPage(
             $this->getCounter($this->getCurrentPageGroup())->getValue()
@@ -311,6 +309,7 @@ class PageLayout
             $image->getStartYpos(),
             $image->getLinearPage() + 1
         );
+        $this->setCurrentYPosition($imageSize['endYposition']);
     }
 
     /**
@@ -414,15 +413,11 @@ class PageLayout
         //currently, the dimensions of titlepage are as the name suggests
         //exactly the size of one page
 
-        //todo: use pagenumberingproperty
-
-        //todo: header/footer
+        //todo: use pagenumberingproperty ?
+        //todo: header/footer ?
 
         $titlePage->setLinearPage($this->getLinearPageNumber());
-        $this->getLinearPageNumberCounter()->add(1);
-        $this->setCurrentYPosition($this->getDocument()->getPageMargins('top'));
-
-        //todo: set next pagenumber
+        $this->incrementPageNumber();
     }
 
     /**
@@ -434,11 +429,8 @@ class PageLayout
         //just add a new page by incrementing the linear pagenumber counter
         //this might break and needs testing
         Flatplane::log('Adding user-requested PageBreak'.PHP_EOL);
-        $this->getLinearPageNumberCounter()->add(1);
-        $this->getCounter($this->getCurrentPageGroup())->add(1);
+        $this->incrementPageNumber();
         $pagebreak->setLinearPage($this->getLinearPageNumber());
-        $this->setCurrentYPosition($this->getDocument()->getPageMargins('top'));
-        $this->getDocument()->getPDF()->resetBottomMargin();
     }
 
     /**
