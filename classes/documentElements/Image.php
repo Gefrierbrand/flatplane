@@ -21,6 +21,7 @@
 
 namespace de\flatplane\documentElements;
 
+use de\flatplane\controller\Flatplane;
 use de\flatplane\interfaces\documentElements\ImageInterface;
 use de\flatplane\utilities\SVGSize;
 use Imagick;
@@ -62,6 +63,9 @@ class Image extends AbstractDocumentContentElement implements ImageInterface
 
     protected $margins = ['default' => 0, 'title' => 5, 'caption' => 5];
 
+    protected $useCache = true;
+    protected $cachePath;
+
     /**
      * Returns image-type and -path as string
      * @return string
@@ -69,6 +73,66 @@ class Image extends AbstractDocumentContentElement implements ImageInterface
     public function __toString()
     {
         return (string) 'Image: ('.$this->getImageType().') '.$this->getPath();
+    }
+
+    public function getSize($startYposition = null)
+    {
+        if ($this->isCached($startYposition)) {
+            $size = $this->getCachedSize($startYposition);
+        } else {
+            $size = parent::getSize($startYposition);
+            $this->writeCache($startYposition, $size);
+        }
+        return $size;
+    }
+
+    protected function getCachedSize($startYposition)
+    {
+        $filename = $this->getCacheFileName($startYposition);
+        if (!is_readable($filename)) {
+            throw new RuntimeException("cache for $this is not readable");
+        }
+        $size = unserialize(file_get_contents($filename));
+        return $size;
+    }
+
+    protected function writeCache($startYposition, array $size)
+    {
+        $filename = $this->getCacheFileName($startYposition);
+        $dir = dirname($filename);
+        if (!is_dir($dir)) {
+            mkdir($dir);
+        }
+        if (!is_writable($dir)) {
+            trigger_error('Image cache directory is not writable', E_USER_WARNING);
+        }
+
+        file_put_contents($filename, serialize($size));
+    }
+
+    protected function getCacheFileName($startYposition)
+    {
+        $filename = Flatplane::getCacheDir().DIRECTORY_SEPARATOR.
+        'image'.DIRECTORY_SEPARATOR.$this->getHash($startYposition).'.txt';
+        return $filename;
+    }
+
+    protected function isCached($startYposition)
+    {
+        $filename = $this->getCacheFileName($startYposition);
+        if ($this->getUseCache()
+            && file_exists($filename)
+            && is_readable($filename)
+        ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    protected function getHash($startYPosition)
+    {
+        return sha1($startYPosition.$this->getPath().$this->getWidth().$this->getHeight());
     }
 
     /**
@@ -762,5 +826,25 @@ class Image extends AbstractDocumentContentElement implements ImageInterface
     public function setNumberingPosition($numberingPosition)
     {
         $this->numberingPosition = $numberingPosition;
+    }
+
+    public function getUseCache()
+    {
+        return $this->useCache;
+    }
+
+    public function getCachePath()
+    {
+        return $this->cachePath;
+    }
+
+    public function setUseCache($useCache)
+    {
+        $this->useCache = $useCache;
+    }
+
+    public function setCachePath($cachePath)
+    {
+        $this->cachePath = $cachePath;
     }
 }

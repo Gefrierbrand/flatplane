@@ -156,6 +156,13 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
      */
     protected $data = [];
 
+    /**
+     * default Distance from left-pagemargin to start of text in user units
+     * (includes space for enumeration)
+     * @var float
+     */
+    protected $defaultTextIndent = 8.5;
+
 
     public function __toString()
     {
@@ -270,7 +277,7 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             if (isset($indentAmounts[$line['iteratorDepth']]['text'])) {
                 $textIndent = $indentAmounts[$line['iteratorDepth']]['text'];
             } else {
-                $textIndent = 8.5; //todo: use proper value here
+                $textIndent = $this->defaultTextIndent;
             }
             if (isset($indentAmounts[$line['iteratorDepth']]['number'])) {
                 $numberIndent = $indentAmounts[$line['iteratorDepth']]['number'];
@@ -630,5 +637,15 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
     public function getAltTitle()
     {
         return (string) $this;
+    }
+
+    public function getDefaultTextIndent()
+    {
+        return $this->defaultTextIndent;
+    }
+
+    public function setDefaultTextIndent($defaultTextIndent)
+    {
+        $this->defaultTextIndent = $defaultTextIndent;
     }
 }

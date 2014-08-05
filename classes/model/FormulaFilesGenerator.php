@@ -126,7 +126,6 @@ class FormulaFilesGenerator
      */
     protected function startSVGTEX($font)
     {
-        //todo: path, os, port!
         $phantomPath = Flatplane::getPhantomJsPath();
         $svgTexPath = 'vendor'.DIRECTORY_SEPARATOR.'flatplane'
                     .DIRECTORY_SEPARATOR.'svgtex'.DIRECTORY_SEPARATOR.'main.js';

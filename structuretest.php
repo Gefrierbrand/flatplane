@@ -54,6 +54,7 @@ $titlepage->setOutputCallback($outputCallback);
 $inhaltsec = $document->addSection('Inhaltsverzeichnis', ['startsNewPage' => ['level1' => false]]);
 
 $inhaltsec->addTextFile('input/footnotes.php');
+$inhaltsec->addImage('images/bild.png');
 
 $flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => true, 'clearTextCache' => false]);
 //unset($flatplane);
