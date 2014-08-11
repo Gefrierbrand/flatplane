@@ -163,6 +163,11 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
      */
     protected $defaultTextIndent = 8.5;
 
+    /**
+     * enable/disable html parsing for list entries. this is highly experimental
+     * @var bool
+     */
+    protected $parseHTML = false;
 
     public function __toString()
     {
@@ -333,9 +338,21 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
             //write line content
             $pdf->SetX($textXPos);
             if (isset($line['link'])) {
-                $pdf->Write(0, $line['text'], $line['link']);
+                if ($this->parseHTML) {
+                    //todo: htmlmode for links
+                    //html links to internal pages are also possible, but complicated
+                    //maybe later!
+                    $pdf->writeHTML($line['text'], false);
+                } else {
+                    $pdf->Write(0, $line['text'], $line['link']);
+                }
             } else {
-                $pdf->Write(0, $line['text']);
+                if ($this->parseHTML) {
+                    //todo: test how this breaks formatting
+                    $pdf->writeHTML($line['text'], false);
+                } else {
+                    $pdf->Write(0, $line['text']);
+                }
             }
 
             //draw line or dots to pages, as the x-position is now behind the
@@ -746,5 +763,15 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
     public function setDefaultTextIndent($defaultTextIndent)
     {
         $this->defaultTextIndent = $defaultTextIndent;
+    }
+
+    public function getParseHTML()
+    {
+        return $this->parseHTML;
+    }
+
+    public function setParseHTML($parseHTML)
+    {
+        $this->parseHTML = $parseHTML;
     }
 }

@@ -172,6 +172,13 @@ interface DocumentElementInterface
     public function addCodeFile($path, array $settings = []);
 
     /**
+     * @param array $displayTypes (optional)
+     * @param array $settings (optional)
+     * @return ListOfContents
+     */
+    public function addList(array $displayTypes = ['section'], array $settings = []);
+
+    /**
      * Get the Parent of the current element
      * @return DocumentElementInterface
      */
