@@ -117,7 +117,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
     {
         return (string) $this->getDocTitle();
     }
-    
+
     /**
      * @return Document
      */
@@ -825,7 +825,7 @@ class Document extends AbstractDocumentContentElement implements DocumentInterfa
      */
     public function setPageNumberStartValue(array $pageNumberStartValue)
     {
-        $this->pageNumberStartValue = array_merge (
+        $this->pageNumberStartValue = array_merge(
             $this->pageNumberStartValue,
             $pageNumberStartValue
         );

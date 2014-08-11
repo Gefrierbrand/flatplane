@@ -509,16 +509,29 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         return $indentAmounts;
     }
 
+    /**
+     * Get the element-types to be displayed in the list
+     * @return array
+     */
     public function getDisplayTypes()
     {
         return $this->displayTypes;
     }
 
+    /**
+     * Get the maximum iteration depth
+     * @return int
+     */
     public function getMaxDepth()
     {
         return $this->maxDepth;
     }
 
+    /**
+     * Set the maximum iteration depth
+     * @param int $maxDepth
+     *  use -1 for infinite
+     */
     public function setMaxDepth($maxDepth)
     {
         //cast to int as all settings from ini files are returned as strings
@@ -530,26 +543,48 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         $this->maxDepth = $maxDepth;
     }
 
+    /**
+     * Set the element-types to be displayed in the list
+     * @param array $displayTypes
+     *  array containing the element-types as strings
+     */
     public function setDisplayTypes(array $displayTypes)
     {
         $this->displayTypes = $displayTypes;
     }
 
+    /**
+     * Set the element-indentation mode and maxlevel
+     * @param array $indent
+     */
     public function setIndent(array $indent)
     {
         $this->indent = array_merge($this->indent, $indent);
     }
 
+    /**
+     * Get the generated list-structure as array
+     * @return array
+     * @see generateStructure()
+     */
     public function getData()
     {
         return $this->data;
     }
 
+    /**
+     * @return bool
+     */
     public function getShowPages()
     {
         return $this->showPages;
     }
 
+    /**
+     * Get the DrawLinesToPage option for the level specified by $key
+     * @param string $key (optional)
+     * @return bool
+     */
     public function getDrawLinesToPage($key = null)
     {
         if ($key !== null && isset($this->drawLinesToPage[$key])) {
@@ -559,6 +594,11 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         }
     }
 
+    /**
+     * Get the pagenumbering line-style for the level defined by $key
+     * @param sting $key (optional)
+     * @return array
+     */
     public function getLineStyle($key = null)
     {
         if ($key !== null && isset($this->lineStyle[$key])) {
@@ -568,11 +608,19 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         }
     }
 
+    /**
+     * Enable/Disable the display of pagenumbers in the list
+     * @param bool $showPages
+     */
     public function setShowPages($showPages)
     {
         $this->showPages = $showPages;
     }
 
+    /**
+     * Enable/Disable the drawing of lines to the pagenumber for each level
+     * @param array $drawLinesToPage
+     */
     public function setDrawLinesToPage(array $drawLinesToPage)
     {
         $this->drawLinesToPage = array_merge(
@@ -581,21 +629,40 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         );
     }
 
+    /**
+     * Set the style of the line from the entry to the pagenumbers
+     * @param array $lineStyle
+     */
     public function setLineStyle(array $lineStyle)
     {
         $this->lineStyle = array_merge($this->lineStyle, $lineStyle);
     }
 
+    /**
+     * Get the minimal distance between the elements title-text an the page
+     * numbers in user-units
+     * @return float
+     */
     public function getMinPageNumDistance()
     {
         return $this->minPageNumDistance;
     }
 
+    /**
+     * Set the minimal distance between the elements title-text an the page
+     * numbers in user-units
+     * @param float $minPageNumDistance
+     */
     public function setMinPageNumDistance($minPageNumDistance)
     {
         $this->minPageNumDistance = $minPageNumDistance;
     }
 
+    /**
+     * Get the indentaion settings
+     * @return array
+     * @throws OutOfRangeException
+     */
     public function getIndent()
     {
         if ($this->indent['maxLevel'] < -1) {
@@ -604,31 +671,53 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         return $this->indent;
     }
 
+    /**
+     * @return float
+     */
     public function getMinTitleWidthPercentage()
     {
         return $this->minTitleWidthPercentage;
     }
 
+    /**
+     * Get the horizontal space reserverd for the pagenumbers in user-units
+     * @return float
+     */
     public function getPageNumberWidth()
     {
         return $this->pageNumberWidth;
     }
 
+    /**
+     * @param float $minTitleWidthPercentage
+     */
     public function setMinTitleWidthPercentage($minTitleWidthPercentage)
     {
         $this->minTitleWidthPercentage = $minTitleWidthPercentage;
     }
 
+    /**
+     * Set the horizontal space reserverd for the pagenumbers in user-units
+     * @param float $pageNumberWidth
+     */
     public function setPageNumberWidth($pageNumberWidth)
     {
         $this->pageNumberWidth = $pageNumberWidth;
     }
 
+    /**
+     * Get the approx. space between the numbering and the text in the list (in em)
+     * @return float
+     */
     public function getNumberSeparationWidth()
     {
         return $this->numberSeparationWidth;
     }
 
+    /**
+     * Set the approx. space between the numbering and the text in the list (in em)
+     * @param type $numberSeparationWidth
+     */
     public function setNumberSeparationWidth($numberSeparationWidth)
     {
         $this->numberSeparationWidth = $numberSeparationWidth;
@@ -639,11 +728,21 @@ class ListOfContents extends AbstractDocumentContentElement implements ListInter
         return (string) $this;
     }
 
+    /**
+     * Get the default indentaion amount (includein space for numbering) if
+     * the indentation is disabled (in user-units)
+     * @return float
+     */
     public function getDefaultTextIndent()
     {
         return $this->defaultTextIndent;
     }
 
+    /**
+     * Set the default indentaion amount (includein space for numbering) if
+     * the indentation is disabled (in user-units)
+     * @param float $defaultTextIndent
+     */
     public function setDefaultTextIndent($defaultTextIndent)
     {
         $this->defaultTextIndent = $defaultTextIndent;

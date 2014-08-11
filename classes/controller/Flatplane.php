@@ -251,6 +251,12 @@ class Flatplane
             $this->stopTimer('clearTextCache');
         }
 
+        if (!empty($settings['clearImageCache'])) {
+            $this->startTimer('clearImageCache');
+            $this->clearCache('image');
+            $this->stopTimer('clearImageCache');
+        }
+
         // generate dynamic content
         $this->startTimer('generateFormulas');
         $this->generateFormulas();
@@ -285,6 +291,14 @@ class Flatplane
 
         if (strtolower($type) == 'text') {
             $dir = Flatplane::getCacheDir().DIRECTORY_SEPARATOR.'text';
+            $files = glob($dir.DIRECTORY_SEPARATOR.'*.txt');
+            foreach ($files as $file) {
+                unlink($file);
+            }
+        }
+        
+        if (strtolower($type) == 'image') {
+            $dir = Flatplane::getCacheDir().DIRECTORY_SEPARATOR.'image';
             $files = glob($dir.DIRECTORY_SEPARATOR.'*.txt');
             foreach ($files as $file) {
                 unlink($file);

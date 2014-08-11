@@ -435,16 +435,6 @@ interface DocumentElementInterface
     public function setLinearPage($linearPage);
 
     /**
-     * Creates a reference to a source
-     * @param string $source
-     * @param string $extras (optional)
-     *  additional text (e.g. Pages 2-7) to be displayed in the text
-     * @return string
-     *  Formatted number and $extras to indicate the referenced source
-     */
-    public function cite($source, $extras = '');
-
-    /**
      * Get the link identifier for the current element
      * @return int
      * @see TCPDF:addLink
@@ -471,4 +461,68 @@ interface DocumentElementInterface
      * @param string $pagegroup
      */
     public function setPageGroup($pagegroup);
+
+    /**
+     * Enable or disable the display of the element in lists for that elementtype
+     * @param bool $showInList
+     */
+    public function setShowInList($showInList);
+
+    /**
+     * Set the elements title
+     * @param string $title
+     */
+    public function setTitle($title);
+
+    /**
+     * Set the elements Margins
+     * @param array $margins
+     *  keys: 'top', 'bottom', 'left', 'right'
+     *  values: (numeric) margin amount (user units)
+     */
+    public function setMargins(array $margins);
+
+    /**
+     * Set the color used to fill cells.
+     * @param array $fillColor
+     *  Either one, tree or four elements indicating the color values for
+     *  grayscale, RGB or CMYK colors
+     * @see TCPDF::SetFillColor()
+     */
+    public function setFillColor(array $fillColor);
+
+    /**
+     * set an alternative (shorter) elementitle to be used in lists
+     * @param type $altTitle
+     */
+    public function setAltTitle($altTitle);
+
+    /**
+     * Enable or disable the elements content-hyphenation
+     * @param bool $hyphenate
+     */
+    public function setHyphenate($hyphenate);
+
+    /**
+     * Creates a reference to a source
+     * @param string $source
+     *  the label defines by the sources setLabel() method
+     * @param string $extras
+     *  additional text (e.g. Pages 2-7) to be displayed in the reference text
+     * @return string
+     *  Formatted number and $extras to indicate the referenced source
+     */
+    public function cite($source, $extras = '');
+
+    /**
+     * get the elements Y-starting position whithin its page
+     * @return float
+     */
+    public function getStartYpos();
+
+    /**
+     * Set the elements Y-starting position whithin its page
+     * @param float $startYpos
+     */
+    public function setStartYpos($startYpos);
 }

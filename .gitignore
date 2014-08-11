@@ -14,5 +14,5 @@
 /input/*
 /cache/formulas/
 /cache/text/
-/cache/images/
+/cache/image/
 composer.lock

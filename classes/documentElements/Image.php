@@ -49,7 +49,7 @@ class Image extends AbstractDocumentContentElement implements ImageInterface
     protected $captionPosition = ['bottom', 'center'];
 
     protected $rotation = 0;
-    protected $resolution; //dpi
+    protected $resolution; //ppi
     protected $width;
     protected $height;
     protected $fitOnPage = true; //not used atm
@@ -635,16 +635,29 @@ class Image extends AbstractDocumentContentElement implements ImageInterface
         }
     }
 
+    /**
+     * Get the title position
+     * @return string
+     */
     public function getTitlePosition()
     {
         return $this->titlePosition;
     }
 
+    /**
+     * Get the path to the image file
+     * @return string
+     */
     public function getPath()
     {
         return $this->path;
     }
 
+    /**
+     * Get the images file-type. If it is not manually set, the type is
+     * estimated using the file-extension
+     * @return sting
+     */
     public function getImageType()
     {
         if (empty($this->imageType)) {
@@ -653,196 +666,317 @@ class Image extends AbstractDocumentContentElement implements ImageInterface
         return $this->imageType;
     }
 
+    /**
+     * Get the image caption
+     * @return string
+     */
     public function getCaption()
     {
         return $this->caption;
     }
 
+    /**
+     * Get the image captions positioning parameters
+     * @return array
+     */
     public function getCaptionPosition()
     {
         return $this->captionPosition;
     }
 
+    /**
+     * Get the images rotation in degrees (clockwise);
+     * @return float
+     */
     public function getRotation()
     {
         return $this->rotation;
     }
 
-    public function getScale()
-    {
-        return $this->scale;
-    }
-
+    /**
+     * Get the images resolution
+     * @return float
+     *  value in ppi (pixels per inch)
+     */
     public function getResolution()
     {
         return $this->resolution;
     }
 
-    public function getPlacement()
-    {
-        return $this->placement;
-    }
-
-    public function setTitlePosition($titlePosition)
+    /**
+     * Set the title-string positioning
+     * @param type $titlePosition
+     */
+    public function setTitlePosition(array $titlePosition)
     {
         $this->titlePosition = $titlePosition;
     }
 
+    /**
+     * Set the path tho the imagefile
+     * @param string $path
+     */
     public function setPath($path)
     {
         $this->path = $path;
     }
 
+    /**
+     * Set the images file-type
+     * @param string $imageType
+     */
     public function setImageType($imageType)
     {
         $this->imageType = $imageType;
     }
 
+    /**
+     * Set the images caption
+     * @param string $caption
+     */
     public function setCaption($caption)
     {
         $this->caption = $caption;
     }
 
-    public function setCaptionPosition($captionPosition)
+    /**
+     * Set the images caption-positioning parameters
+     * @param array $captionPosition
+     */
+    public function setCaptionPosition(array $captionPosition)
     {
         $this->captionPosition = $captionPosition;
     }
 
+    /**
+     * Set the images rotation in degrees (clockwise)
+     * @param float $rotation
+     */
     public function setRotation($rotation)
     {
         $this->rotation = $rotation;
     }
 
-    public function setScale($scale)
-    {
-        $this->scale = $scale;
-    }
-
+    /**
+     * Set the images display-resolution in ppi (pixels per inch)
+     * @param float $resolution
+     */
     public function setResolution($resolution)
     {
         $this->resolution = $resolution;
     }
 
-    public function setPlacement($placement)
-    {
-        $this->placement = $placement;
-    }
-
+    /**
+     * Get the images width in user-units. Does not include the title or caption
+     * @see getSize()
+     * @return float
+     */
     public function getWidth()
     {
         return $this->width;
     }
 
+    /**
+     * Get the images height in user-units. Does not include the title or caption
+     * @see getSize()
+     * @return float
+     */
     public function getHeight()
     {
         return $this->height;
     }
 
+    /**
+     * Set the images width in user-units. Does not include the title or caption
+     * @param float $width
+     */
     public function setWidth($width)
     {
         $this->width = $width;
     }
 
+    /**
+     * Set the images height in user-units. Does not include the title or caption
+     * @param float $height
+     */
     public function setHeight($height)
     {
         $this->height = $height;
     }
 
+    /**
+     * @return bool
+     */
     public function getKeepAspectRatio()
     {
         return $this->keepAspectRatio;
     }
 
+    /**
+     * Enable/Disable maintaining the aspect ratio if width or height are
+     * adjusted independendly
+     * @param bool $keepAspectRatio
+     */
     public function setKeepAspectRatio($keepAspectRatio)
     {
         $this->keepAspectRatio = $keepAspectRatio;
     }
 
+    /**
+     * @return bool
+     */
     public function getFitOnPage()
     {
         return $this->fitOnPage;
     }
 
+    /**
+     * Get the images horizontal alignment
+     * @return string
+     */
     public function getAlignment()
     {
         return $this->alignment;
     }
 
+    /**
+     * Enables / disables the automatic scaling of the image to fit on the page
+     * if its dimensions are to large
+     * @param bool $fitOnPage
+     */
     public function setFitOnPage($fitOnPage)
     {
         $this->fitOnPage = $fitOnPage;
     }
 
+    /**
+     * Sets the images horizontal alignment
+     * @param string $alignment
+     */
     public function setAlignment($alignment)
     {
         $this->alignment = $alignment;
     }
 
+    /**
+     * Get the vertival distance between the title an the image in user-units
+     * @return float
+     */
     public function getTitleMargin()
     {
         return $this->titleMargin;
     }
 
+    /**
+     * Get the vertical distance between the caption and the image in user-units
+     * @return float
+     */
     public function getCaptionMargin()
     {
         return $this->captionMargin;
     }
 
+    /**
+     * Get the titlesting prefix
+     * @return string
+     */
     public function getTitlePrefix()
     {
         return $this->titlePrefix;
     }
 
+    /**
+     * Get the captionstring prefix
+     * @return string
+     */
     public function getCaptionPrefix()
     {
         return $this->captionPrefix;
     }
 
+    /**
+     * @return String
+     */
     public function getDescriptionSeparator()
     {
         return $this->descriptionSeparator;
     }
 
+    /**
+     * Get the numbering positioning options
+     * @return array
+     */
     public function getNumberingPosition()
     {
         return $this->numberingPosition;
     }
 
+    /**
+     * Set the title prefix
+     * @param string $titlePrefix
+     */
     public function setTitlePrefix($titlePrefix)
     {
         $this->titlePrefix = $titlePrefix;
     }
 
+    /**
+     * Set the caption prefix
+     * @param String $captionPrefix
+     */
     public function setCaptionPrefix($captionPrefix)
     {
         $this->captionPrefix = $captionPrefix;
     }
 
+    /**
+     * @param string $descriptionSeparator
+     */
     public function setDescriptionSeparator($descriptionSeparator)
     {
         $this->descriptionSeparator = $descriptionSeparator;
     }
 
-    public function setNumberingPosition($numberingPosition)
+    /**
+     * Set the numering positioning options
+     * @param array $numberingPosition
+     */
+    public function setNumberingPosition(array $numberingPosition)
     {
         $this->numberingPosition = $numberingPosition;
     }
 
+    /**
+     * Get weather the cache is used
+     * @return bool
+     */
     public function getUseCache()
     {
         return $this->useCache;
     }
 
+    /**
+     * Get the path to the cache file
+     * @return string
+     */
     public function getCachePath()
     {
         return $this->cachePath;
     }
 
+    /**
+     * Enable/Disable the usage of the imagesize-cache
+     * @param bool $useCache
+     */
     public function setUseCache($useCache)
     {
         $this->useCache = $useCache;
     }
 
+    /**
+     * Set the path to the cachefile
+     * @param string $cachePath
+     */
     public function setCachePath($cachePath)
     {
         $this->cachePath = $cachePath;

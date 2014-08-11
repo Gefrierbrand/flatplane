@@ -56,6 +56,9 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         return (string) $this->getAltTitle();
     }
 
+    /**
+     * @return bool
+     */
     public function getShowInDocument()
     {
         return $this->showInDocument;
@@ -63,14 +66,14 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
 
     /**
      *
-     * @param type $level
-     * @return type
+     * @param string $level (optional)
+     * @return float
      *  minimum free percentage of textheight needed to start a section on
      *  the current page instead of a new one.
      * @throws RuntimeException
      * @throws \OutOfBoundsException
      */
-    public function getMinFreePage($level = 0)
+    public function getMinFreePage($level = 'default')
     {
         if (isset($this->minFreePage[$level])) {
             $minFree = $this->minFreePage[$level];
@@ -87,7 +90,13 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         return $minFree;
     }
 
-    public function getStartsNewLine($level = 0)
+    /**
+     * Gets the StartsNewLine option for the level defined by $level
+     * @param string $level (optional)
+     * @return bool
+     * @throws RuntimeException
+     */
+    public function getStartsNewLine($level = 'default')
     {
         if (isset($this->startsNewLine[$level])) {
             return $this->startsNewLine[$level];
@@ -100,7 +109,13 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         }
     }
 
-    public function getStartsNewPage($level = 'level0')
+    /**
+     * Gets the StartsNewPage option for the level defined by $level
+     * @param string $level
+     * @return bool
+     * @throws RuntimeException
+     */
+    public function getStartsNewPage($level = 'default')
     {
         if (isset($this->startsNewPage[$level])) {
             return $this->startsNewPage[$level];
@@ -113,21 +128,41 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         }
     }
 
+    /**
+     * Enable/Disable the display of the section-headline in the document.
+     * Does not affect the sections content
+     * @param bool $showInDocument
+     */
     public function setShowInDocument($showInDocument)
     {
         $this->showInDocument = (bool) $showInDocument;
     }
 
+    /**
+     * Set the minimaly needed remaining free space as percentage of the
+     * textheight to start the section on the current page. If remaing space is
+     * less than the resulting value, a pagebreak is inserted
+     * @param array $minFreePage
+     *  value depending on the sections level as keys
+     */
     public function setMinFreePage(array $minFreePage)
     {
         $this->minFreePage = array_merge($this->minFreePage, $minFreePage);
     }
 
+    /**
+     * Sets the startsNewLine option depening on the level
+     * @param array $startsNewLine
+     */
     public function setStartsNewLine(array $startsNewLine)
     {
         $this->startsNewLine = array_merge($this->startsNewLine, $startsNewLine);
     }
 
+    /**
+     * Sets the startsNewpage option depening on the level
+     * @param array $startsNewPage
+     */
     public function setStartsNewPage(array $startsNewPage)
     {
         $this->startsNewPage = array_merge($this->startsNewPage, $startsNewPage);
@@ -200,16 +235,28 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         return $pdf->getPage() - $startPage;
     }
 
+    /**
+     * Get the space in between the Numbering and the text of the headline (in em)
+     * @return float
+     */
     public function getNumberSeparationWidth()
     {
         return $this->numberSeparationWidth;
     }
 
+    /**
+     * Set the space in between the Numbering and the text of the headline (in em)
+     * @param float $numberSeparationWidth
+     */
     public function setNumberSeparationWidth($numberSeparationWidth)
     {
         $this->numberSeparationWidth = $numberSeparationWidth;
     }
 
+    /**
+     * Get a non-hyphenated version of the titlesting
+     * @return string
+     */
     public function getNonHyphenTitle()
     {
         //replace UTF-8 shy char.
@@ -217,16 +264,27 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         return str_replace("\xC2\xAD", '', $this->getTitle());
     }
 
+    /**
+     * @return bool
+     */
     public function getShowInBookmarks()
     {
         return $this->showInBookmarks;
     }
 
+    /**
+     * Enable/disable the display of the section in the PDFs bookmarks
+     * @param type $showInBookmarks
+     */
     public function setShowInBookmarks($showInBookmarks)
     {
         $this->showInBookmarks = $showInBookmarks;
     }
 
+    /**
+     * @param string $level
+     * @return bool
+     */
     public function getIgnoreTopMarginAtPageStart($level = null)
     {
         if ($level !== null && isset($this->ignoreTopMarginAtPageStart[$level])) {
@@ -236,6 +294,11 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         }
     }
 
+    /**
+     * Enables/Disables the ignoring of the sections top margins at the pagestart
+     * for each level defined in the keys separately
+     * @param array $ignoreTopMarginAtPageStart
+     */
     public function setIgnoreTopMarginAtPageStart(array $ignoreTopMarginAtPageStart)
     {
         $this->ignoreTopMarginAtPageStart = array_merge(
@@ -244,6 +307,9 @@ class Section extends AbstractDocumentContentElement implements SectionInterface
         );
     }
 
+    /**
+     * Adds a manual pagebreak as content.
+     */
     public function addPageBreak()
     {
         $content = new PageBreak([]);

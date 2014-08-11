@@ -298,13 +298,17 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         $this->showInList = (bool) $showInList;
     }
 
+    /**
+     * Set the elements title
+     * @param string $title
+     */
     public function setTitle($title)
     {
         $this->title = $title;
     }
 
     /**
-     *
+     * Set the elements Margins
      * @param array $margins
      *  keys: 'top', 'bottom', 'left', 'right'
      *  values: (numeric) margin amount (user units)
@@ -373,7 +377,13 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         }
     }
 
-
+    /**
+     * Set the color used to fill cells.
+     * @param array $fillColor
+     *  Either one, tree or four elements indicating the color values for
+     *  grayscale, RGB or CMYK colors
+     * @see TCPDF::SetFillColor()
+     */
     public function setFillColor(array $fillColor)
     {
         $this->fillColor = $fillColor;
@@ -412,6 +422,10 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         }
     }
 
+    /**
+     * Set an alternate version of the title (used in lists and the header).
+     * @param type $altTitle
+     */
     public function setAltTitle($altTitle)
     {
         $this->altTitle = $altTitle;
@@ -465,7 +479,7 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     }
 
     /**
-     *
+     * Enable or disable the elements content-hyphenation
      * @param bool $hyphenate
      */
     public function setHyphenate($hyphenate)
@@ -526,8 +540,9 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
     /**
      * Creates a reference to a source
      * @param string $source
+     *  the label defines by the sources setLabel() method
      * @param string $extras
-     *  additional text (e.g. Pages 2-7) to be displayed in the text
+     *  additional text (e.g. Pages 2-7) to be displayed in the reference text
      * @return string
      *  Formatted number and $extras to indicate the referenced source
      */
@@ -615,11 +630,19 @@ abstract class AbstractDocumentContentElement implements DocumentElementInterfac
         $this->pageGroup = $pageGroup;
     }
 
+    /**
+     * get the elements Y-starting position whithin its page
+     * @return float
+     */
     public function getStartYpos()
     {
         return $this->startYpos;
     }
 
+    /**
+     * Set the elements Y-starting position whithin its page
+     * @param float $startYpos
+     */
     public function setStartYpos($startYpos)
     {
         $this->startYpos = $startYpos;

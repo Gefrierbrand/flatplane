@@ -33,12 +33,19 @@ class ContentTypeFilterIterator extends \FilterIterator
 {
     protected $allowedTypes;
 
+    /**
+     * @param \Iterator $iterator
+     * @param array $allowedTypes
+     */
     public function __construct(\Iterator $iterator, array $allowedTypes)
     {
         $this->allowedTypes = $allowedTypes;
         parent::__construct($iterator);
     }
 
+    /**
+     * @return boolean
+     */
     public function accept()
     {
         $content = parent::current();

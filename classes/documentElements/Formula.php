@@ -53,21 +53,37 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
 
     protected $scalingFactor = 0.85;
 
+    /**
+     * Get the TeX or MathML code defining the formula
+     * @return string
+     */
     public function getCode()
     {
         return $this->code;
     }
 
+    /**
+     * Get the codes format, wich is either TeX or MathML
+     * @return string
+     */
     public function getCodeFormat()
     {
         return $this->codeFormat;
     }
 
+    /**
+     * Get all available formulafonts
+     * @return array
+     */
     public static function getAvailableFonts()
     {
         return self::$availableFonts;
     }
 
+    /**
+     * Get all available Code formats
+     * @return array
+     */
     public static function getAvailableCodeFormats()
     {
         return self::$availableCodeFormats;
@@ -86,6 +102,12 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
         return parent::getSize($startYposition);
     }
 
+    /**
+     * Adds the formula as image to the page
+     * @return int
+     *  number of pages needed to output formula
+     * @throws \RuntimeException
+     */
     public function generateOutput()
     {
         if (empty($this->getPath()) || !is_readable($this->getPath())) {
@@ -182,22 +204,39 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
         return $this->path;
     }
 
+    /**
+     * Get the font used for the formula
+     * @return type
+     */
     public function getFormulaFont()
     {
         return $this->formulaFont;
     }
 
+    /**
+     * Set the path to the SVG file representaion of the formula
+     * @param string $path
+     */
     public function setPath($path)
     {
         //todo: check permissions
         $this->path = $path;
     }
 
+    /**
+     * Set the TeX or MathML code representing the formula
+     * @param string $code
+     */
     public function setCode($code)
     {
         $this->code = $code;
     }
 
+    /**
+     * Set the formulas font.
+     * @param string $font
+     * @see getAvailableFonts()
+     */
     public function setFormulaFont($font)
     {
         if (!in_array($font, self::$availableFonts, true)) {
@@ -210,6 +249,11 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
         $this->formulaFont = $font;
     }
 
+    /**
+     * Set the codes format. Can currently either be TeX or MathML
+     * @param string $codeFormat
+     * @see getAvailableCodeFormats()
+     */
     public function setCodeFormat($codeFormat)
     {
         if (!in_array($codeFormat, self::$availableCodeFormats, true)) {
@@ -222,21 +266,40 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
         $this->codeFormat = $codeFormat;
     }
 
+    /**
+     * Determine if the cache is used
+     * @return bool
+     * @deprecated might get removed since formulas always require the cache
+     */
     public function getUseCache()
     {
         return $this->useCache;
     }
 
+    /**
+     * Enable or disable the cache usage
+     * @param bool $useCache
+     *  defaults to true
+     * @deprecated might get removed since formulas always require the cache
+     */
     public function setUseCache($useCache)
     {
         $this->useCache = (bool) $useCache;
     }
 
+    /**
+     * Get the formulas output style (inline or display)
+     * @return string
+     */
     public function getFormulaStyle()
     {
         return $this->formulaStyle;
     }
 
+    /**
+     * Set the forumulas output style (inline or display)
+     * @param string $formulaStyle
+     */
     public function setFormulaStyle($formulaStyle)
     {
         $this->formulaStyle = $formulaStyle;
@@ -264,21 +327,40 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
         }
     }
 
+    /**
+     * Get the formulas image-scaling factor
+     * @return float
+     */
     public function getScalingFactor()
     {
         return $this->scalingFactor;
     }
 
+    /**
+     * Set the formulas image-scaling factor to adjust its size to the text or
+     * other pageelements
+     * @param float $scalingFactor
+     *  defaults to 0.85
+     */
     public function setScalingFactor($scalingFactor)
     {
         $this->scalingFactor = $scalingFactor;
     }
 
+    /**
+     * Get the elements numbering position
+     * @return string
+     */
     public function getNumberPosition()
     {
         return $this->numberPosition;
     }
 
+    /**
+     * Set the elements numbering position
+     * @param string $numberPosition
+     *  can be 'left' or 'right'
+     */
     public function setNumberPosition($numberPosition)
     {
         $this->numberPosition = $numberPosition;

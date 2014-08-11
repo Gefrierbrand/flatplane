@@ -30,6 +30,9 @@ namespace de\flatplane\iterators;
 
 class ShowInListFilterIterator extends ContentTypeFilterIterator
 {
+    /**
+     * @return boolean
+     */
     public function accept()
     {
         $content = parent::current();

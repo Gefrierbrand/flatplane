@@ -100,7 +100,7 @@ class ElementOutput
 
             if ($pageElement->getType() != 'source') {
                 if (FLATPLANE_DEBUG) {
-                    $msg = "PDF-Y:{$pdf->GetY()} \t ElementY: {$pageElement->getStartYpos()}\t $pageElement;\n";
+                    $msg = "Y: [{$pdf->GetY()}, {$pageElement->getStartYpos()}] (PDF, E)\t  Pages: [{$pdf->getPage()}, {$this->getCurrentLinearPage()}, {$pageElement->getLinearPage()}] (PDF, ELP, OLP) $pageElement\n";
                     if ($pdf->GetY() != $pageElement->getStartYpos()) {
                         $msg = "\033[0;31m".$msg."\033[0m";
                     }
