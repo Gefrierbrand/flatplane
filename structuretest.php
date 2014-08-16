@@ -51,14 +51,8 @@ $outputCallback = function (PDF $pdf) {
 };
 $titlepage->setOutputCallback($outputCallback);
 
-$inhaltsec = $document->addSection('Inhaltsverzeichnis', ['startsNewPage' => ['level1' => false]]);
-$inhaltsec->addList(['section'], ['parseHTML' => true]);
+$document->addSection('Test', ['startsNewPage' => ['level1' => false]])->addText('TEST');
 
-$inhaltsec->addTextFile('input/footnotes.php');
-$inhaltsec->addImage('images/bild.png');
+$flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => false, 'clearTextCache' => false]);
 
-$inhaltsec->addPageBreak();
-$inhaltsec->addSection('TEST', ['altTitle' => '<i>test</i><br>2']);
-
-$flatplane->generatePDF(['showDocumentTree' => false, 'clearFormulaCache' => true, 'clearTextCache' => false]);
-//unset($flatplane);
+unset($flatplane);

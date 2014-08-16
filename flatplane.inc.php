@@ -22,6 +22,6 @@ namespace de\flatplane;
 
 date_default_timezone_set('Europe/Berlin');
 define('FLATPLANE_USE_CLI_COLORS', true);
-define('FLATPLANE_DEBUG', true);
+define('FLATPLANE_DEBUG', false);
 
 include('vendor'.DIRECTORY_SEPARATOR.'autoload.php');

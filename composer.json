@@ -71,7 +71,7 @@
         "sabberworm/php-css-parser": "dev-master",
         "flatplane/bibtexparser": "dev-master",
         "flatplane/svgtex": "dev-master",
-        "mathjax/mathjax": "dev-master",
+        "mathjax/mathjax": "*",
         "phantomjs/phantomjs_win": "1.9",
         "phantomjs/phantomjs_osx": "1.9",
         "phantomjs/phantomjs_linux32": "1.9",
