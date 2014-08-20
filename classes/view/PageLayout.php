@@ -22,237 +22,459 @@
 namespace de\flatplane\view;
 
 use de\flatplane\controller\Flatplane;
+use de\flatplane\documentElements\PageBreak;
 use de\flatplane\documentElements\TitlePage;
 use de\flatplane\interfaces\documentElements\DocumentInterface;
+use de\flatplane\interfaces\documentElements\FormulaInterface;
+use de\flatplane\interfaces\documentElements\ImageInterface;
+use de\flatplane\interfaces\documentElements\ListInterface;
 use de\flatplane\interfaces\documentElements\SectionInterface;
+use de\flatplane\interfaces\documentElements\TableInterface;
+use de\flatplane\interfaces\documentElements\TextInterface;
 use de\flatplane\iterators\RecursiveContentIterator;
+use de\flatplane\utilities\Counter;
 use de\flatplane\utilities\Number;
 use RecursiveIteratorIterator;
 use RuntimeException;
 
 /**
- * Description of ElementOutput
- *
+ * Description of PageLayout
+ * @todo: use abstract class and/or factory for layout?
+ * @todo: use general layout function for image/formula/etc
  * @author Nikolai Neff <admin@flatplane.de>
  */
-class ElementOutput
+class PageLayout
 {
-    protected $currentLinearPage = 0;
+    use \de\flatplane\documentElements\traits\NumberingFunctions;
+
+    protected $linearPageNumberCounter;
+    protected $currentYPosition;
+    protected $currentPageGroup = 'default';
+    protected $newPageGroup;
     protected $document;
-    protected $oldPageGroup = 'default';
 
     public function __construct(DocumentInterface $document)
     {
         $this->document = $document;
+        $pdf = $document->getPDF();
+        //set bookmark for first page as document root
+        $pdf->Bookmark($document->getDocTitle(), 0, -1, 1);
+
+        //add a sequential page counter
+        $this->linearPageNumberCounter = new Counter(0);
+
+        //initialise the page counter for the default page group
+        $startValue = $this->getDocument()->getPageNumberStartValue('default');
+        $counter = new Counter($startValue);
+        $this->addCounter($counter, 'default');
+
+        //set first Page Y Position:
+        //todo: use Document / Page Margins ?
+        $this->setCurrentYPosition($pdf->getMargins()['top']);
     }
 
     /**
-     * @todo: doc
-     * @todo: return value?
+     * layout each DocumentElement according to its type
      * @throws RuntimeException
      */
-    public function generateOutput()
+    public function layout()
     {
         $content = $this->getDocument()->getContent();
-        $pdf = $this->getDocument()->getPDF();
-
-        //reset bottom margin to default
-        $pdf->SetAutoPageBreak($pdf->getAutoPageBreak(), $pdf->getDefaultBottomMargin());
 
         $recItIt = new RecursiveIteratorIterator(
             new RecursiveContentIterator($content),
             RecursiveIteratorIterator::SELF_FIRST
         );
 
-        $firstpage = true;
-        $secondpage = false;
-
         foreach ($recItIt as $pageElement) {
-            //set headers: number (if set) and title of the currently active
-            //section (left) and subsection (right)
-            //todo: make this nice
 
-            //call methods before output for special cases
-            $methodName = 'before'.ucfirst($pageElement->getType()).'Output';
+            //change the current pagegroup according to the sections settings
+            //if the sections pagegroup is 'default', then it will adapt to the
+            //currently active pagegroup
+            if ($pageElement->getPageGroup() !== 'default') {
+                $this->newPageGroup = true;
+                $this->setCurrentPageGroup($pageElement->getPageGroup());
+            } else {
+                $this->newPageGroup = false;
+                $pageElement->setPageGroup($this->getCurrentPageGroup());
+            }
+
+            $type = $pageElement->getType();
+            $methodName = 'layout'.ucfirst($type);
             if (method_exists($this, $methodName)) {
                 $this->$methodName($pageElement);
+            } else {
+                throw new RuntimeException('Invalid element type "'.$type.'"');
             }
-
-            //add first page
-            //todo: make this nice!
-            if ($firstpage) {
-                $pdf->AddPage();
-                if ($pageElement->getType() == 'titlepage') {
-                    $pdf->setPageNumber(new Number(-1));
-                } else {
-                    $pdf->setPageNumber(new Number(0));
-                }
-                $firstpage = false;
-                $secondpage = true;
-            }
-
-            if ($secondpage
-                && $pageElement->getType() != 'source'
-                && $pageElement->getType() != 'titlepage'
-            ) {
-                $pdf->setPrintFooter(false);
-                $secondpage = false;
-            }
-
-            if ($pageElement->getType() != 'source') {
-                if (FLATPLANE_DEBUG) {
-                    $msg = "Y: [{$pdf->GetY()}, {$pageElement->getStartYpos()}] (PDF, E)\t  Pages: [{$pdf->getPage()}, {$this->getCurrentLinearPage()}, {$pageElement->getLinearPage()}] (PDF, ELP, OLP) $pageElement\n";
-                    if ($pdf->GetY() != $pageElement->getStartYpos()) {
-                        $msg = "\033[0;31m".$msg."\033[0m";
-                    }
-                    echo $msg;
-                }
-                Flatplane::log('Generating '.$pageElement);
-                $this->generateElementOutput($pageElement);
-            }
-
-            //resetting page counter
-            if ($this->oldPageGroup != $pageElement->getPageGroup()) {
-                $pdf->setPageNumber(new Number(0));
-            }
-            $this->oldPageGroup = $pageElement->getPageGroup();
-
-            //todo: wrap in method
-            //reset header/footer output
-            $pdf->setPrintHeader(true);
-            $pdf->setPrintFooter(true);
         }
     }
 
-    protected function generateElementOutput($pageElement)
+    /**
+     * Increments the pageCounter according to the current page group
+     */
+    protected function incrementPageNumber()
     {
-        $pdf = $this->getDocument()->getPDF();
-        $page = $pageElement->getLinearPage();
-        //if the current page is equal to the elements page property, display
-        //the element on the current page, otherwise add a new page and
-        //display the element there
-        if ($page == $this->getCurrentLinearPage()) {
-            //display element on current page
-            $numPageBreaks = $pageElement->generateOutput();
-        } elseif ($page == $this->getCurrentLinearPage() + 1) {
-            //add page and then display element
-            $this->addPage();
-            $numPageBreaks = $pageElement->generateOutput();
+        $document = $this->getDocument();
+        $pageGroup = $this->getCurrentPageGroup();
+
+        //add a new counter for each new pagegroup or increment the already
+        //existing counter for old pagegroups
+        if (array_key_exists($pageGroup, $this->getCounterArray())) {
+            if (!$this->newPageGroup) {
+                $this->getCounter($pageGroup)->add();
+            }
         } else {
-//            throw new RuntimeException(
-//                "({$pageElement->getType()}) $pageElement: Invalid Page number: "
-//                .var_export($page, true)
-//                .' expected: '.$this->getCurrentLinearPage().' or '
-//                .($this->getCurrentLinearPage()+1)
-//            );
-            trigger_error(
-                "({$pageElement->getType()}) $pageElement: Invalid Page number: "
-                .var_export($page, true)
-                .' expected: '.$this->getCurrentLinearPage().' or '
-                .($this->getCurrentLinearPage()+1),
-                E_USER_ERROR
+            throw new RuntimeException(
+                'Required counter '.$pageGroup.' does not exist'
             );
-            $this->addPage();
-            $numPageBreaks = $pageElement->generateOutput();
         }
 
-        //increment the page number by the amount of pagebreaks caused by
-        //the displaying of the element
-        $this->setCurrentLinearPage(
-            $this->getCurrentLinearPage() + $numPageBreaks
-        );
+        //increment the linar page Number
+        //does not use the page-group-counter array to avoid collisions
+        //with user counters
+        $this->getLinearPageNumberCounter()->add();
 
-        $pdf->setPageNumberStyle(
-            $this->getDocument()->getPageNumberStyle(
-                $pageElement->getPageGroup()
-            )
-        );
-    }
+        //reset Y position to top of page
+        $this->setCurrentYPosition($document->getPageMargins('top'));
 
-    protected function beforeTitlepageOutput(TitlePage $titlePage)
-    {
-        $pdf = $this->getDocument()->getPDF();
-        if (!$titlePage->getShowHeader()) {
-            $pdf->setPrintHeader(false);
-        }
-        if (!$titlePage->getShowFooter()) {
-            $pdf->setPrintFooter(false);
-        } else {
-            $pdf->setPrintHeader(true);
-            $pdf->setPrintFooter(true);
-        }
-    }
+        //reset footnote margins
+        $document->getPDF()->resetBottomMargin();
 
-    protected function beforeSectionOutput(SectionInterface $section)
-    {
-        $header = $this->getSectionHeaders($section);
-
-        $pdf = $this->getDocument()->getPDF();
-
-        $pdf->setLeftHeader($header['leftHeader']);
-        $pdf->setRightHeader($header['rightHeader']);
-    }
-
-    protected function getSectionHeaders(SectionInterface $section)
-    {
-        $leftHeader = $this->getDocument()->getPDF()->getLeftHeader();
-        $rightHeader = $this->getDocument()->getPDF()->getRightHeader();
-
-        if ($section->getLevel() == 2) {
-            if (!empty($section->getFormattedNumbers())) {
-                $rightHeader = $section->getFormattedNumbers()
-                    ."   ". $section->getAltTitle();
-            } else {
-                $rightHeader = $section->getAltTitle();
-            }
-        }
-        if ($section->getLevel() == 1) {
-            $rightHeader = '';
-            if (!empty($section->getFormattedNumbers())) {
-                $leftHeader = $section->getFormattedNumbers()
-                    ."   ". $section->getAltTitle();
-            } else {
-                $leftHeader = $section->getAltTitle();
-            }
-        }
-
-        return ['leftHeader' => $leftHeader, 'rightHeader' => $rightHeader];
-    }
-
-    protected function addPage()
-    {
-        //add page in PDF
-        $pdf = $this->getDocument()->getPDF();
-        $pdf->AddPage();
-        //increment page counter
-        //todo: use methods here
-        $this->currentLinearPage ++;
+        //return the current grouped counter value as formatted number
+        //return $this->getCurrentFormattedPageNumber($pageGroup);
     }
 
     /**
      *
-     * @return DocumentInterface
+     * @return Counter
      */
-    public function getDocument()
+    protected function getLinearPageNumberCounter()
+    {
+        return $this->linearPageNumberCounter;
+    }
+
+    /**
+     * fixme: return numeric here and format in list display
+     * @param string $pageGroup
+     * @return string
+     */
+    protected function getCurrentFormattedPageNumber($pageGroup = 'default')
+    {
+        $number = new Number($this->getCounter($pageGroup)->getValue());
+        $pageNumStyle = $this->getDocument()->getPageNumberStyle($pageGroup);
+        return $number->getFormattedValue($pageNumStyle);
+    }
+
+    /**
+     * todo: doc
+     * @param SectionInterface $section
+     * @param type $useCurrentPagePosition
+     */
+    protected function setSectionPageAndLink(
+        SectionInterface $section,
+        $useCurrentPagePosition = false
+    ) {
+        $pdf = $this->getDocument()->getPDF();
+
+        if ($useCurrentPagePosition) {
+            $fontSize = $pdf->getFontSize();
+            $yPos = $this->getCurrentYPosition() - $pdf->getCellHeight($fontSize);
+        } else {
+            $yPos = 0;
+        }
+
+        $section->setPage(
+            $this->getCounter($this->getCurrentPageGroup())->getValue()
+        );
+        $section->setLinearPage($this->getLinearPageNumber());
+        $pdfpageNum = $section->getLinearPage() + 1;
+        if ($section->getShowInBookmarks()) {
+            $pdf->Bookmark(
+                $section->getNonHyphenTitle(),
+                $section->getLevel(),
+                $yPos,
+                $pdfpageNum
+            );
+        }
+        $section->setLink($pdf->AddLink());
+        $pdf->SetLink($section->getLink(), $yPos, $pdfpageNum);
+    }
+
+    /**
+     * todo: doc
+     * @param SectionInterface $section
+     */
+    protected function layoutSection(SectionInterface $section)
+    {
+        $section->setStartYpos($this->getCurrentYPosition());
+        //check if the section forces a new page
+        if ($section->getStartsNewPage('level'.$section->getLevel())) {
+            Flatplane::log("Section: ($section) requires pagebreak [user]");
+            //add the page
+            $this->incrementPageNumber();
+            //set the sections page properties and add links/bookmarks
+            $this->setSectionPageAndLink($section);
+
+            //if the section is not shown in the document, only set the current
+            //pagenumber and return (this can be used used to add entries to the
+            //TOC without adding something visible in the document)
+            if ($section->getShowInDocument() == false) {
+                return;
+            }
+
+            //set the Y position on the new Page to the end of the Section
+            //this assumes a section title fits (comfortably) on one page
+            $sectionSize = $section->getSize($this->getCurrentYPosition());
+            $this->setCurrentYPosition($sectionSize['endYposition']);
+            return;
+        }
+
+        //check free space on current page
+        $availableVerticalSpace = $this->getAvailableSpace();
+        $textHeight = $this->getDocument()->getPageMeasurements()['textHeight'];
+
+        //calculate minimum space needed to start a section on the current page
+        $percentage = $section->getMinFreePage('level'.$section->getLevel())/100;
+        $minSpace = $percentage*$textHeight;
+
+        //add a new page if needed (minspace includes the space needed for the
+        //section title itself)
+        if ($availableVerticalSpace < $minSpace) {
+            Flatplane::log("Section: ($section) requires pagebreak [MinSpace]");
+            $this->incrementPageNumber();
+        }
+
+        //check if the section title fits on the page
+        $sectionSize = $section->getSize($this->getCurrentYPosition());
+        if ($sectionSize['numPages'] > 1) {
+            //automatic page break occured, so increment page counter
+            //todo: add appropriate amount of pages instead of just one
+            Flatplane::log("section: ($section) requires pagebreak [size]");
+            $this->incrementPageNumber();
+        }
+
+        //set the current page for the current section
+        $this->setSectionPageAndLink($section, true);
+
+        //set the y position to the end of the section
+        $this->setCurrentYPosition($sectionSize['endYposition']);
+    }
+
+    /**
+     *
+     * @return float
+     */
+    protected function getAvailableSpace()
+    {
+        $pageSize = $this->getDocument()->getPageSize();
+        $pageMarginBottom = $this->getDocument()->getPDF()->getMargins()['bottom'];
+
+        $availableSpace = $pageSize['height']
+                        - $pageMarginBottom
+                        - $this->getCurrentYPosition();
+        return $availableSpace;
+    }
+
+    /**
+     *
+     * @param ImageInterface $image
+     */
+    protected function layoutImage(ImageInterface $image)
+    {
+        $pdf = $this->getDocument()->getPDF();
+        $image->setStartYpos($this->getCurrentYPosition());
+        //check free space on current page
+        $availableVerticalSpace = $this->getAvailableSpace();
+
+        //check if the image fits on the page
+        $imageSize = $image->getSize($this->getCurrentYPosition());
+        if ($imageSize['height'] > $availableVerticalSpace
+            || $imageSize['numPages'] > 1
+        ) {
+            Flatplane::log("Image: ($image) requires pagebreak [size]");
+            $this->incrementPageNumber();
+            $image->setStartYpos($this->getCurrentYPosition());
+        }
+
+        //set the current page for the current section
+        $image->setPage(
+            $this->getCounter($this->getCurrentPageGroup())->getValue()
+        );
+        $image->setLinearPage($this->getLinearPageNumber());
+
+        //add linkt target for list of figures
+        $image->setLink($pdf->AddLink());
+        $pdf->SetLink(
+            $image->getLink(),
+            $image->getStartYpos(),
+            $image->getLinearPage() + 1
+        );
+        $this->setCurrentYPosition($imageSize['endYposition']);
+    }
+
+    /**
+     *
+     * @param \FormulaInterface$formula
+     */
+    protected function layoutFormula(FormulaInterface $formula)
+    {
+        $pdf = $this->getDocument()->getPDF();
+        $formula->setStartYpos($this->getCurrentYPosition());
+        //check free space on current page
+        $availableVerticalSpace = $this->getAvailableSpace();
+
+        //check if the image fits on the page
+        $formulaSize = $formula->getSize($this->getCurrentYPosition());
+        if ($formulaSize['height'] > $availableVerticalSpace
+            || $formulaSize['numPages'] > 1
+        ) {
+            Flatplane::log("Formula: ($formula) requires pagebreak [size]");
+            $this->incrementPageNumber();
+        }
+        $this->setCurrentYPosition($formulaSize['endYposition']);
+
+        //set the current page for the current section
+        $formula->setPage(
+            $this->getCounter($this->getCurrentPageGroup())->getValue()
+        );
+        $formula->setLinearPage($this->getLinearPageNumber());
+
+        //add linkt target for list of figures
+        $formula->setLink($pdf->AddLink());
+        $pdf->SetLink($formula->getLink(), 0, $formula->getLinearPage() + 1);
+    }
+
+    /**
+     *
+     * @param TextInterface $text
+     */
+    protected function layoutText(TextInterface $text)
+    {
+        $text->setStartYpos($this->getCurrentYPosition());
+        $textSize = $text->getSize($this->getCurrentYPosition());
+        $this->setCurrentYPosition($textSize['endYposition']);
+
+        //set the current page for the current section
+        $text->setPage(
+            $this->getCounter($this->getCurrentPageGroup())->getValue()
+        );
+        $text->setLinearPage($this->getLinearPageNumber());
+
+        $numPageBreaks = $textSize['numPages'] - 1;
+        if ($numPageBreaks > 0) {
+            Flatplane::log(
+                "$text automatically added $numPageBreaks pagebreaks".PHP_EOL
+            );
+        }
+        $this->getCounter($this->getCurrentPageGroup())->add($numPageBreaks);
+        $this->getLinearPageNumberCounter()->add($numPageBreaks);
+    }
+
+    protected function layoutCode(TextInterface $code)
+    {
+        $this->layoutText($code);
+    }
+
+    protected function layoutList(ListInterface $list)
+    {
+        $list->setStartYpos($this->getCurrentYPosition());
+        $listSize = $list->getSize($this->getCurrentYPosition());
+
+        $this->setCurrentYPosition($listSize['endYposition']);
+
+        //set the current page for the current section
+        $list->setPage(
+            $this->getCounter($this->getCurrentPageGroup())->getValue()
+        );
+        $list->setLinearPage($this->getLinearPageNumber());
+
+        $numPageBreaks = $listSize['numPages'] - 1;
+        $this->getCounter($this->getCurrentPageGroup())->add($numPageBreaks);
+        $this->getLinearPageNumberCounter()->add($numPageBreaks);
+    }
+
+    protected function layoutTable(TableInterface $code)
+    {
+        $this->layoutText($code);
+    }
+
+    protected function layoutSource()
+    {
+        //do nothing, sources can't be displayed directly and therefore require
+        //no space. Use ListOfContent to display a list of references
+    }
+
+    /**
+     *
+     * @param TitlePage $titlePage
+     */
+    protected function layoutTitlePage(TitlePage $titlePage)
+    {
+        //currently, the dimensions of titlepage are as the name suggests
+        //exactly the size of one page
+
+        //todo: use pagenumberingproperty ?
+        //todo: header/footer ?
+
+        $titlePage->setLinearPage($this->getLinearPageNumber());
+        $this->incrementPageNumber();
+    }
+
+    /**
+     *
+     * @param PageBreak $pagebreak
+     */
+    protected function layoutPageBreak(PageBreak $pagebreak)
+    {
+        //just add a new page by incrementing the linear pagenumber counter
+        //this might break and needs testing
+        Flatplane::log('Adding user-requested PageBreak'.PHP_EOL);
+        $this->incrementPageNumber();
+        $pagebreak->setLinearPage($this->getLinearPageNumber());
+    }
+
+    /**
+     * @return int
+     */
+    protected function getLinearPageNumber()
+    {
+        return $this->getLinearPageNumberCounter()->getValue();
+    }
+
+    /**
+     * @return float
+     */
+    protected function getCurrentYPosition()
+    {
+        return $this->currentYPosition;
+    }
+
+    protected function getDocument()
     {
         return $this->document;
     }
 
-    /**
-     *
-     * @return int
-     */
-    public function getCurrentLinearPage()
+    protected function setCurrentYPosition($currentYPosition)
     {
-        return $this->currentLinearPage;
+        $this->currentYPosition = $currentYPosition;
     }
 
-    /**
-     *
-     * @param int $currentLinearPage
-     */
-    public function setCurrentLinearPage($currentLinearPage)
+    protected function getCurrentPageGroup()
     {
-        $this->currentLinearPage = $currentLinearPage;
+        return $this->currentPageGroup;
+    }
+
+    protected function setCurrentPageGroup($currentPageGroup)
+    {
+        $this->currentPageGroup = $currentPageGroup;
+
+        //add Counter for pagegroup if not already existing
+        if (!array_key_exists($this->currentPageGroup, $this->getCounterArray())) {
+            $startValue = $this->getDocument()->getPageNumberStartValue(
+                $this->currentPageGroup
+            );
+            $counter = new Counter($startValue);
+            $this->addCounter($counter, $this->currentPageGroup);
+        }
     }
 }

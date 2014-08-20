@@ -21,6 +21,7 @@
 
 namespace de\flatplane\view;
 
+use de\flatplane\controller\Flatplane;
 use de\flatplane\documentElements\TitlePage;
 use de\flatplane\interfaces\documentElements\DocumentInterface;
 use de\flatplane\interfaces\documentElements\SectionInterface;
@@ -106,6 +107,7 @@ class ElementOutput
                     }
                     echo $msg;
                 }
+                Flatplane::log('Generating '.$pageElement);
                 $this->generateElementOutput($pageElement);
             }
 
@@ -137,12 +139,21 @@ class ElementOutput
             $this->addPage();
             $numPageBreaks = $pageElement->generateOutput();
         } else {
-            throw new RuntimeException(
+//            throw new RuntimeException(
+//                "({$pageElement->getType()}) $pageElement: Invalid Page number: "
+//                .var_export($page, true)
+//                .' expected: '.$this->getCurrentLinearPage().' or '
+//                .($this->getCurrentLinearPage()+1)
+//            );
+            trigger_error(
                 "({$pageElement->getType()}) $pageElement: Invalid Page number: "
                 .var_export($page, true)
                 .' expected: '.$this->getCurrentLinearPage().' or '
-                .($this->getCurrentLinearPage()+1)
+                .($this->getCurrentLinearPage()+1),
+                E_USER_ERROR
             );
+            $this->addPage();
+            $numPageBreaks = $pageElement->generateOutput();
         }
 
         //increment the page number by the amount of pagebreaks caused by
