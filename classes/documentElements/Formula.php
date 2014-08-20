@@ -52,6 +52,7 @@ class Formula extends AbstractDocumentContentElement implements FormulaInterface
     protected $path;
 
     protected $scalingFactor = 0.85;
+    protected $hyphenate = false;
 
     /**
      * Get the TeX or MathML code defining the formula

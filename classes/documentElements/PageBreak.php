@@ -33,6 +33,7 @@ class PageBreak extends AbstractDocumentContentElement
     protected $enumerate = false;
     protected $showInList = false;
     protected $allowSubContent = false;
+    protected $hyphenate = false;
 
     public function generateOutput()
     {

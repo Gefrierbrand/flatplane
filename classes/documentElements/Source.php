@@ -35,8 +35,9 @@ class Source extends AbstractDocumentContentElement
     protected $fieldsToShow = ['sourceAuthor',
                                'sourceTitle',
                                'sourcePublisher',
-                               'sourceEdition',
-                               'sourceYear'];
+                               'sourceBooktitle',
+                               'sourceYear',
+                               'sourceVolume',];
 
     protected $fieldSeparator = ';';
 
@@ -267,7 +268,7 @@ class Source extends AbstractDocumentContentElement
 
     public function setSourcePublisher($sourcePublisher)
     {
-        $this->sourcePublisher = $sourcePublisher;
+        $this->sourcePublisher = str_replace(';', ',', $sourcePublisher);
     }
 
     public function setSourceOrganization($sourceOrganization)

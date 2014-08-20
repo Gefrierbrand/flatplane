@@ -15,7 +15,7 @@
         },
         {
             "type": "vcs",
-            "url": "https://github.com/mathjax/MathJax"
+            "url": "https://github.com/Gefrierbrand/MathJax.git"
         },
         {
             "type": "package",
