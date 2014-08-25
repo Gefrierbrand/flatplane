@@ -169,31 +169,70 @@ trait StyleFunctions
         $pdf->setCellHeightRatio($this->getLinePitch());
     }
 
+    /**
+     * Specify the font to use for the content defined by the array-keys
+     * must contain entry 'default'
+     * @param array $fontType
+     */
     public function setFontType(array $fontType)
     {
         $this->fontType = array_merge($this->fontType, $fontType);
     }
 
+    /**
+     * Set the fontsize in pt (1 pt = 1/72 inch) for the content defined by the
+     * array keys - must contain entry 'default'
+     * @param array $fontSize
+     */
     public function setFontSize(array $fontSize)
     {
         $this->fontSize = array_merge($this->fontSize, $fontSize);
     }
 
+    /**
+     * Set the font markup like bold or italic for the content defined by the
+     * array keys - must contain entry 'default'
+     * available values are B: bold; I: italic; U: underline; D: line-through;
+     * O: overline or any combination of those
+     * @see TCPDF::setFont()
+     * @param array $fontStyle
+     */
     public function setFontStyle(array $fontStyle)
     {
         $this->fontStyle = array_merge($this->fontStyle, $fontStyle);
     }
 
+    /**
+     * Sets the font color for the content defined by the array keys.
+     * @see TCPDF::setColor();
+     * @param array $fontColor
+     *  Must contain the key 'default'
+     *  The array values must also be arrays containing the color-values
+     *  first entry: GRAY level, or Red for RGB (0-255), or CYAN for CMYK (0-100)
+	 *  second entry: GREEN for RGB (0-255), or MAGENTA for CMYK (0-100)
+	 *  third entry: BLUE for RGB (0-255), or YELLOW for CMYK (0-100)
+     *  forth entry: KEY (Black) for CMYK (0-100)
+     */
     public function setFontColor(array $fontColor)
     {
         $this->fontColor = array_merge($this->fontColor, $fontColor);
     }
 
+    /**
+     * Set the color used for drawings like lines (affects over & underline!)
+     * @see setFontColor()
+     * @param array $drawColor
+     */
     public function setDrawColor(array $drawColor)
     {
         $this->drawColor = array_merge($this->drawColor, $drawColor);
     }
 
+    /**
+     * Get the fontspacing for the defined key or return the default value
+     * @param string $key (optional)
+     * @return float
+     */
     public function getFontSpacing($key = null)
     {
         if ($key !== null && isset($this->fontSpacing[$key])) {
@@ -203,6 +242,11 @@ trait StyleFunctions
         }
     }
 
+    /**
+     * Get the fontstretching for the defined key or return the default value
+     * @param string $key (optional)
+     * @return float
+     */
     public function getFontStretching($key = null)
     {
         if ($key !== null && isset($this->fontStretching[$key])) {
@@ -212,11 +256,23 @@ trait StyleFunctions
         }
     }
 
+    /**
+     * Set the fontspacing to adjust the whitespace between words.
+     * @param array $fontSpacing
+     *  must define key 'default'; standard value: 0
+     * @see TCPDF::setFontSpacing()
+     */
     public function setFontSpacing(array $fontSpacing)
     {
         $this->fontSpacing = array_merge($this->fontSpacing, $fontSpacing);
     }
 
+    /**
+     * Set the percentage of character stretching.
+     * @param array $fontStretching
+     *  must define key 'default'; standard value: 100
+     * @see TCPDF::setFontStretching()
+     */
     public function setFontStretching(array $fontStretching)
     {
         $this->fontStretching = array_merge(
@@ -383,8 +439,7 @@ trait StyleFunctions
         $this->cellPaddings = array_merge($this->cellPaddings, $cellPaddings);
     }
 
-    /**
-     *
+    /**     *
      * @return float
      */
     public function getLinePitch()

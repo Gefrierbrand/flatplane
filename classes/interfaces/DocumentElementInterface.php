@@ -532,4 +532,122 @@ interface DocumentElementInterface
      * @param float $startYpos
      */
     public function setStartYpos($startYpos);
+
+     /**
+     * Specify the font to use for the content defined by the array-keys
+     * must contain entry 'default'
+     * @param array $fontType
+     */
+    public function setFontType(array $fontType);
+
+    /**
+     * Set the fontsize in pt (1 pt = 1/72 inch) for the content defined by the
+     * array keys - must contain entry 'default'
+     * @param array $fontSize
+     */
+    public function setFontSize(array $fontSize);
+
+    /**
+     * Set the font markup like bold or italic for the content defined by the
+     * array keys - must contain entry 'default'
+     * available values are B: bold; I: italic; U: underline; D: line-through;
+     * O: overline or any combination of those
+     * @see TCPDF::setFont()
+     * @param array $fontStyle
+     */
+    public function setFontStyle(array $fontStyle);
+
+    /**
+     * Sets the font color for the content defined by the array keys.
+     * @see TCPDF::setColor();
+     * @param array $fontColor
+     *  Must contain the key 'default'
+     *  The array values must also be arrays containing the color-values
+     *  first entry: GRAY level, or Red for RGB (0-255), or CYAN for CMYK (0-100)
+	 *  second entry: GREEN for RGB (0-255), or MAGENTA for CMYK (0-100)
+	 *  third entry: BLUE for RGB (0-255), or YELLOW for CMYK (0-100)
+     *  forth entry: KEY (Black) for CMYK (0-100)
+     */
+    public function setFontColor(array $fontColor);
+
+    /**
+     * Set the color used for drawings like lines (affects over & underline!)
+     * @see setFontColor()
+     * @param array $drawColor
+     */
+    public function setDrawColor(array $drawColor);
+
+    /**
+     * Get the fontspacing for the defined key or return the default value
+     * @param string $key (optional)
+     * @return float
+     */
+    public function getFontSpacing($key = null);
+
+    /**
+     * Get the fontstretching for the defined key or return the default value
+     * @param string $key (optional)
+     * @return float
+     */
+    public function getFontStretching($key = null);
+
+    /**
+     * Set the fontspacing to adjust the whitespace between words.
+     * @param array $fontSpacing
+     *  must define key 'default'; standard value: 0
+     * @see TCPDF::setFontSpacing()
+     */
+    public function setFontSpacing(array $fontSpacing);
+
+    /**
+     * Set the percentage of character stretching.
+     * @param array $fontStretching
+     *  must define key 'default'; standard value: 100
+     * @see TCPDF::setFontStretching()
+     */
+    public function setFontStretching(array $fontStretching);
+
+    /**
+     * get the TCPDF-cell margins
+     * @param string $key direction (optional)
+     * @return float margins in user units
+     */
+    public function getCellMargins($key = null);
+
+    /**
+     * get the TCPDF-Cell paddings
+     * @param string $key direction (optional)
+     * @return float paddings in user units
+     */
+    public function getCellPaddings($key = null);
+
+    /**
+     * Set the TCPDF-Cell margins
+     * @param array $cellMargins
+     *  keys: 'top', 'bottom', 'left', 'right', 'default'
+     *  values: (numeric) margin amount (user units)
+     */
+    public function setCellMargins(array $cellMargins);
+
+    /**
+     * Set the TCPDF-Cell paddings
+     * @param array $cellPaddings
+     *  keys: 'top', 'bottom', 'left', 'right', 'default'
+     *  values: (numeric) margin amount (user units)
+     */
+    public function setCellPaddings(array $cellPaddings);
+
+    /**
+     * Get the linepitch adjustment factor to increase/decrease the vertical
+     * space between lines. Default: 1.25
+     * @return float
+     */
+    public function getLinePitch();
+
+    /**
+     * Set the linepitch adjustment factor to increase/decrease the vertical
+     * space between lines. Default: 1.25
+     * @param float $linePitch
+     */
+    public function setLinePitch($linePitch);
 }

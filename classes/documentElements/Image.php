@@ -66,6 +66,8 @@ class Image extends AbstractDocumentContentElement implements ImageInterface
     protected $useCache = true;
     protected $cachePath;
 
+    protected $showTitleNum = true;
+
     /**
      * Returns image-type and -path as string
      * @return string
@@ -191,8 +193,12 @@ class Image extends AbstractDocumentContentElement implements ImageInterface
         $pdf->SetY($pdf->GetY() + $this->getMargins('caption'));
         $this->applyStyles();
         //todo: implement title/caption position & placement
-        $html = '<b>'.$this->getTitlePrefix().' '.$this->getFormattedNumbers()
-                .':</b>  '.$this->getTitle();
+        if ($this->showTitleNum) {
+            $html = '<b>'.$this->getTitlePrefix().' '.$this->getFormattedNumbers()
+                    .':</b>  '.$this->getTitle();
+        } else {
+            $html = $this->getTitle();
+        }
         $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 0, false, true, 'C');
         //$pdf->MultiCell(0, 0, $this->getCompleteTitle(), 0, 'C', false, 0);
 
@@ -980,5 +986,15 @@ class Image extends AbstractDocumentContentElement implements ImageInterface
     public function setCachePath($cachePath)
     {
         $this->cachePath = $cachePath;
+    }
+
+    public function getShowTitleNum()
+    {
+        return $this->showTitleNum;
+    }
+
+    public function setShowTitleNum($showTitleNum)
+    {
+        $this->showTitleNum = $showTitleNum;
     }
 }
