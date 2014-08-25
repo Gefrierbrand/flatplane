@@ -84,7 +84,7 @@ class Footnote
         $pdf->SetX($pdf->getMargins()['left'] + $this->getNumberSeparationWidth());
 
         $text = $this->getText();
-        $pdf->writeHTMLCell(0, 0, '', '', $text, 0, 1, false, true, $this->getTextAlignment());
+        $pdf->writeHTMLCell(0, 0, '', '', $text, 1, 1, false, true, $this->getTextAlignment());
         //$pdf->MultiCell(0, 0, $text, 0, $this->getTextAlignment(), false, 1);
     }
 
@@ -140,10 +140,10 @@ class Footnote
         $pdf = $this->getPDF();
         $this->applyStyles();
 
-        $textwidth = $this->getDocument()->getPageMeasurements()['textWidth']
-                      - $this->getNumberSeparationWidth();
-
-        return $pdf->getStringHeight($textwidth, $this->getText());
+        $pdf->startMeasurement();
+        $this->generateOutput();
+        $dimensions = $pdf->endMeasurement();
+        return $dimensions['height'];
     }
 
     public function getHyphenate()

@@ -44,7 +44,7 @@ $outputCallback = function (PDF $pdf) {
 $document->addTitlePage()->setOutputCallback($outputCallback);
 
 //add a section as content to the page. The first element has to have its 'startsNewPage'
-//property set to false for 'level1' due to a known bug. 
+//property set to false for 'level1' due to a known bug.
 //It also has to be in a pagegroup for the numbering to work correctly.
 //This will be fixed in the future.
 $section1 = $document->addSection('FirstSection', ['startsNewPage' => ['level1' => false]]);
@@ -53,14 +53,20 @@ $section1->setPageGroup('PG1');
 //add a subsection to the first section
 $subsection1 = $section1->addSection('subsection');
 
+//add some  text to the section
+$subsection1->addTextFile(__DIR__.'/demotext.php');
+
+
 //create a list of all sections
 $list = $document->addList(['section']);
+
+
 
 
 //----OUTPUT----
 $flatplane->generatePDF(
     ['showDocumentTree' => true,
     'clearFormulaCache' => false,
-    'clearTextCache' => false,
+    'clearTextCache' => true,
     'clearImageCache' => false]
 );
