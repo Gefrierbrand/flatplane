@@ -220,13 +220,6 @@ class PDF extends TCPDF
 
     public function Footer()
     {
-        if (!empty($this->footnoteObjects)) {
-            $this->displayFootnotes();
-        } else {
-            //reset page margins
-            $this->resetBottomMargin();
-        }
-
         $width = $this->getPageWidth()
                  - $this->getMargins()['left']
                  - $this->getMargins()['right'];
@@ -234,6 +227,13 @@ class PDF extends TCPDF
         $this->Cell($width/2, 0, $this->getRightFooter(), 'T', 0, 'R', false, '', 1);
 
         $this->firstFootnoteOnPage = true;
+
+        if (!empty($this->footnoteObjects)) {
+            $this->displayFootnotes();
+        } else {
+            //reset page margins
+            $this->resetBottomMargin();
+        }
     }
 
     public function resetBottomMargin()

@@ -189,8 +189,12 @@ class PageLayout
         $section->setLinearPage($this->getLinearPageNumber());
         $pdfpageNum = $section->getLinearPage() + 1;
         if ($section->getShowInBookmarks()) {
+            $title = trim(
+                $section->getFormattedNumbers().' '.$section->getNonHyphenTitle()
+            );
+
             $pdf->Bookmark(
-                $section->getNonHyphenTitle(),
+                $title,
                 $section->getLevel(),
                 $yPos,
                 $pdfpageNum

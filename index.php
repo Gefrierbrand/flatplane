@@ -37,7 +37,26 @@ $document->setPageNumberStyle(['PG1' => 'int']);
 
 //define the Titlepages content. You can use all basic TCPDF Methods here
 $outputCallback = function (PDF $pdf) {
+
+    $pdf->AddFont('CMU', '', 'vendor/tecnick.com/tcpdf/fonts/cmunrm.php');
+    $pdf->AddFont('CMU', 'B', 'vendor/tecnick.com/tcpdf/fonts/cmunbx.php');
+    $pdf->AddFont('CMU', 'I', 'vendor/tecnick.com/tcpdf/fonts/cmunti.php');
+    $pdf->AddFont('CMU', 'BI', 'vendor/tecnick.com/tcpdf/fonts/cmunbi.php');
+
+    $pdf->AddFont('CMUmono', '', 'vendor/tecnick.com/tcpdf/fonts/cmuntt.php');
+    $pdf->AddFont('CMUmono', 'B', 'vendor/tecnick.com/tcpdf/fonts/cmuntb.php');
+    $pdf->AddFont('CMUmono', 'I', 'vendor/tecnick.com/tcpdf/fonts/cmunit.php');
+    $pdf->AddFont('CMUmono', 'BI', 'vendor/tecnick.com/tcpdf/fonts/cmuntx.php');
+
+    $pdf->SetFont('CMU', '', 12);
     $pdf->write(0, 'Hello!');
+    $pdf->Ln();
+    $html = '<b>Abbildung 6.5:</b> Durch Fußnoten instabiler Layoutprozess';
+    $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, false, true, 'C');
+    $pdf->writeHTML($html, true, false, true, false, 'C');
+    $pdf->Line(20, 29.5, 200, 29.5, ['color' => [255, 0, 0]]);
+    $pdf->Line(20, 34.8, 200, 34.8, ['color' => [255, 0, 0]]);
+
 };
 
 //add a titlepage. This is currenly mandatory
