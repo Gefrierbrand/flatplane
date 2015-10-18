@@ -28,46 +28,32 @@ include 'flatplane.inc.php';
 $flatplane = new Flatplane();
 $flatplane->setVerboseOutput(true);
 Flatplane::setConfigDir('config');
+Flatplane::setOutputDir(__DIR__);
 
 //create a Document-Instance
 $document = $flatplane->createDocument();
+$document->setDocTitle('Dokumenttitel');
 
 //define the pagenumbering style for the pagegroup PG1
 $document->setPageNumberStyle(['PG1' => 'int']);
 
 //define the Titlepages content. You can use all basic TCPDF Methods here
 $outputCallback = function (PDF $pdf) {
-
-    $pdf->AddFont('CMU', '', 'vendor/tecnick.com/tcpdf/fonts/cmunrm.php');
-    $pdf->AddFont('CMU', 'B', 'vendor/tecnick.com/tcpdf/fonts/cmunbx.php');
-    $pdf->AddFont('CMU', 'I', 'vendor/tecnick.com/tcpdf/fonts/cmunti.php');
-    $pdf->AddFont('CMU', 'BI', 'vendor/tecnick.com/tcpdf/fonts/cmunbi.php');
-
-    $pdf->AddFont('CMUmono', '', 'vendor/tecnick.com/tcpdf/fonts/cmuntt.php');
-    $pdf->AddFont('CMUmono', 'B', 'vendor/tecnick.com/tcpdf/fonts/cmuntb.php');
-    $pdf->AddFont('CMUmono', 'I', 'vendor/tecnick.com/tcpdf/fonts/cmunit.php');
-    $pdf->AddFont('CMUmono', 'BI', 'vendor/tecnick.com/tcpdf/fonts/cmuntx.php');
-
-    $pdf->SetFont('CMU', '', 12);
-    $pdf->write(0, 'Hello!');
-    $pdf->Ln();
-    $html = '<b>Abbildung 6.5:</b> Durch Fußnoten instabiler Layoutprozess';
-    $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, false, true, 'C');
-    $pdf->writeHTML($html, true, false, true, false, 'C');
-    $pdf->Line(20, 29.5, 200, 29.5, ['color' => [255, 0, 0]]);
-    $pdf->Line(20, 34.8, 200, 34.8, ['color' => [255, 0, 0]]);
-
+    $pdf->write(0, 'TITLEPAGE');
 };
 
 //add a titlepage. This is currenly mandatory
 $document->addTitlePage()->setOutputCallback($outputCallback);
+
 
 //add a section as content to the page. The first element has to have its 'startsNewPage'
 //property set to false for 'level1' due to a known bug.
 //It also has to be in a pagegroup for the numbering to work correctly.
 //This will be fixed in the future.
 $section1 = $document->addSection('FirstSection', ['startsNewPage' => ['level1' => false]]);
-$section1->setPageGroup('PG1');
+//$section1->setPageGroup('PG1');
+//create a list of all sections
+$list = $section1->addList(['section']);
 
 //add a subsection to the first section
 $subsection1 = $section1->addSection('subsection');
@@ -76,8 +62,7 @@ $subsection1 = $section1->addSection('subsection');
 $subsection1->addTextFile(__DIR__.'/demotext.php');
 
 
-//create a list of all sections
-$list = $document->addList(['section']);
+
 
 
 

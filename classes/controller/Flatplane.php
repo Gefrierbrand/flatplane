@@ -144,7 +144,7 @@ class Flatplane
     public static function setOutputDir($outputDir)
     {
         self::$outputDir = $outputDir;
-
+        //var_dump(self::$outputDir);
         if (!is_dir(self::$outputDir)) {
             if (!mkdir(self::$outputDir, 0777, true)) {
                 throw new RuntimeException('could not create output dir');
@@ -296,7 +296,7 @@ class Flatplane
                 unlink($file);
             }
         }
-        
+
         if (strtolower($type) == 'image') {
             $dir = Flatplane::getCacheDir().DIRECTORY_SEPARATOR.'image';
             $files = glob($dir.DIRECTORY_SEPARATOR.'*.txt');
@@ -308,7 +308,7 @@ class Flatplane
 
     protected function generatePDFOutput()
     {
-        //todo: filename, outputoptions (PDF/A, font subsetting, ovetwrite usw?)
+        //todo: filename, outputoptions (PDF/A, font subsetting, overwrite usw?)
         $pdf = $this->getDocument()->getPDF();
         //set the pagenumber and right footer for the last page
         $pdf->setPageNumber(new Number($pdf->getPageNumber()->getValue() + 1));
