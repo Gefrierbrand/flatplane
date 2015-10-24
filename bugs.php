@@ -28,6 +28,7 @@ keine zugriffsmöglichkeit auf PDF funktionen bei der dokumenterstellung für se
 textcache hat einfluss auf fußnotenpositionierung (WTF!?)
 pfad zu config funktioniert nicht, falls php nicht im servermodus ist bzw nicht im path liegt!!!
 Fußnotengröße wird nicht zurückgesetzt!
+outputdir muss zwingend auf __DIR__ gesetztwerden (wegen änderung in tcpdf)
 
 kopfzeile fehlt, falls erstes element (z.b. liste) der seite an dokument und nicht an section hängt
 seitenzahlen falsch?
