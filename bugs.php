@@ -31,5 +31,7 @@ Fußnotengröße wird nicht zurückgesetzt!
 outputdir muss zwingend auf __DIR__ gesetztwerden (wegen änderung in tcpdf)
 
 kopfzeile fehlt, falls erstes element (z.b. liste) der seite an dokument und nicht an section hängt
-seitenzahlen falsch?
+seitenzahlen falsch! -> siehe ma
 doppelte titelseite?
+empty "default tcpdf style" pages if cache is cleared?
+check output dir/output file first
