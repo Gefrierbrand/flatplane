@@ -77,7 +77,7 @@
         "phantomjs/phantomjs_linux32": "1.9",
         "phantomjs/phantomjs_linux64": "1.9"
     },
-    "license": "LGPLv3",
+    "license": "LGPL-3.0+",
     "authors": [
         {
             "name": "Nikolai Neff",
